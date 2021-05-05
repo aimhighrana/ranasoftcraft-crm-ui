@@ -80,6 +80,7 @@ import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
 import { ResizableColumnDirective } from './_directives/resizable-column.directive';
+import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +124,8 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
     ClassificationDatatableCellEditableComponent,
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
-    AutoCompleteScrollDirective
+    AutoCompleteScrollDirective,
+    GenericFieldControlComponent
   ],
   imports: [
     // ng modules
@@ -268,7 +270,8 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
     SubscriberInviteComponent,
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
-    AutoCompleteScrollDirective
+    AutoCompleteScrollDirective,
+    GenericFieldControlComponent
   ],
   providers: [
     TitleCasePipe

@@ -1,5 +1,5 @@
+<mat-label *ngIf="lebel">{{ lebel }}</mat-label>
 <mat-form-field appearance="outline">
-    <mat-label>{{ lebel }}</mat-label>
     <ng-template [ngIf]="isMultiSelection" [ngIfElse]="singleSelection">
         <mat-chip-list #chipList aria-label="Select">
             <mat-chip
@@ -13,6 +13,7 @@
             [formControl]="fieldFrmCtrl"
             [matAutocomplete]="fieldsCtrl"
             [matChipInputFor]="chipList"
+            [placeholder]="placeholder"
             [matChipInputAddOnBlur]="'true'"
             (matChipInputTokenEnd)="add($event)" 
             (click)="openPanel()">
@@ -22,11 +23,12 @@
         <input matInput
         [formControl]="fieldFrmCtrl"
         [matAutocomplete]="fieldsCtrl"
+        [placeholder]="placeholder"
         [value]="(preSelectedCtrl && preSelectedCtrl[0]) ? preSelectedCtrl[0].fieldDescri : ''">
     </ng-template>
     <mat-autocomplete #fieldsCtrl="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
         <mat-optgroup *ngFor="let object of fieldsObs | async" [label]="object.fieldDescri">
-            <mat-option *ngFor="let fld of object.childs" [value]="fld">
+            <mat-option *ngFor="let fld of object.childs" [value]="fld"  matTooltip="{{fld.fieldDescri}}" matTooltipPosition="right">
                 {{fld.fieldDescri}}
             </mat-option>  
         </mat-optgroup>

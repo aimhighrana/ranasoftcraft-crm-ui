@@ -776,4 +776,8 @@ export class EndpointsClassicService {
   public downloadDuplicateExecutionDetailsUrl(schemaId: string, status: string): string {
     return `${this.apiUrl}/duplicate/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
+
+  public downloadExecutionDetailsByNodesUrl(schemaId: string, status: string, nodes: string[]): string {
+    return `${this.apiUrl}/schema/download/${schemaId}/${status.toLocaleLowerCase()}?nodes=${nodes.toString()}`;
+  }
 }

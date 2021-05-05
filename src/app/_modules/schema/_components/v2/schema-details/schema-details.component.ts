@@ -25,6 +25,7 @@ import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { sortBy } from 'lodash';
+import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 
 @Component({
   selector: 'pros-schema-details',
@@ -192,8 +193,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban' }
   ] as SchemaTableAction[];
 
   /**
@@ -275,9 +276,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.variantId = '0';
       }
       if (this.userDetails) {
-        this.getSchemaExecutionTree();
+        this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
+      } else {
+        this.executionTreeHierarchy = new SchemaExecutionTree();
       }
     }
 
@@ -407,9 +412,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    this.userService.getUserDetails().subscribe(res=>{
+    const userDataSub = this.userService.getUserDetails().subscribe(res=>{
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
+
+    const userDataForSchemaTree = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(res=>{
+      this.getSchemaExecutionTree(res.plantCode, res.userName);
+    }, err=> console.log(`Error ${err}`));
+
+    this.subscribers.push(userDataForSchemaTree);
+    this.subscribers.push(userDataSub);
 
     /**
      * inline search changes
@@ -448,11 +460,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    * Call service to get schema execution tree
    */
-  getSchemaExecutionTree() {
-    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
+  getSchemaExecutionTree(plantCode, userName) {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
       this.executionTreeHierarchy = res;
       this.activeNode = res;
-    }, error => {
+      }, error => {
       this.executionTreeHierarchy = new SchemaExecutionTree();
       console.error(error);
     });
@@ -535,6 +547,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
     this.displayedFields.next(fields);
+    console.log(this.displayedFields.getValue());
   }
 
   getAllNodeFields(node: SchemaExecutionTree) {
@@ -687,11 +700,29 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Method for download error or execution logs
    */
   downloadExecutionDetails() {
-    const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
-    downloadLink.setAttribute('target', '_blank');
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    const data = {
+      moduleId: this.moduleId,
+      schemaId: this.schemaId,
+      runId: this.schemaInfo.runId,
+      requestStatus: this.activeTab,
+      executionTreeHierarchy: this.executionTreeHierarchy
+    }
+
+    const ref = this.matDialog.open(DownloadExecutionDataComponent, {
+      width: '600px',
+      data
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if(res) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = this.endpointservice.downloadExecutionDetailsByNodesUrl(this.schemaId, this.activeTab, res);
+        console.log(downloadLink.href);
+        downloadLink.setAttribute('target', '_blank');
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      }
+    });
 
   }
 
@@ -871,9 +902,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
-      if (res.acknowledge) {
+      if (res === true) {
         this.getData();
         this.selection.clear();
+        this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -906,6 +938,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
       if(res && res.acknowledge) {
+        this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.getData();
             this.selection.clear();
@@ -1297,7 +1330,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   public setStatus(event: MouseEvent, status: number) {
-    // console.log(event,status)
+    console.log(event,status)
     if (status === 1) event.stopPropagation();
     else this.setNavDivPositions();
     this.status = status;

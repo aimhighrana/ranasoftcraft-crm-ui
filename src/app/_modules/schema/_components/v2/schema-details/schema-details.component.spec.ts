@@ -328,7 +328,12 @@ describe('SchemaDetailsComponent', () => {
 
   it('should change tab status', () => {
 
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+
     spyOn(component, 'getData');
+    spyOn(component, 'getSchemaExecutionTree');
     spyOn(component, 'calculateDisplayFields');
     spyOn(router, 'navigate');
 
@@ -368,6 +373,12 @@ describe('SchemaDetailsComponent', () => {
 
 
   it('changeTabStatus() , change the tab and get load data ', async(() =>{
+
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+
+    spyOn(component, 'getSchemaExecutionTree');
     // mock data
     component.activeTab = 'error';
     const res = component.changeTabStatus('error');
@@ -425,10 +436,10 @@ describe('SchemaDetailsComponent', () => {
         previousValue:null
       },
       varinatId:{
-        currentValue:'0',
+        currentValue:'1',
         firstChange:true,
         isFirstChange:null,
-        previousValue:null
+        previousValue:'0'
       }
     } as SimpleChanges;
 
@@ -438,12 +449,22 @@ describe('SchemaDetailsComponent', () => {
     spyOn(component, 'getSchemaDetails');
     spyOn(component, 'manageStaticColumns');
     spyOn(component, 'getData');
+    spyOn(component, 'getVariantDetails');
+    spyOn(component, 'getSchemaExecutionTree');
+
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = '5454';
+    component.userDetails.userName = 'Test';
+    component.variantId = '1';
     component.ngOnChanges(changes);
+
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
+    expect(component.getVariantDetails).toHaveBeenCalled();
+    expect(component.getSchemaExecutionTree).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res=> {
       if(res) {
         expect(component.getData).toHaveBeenCalled();
@@ -502,11 +523,15 @@ describe('SchemaDetailsComponent', () => {
       }
     } as SimpleChanges;
     component.ngOnChanges(changes2);
+    component.userDetails = null;
+    component.variantId = '0';
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
+    expect(component.variantId).toEqual('0');
+    expect(component.executionTreeHierarchy).toEqual(undefined);
     component.dataSource.brMetadata.subscribe(res2=> {
       if(res2) {
         expect(component.getData).toHaveBeenCalled();
@@ -727,7 +752,7 @@ describe('SchemaDetailsComponent', () => {
     component.schemaId = '246726532';
     component.userDetails  = {currentRoleId:'123'} as Userdetails;
 
-    const apiResponse = {acknowledge:false};
+    const apiResponse = true;
 
     spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId)
       .and.returnValues(of(apiResponse), of(apiResponse), throwError({message: 'api error'}));
@@ -737,7 +762,6 @@ describe('SchemaDetailsComponent', () => {
 
     spyOn(component, 'getData');
     component.selection.select(row);
-    apiResponse.acknowledge = true;
     component.approveRecords('all');
     expect(component.getData).toHaveBeenCalled();
 
@@ -1127,12 +1151,12 @@ describe('SchemaDetailsComponent', () => {
     component.userDetails = new Userdetails();
     component.userDetails.plantCode = 'test';
     component.userDetails.userName = 'test';
-    spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
-    component.getSchemaExecutionTree();
-    expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName);
+    spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
+    component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
+    expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab);
 
     spyOn(console, 'error');
-    component.getSchemaExecutionTree();
+    component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
     expect(console.error).toHaveBeenCalled();
   }));
 
@@ -1194,5 +1218,4 @@ describe('SchemaDetailsComponent', () => {
 
     expect(component.getNodeParentsHierarchy(component.activeNode.childs[0])).toEqual(['1','header']);
   }));
-
 });

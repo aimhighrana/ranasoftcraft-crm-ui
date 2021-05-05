@@ -238,7 +238,7 @@ describe('EndpointsRuleService', () => {
 
   it('deleteSchemaCollaboratorDetailsUrl(),should delte the exexting collaborator derail', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.deleteSchemaCollaboratorDetailsUrl()).toContain('admin/users/collaborator-records/delete');
+    expect(serObj.deleteSchemaCollaboratorDetailsUrl()).toContain('schema/metadata/collaborator-records/delete');
   }));
 
   it('deleteSchema(),should delte the schema', async(() => {
@@ -558,7 +558,7 @@ describe('EndpointsRuleService', () => {
 
   it('resetCorrectionRecords(), return Uri for reset schema execution correction data ',async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/reset-corrected-records/654567879');
+    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/actions/reset-corrected-records/654567879');
   }));
 
   it('downloadMroExceutionUri(),should return downloadMroExceutionUri url', async(() => {
@@ -584,7 +584,7 @@ describe('EndpointsRuleService', () => {
 
   it('resetCorrectionRecords(), return Uri for reset schema execution correction data ',async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/reset-corrected-records/654567879');
+    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/actions/reset-corrected-records/654567879');
   }));
 
   it('getNotificationsCount(), return count of notification',async(() => {
@@ -644,7 +644,7 @@ describe('EndpointsRuleService', () => {
 
   it('getSchemaExecutionTree(), should getSchemaExecutionTree', async() => {
     const serviceObj = new EndpointsRuleService();
-    const URL = serviceObj.getSchemaExecutionTree('module1', 'schema1', 'varaint1', 'plantCode', 'userId');
+    const URL = serviceObj.getSchemaExecutionTree('module1', 'schema1', 'varaint1', 'plantCode', 'userId', 'error');
     expect(URL).toContain(`schema/execution-tree/module1/schema1`);
   });
 

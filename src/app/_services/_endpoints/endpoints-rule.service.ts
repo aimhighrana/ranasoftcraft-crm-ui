@@ -187,7 +187,7 @@ export class EndpointsRuleService {
   }
 
   public deleteSchemaCollaboratorDetailsUrl(): string {
-    return `${this.origin}/admin/users/collaborator-records/delete`;
+    return `${this.origin}/schema/metadata/collaborator-records/delete`;
   }
 
   public deleteSchema(schemaId: string): string {
@@ -566,7 +566,7 @@ export class EndpointsRuleService {
    * @param schemaId append as request path
    */
   public resetCorrectionRecords(schemaId: string): string {
-    return `${this.origin}/schema/reset-corrected-records/${schemaId}`;
+    return `${this.origin}/schema/actions/reset-corrected-records/${schemaId}`;
   }
 
   public getSchemaExecutedStatsTrendUri(schemaId: string, variantId: string): string {
@@ -624,7 +624,7 @@ export class EndpointsRuleService {
     return `${this.origin}/duplicate/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
 
-  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string) {
-    return `${this.origin}/schema/execution-tree/${moduleId}/${schemaId}?plantCode=${plantCode}&userId=${userId}&variantId=${variantId}`;
+  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
+    return `${this.origin}/schema/execution-tree/${moduleId}/${schemaId}?plantCode=${plantCode}&userId=${userId}&variantId=${variantId}&requestStatus=${requestStatus}`;
   }
 }
