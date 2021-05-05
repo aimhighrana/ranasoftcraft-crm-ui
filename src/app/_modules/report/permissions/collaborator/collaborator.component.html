@@ -31,10 +31,10 @@
                     </div>
                 </ng-template>
                 <div class="f-spacer"></div>
-                <button mat-button (click)="updateEmit()">
+                <!-- <button mat-button (click)="updateEmit()">
                     <mat-icon>save</mat-icon>
-                </button>
-                <lib-button (click)="updateEmit()">Save</lib-button>
+                </button> -->
+                <lib-button (click)="updateEmit()" icon="save"></lib-button>
             </div>
             <div class="f-row permissions" [formGroup]="permissionFrmGrp">
                 <mat-slide-toggle color="primary" formControlName="isViewable">Can View</mat-slide-toggle>

@@ -306,8 +306,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
     }
     const strtdatemilli = Date.parse(moment().format('MM/DD/YYYY HH:mm').toString()).toString();
-    console.log(endDatemilli, strtdatemilli);
-    // this.emitpanAndClickevent(endDatemilli, strtdatemilli);
+    this.emitpanAndClickevent(endDatemilli, strtdatemilli);
   }
 
   emitpanAndClickevent(startdate: string, enddate: string): void {
@@ -349,6 +348,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   getTimeSeriesMetadata(): void {
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
+      this.timeseriesData = res;
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
         this.isGroupByChart = true;
@@ -363,7 +363,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * Set Chart properties based on metadata
    */
   setChartProperties(): void {
-    this.timeseriesData = this.widgetInf.getValue();
     /**
      * SET TICKS HERE
      */
@@ -562,7 +561,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   transformDataSets(data: any): any {
-    const fieldId = this.timeseriesData.timeSeries.fieldId;
     const finalOutput = new Object();
     const codetextObj = {};
     const cordKeys = ['x', 'y'];
@@ -580,8 +578,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
           if(textTermBucket){
             textTermBucket.forEach(bucket => {
-              const labelCode = this.codeTextValue(bucket, fieldId);
-              label = labelCode.t ? labelCode.t : labelCode;
+              label = bucket.key
           })
           }
           codetextObj[label] = innerBucket.key;
@@ -610,7 +607,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.chartLegend = [];
     const arrKeys = ['data', 'id', 'label', 'fill', 'border'];
     let datasets = new Array();
-    Object.keys(finalOutput).forEach(status => {
+    Object.keys(finalOutput).forEach((status,index) => {
       const dataSet = new Object();
       dataSet[arrKeys[0]] = finalOutput[status];
       dataSet[arrKeys[1]] = status;
@@ -622,11 +619,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       datasets.push(dataSet);
       this.setLegendForChart();
     });
-    // this.setLegendForChart();
+
     if(this.timeseriesData.timeSeries.dataSetSize) {
-      this.chartLegend =  _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
-      datasets =  _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
-      }
+    this.chartLegend =  _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
+    datasets =  _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
+    }
+
     return datasets;
   }
 
@@ -668,7 +666,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             const textTermBucket = bucket && bucket[txtlabel[0]] ? bucket[txtlabel[0]].buckets : [];
             textTermBucket.forEach(innerBucket => {
               const labelCode = label = this.codeTextValue(innerBucket, fieldId);
-              label = labelCode.t ? labelCode.t : labelCode;
+              label = labelCode.t ? labelCode.t : labelCode.c ? labelCode.c : labelCode;
               codeValue = labelCode.c ? labelCode.c : labelCode;
             });
           }
@@ -714,6 +712,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
     this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
     this.setLegendForChart(); // calling it to set legend
+    console.log(finalOutput);
     return finalOutput;
   }
 
@@ -920,15 +919,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         if(dataArr[key]){
           dataArr.data.forEach((dataObj, index) => {
             const obj = {} as any;
-            obj.field = dataArr[key];
-            if(dataObj.x){
-              obj.time = dataObj.x;
-              obj.count = dataObj.y;
-            }
-            else{
-              obj.time = dataArr.label;
-              obj.count = dataObj;
-            }
+            obj[this.timeseriesData.timeSeries.metaData ? this.timeseriesData.timeSeries.metaData.fieldDescri : this.timeseriesData.timeSeries.metaData.fieldId] = dataArr[key];
+            this.dateAndCountFormat(dataObj,obj,dataArr);
             excelData.push(obj);
           })
         }
@@ -936,22 +928,15 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           dataArr.data.forEach((dataObj, index) => {
             const obj = {} as any;
             // In case of field ID is there..
-            if(this.timeseriesData.timeSeries.fieldId){
-              obj[this.timeseriesData.timeSeries.fieldId] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text : this.chartLegend[index].code): this.dataSetlabel[index];
+            if(this.timeseriesData.timeSeries.metaData.fieldId){
+              obj[this.timeseriesData.timeSeries.metaData ? this.timeseriesData.timeSeries.metaData.fieldDescri : this.timeseriesData.timeSeries.metaData.fieldId] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text + '\t' : this.chartLegend[index].code + '\t'): this.dataSetlabel[index] + '\t';
             }
             // In case of field ID is blank - groupWith and DistinctWith are there..
             else{
-              obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text : this.chartLegend[index].code): this.dataSetlabel[index];
+              obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text + '\t' : this.chartLegend[index].code + '\t'): this.dataSetlabel[index] + '\t';
             }
             // checking format of data to be downloaded..
-            if(dataObj.x){
-              obj.time = dataObj.x;
-              obj.count = dataObj.y
-            }
-            else{
-              obj.time = dataArr.label;
-              obj.count = dataObj;
-            }
+            this.dateAndCountFormat(dataObj,obj,dataArr);
             excelData.push(obj);
           })
         }
@@ -1068,7 +1053,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dateFilters.splice(index, 1);
       hasBtn.isActive = true;
       this.dateFilters.splice(index, 0, hasBtn);
-      this.updateForm('date', hasBtn);
+      if(!this.timeseriesData.timeSeries.distictWith) {
+        this.updateForm('date', hasBtn);
+      }
     }
   }
 
@@ -1118,5 +1105,33 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
     }
     return '';
+  }
+
+  dateAndCountFormat(objData, obj, dataArr) {
+    switch(this.timeseriesData.timeSeries.seriesWith) {
+      case SeriesWith.day:
+        obj.Day = objData.x ? objData.x + '\t' : dataArr.label + '\t';
+        break;
+
+      case SeriesWith.week:
+        obj.Week = objData.x ? objData.x + '\t' : dataArr.label + '\t';
+        break;
+
+      case SeriesWith.month:
+        obj.Month =objData.x ? objData.x + '\t' : dataArr.label + '\t';
+        break;
+
+      case SeriesWith.quarter:
+        obj.Quater = objData.x ? objData.x + '\t' : dataArr.label + '\t';
+        break;
+
+      case SeriesWith.year:
+        obj.Year = objData.x ? objData.x + '\t' : dataArr.label + '\t';
+        break;
+
+      default:
+        break;
+    }
+    obj.Count = objData.y ? objData.y + '\t' : objData + '\t';
   }
 }

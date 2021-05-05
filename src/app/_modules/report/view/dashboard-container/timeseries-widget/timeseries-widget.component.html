@@ -47,13 +47,13 @@
     <ng-template [ngIf]="!isGroupByChart" [ngIfElse]="groupTimeSeries">
       <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize" baseChart [datasets]="dataSet"
         class="inner-flexcol-12" [labels]="dataSetlabel" [options]="timeSeriesOption" [plugins]="lineChartPlugins"
-        chartType="{{timeseriesData.timeSeries ? timeseriesData.timeSeries.chartType.toLowerCase() : 'line'}}">
+        chartType="{{timeseriesData.timeSeries ? timeseriesData.timeSeries.chartType ? timeseriesData.timeSeries.chartType.toLowerCase() : 'line' :'line'}}">
       </canvas>
     </ng-template>
     <ng-template #groupTimeSeries>
       <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize" baseChart [datasets]="dataSet"
         class="inner-flexcol-12" [labels]="dataSetlabel" [options]="timeSeriesOption" [plugins]="lineChartPlugins"
-        chartType="{{timeseriesData.timeSeries ? timeseriesData.timeSeries.chartType.toLowerCase() : 'line'}}">
+        chartType="{{timeseriesData.timeSeries ? timeseriesData.timeSeries.chartType ? timeseriesData.timeSeries.chartType.toLowerCase() : 'line' : 'line'}}">
       </canvas>
     </ng-template>
   </mat-card-content>
