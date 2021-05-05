@@ -23,7 +23,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
-import { SchemaExecutionTree } from '@models/schema/schema-execution';
+import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -666,7 +666,7 @@ describe('SchemaDetailsComponent', () => {
       }
     });
 
-    spyOn(schemaDetailService, 'getAllSelectedFields').and.returnValues(of([]), throwError({message: 'api error'}));
+    spyOn(schemaDetailService, 'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
 
     const changes7 = {
       moduleId:{
@@ -1158,5 +1158,64 @@ describe('SchemaDetailsComponent', () => {
     spyOn(console, 'error');
     component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
     expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('nodeSelected()', async(()=>{
+
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY},
+        {nodeId: '2', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+    component.activeNode = component.executionTreeHierarchy;
+
+    spyOn(component, 'calculateDisplayFields');
+    spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.nodeSelected(component.activeNode);
+
+    const newNode = new SchemaExecutionTree();
+    newNode.nodeId = '1';
+    component.nodeSelected(JSON.parse(JSON.stringify(newNode)));
+    expect(component.calculateDisplayFields).toHaveBeenCalled();
+
+    spyOn(console, 'error');
+    newNode.nodeId = '2';
+    component.nodeSelected(JSON.parse(JSON.stringify(newNode)));
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('getExectionArray()', async(()=>{
+
+    component.activeNode = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+
+    const arr = component.getExectionArray(component.activeNode);
+    expect(arr.length).toEqual(2);
+  }));
+
+  it('getNodeParentsHierarchy()', async(()=>{
+
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+
+    expect(component.getNodeParentsHierarchy(null)).toEqual(['header']);
+
+    component.activeNode = component.executionTreeHierarchy;
+
+    expect(component.getNodeParentsHierarchy(component.activeNode.childs[0])).toEqual(['1','header']);
   }));
 });

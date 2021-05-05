@@ -65,6 +65,10 @@ export class SchemaDetailsService {
     return this.http.get<SchemaTableViewFldMap[]>(this.endpointService.getAllSelectedFields(), { params: { schemaId, variantId } });
   }
 
+  public getSelectedFieldsByNodeIds(schemaId: string, variantId: string, nodeIds: string[]): Observable<any[]> {
+    return this.http.post<any[]>(this.endpointService.getSelectedFieldsByNodeIds(), nodeIds, { params: { schemaId, variantId } });
+  }
+
   public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {
     return this.http.get<SchemaBrInfo[]>(this.endpointService.getSchemaBrInfoList(schemaId));
   }

@@ -647,4 +647,9 @@ describe('EndpointsRuleService', () => {
     const URL = serviceObj.getSchemaExecutionTree('module1', 'schema1', 'varaint1', 'plantCode', 'userId', 'error');
     expect(URL).toContain(`schema/execution-tree/module1/schema1`);
   });
+
+  it('getSelectedFieldsByNodeIds()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getSelectedFieldsByNodeIds()).toContain('/schema/metadata/get-selected-fields-views-by-nodeIds');
+  }));
 });

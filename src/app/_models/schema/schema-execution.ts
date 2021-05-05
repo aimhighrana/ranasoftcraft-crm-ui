@@ -19,7 +19,13 @@ export interface SchemaExecutionProgressResponse {
 export class SchemaExecutionTree {
     nodeId: string;
     nodeDesc: string;
-    nodeType: string;
+    nodeType: SchemaExecutionNodeType;
     childs: SchemaExecutionTree[];
     docCount: number
+}
+
+export enum SchemaExecutionNodeType {
+    HEADER = 'HEADER',
+    HEIRARCHY = 'HEIRARCHY',
+    GRID = 'GRID'
 }
