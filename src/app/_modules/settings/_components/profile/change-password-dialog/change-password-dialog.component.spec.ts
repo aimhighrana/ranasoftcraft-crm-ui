@@ -79,8 +79,8 @@ describe('ChangePasswordDialogComponent', () => {
     component.changeForm.controls.currentPassword.setValue('Test1234');
     component.changeForm.controls.newPassword.setValue('Test12345');
     component.changeForm.controls.confirmNewPassword.setValue('test12345');
-    component.changePassword();
-    expect(component.bannerMessage).toEqual('Password and confirm password did not match');
+    const result = component.changePassword();
+    expect(result).toBeFalsy();
 
     component.changeForm.controls.confirmNewPassword.setValue('Test1234');
     component.changeForm.controls.newPassword.setValue('Test1234');
@@ -138,5 +138,13 @@ describe('ChangePasswordDialogComponent', () => {
     });
     msg = component.getHint('newPassword');
     expect(msg).toEqual('');
+
+    component.changeForm.controls.newPassword.setValue('Test1234');
+    component.changeForm.controls.newPassword.markAsTouched();
+    component.changeForm.controls.confirmNewPassword.setValue('Test1235');
+    component.changeForm.controls.newPassword.markAsTouched();
+    msg = component.getHint('confirmNewPassword');
+    expect(msg).toEqual(`Confirm password doesn't match with password`);
+
   }));
 });
