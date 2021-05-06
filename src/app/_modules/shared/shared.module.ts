@@ -80,6 +80,7 @@ import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
 import { ResizableColumnDirective } from './_directives/resizable-column.directive';
+import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
 
 @NgModule({
@@ -94,6 +95,7 @@ import { GenericFieldControlComponent } from './_components/generic-field-contro
     SubstringPipe,
     ReplaceUnderscorePipe,
     ThousandconvertorPipe,
+    DateFormatPipe,
     // shared components
     PageNotFoundComponent,
     BreadcrumbComponent,
@@ -246,6 +248,7 @@ import { GenericFieldControlComponent } from './_components/generic-field-contro
     ReplaceUnderscorePipe,
     ThousandconvertorPipe,
     FormatTableHeadersPipe,
+    DateFormatPipe,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,

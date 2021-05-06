@@ -231,7 +231,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeUndefined();
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeNull();
 
-    const object = {
+    const object: any = {
       tempId: '131234343434',
       sno: 123323,
       brIdStr: '12343435',
@@ -257,15 +257,55 @@ describe('UploadDatasetComponent', () => {
     };
     expect(component.createBrObject(object, formData.udrTreeData)).not.toBeUndefined();
     expect(component.createBrObject(object, formData.udrTreeData)).not.toBeNull();
-    object.isCopied = true;
-    expect(component.createBrObject(object, null).isCopied).toBeTruthy();
-    object.duplicacyRuleData = {} as CoreSchemaBrInfo;
-    const resp = component.createBrObject(object, null);
 
-    expect(resp.udrDto.udrHierarchies.length).toEqual(0);
-    expect(resp.udrDto.blocks.length).toEqual(0);
-    expect(resp.duplicacyField.length).toEqual(0);
-    expect(resp.duplicacyMaster.length).toEqual(0);
+    object.udrHierarchies = [1, 2];
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.udrHierarchies.length).toBe(2);
+    delete formData.udrTreeData.udrHierarchies;
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.udrHierarchies.length).toBe(2);
+    delete object.udrHierarchies;
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.udrHierarchies).toBeUndefined();
+    object.isCopied = true;
+    expect(component.createBrObject(object, formData.udrTreeData).isCopied).toBeTruthy();
+    object.duplicacyRuleData = {};
+    expect(component.createBrObject(object, formData.udrTreeData).duplicacyField).toBeInstanceOf(Array);
+    expect(component.createBrObject(object, formData.udrTreeData).duplicacyMaster).toBeInstanceOf(Array);
+    object.blocks = true;
+    object.object = [{}];
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.blocks.length).toBe(1);
+  }));
+
+  it(`mapSubscriberInfo() `, async(() => {
+    const subscriber = {
+      userName: 'test',
+      groupid: 1345,
+      sNo: 101,
+      fName: 'testFirstName',
+      lName: 'testLastName',
+      userMdoModel: {
+        fullName: 'testFullName'
+      }
+    };
+    component.userDetails = {
+      plantCode: ''
+    } as Userdetails;
+    const res = component.mapSubscriberInfo(subscriber);
+    expect(res.userName).toEqual(subscriber.userName);
+    expect(res.groupid).toEqual(subscriber.groupid);
+    expect(res.userid).toEqual(subscriber.userName);
+    expect(res.fullName).toEqual(subscriber.userMdoModel.fullName);
+  }));
+
+  it(`updateRole(), should be called to update correct role`, async(() => {
+    const subscriber: any = {};
+    component.subscribersList = [subscriber];
+    component.updateRole('isAdmin', subscriber);
+    expect(component.subscribersList[0].isAdmin).toBeTruthy();
+    component.updateRole('isReviewer', subscriber);
+    expect(component.subscribersList[0].isReviewer).toBeTruthy();
+    component.updateRole('isViewer', subscriber);
+    expect(component.subscribersList[0].isViewer).toBeTruthy();
+    component.updateRole('isEditer', subscriber);
+    expect(component.subscribersList[0].isEditer).toBeTruthy();
   }));
 
   it(`getModulesMetaHeaders(), should be called when creating modules metadata`, async(() => {
@@ -436,6 +476,10 @@ describe('UploadDatasetComponent', () => {
     }
     const result = component.prepareTextToShow(ctrl);
     expect(result).toEqual('ABC');
+    ctrl.filterCtrl.selectedValues[0].TEXT = 'ABCD';
+    expect(component.prepareTextToShow(ctrl)).toEqual('ABCD');
+    ctrl.filterCtrl.selectedValues = [];
+    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
   })
 
   it('loadDropValues(), should load dropdown values of selected filters', async () => {

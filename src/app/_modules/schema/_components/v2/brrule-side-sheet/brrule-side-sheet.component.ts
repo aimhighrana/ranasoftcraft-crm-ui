@@ -595,7 +595,7 @@ export class BrruleSideSheetComponent implements OnInit {
       udrTreeData: '',
       weightage: br.brWeightage,
       categoryId: br.categoryId,
-      transformationRuleType: '',
+      transformationRuleType: ''
     };
 
     let patchList = [];
@@ -994,7 +994,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to display category name in mat auto complete
    */
   displayCategoryFn(value?: string) {
-    return value ? this.categoryList.find(category => category.categoryId === value)?.categoryDesc : '';
+    return value ? this.categoryList.find(category => `${category.categoryId}` === `${value}`)?.categoryDesc : '';
   }
 
   /**
