@@ -10,10 +10,10 @@
           *ngIf="activatedPrimaryNav !== 'list'"></lib-button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
           <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
-          <div class="menu-customdropdown">
-            <button mat-menu-item *ngFor="let module of filteredModulesMenu"
+          <div class="menu-customdropdown search-module-dropdown">
+            <lib-button class="lib-button" *ngFor="let module of filteredModulesMenu;"
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
-            </button>
+            </lib-button>
           </div>
         </mat-menu>
       </ng-template>

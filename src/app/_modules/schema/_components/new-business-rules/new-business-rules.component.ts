@@ -153,6 +153,11 @@ export class NewBusinessRulesComponent implements OnInit {
     tempRuleId: string;
 
     /**
+     * transformation rule type list
+     */
+    transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
+
+    /**
      * Transformation Data model
      */
     transformationData: TransformationFormData;
@@ -1042,6 +1047,39 @@ export class NewBusinessRulesComponent implements OnInit {
           this.validationError.status = false;
         }, 3000)
       }
+  /**
+   * function to set form values from mat auto complete
+   */
+   selectSingle(form: FormGroup, controlName: string, $event) {
+    form.controls[controlName].setValue($event.option.value);
+  }
+  /**
+   * function to display rule desc in mat auto complete
+   */
+   displayRuleFn(value?: string) {
+    return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
+  }
 
+  /**
+   * function to display category name in mat auto complete
+   */
+   displayCategoryFn(value?: string) {
+    return value ? this.categoryList.find(category => category.categoryId === value)?.categoryDesc : '';
+  }
+  /**
+   * function to UPDATE Transformation rule type when lib radio is clicked
+   */
+   updateTransformationRuleType($event) {
+    if (this.form?.controls) {
+      this.form.controls.transformationRuleType.setValue($event.value);
+    }
+  }
+
+  /**
+   * function to display Regex name in mat auto complete
+   */
+   displayRegexFn(value?: string) {
+    return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
+  }
 }
 
