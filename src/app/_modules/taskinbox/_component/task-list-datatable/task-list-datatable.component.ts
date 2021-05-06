@@ -196,7 +196,7 @@ export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] 
     { fldId: 'req_by', fldDesc: 'Request by' },
   ],
   error: [
-    { fldId: 'rec_id', fldDesc: 'Rec Id' },
+    { fldId: 'rec_id', fldDesc: 'Rec Id'},
     { fldId: 'cr_id', fldDesc: 'CR Id' },
     { fldId: 'req_det', fldDesc: 'Req Det' },
     { fldId: 'labels', fldDesc: 'Labels' },
