@@ -191,7 +191,7 @@
                     </pros-null-state> -->
                     <lib-empty-state *ngIf="!selectedBusinessRules?.length" icon="table" iconSize="120" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
                         i18n-secondaryText="@@no_br_added_msg" secondaryText="No business rule added, please add at least one business rule to continue">
-                        <lib-button i18n="@@add_br_rule" (click)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0"
+                        <lib-button i18n="@@add_br_rule" (click)="openGlobalDialog('createBR')"
                             type="minor">
                             Add Business Rule
                         </lib-button>

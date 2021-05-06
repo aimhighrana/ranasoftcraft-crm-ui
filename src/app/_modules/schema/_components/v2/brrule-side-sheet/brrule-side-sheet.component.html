@@ -24,7 +24,7 @@
                     <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput i18n-placeholder="@@rule_type" placeholder="Rule type"
+                            <input matInput formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
                             [matAutocomplete]="ruleTypeAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
                             <ng-container *ngFor="let rule of businessRuleTypes">
@@ -54,7 +54,7 @@
                     <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput i18n-placeholder="@@category" placeholder="Category"
+                            <input matInput formControlName="categoryId"  i18n-placeholder="@@category" placeholder="Category"
                             [matAutocomplete]="categoryIDAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)" #categoryIDAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'categoryId', $event)">
                             <mat-option class="mdo-option" *ngFor="let category of categoryList" [value]="category.categoryId">

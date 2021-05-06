@@ -71,7 +71,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     expect(component.selectedBusinessRule.length).toEqual(1);
   })
 
-  it('isSelected(), should check selection of business rule', async() => {
+  it('isSelected(), should check selection of business rule', async () => {
     let rule = {
       brId: '2566241'
     } as CoreSchemaBrInfo;
@@ -85,7 +85,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
       }
     ] as CoreSchemaBrInfo[];
 
-    let res =  component.isSelected(rule);
+    let res = component.isSelected(rule);
     expect(res).toEqual(true);
 
     rule = {
@@ -96,25 +96,25 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     expect(res).toEqual(false);
   })
 
-  it('getBusinessRulesList(), Should get business rules list according to module Id', async() => {
-      // call with module Id
-      spyOn(schemaService, 'getBusinessRulesByModuleId').and.callFake(() => of([]));
-      component.getBusinessRulesList('testId', null, null, null);
-      expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
+  it('getBusinessRulesList(), Should get business rules list according to module Id', async () => {
+    // call with module Id
+    spyOn(schemaService, 'getBusinessRulesByModuleId').and.callFake(() => of([]));
+    component.getBusinessRulesList('testId', null, null, null);
+    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   });
 
-  it('getBusinessRulesBySchemaId(), get rules by schema id', async(()=>{
+  it('getBusinessRulesBySchemaId(), get rules by schema id', async(() => {
     // mock object
-    spyOn(schemaService,'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of([{brIdStr:'732523'} as CoreSchemaBrInfo]));
+    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of([{ brIdStr: '732523' } as CoreSchemaBrInfo]));
 
     component.getBusinessRulesBySchemaId(component.schemaId);
     expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
-    expect(component.schemaBusinessRulesList .length).toEqual(1);
+    expect(component.schemaBusinessRulesList.length).toEqual(1);
   }));
 
-  it('ngOnInit(), check prerequired stuff ', async(()=>{
+  it('ngOnInit(), check prerequired stuff ', async(() => {
 
-    spyOn(schemaService,'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of([{brIdStr:'732523'} as CoreSchemaBrInfo]));
+    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of([{ brIdStr: '732523' } as CoreSchemaBrInfo]));
 
     spyOn(schemaService, 'getBusinessRulesByModuleId').and.callFake(() => of([]));
 
@@ -124,56 +124,59 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   }));
 
-  it('saveSelection(), Add rule from side sheet ', async(()=>{
-      component.outlet = 'sb'
-      const list = [];
-      const core  = new CoreSchemaBrInfo();
-      component.schemaId ='1234567';
-      core.brInfo = 'Test';
-      core.brType = 'BR_DUPLICATE_CHECK';
-      core.fields = '';
-      core.message = '';
-      core.brIdStr = '1234567890987654';
-      const coreInfo  = new CoreSchemaBrInfo();
-      coreInfo.brInfo = 'Test';
-      coreInfo.brType = 'BR_Test';
-      coreInfo.fields = '';
-      coreInfo.message = '';
-      coreInfo.brIdStr = '1234567890987654';
-      list.push(core);
-      list.push(coreInfo);
-      component.selectedBusinessRule = list;
-      // console.log('test  ' + component.selectedBusinessRule);
-      component.moduleId =  '1234567';
+  it('saveSelection(), Add rule from side sheet ', async(() => {
+    component.outlet = 'sb'
+    const list = [];
+    const core = new CoreSchemaBrInfo();
+    component.schemaId = '1234567';
+    core.brInfo = 'Test';
+    core.brType = 'BR_DUPLICATE_CHECK';
+    core.fields = '';
+    core.message = '';
+    core.brIdStr = '1234567890987654';
+    const coreInfo = new CoreSchemaBrInfo();
+    coreInfo.brInfo = 'Test';
+    coreInfo.brType = 'BR_Test';
+    coreInfo.fields = '';
+    coreInfo.message = '';
+    coreInfo.brIdStr = '1234567890987654';
+    list.push(core);
+    list.push(coreInfo);
+    component.selectedBusinessRule = list;
+    // console.log('test  ' + component.selectedBusinessRule);
+    component.moduleId = '1234567';
 
-      const coreRequest = new CoreSchemaBrInfo();
-      coreRequest.brId = '';
-      coreRequest.schemaId = component.schemaId;
-      coreRequest.brInfo = core.brInfo;
-      coreRequest.brType = core.brType;
-      coreRequest.fields = core.fields;
-      coreRequest.message = core.message;
-      coreRequest.isCopied = true;
-      coreRequest.moduleId = component.moduleId;
-      coreRequest.copiedFrom = core.brIdStr;
+    const coreRequest = new CoreSchemaBrInfo();
+    coreRequest.brId = '';
+    coreRequest.schemaId = component.schemaId;
+    coreRequest.brInfo = core.brInfo;
+    coreRequest.brType = core.brType;
+    coreRequest.fields = core.fields;
+    coreRequest.message = core.message;
+    coreRequest.isCopied = true;
+    coreRequest.moduleId = component.moduleId;
+    coreRequest.copiedFrom = core.brIdStr;
 
-      const coreRequestInfo = new CoreSchemaBrInfo();
-      coreRequestInfo.brId = '';
-      coreRequestInfo.schemaId = component.schemaId;
-      coreRequestInfo.brInfo = coreInfo.brInfo;
-      coreRequestInfo.brType = coreInfo.brType;
-      coreRequestInfo.fields = coreInfo.fields;
-      coreRequestInfo.message = coreInfo.message;
-      coreRequestInfo.isCopied = true;
-      coreRequestInfo.moduleId = component.moduleId;
-      coreRequestInfo.copiedFrom = coreInfo.brIdStr;
+    const coreRequestInfo = new CoreSchemaBrInfo();
+    coreRequestInfo.brId = '';
+    coreRequestInfo.schemaId = component.schemaId;
+    coreRequestInfo.brInfo = coreInfo.brInfo;
+    coreRequestInfo.brType = coreInfo.brType;
+    coreRequestInfo.fields = coreInfo.fields;
+    coreRequestInfo.message = coreInfo.message;
+    coreRequestInfo.isCopied = true;
+    coreRequestInfo.moduleId = component.moduleId;
+    coreRequestInfo.copiedFrom = coreInfo.brIdStr;
 
-      spyOn(schemaService,'copyDuplicateRule').withArgs(coreRequest).and.returnValue(of());
-      spyOn(schemaService,'createBusinessRule').withArgs(coreRequestInfo).and.returnValue(of(null));
-     component.saveSelection();
+    spyOn(schemaService, 'copyDuplicateRule').withArgs(coreRequest).and.returnValue(of());
+    spyOn(schemaService, 'createBusinessRule').withArgs(coreRequestInfo).and.returnValue(of(null));
+    component.saveSelection();
+    expect(schemaService.copyDuplicateRule).toHaveBeenCalledWith(coreRequest);
+    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(coreRequestInfo);
 
-      expect(schemaService.copyDuplicateRule).toHaveBeenCalledWith(coreRequest);
-      expect(schemaService.createBusinessRule).toHaveBeenCalledWith(coreRequestInfo);
+    component.outlet = '';
+    component.saveSelection();
+    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(coreRequestInfo);
 
   }));
 

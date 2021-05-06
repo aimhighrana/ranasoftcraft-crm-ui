@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { CdkTableModule } from '@angular/cdk/table';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -84,7 +85,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatTreeModule,
     DragDropModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MdoUiLibraryModule
   ],
   exports: [
     ReactiveFormsModule,
@@ -129,7 +131,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatTreeModule,
     DragDropModule,
     BrowserAnimationsModule,
-    ScrollingModule
+    ScrollingModule,
+    MdoUiLibraryModule
   ],
   declarations: []
 })
