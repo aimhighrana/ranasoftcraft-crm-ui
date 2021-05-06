@@ -1092,7 +1092,7 @@ describe('SchemaDetailsComponent', () => {
     expect(component.sortOrder).toEqual({status: 'desc'});
 
     component.sort.sort({id: 'status'} as MatSortable);
-    expect(component.getData).toHaveBeenCalledTimes(2);
+    expect(component.getData).toHaveBeenCalledTimes(3);
 
   });
 
@@ -1258,5 +1258,61 @@ describe('SchemaDetailsComponent', () => {
     spyOn(schemaService,'getModuleInfoByModuleId').withArgs('12345').and.returnValues(of([moduleInfo]), throwError({message: 'api error'}));
     component.getModuleInfo('12345');
     expect(component.moduleInfo).toBeDefined();
+  }));
+
+  it('enableIcon(), enable collapsiable icon ', async(()=>{
+    // mock data
+    component.columns.header = ['MAT_TYPE','MAT_GRP'];
+
+    expect(component.enableIcon('MAT_TYPE')).toEqual(false, 'If the column is not matched the return false');
+    expect(component.enableIcon('MAT_GRP')).toEqual(true, 'If the column is  matched the return true');
+  }));
+
+  it('loadNodeData(), load the node data based on node selected ', async(()=>{
+    spyOn(router, 'navigate');
+
+    // mock data
+    const node: SchemaExecutionTree = {nodeId: 'header', nodeType: 'HEADER'} as SchemaExecutionTree;
+    component.loadNodeData(node);
+    expect(router.navigate).toHaveBeenCalledWith([], {
+      relativeTo: component.activatedRouter,
+      queryParams: {
+        node: node.nodeId,
+        'node-level': node.nodeType
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
+    });
+  }));
+
+  it('doColumnsCollapsible(), do the column collapsible', async(()=>{
+    // mock data
+    component.displayedFields.next(['selected','___header__collapsible','MAT_TYPE', 'MAT_GRP']);
+    component.columns.header = ['MAT_TYPE','MAT_GRP','TEST'];
+
+    component.doColumnsCollapsible(null, 'open', '___header__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeId = 'grid';
+    component.displayedFields.next(['selected','___grid__collapsible','MAT_TYPE', 'MAT_GRP']);
+    component.columns.grid = ['MAT_TYPE','MAT_GRP','TEST'];
+
+    component.doColumnsCollapsible(null, 'open', '___grid__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeId = 'hie';
+    component.displayedFields.next(['selected','MAT_TYPE', 'MAT_GRP']);
+    component.columns.hie = ['MAT_TYPE','MAT_GRP','TEST'];
+
+    component.doColumnsCollapsible(null, 'open', '___hierarchy__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+
+    // for close state ....
+
+    component.displayedFields.next(['selected','OBJECTNUMBER','MAT_TYPE', 'MAT_GRP']);
+    component.doColumnsCollapsible(null, 'close', 'MAT_TYPE');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
   }));
 });

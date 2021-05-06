@@ -230,8 +230,23 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   moduleInfo: ModuleInfo;
 
+  /**
+   * All selected columns , header , hierrachy or grid as a key and string [] as a columns
+   */
+  columns: any = {};
+
+  /**
+   * Selected node id ....
+   */
+  nodeId = 'header';
+
+  /**
+   * Selected node type ...
+   */
+  nodeType = 'HEADER';
+
   constructor(
-    private activatedRouter: ActivatedRoute,
+    public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
     private router: Router,
     private sharedServices: SharedServiceService,
@@ -339,6 +354,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   ngOnInit(): void {
+
+    this.activatedRouter.queryParamMap.subscribe(ar=>{
+      this.nodeId = ar.get('node') ? ar.get('node') : '';
+      this.nodeType = ar.get('node-level') ? ar.get('node-level') : '';
+      this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+    });
+
+
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
         this.getDataScope(res); // Get Data scope..
@@ -557,6 +581,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
+    // push header columns
+    this.columns.header = select;
     this.displayedFields.next(fields);
     console.log(this.displayedFields.getValue());
   }
@@ -668,6 +694,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.requestStatus = this.activeTab;
     request.filterCriterias = filterCriteria;
     request.sort = sort;
+    request.nodeId = this.nodeId ? this.nodeId : '';
+    request.nodeType = this.nodeType ? this.nodeType :'';
     request.isLoadMore = isLoadMore ? isLoadMore : false;
     this.dataSource.getTableData(request);
   }
@@ -1097,17 +1125,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   getFieldInputType(fieldId) {
 
-    if (this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
+    if (this.metadataFldLst[fieldId] && this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
       return this.FIELD_TYPE.NUMBER;
     }
-    if (this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
+    if (this.metadataFldLst[fieldId] && this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
       return this.FIELD_TYPE.DATE;
     }
-    if ((this.metadataFldLst[fieldId].isCheckList === 'false')
+    if (this.metadataFldLst[fieldId] && (this.metadataFldLst[fieldId].isCheckList === 'false')
       && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
       return this.FIELD_TYPE.SINGLE_SELECT;
     }
-    if ((this.metadataFldLst[fieldId].isCheckList === 'true')
+    if (this.metadataFldLst[fieldId] && (this.metadataFldLst[fieldId].isCheckList === 'true')
       && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
       return this.FIELD_TYPE.MULTI_SELECT;
     }
@@ -1481,5 +1509,134 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }, error => {
       console.log(`Error:: ${error.message}`)
     });
+  }
+
+  /**
+   * Navigate the detail page based on node clicked ....
+   * @param node selected / clicked node details
+   */
+   loadNodeData(node: SchemaExecutionTree) {
+    console.log(node);
+    this.router.navigate([], {
+      relativeTo: this.activatedRouter,
+      queryParams: {
+        node: node.nodeId,
+        'node-level': node.nodeType
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
+    });
+  }
+  /**
+   * Enable collapsiable icon ...
+   * @param col column ...
+   * @returns will return true  or false
+   */
+  enableIcon(col: string): boolean {
+    let found = false;
+    if(this.columns.header.indexOf(col) === this.columns.header.length-1) {
+      found = true;
+    }
+    return found;
+  }
+  /**
+   * Manage column collapsiable or expandable ..
+   * @param evt events
+   * @param state state will be open || close based on that manage columns
+   * @param fld operation on this field...
+   */
+  doColumnsCollapsible(evt, state: string, fld: string) {
+    if(state === 'open') {
+
+      switch(fld) {
+        case '___header__collapsible':
+          const __header_coll_indx = this.displayedFields.getValue().indexOf('___header__collapsible');
+          const array = this.displayedFields.getValue().splice(0,__header_coll_indx);
+          array.push(...this.columns.header);
+          if(this.nodeId !== 'header') {
+            array.push(...this.columns[this.nodeId]);
+          }
+          this.displayedFields.next(array);
+          break;
+
+        case '___grid__collapsible':
+          const __grid_coll_indx = this.displayedFields.getValue().indexOf('___grid__collapsible');
+          const grid_array = this.displayedFields.getValue().splice(0,__grid_coll_indx);
+          grid_array.push(...this.columns[this.nodeId]);
+          this.displayedFields.next(grid_array);
+          break;
+
+        case '___hierarchy__collapsible':
+          const __hie_coll_indx = this.displayedFields.getValue().indexOf('___hierarchy__collapsible');
+          const hie_array = this.displayedFields.getValue().splice(0,__hie_coll_indx);
+          hie_array.push(...this.columns[this.nodeId]);
+          this.displayedFields.next(hie_array);
+          break;
+
+      }
+
+    } else if(state === 'close') {
+      const objNrIdx = this.displayedFields.getValue().indexOf('OBJECTNUMBER');
+      const array = this.displayedFields.getValue().splice(0,objNrIdx+1);
+      let keyFor = null;
+      for(const cl in this.columns) {
+        if(this.columns[cl].indexOf(fld) !== -1) {
+          keyFor = cl;
+          break;
+        }
+      }
+      if(keyFor === 'header') {
+        array.push('___header__collapsible');
+        if(this.nodeId !== 'header') {
+          array.push(...this.columns[this.nodeId]);
+        }
+      } else if(keyFor !== null && this.nodeType === 'GRID') {
+        array.push(...this.columns.header);
+        array.push('___grid__collapsible');
+      } else if(keyFor !== null && this.nodeType === 'HEIRARCHY') {
+        array.push(...this.columns.header);
+        array.push('___hierarchy__collapsible');
+      }
+      this.displayedFields.next(array);
+    }
+  }
+  /**
+   * Update the selected columns ... based on selected node
+   * @param nodeId selected node id ...
+   * @param nodeType selected node type ...
+   */
+  updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
+    const metadata = this.metadata.getValue();
+    if(nodeType === 'HEIRARCHY') {
+      if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(nodeId)) {
+        const fields = Object.keys(metadata.hierarchyFields[nodeId]);
+        this.columns[nodeId] = fields.splice(0,10);
+        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
+        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
+        updatedArray.push(...this.columns.header);
+        updatedArray.push(...this.columns[nodeId]);
+        this.displayedFields.next(updatedArray);
+        // TODO
+        this.columns[nodeId].forEach(fld=>{
+          this.metadataFldLst[fld] = metadata.hierarchyFields[nodeId][fld];
+        });
+      }
+    } else if(nodeType === 'GRID') {
+      if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(nodeId)) {
+        const fields = Object.keys(metadata.gridFields[nodeId]);
+        this.columns[nodeId] = fields;
+        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
+        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
+        updatedArray.push(...this.columns.header);
+        updatedArray.push(...this.columns[nodeId]);
+        this.displayedFields.next(updatedArray);
+        // TODO
+        fields.forEach(fld=>{
+          this.metadataFldLst[fld] = metadata.gridFields[nodeId][fld];
+        });
+      }
+    } else {
+      console.log('For heade ref ... api call');
+    }
   }
 }

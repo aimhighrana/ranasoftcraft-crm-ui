@@ -78,11 +78,11 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
         this.schemaDetailService.getSchemaTableData(request).subscribe(res=>{
             if(request.isLoadMore) {
                 const loadedData = this.docValue();
-                const newData =  this.docsTransformation(res, request.requestStatus);
+                const newData =  this.docsTransformation(res, request);
                 loadedData.push(...newData);
                 this.dataSourceSubject.next(loadedData);
             } else {
-                this.dataSourceSubject.next(this.docsTransformation(res, request.requestStatus));
+                this.dataSourceSubject.next(this.docsTransformation(res, request));
             }
 
         }, error=>{
@@ -126,7 +126,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
      * Transformation server index data to Datasource
      * @param res table response from server ..
      */
-    public docsTransformation(res: any, reqTye: string): any[] {
+     public docsTransformation(res: any, req: RequestForSchemaDetailsWithBr): any[] {
+        const reqTye = req.requestStatus;
         const finalResonse = [];
         if(res && res.docs) {
             const docs = res.docs;
@@ -180,7 +181,91 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                     }
 
                 }
-                finalResonse.push(rowData);
+                if(req.nodeType === 'HEIRARCHY') {
+                    const hyvs = doc.hyvs ? doc.hyvs : {};
+                    if(hyvs.hasOwnProperty(req.nodeId)) {
+                        const rows = hyvs[req.nodeId].rows ? hyvs[req.nodeId].rows : [];
+                        for(const r of rows) {
+                            const _rrData = rowData;
+                            for(const robj in r) {
+                                if(r.hasOwnProperty(robj)) {
+                                    const cell: SchemaTableData = new SchemaTableData();
+                                    cell.fieldId = robj;
+                                    cell.fieldDesc = r[robj].ls ? r[robj].ls : 'Unknown';
+
+                                    // only code is visiable
+                                    // TODO on based on display criteria
+                                    const dropVal = r[robj].vc ?  r[robj].vc.map(map => map.c).toString() : '';
+                                    cell.fieldData = dropVal ? dropVal : '';
+
+                                    // check cell is in error
+                                    if(reqTye === 'error') {
+                                        // const errCell =  this.checkFieldIsInError(hdfld);
+                                        cell.isInError = r[robj].isInError ? r[robj].isInError : false;
+                                        cell.errorMsg = r[robj].message ? r[robj].message.toString() : '';
+                                    }
+
+                                    // check for old values
+                                    if(r[robj].oc && r[robj].oc.length>0) {
+                                        const oldVal = r[robj].oc ?  r[robj].oc.map(map => map.c).toString() : '';
+                                        cell.oldData = oldVal;
+                                        // cell.isCorrected = cell.oldData === cell.fieldData ? false : true;
+                                        cell.isCorrected = true;
+                                    }
+                                    _rrData[robj] =cell;
+                                }
+                            }
+                            finalResonse.push(_rrData);
+                        }
+
+                    } else {
+                        finalResonse.push(rowData);
+                    }
+
+                } else if (req.nodeType === 'GRID') {
+                    const gvs = doc.gvs ? doc.gvs : {};
+                    if(gvs.hasOwnProperty(req.nodeId)) {
+                        const rows = gvs[req.nodeId].rows ? gvs[req.nodeId].rows : [];
+                        for(const r of rows) {
+                            const _rrData = rowData;
+                            for(const robj in r) {
+                                if(r.hasOwnProperty(robj)) {
+                                    const cell: SchemaTableData = new SchemaTableData();
+                                    cell.fieldId = robj;
+                                    cell.fieldDesc = r[robj].ls ? r[robj].ls : 'Unknown';
+
+                                    // only code is visiable
+                                    // TODO on based on display criteria
+                                    const dropVal = r[robj].vc ?  r[robj].vc.map(map => map.c).toString() : '';
+                                    cell.fieldData = dropVal ? dropVal : '';
+
+                                    // check cell is in error
+                                    if(reqTye === 'error') {
+                                        // const errCell =  this.checkFieldIsInError(hdfld);
+                                        cell.isInError = r[robj].isInError ? r[robj].isInError : false;
+                                        cell.errorMsg = r[robj].message ? r[robj].message.toString() : '';
+                                    }
+
+                                    // check for old values
+                                    if(r[robj].oc && r[robj].oc.length>0) {
+                                        const oldVal = r[robj].oc ?  r[robj].oc.map(map => map.c).toString() : '';
+                                        cell.oldData = oldVal;
+                                        // cell.isCorrected = cell.oldData === cell.fieldData ? false : true;
+                                        cell.isCorrected = true;
+                                    }
+                                    _rrData[robj] =cell;
+                                }
+                            }
+                            finalResonse.push(_rrData);
+                        }
+
+                    } else {
+                        finalResonse.push(rowData);
+                    }
+                } else {
+                    finalResonse.push(rowData);
+                }
+
             });
 
         }
@@ -224,7 +309,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                 }
             });
         }
-        console.log(rowData);
+        // console.log(rowData);
         return rowData;
     }
 

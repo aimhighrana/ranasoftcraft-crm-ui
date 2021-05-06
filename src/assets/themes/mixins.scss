@@ -1108,6 +1108,10 @@
     .mat-header-cell {
       font-size: 14px;
       font-weight: 600;
+
+      .mat-sort-header {
+        display: inline-block;
+      }
     }
 
     .mat-row:hover {

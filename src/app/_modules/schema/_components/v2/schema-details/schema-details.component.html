@@ -21,11 +21,6 @@
         </ng-template>
         <div class="col-spacer"></div>
         <div class="f-spacer"></div>
-        <div class="f-row">
-            <span class="counts">230 errors</span>
-            <span class="counts">114 warnings</span>
-            <span class="counts">22 corrections</span>
-        </div>
         <div class="col-spacer"></div>
         <div class="f-row action-iconbtns">
             <lib-button-group>
@@ -49,26 +44,6 @@
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
     </ng-template>
     <ng-template #schemaInfoTemplate>
-        <!-- <nav mat-tab-nav-bar>
-        <a mat-tab-link [active]="activeTab === 'error'" (click)="changeTabStatus('error')">
-            Error
-            <mat-chip-list class="mdo-tabchiplist">
-                <mat-chip>{{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}</mat-chip>
-            </mat-chip-list>
-        </a>
-        <a mat-tab-link [active]="activeTab === 'success'" (click)="changeTabStatus('success')">
-            Success
-            <mat-chip-list class="mdo-tabchiplist">
-                <mat-chip>{{ (statics && statics.successCnt) ? statics.successCnt : 0 }}</mat-chip>
-            </mat-chip-list>
-        </a>
-        <a mat-tab-link [active]="activeTab === 'review'" (click)="changeTabStatus('review')">
-            Ready for review
-            <mat-chip-list class="mdo-tabchiplist">
-                <mat-chip>{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}</mat-chip>
-            </mat-chip-list>
-        </a>
-    </nav> -->
         <div class="f-row filter-container">
             <!-- Filter here...-->
             <lib-chip-list>
@@ -147,7 +122,7 @@
                   (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
                 <div class="nav-tree" *ngIf="executionTreeHierarchy">
                     <mat-accordion>
-                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(executionTreeHierarchy)" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                                 <mat-panel-title (click)="nodeSelected(executionTreeHierarchy)">
                                     <div class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</div>
@@ -157,7 +132,7 @@
                             </mat-expansion-panel-header>
                             <div *ngIf="executionTreeHierarchy.childs && executionTreeHierarchy.childs.length">
                                 <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
-                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(child.childs && child.childs.length) ? false : true">
+                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(child)"  [hideToggle]="(child.childs && child.childs.length) ? false : true">
                                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel">
                                             <mat-panel-title (click)="nodeSelected(child)">
                                                 <div class="expand-title">{{ child.nodeDesc }}</div>
@@ -166,8 +141,8 @@
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
                                         <mat-nav-list role="navigation" class="tree-nav-list" *ngIf="child.childs && child.childs.length">
-                                            <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs"
-                                                (click)="nodeSelected(subChild)">
+                                            <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs" prosClickStopPropagation 
+                                                (click)="nodeSelected(subChild); loadNodeData(subChild)">
                                                 <div mat-line> {{ subChild.nodeDesc }} </div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ subChild.docCount }}</div>
@@ -203,20 +178,20 @@
                         <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
                     </div>
                     <div class="f-col datasource" (scroll)="onTableScroll($event)">
-                        <mat-table [dataSource]="dataSource" matSort>
+                        <table mat-table [dataSource]="dataSource" matSort>
                             <ng-container matColumnDef="_select_columns" sticky>
-                                <mat-header-cell *matHeaderCellDef>
+                                <th mat-header-cell *matHeaderCellDef>
                                     <lib-checkbox (valueChange)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
                                         [indeterminate]="selection.hasValue() && !isAllSelected()">
                                     </lib-checkbox>
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let row">
+                                </th>
+                                <td mat-cell *matCellDef="let row">
                                     <lib-checkbox (click)="$event.stopPropagation()"
                                         (valueChange)="$event ? selection.toggle(row) : null"
                                         [checked]="selection.isSelected(row)">
                                     </lib-checkbox>
-                                </mat-cell>
+                                </td>
                             </ng-container>
                             <!-- <ng-container matColumnDef="row_more_action" sticky>
                             <mat-header-cell *matHeaderCellDef>
@@ -231,8 +206,8 @@
                             </mat-cell>
                         </ng-container> -->
                             <ng-container matColumnDef="_assigned_buckets" sticky>
-                                <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                                <mat-cell *matCellDef="let element">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element">
                                     <mat-card-header>
                                         <div mat-card-avatar>
                                             {{ userDetails ? (userDetails.firstName ?
@@ -242,13 +217,13 @@
                                             '') : '' }}
                                         </div>
                                     </mat-card-header>
-                                </mat-cell>
+                                </td>
                             </ng-container>
                             <ng-container matColumnDef="_score_weightage" sticky>
-                                <mat-header-cell *matHeaderCellDef> <span i18n="@@score">Score</span> &nbsp;<mat-icon fontSet="mdo-icons-light">
+                                <th mat-header-cell *matHeaderCellDef> <span i18n="@@score">Score</span> &nbsp;<mat-icon fontSet="mdo-icons-light">
                                     question-circle</mat-icon>
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
+                                </th>
+                                <td mat-cell *matCellDef="let element">
                                     <div class="f-row progress-cell">
                                         <mat-progress-bar mode="determinate"
                                             value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }} "
@@ -259,14 +234,14 @@
                                             }}%
                                         </span>
                                     </div>
-                                </mat-cell>
+                                </td>
                             </ng-container>
                             <ng-container matColumnDef="_row_actions" sticky>
-                                <mat-header-cell *matHeaderCellDef>
+                                <th mat-header-cell *matHeaderCellDef>
                                     <lib-button type="plain" (click)="openTableColumnSettings()" icon="cog">
                                     </lib-button>
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
+                                </th>
+                                <td mat-cell *matCellDef="let element">
                                     <div class="f-row action-iconbtns" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                         <!-- Secondary actions -->
                                         <lib-button  type="minor" icon="more" *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu"></lib-button>
@@ -304,21 +279,15 @@
                                             </button>
                                         </ng-container>
                                     </div>
-                                </mat-cell>
+                                </td>
                             </ng-container>
                             <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                                <mat-header-cell *matHeaderCellDef>
+                                <th mat-header-cell *matHeaderCellDef>
                                     <!-- Add class on headercell "coll-visible" -->
                                     <div i18n="@@object_number" mat-sort-header>Object Number</div>
-                                    <span class="f-spacer"></span>
-                                    <!-- Collapse splite start here -->
-                                    <ng-template>
-                                        <mat-icon fontSet="mdo-icons" class="collapse-icon">chevron-right</mat-icon>
-                                    </ng-template>
-                                    <!-- Collapse splite end here -->
-
-                                </mat-header-cell>
-                                <mat-cell *matCellDef="let element">   
+                                    
+                                </th>
+                                <td mat-cell *matCellDef="let element">   
                                     <!-- add class in mat-cell "vertical-cell" -->
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                                     <!-- Collapse rowspan splites start here -->
@@ -328,22 +297,81 @@
                                         </div>
                                     </ng-template>
                                     <!-- Collapse rowspan splites end here -->
-                                </mat-cell>
+                                </td>
                             </ng-container>
+
+                            <!-- Start collapsible header column here ... -->
+                            <ng-container matColumnDef="___header__collapsible" sticky>
+                                <th mat-header-cell *matHeaderCellDef style="min-width: 15px; width: 15px;">
+                                    <span class="f-spacer"></span>
+                                    <!-- Collapse splite start here -->
+                                    <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'open', '___header__collapsible')">chevron-right</mat-icon>
+                                    <!-- Collapse splite end here -->
+                                </th>
+                                <td mat-cell *matCellDef="let element; let rIndex = index;" [attr.rowspan]="dataSource.docValue().length" [style.display]="rIndex === 0 ? '' : 'none'">   
+                                    <div class="verticalsub-text">
+                                        Header 
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <!-- End collapsible header column here ... -->
+
+                            <!-- Start collapsible header column here ... -->
+                            <ng-container matColumnDef="___grid__collapsible" sticky>
+                                <th mat-header-cell *matHeaderCellDef style="min-width: 15px; width: 15px;">
+                                    <span class="f-spacer"></span>
+                                    <!-- Collapse splite start here -->
+                                    <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'open', '___grid__collapsible')">chevron-right</mat-icon>
+                                    <!-- Collapse splite end here -->
+                                </th>
+                                <td mat-cell *matCellDef="let element; let rIndex = index;" [attr.rowspan]="dataSource.docValue().length" [style.display]="rIndex === 0 ? '' : 'none'">   
+                                    <div class="verticalsub-text">
+                                        Grid 
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <!-- End collapsible header column here ... -->
+
+                            <!-- Start collapsible header column here ... -->
+                            <ng-container matColumnDef="___hierarchy__collapsible" sticky>
+                                <th mat-header-cell *matHeaderCellDef style="min-width: 15px; width: 15px;">
+                                    <span class="f-spacer"></span>
+                                    <!-- Collapse splite start here -->
+                                    <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'open', '___hierarchy__collapsible')">chevron-right</mat-icon>
+                                    <!-- Collapse splite end here -->
+                                </th>
+                                <td mat-cell *matCellDef="let element; let rIndex = index;" [attr.rowspan]="dataSource.docValue().length" [style.display]="rIndex === 0 ? '' : 'none'">   
+                                    <div class="verticalsub-text">
+                                        Hierarchy 
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <!-- End collapsible header column here ... -->
+
+
                             <!-- load dynamic columns-->
                             <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
                                 <ng-template
-                                    [ngIf]="(dynCols === 'row_more_action') || (dynCols === '_assigned_buckets') || (dynCols === '_row_actions') ||  ( dynCols === '_select_columns') ||   (dynCols === '_score_weightage') || (dynCols === 'OBJECTNUMBER')"
+                                    [ngIf]="(dynCols === 'row_more_action') || (dynCols === '_assigned_buckets') || (dynCols === '_row_actions') ||  ( dynCols === '_select_columns') ||   (dynCols === '_score_weightage') || (dynCols === '___header__collapsible') || (dynCols === 'OBJECTNUMBER')"
                                     [ngIfElse]="other">
                                     <!-- skip all static columns -->
                                 </ng-template>
                                 <ng-template #other>
                                     <ng-container [matColumnDef]="dynCols">
-                                        <mat-header-cell *matHeaderCellDef>
+                                        <th mat-header-cell *matHeaderCellDef>
                                             <div mat-sort-header>{{ metadataFldLst[dynCols] ?
                                                 metadataFldLst[dynCols].fieldDescri : 'Unknown' }}</div>
-                                        </mat-header-cell>
-                                        <mat-cell *matCellDef="let element; let rIndex = index;"
+
+                                            <ng-template [ngIf]="enableIcon(dynCols)">
+                                                <span class="f-spacer"></span>
+                                                <!-- Collapse splite start here -->
+                                                <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'close', dynCols)">chevron-left</mat-icon>
+                                                <!-- Collapse splite end here -->
+                                            </ng-template>
+                                        </th>
+
+
+                                        <td mat-cell *matCellDef="let element; let rIndex = index;"
                                             [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                             <div class="f-col grid-cell-editable">
@@ -390,13 +418,13 @@
                                                     </div>
                                                 </ng-template>
                                             </div>
-                                        </mat-cell>
+                                        </td>
                                     </ng-container>
                                 </ng-template>
                             </ng-template>
                             <!-- load header for actions-->
                             <ng-container matColumnDef="review_actions_header">
-                                <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
+                                <th mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
                                     <div class="f-row action-iconbtns">
                                         <lib-button type="minor" (click)="approveRecords('all')">
                                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
@@ -407,12 +435,14 @@
                                             <span i18n="@@unselect">Unselect</span>
                                         </lib-button>
                                     </div>
-                                </mat-header-cell>
+                                </th>
                             </ng-container>
                             <!-- <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky: true"></mat-header-row> -->
-                            <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row>
-                            <mat-row *matRowDef="let row; columns: displayedFields | async;"></mat-row>
-                        </mat-table>
+                            <tr mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedFields | async;"></tr>
+                            <!-- <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row> -->
+                            <!-- <mat-row *matRowDef="let row; columns: displayedFields | async;"></mat-row> -->
+                        </table>
                     </div>
                 </ng-template>
             </div>
