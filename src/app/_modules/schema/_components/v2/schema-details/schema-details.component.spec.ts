@@ -8,7 +8,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of, throwError } from 'rxjs';
-import { SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { ModuleInfo, SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
@@ -1217,5 +1217,46 @@ describe('SchemaDetailsComponent', () => {
     component.activeNode = component.executionTreeHierarchy;
 
     expect(component.getNodeParentsHierarchy(component.activeNode.childs[0])).toEqual(['1','header']);
+  }));
+
+  it('uploadCorrectedDataCsv(), should open files', async(() => {
+    expect(component.uploadCorrectedDataCsv()).toBeTruthy();
+  }));
+
+  it('fileUploaded(), should close upload progress', async(() => {
+    component.fileUploaded('');
+    component.fileUploaded('test');
+    expect(component.isFileUploading).toBeFalse();
+  }));
+
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: 'Error', file: null});
+    spyOn(console, 'error');
+    component.fileChange(ev);
+
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: '', file: null});
+    spyOn(console, 'error');
+    component.fileChange(ev);
+
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.getModuleInfo('');
+    expect(component.moduleInfo).toBeUndefined();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    const moduleInfo = new ModuleInfo();
+    spyOn(schemaService,'getModuleInfoByModuleId').withArgs('12345').and.returnValues(of([moduleInfo]), throwError({message: 'api error'}));
+    component.getModuleInfo('12345');
+    expect(component.moduleInfo).toBeDefined();
   }));
 });

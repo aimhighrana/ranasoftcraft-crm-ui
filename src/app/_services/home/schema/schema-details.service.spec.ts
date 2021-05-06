@@ -20,7 +20,7 @@ describe('SchemaDetailsService', () => {
     'saveNewSchemaUrl', 'getClassificationDataTableUrl', 'generateCrossEntryUri', 'doClassificationCorrectionUri', 'approveClassificationUri', 'rejectClassificationUri',
     'generateMroClassificationDescriptionUri', 'downloadMroExceutionUri', 'getSchemaDataTableColumnInfoUrl', 'getSchemaDetailsBySchemaId', 'getShowMoreSchemaTableDataUrl',
     'getOverviewChartDataUrl', 'getCategoryInfoUrl', 'getSchemaStatusUrl', 'categoryChartData', 'getMetadataFields', 'getClassificationNounMod',
-    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds']);
+    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds', 'uploadCsvFileDataUrl', 'getUploadProgressUrl']);
 
     const mapperSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaDataTableResponse', 'any2OverviewChartData', 'any2CategoryInfo', 'any2SchemaStatus', 'any2CategoryChartData',
       'any2MetadataResponse']);
@@ -887,6 +887,56 @@ describe('SchemaDetailsService', () => {
     expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('uploadCsvFileData(): uploadCsvFileData ', async(() => {
+    const file = new File([], 'test.csv');
+    const schemId = '';
+    const nodeId = '';
+    const nodeType = '';
+    const runId = '';
+    const objNDesc = '';
+
+    const url = `file upload url`;
+    // mock url
+    endpointServiceSpy.uploadCsvFileDataUrl.and.returnValue(url);
+
+    const action: any = [];
+
+    // actual service call
+    schemaDetaService.uploadCsvFileData(file, schemId, nodeId, nodeType, runId, objNDesc).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getUploadProgressPercent(): getUploadProgressPercent ', async(() => {
+    const schemId = '';
+    const runId = '';
+
+    const url = `upload progress url`;
+    // mock url
+    endpointServiceSpy.getUploadProgressUrl.and.returnValue(url);
+
+    const action: any = [];
+
+    // actual service call
+    schemaDetaService.getUploadProgressPercent(schemId, runId).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
     // verify http
     httpTestingController.verify();
   }));

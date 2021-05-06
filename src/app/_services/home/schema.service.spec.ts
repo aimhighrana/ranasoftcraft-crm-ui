@@ -23,7 +23,7 @@ describe('SchemaService', () => {
     'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
     'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
     'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
-    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree']);
+    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree', 'getModuleInfoByModuleIdUrl']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
     'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
     const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount']);
@@ -706,6 +706,24 @@ describe('SchemaService', () => {
 
     const httpReq = httpTestingController.expectOne(url);
     expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+
+    httpTestingController.verify();
+  }));
+
+  it('getModuleInfoByModuleId(), should call http get to get module info', async(() => {
+    const moduleId = '1597845';
+
+    const url = 'test getModuleInfoByModuleIdUrl';
+    endpointServiceSpy.getModuleInfoByModuleIdUrl.and.returnValue(url);
+
+    const httpMockData = [];
+    schemaService.getModuleInfoByModuleId(moduleId).subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('POST');
     httpReq.flush(httpMockData);
 
     httpTestingController.verify();

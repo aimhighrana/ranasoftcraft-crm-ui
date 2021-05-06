@@ -214,7 +214,7 @@ export class EndpointsRuleService {
    * Get url for schema info
    * @param moduleId module id/objectId
    */
-   public getSchemaInfoByModuleIdUrl(moduleId: string): string {
+  public getSchemaInfoByModuleIdUrl(moduleId: string): string {
     return `${this.origin}/schema/metadata/schema-info/${moduleId}`;
   }
 
@@ -222,7 +222,7 @@ export class EndpointsRuleService {
    * Get url for module info
    * @param moduleId module id/objectId
    */
-   public getModuleInfoByModuleIdUrl(): string {
+  public getModuleInfoByModuleIdUrl(): string {
     return `${this.classicOrigin}/schema/getModuleInfo`;
   }
 
@@ -634,5 +634,13 @@ export class EndpointsRuleService {
 
   public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
     return `${this.origin}/schema/execution-tree/${moduleId}/${schemaId}?plantCode=${plantCode}&userId=${userId}&variantId=${variantId}&requestStatus=${requestStatus}`;
+  }
+
+  public uploadCsvFileDataUrl(schemaId: string, nodeId: string, nodeType: string, runId: string, objNDesc: string): string {
+    return `${this.origin}/schema/uploadData?schemaId=${schemaId}&nodeId=${nodeId}&nodeType=${nodeType}&runId=${runId}&objNDesc=${objNDesc}`;
+  }
+
+  public getUploadProgressUrl(schemaId: string, runId: string): string {
+    return `${this.origin}/schema/uploadStatus?schemaId=${schemaId}&runId=${runId}`;
   }
 }

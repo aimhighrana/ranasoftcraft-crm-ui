@@ -36,11 +36,15 @@
             </lib-button-group>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
                 <button mat-menu-item i18n="@@export_to_csv" (click)="downloadExecutionDetails()">Export to CSV</button>
-                <button mat-menu-item i18n="@@import_from_csv" (click)="uploadCorrectedData()">Import from CSV</button>
+                <button mat-menu-item i18n="@@import_from_csv" (click)="uploadCorrectedDataCsv()">Import from CSV</button>
             </mat-menu>
 
         </div>
     </div>
+    <input type="file" class="hide-input" (change)="fileChange($event)" multiple="false" id="uploadFileCtrl"/>
+    <ng-template [ngIf]="isFileUploading">
+        <pros-schema-progress [schemaId]="schemaId" [isFileUploading]="isFileUploading" (fileUploaded)="fileUploaded($event)"></pros-schema-progress>
+    </ng-template>
     <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
     </ng-template>
