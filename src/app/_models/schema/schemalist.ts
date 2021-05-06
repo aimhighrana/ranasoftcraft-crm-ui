@@ -41,6 +41,12 @@ export class SchemaListModuleList {
     moduleDesc: string;
     schemaLists: SchemaListDetails[];
 }
+
+export class ModuleInfo {
+    moduleId: string;
+    moduleDesc: string;
+    tenantId?: string;
+}
 export class SchemaListDetails {
     schemaId: string;
     schemaDescription: string;
