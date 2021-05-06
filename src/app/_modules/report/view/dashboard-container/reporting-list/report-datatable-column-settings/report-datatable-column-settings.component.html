@@ -10,8 +10,7 @@
                 <lib-button type="major" (click)="submitSetting()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
-            <pros-search-input label="Search" placeholder="Search fields" (value)="searchHeader($event)">
-            </pros-search-input>
+            <lib-search placeholder="Search fields" (valueChange)="searchHeader($event)"></lib-search>
         </div>
     </div>
     <div class="f-col sidesheetcontent-listing">
