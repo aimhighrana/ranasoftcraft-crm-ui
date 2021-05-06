@@ -8,7 +8,6 @@ import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/sc
 import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaListModuleList } from '@models/schema/schemalist';
-import { TransientService } from 'mdo-ui-library';
 
 type UploadedDataType = any[][];
 @Component({
@@ -82,7 +81,6 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
-    private transientService: TransientService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) { }
