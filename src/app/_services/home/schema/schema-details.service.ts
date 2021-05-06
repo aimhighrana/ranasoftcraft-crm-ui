@@ -276,6 +276,13 @@ export class SchemaDetailsService {
     return this.http.post<any>(this.endpointService.getCreateUpdateSchemaActionsListUrl(), actions);
   }
 
+  public uploadCsvFileData(fileData: File, schemaId: string, nodeId: string, nodeType: string, runId: string, objNDesc: string): Observable<any[]> {
+    const formData = new FormData();
+    formData.append('file', fileData);
+    return this.http.post<any>(`${this.endpointService.uploadCsvFileDataUrl(schemaId, nodeId, nodeType, runId, objNDesc)}`, formData);
+  }
 
-
+  public getUploadProgressPercent(schemaId: string, runId: string): Observable<CrossMappingRule[]> {
+    return this.http.get<any>(this.endpointService.getUploadProgressUrl(schemaId, runId));
+  }
 }

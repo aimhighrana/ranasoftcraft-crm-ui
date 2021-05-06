@@ -6,7 +6,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab, ModuleInfo } from '@models/schema/schemalist';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -220,6 +220,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   // holds execution tree details of schema...
   executionTreeHierarchy: SchemaExecutionTree;
 
+  /**
+   * holds file upload progress screen show/hide status
+   */
+  isFileUploading: boolean;
+
+  /**
+   * holds module info
+   */
+  moduleInfo: ModuleInfo;
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -250,6 +260,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
+      this.getModuleInfo(this.moduleId);
     }
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
@@ -1288,6 +1299,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   uploadCorrectedData() {
     this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: this.schemaId, runid: this.schemaInfo.runId}});
   }
+
+  /**
+   * Opens files in local system for uploading csv
+   */
+  uploadCorrectedDataCsv() {
+    if (document.getElementById('uploadFileCtrl')) {
+      document.getElementById('uploadFileCtrl').click();
+    }
+
+    return true;
+  }
+
   /**
    * function to toggle the icon
    * and emit the toggle event
@@ -1365,5 +1388,94 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }, error => {
         console.error(`Error:: ${error.message}`);
       });
+  }
+
+  /**
+   * uploads csv file
+   * @param evt file event
+   */
+  fileChange(evt: Event) {
+    const validResponse = this.checkForValidFile(evt);
+    if (validResponse.file) {
+      const activeNodeId = this.activeNode.nodeId || 'header';
+      const activeNodeType = this.activeNode.nodeType || 'HEADER';
+      const moduleDesc = this.moduleInfo.moduleDesc ? `${this.moduleInfo.moduleDesc} Number` : '';
+      this.schemaDetailService.uploadCsvFileData(validResponse.file, this.schemaId, activeNodeId, activeNodeType, '', moduleDesc)
+        .subscribe(res => {
+          if (res) {
+            this.isFileUploading = true;
+          }
+      }, error => {
+        console.log(`Error:: ${error.message}`);
+      });
+    } else {
+      const errMsg = validResponse.errMsg || 'Unable to upload file';
+      this.transientService.open(`Error :: ${errMsg}`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${errMsg}`);
+    }
+  }
+
+  /**
+   * Validates for valid csv file and file size limit
+   * @param evt file event
+   * @returns returns file or error message
+   */
+  checkForValidFile(evt: Event) {
+    const res = {
+      errMsg: '',
+      file: null
+    };
+    if (evt !== undefined) {
+      const target: DataTransfer = (evt.target) as unknown as DataTransfer;
+      if (target.files.length !== 1) {
+        res.errMsg = 'Cannot use multiple files';
+      }
+      // check file type
+      let type = '';
+      try {
+        type = target.files[0].name.split('.')[1];
+      } catch (ex) {
+        console.error(ex)
+      }
+      if (type === 'xlsx' || type === 'xls' || type === 'csv') {
+        // check size of file
+        const size = target.files[0].size;
+
+        const sizeKb = Math.round((size / 1024));
+        if (sizeKb > (10 * 1024)) {
+          res.errMsg = `File size too large , upload less then 10 MB`;
+        }
+        res.file = target.files[0];
+      } else {
+        res.errMsg = `Unsupported file format, allowed file formats are .xlsx, .xls and .csv`;
+      }
+    }
+
+    return res;
+  }
+
+  /**
+   * Closes file upload progress screen along with a toast message
+   * @param msg output message from upload progress screen
+   */
+  fileUploaded(msg) {
+    this.isFileUploading = false;
+    if (msg) {
+      this.transientService.open(msg, 'Okay', { duration: 2000 });
+    }
+  }
+
+  /**
+   * get module info based on module id
+   * @param id module id
+   */
+  getModuleInfo(id) {
+    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+      if (res && res.length) {
+        this.moduleInfo = res[0];
+      }
+    }, error => {
+      console.log(`Error:: ${error.message}`)
+    });
   }
 }

@@ -275,6 +275,11 @@ describe('EndpointsRuleService', () => {
     expect(serObj.getSchemaInfoByModuleIdUrl('1005')).toContain('schema/metadata/schema-info/1005');
   }));
 
+  it('getModuleInfoByModuleIdUrl(),should return getModuleInfoByModuleId url', async(() => {
+    const serObj =new EndpointsRuleService();
+    expect(serObj.getModuleInfoByModuleIdUrl()).toContain('schema/getModuleInfo');
+  }));
+
   it('getSchemaWithVariantsUrl(),should return getSchemaWithVariantsUrl url', async(() => {
     const serObj =new EndpointsRuleService();
     expect(serObj.getSchemaWithVariantsUrl()).toContain('/schema/metadata/list-variants');
@@ -651,5 +656,15 @@ describe('EndpointsRuleService', () => {
   it('getSelectedFieldsByNodeIds()', async(() => {
     const serObj = new EndpointsRuleService();
     expect(serObj.getSelectedFieldsByNodeIds()).toContain('/schema/metadata/get-selected-fields-views-by-nodeIds');
+  }));
+
+  it('uploadCsvFileDataUrl()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.uploadCsvFileDataUrl('', '', '', '', '')).toContain('/schema/uploadData?schemaId');
+  }));
+
+  it('getUploadProgressUrl()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getUploadProgressUrl('', '')).toContain('/schema/uploadStatus?schemaId');
   }));
 });

@@ -4,6 +4,10 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  .hide-input {
+    display: none;
+  }
+
   .breadcrum-toolbar {
     align-items: center;
     min-height: 40px;
