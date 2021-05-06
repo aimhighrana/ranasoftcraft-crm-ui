@@ -1,3 +1,5 @@
+import { TaskListDataSource } from './task-list-data-source';
+import { TaskListData } from './../../../../_models/task-list/tasklistData';
 import { TaskListService } from './../../../../_services/task-list.service';
 import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SharedServiceService } from './../../../shared/_services/shared-service.service';
@@ -7,125 +9,112 @@ import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
 
-export interface PeriodicElement {
-  Records: string;
-  setting: number;
-  description: number;
-  labels: string[];
-  sent: string;
-  dueby: string;
-  requestby: string;
-  sentby: string;
-  isImportant?: boolean;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {
-    setting: 1,
-    Records: 'Hydrogen',
-    description: 1.0079,
-    labels: ['Pending'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-  {
-    setting: 2,
-    Records: 'Helium',
-    description: 4.0026,
-    labels: ['Forwarded'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-  {
-    setting: 3,
-    Records: 'Lithium',
-    description: 6.941,
-    labels: ['Delegated', 'Forwarded'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L' ,
-  },
-  {
-    setting: 4,
-    Records: 'Beryllium',
-    description: 9.0122,
-    labels: ['Pending', 'Forwarded'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-  {
-    setting: 5,
-    Records: 'Boron',
-    description: 10.811,
-    labels: ['Forwarded'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-    isImportant: true
-  },
-  {
-    setting: 6,
-    Records: 'Carbon',
-    description: 12.0107,
-    labels: ['In Progress', 'Forwarded', 'Pending', 'Delegated', 'Completed'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-  {
-    setting: 7,
-    Records: 'Nitrogen',
-    description: 14.0067,
-    labels: ['Delegated', 'In Progress', 'Pending', 'Delegated'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-  {
-    setting: 8,
-    Records: 'Oxygen',
-    description: 15.9994,
-    labels: ['Pending'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-  {
-    setting: 9,
-    Records: 'Fluorine',
-    description: 18.9984,
-    labels: ['Forwarded'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-    isImportant: true
-  },
-  {
-    setting: 10,
-    Records: 'Neon',
-    description: 20.1797,
-    labels: ['Pending'],
-    sent: 'L',
-    dueby: 'L',
-    requestby: 'L',
-    sentby: 'L',
-  },
-];
+// const ELEMENT_DATA: TaskListData[] = [
+//   {
+//     setting: 1,
+//     Records: 'Hydrogen',
+//     description: 1.0079,
+//     labels: ['Pending'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 2,
+//     Records: 'Helium',
+//     description: 4.0026,
+//     labels: ['Forwarded'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 3,
+//     Records: 'Lithium',
+//     description: 6.941,
+//     labels: ['Delegated', 'Forwarded'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 4,
+//     Records: 'Beryllium',
+//     description: 9.0122,
+//     labels: ['Pending', 'Forwarded'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 5,
+//     Records: 'Boron',
+//     description: 10.811,
+//     labels: ['Forwarded'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//     isImportant: true,
+//   },
+//   {
+//     setting: 6,
+//     Records: 'Carbon',
+//     description: 12.0107,
+//     labels: ['In Progress', 'Forwarded', 'Pending', 'Delegated', 'Completed'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 7,
+//     Records: 'Nitrogen',
+//     description: 14.0067,
+//     labels: ['Delegated', 'In Progress', 'Pending', 'Delegated'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 8,
+//     Records: 'Oxygen',
+//     description: 15.9994,
+//     labels: ['Pending'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+//   {
+//     setting: 9,
+//     Records: 'Fluorine',
+//     description: 18.9984,
+//     labels: ['Forwarded'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//     isImportant: true,
+//   },
+//   {
+//     setting: 10,
+//     Records: 'Neon',
+//     description: 20.1797,
+//     labels: ['Pending'],
+//     sent: 'L',
+//     dueby: 'L',
+//     requestby: 'L',
+//     sentby: 'L',
+//   },
+// ];
 
 export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] } = {
   inbox: [
@@ -558,7 +547,7 @@ export const nodeChipsMenuItems: { [fldId: string]: string[] } = {
   Sent: ['Long', 'Short'],
   Requestedby: ['Fred', 'Shred'],
 };
-export const lableItems = ['Forwarded', 'Delegated', 'Completed', 'Pending', 'In Progress']
+export const lableItems = ['Forwarded', 'Delegated', 'Completed', 'Pending', 'In Progress'];
 
 @Component({
   selector: 'pros-task-list-datatable',
@@ -578,8 +567,9 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     // 'sentby',
   ];
   staticColumns: string[] = ['select', 'setting', 'Records'];
-  dataSource: MatTableDataSource<PeriodicElement>;
-  selection: SelectionModel<PeriodicElement>;
+  dataSource: TaskListDataSource;
+  // dataSource: MatTableDataSource<TaskListData>;
+  selection = new SelectionModel<TaskListData>(true, []);
   node: string = null;
   nodeColumns: { fldId: string; fldDesc: string }[] = [];
 
@@ -602,6 +592,16 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   filteredLabels = [...lableItems];
   labelSearchFieldSub: Subject<string> = new Subject();
 
+  /**
+   * default datatable page size
+   */
+  recordsPageSize = 50;
+
+  /**
+   * Hold total records count
+   */
+  totalCount = 0;
+
   // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -610,7 +610,9 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     private router: Router,
     private sharedServices: SharedServiceService,
     private taskListService: TaskListService
-  ) {}
+  ) {
+    this.dataSource = new TaskListDataSource(this.taskListService);
+  }
 
   /**route param contains the node
    * node - based on node find the columns the table should have
@@ -623,6 +625,8 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
       this.node = param.node || null;
+      this.dataSource.reset();
+      this.totalCount = 0;
       // this.nodeColumns = NODEFIELDS[this.node];
       // this.updateTableColumns();
       this.getHeadersForNode(this.node);
@@ -758,20 +762,23 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     this.filteredNodeChipsMenuItems[chip] = filtered;
   }
   getTableData() {
-    this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-    this.selection = new SelectionModel<PeriodicElement>(true, []);
+    // this.dataSource = new MatTableDataSource<TaskListData>(ELEMENT_DATA);
+    // this.selection = new SelectionModel<TaskListData>(true, []);
+
+    this.selection.clear();
+    this.dataSource.getData(this.node, 'en', this.recordsPageSize, '');
   }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
-    // const numSelected = this.selection.selected.length;
-    // const numRows = this.dataSource.docLength();
-    // return numSelected === numRows;
-    return false;
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.docLength();
+    return numSelected === numRows;
+    // return false;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
-    // this.isAllSelected() ? this.selection.clear() : this.dataSource.docValue().forEach((row) => this.selection.select(row));
+    this.isAllSelected() ? this.selection.clear() : this.dataSource.docValue().forEach((row) => this.selection.select(row));
   }
 
   /** The label for the checkbox on the passed row */
@@ -790,7 +797,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   }
   getFieldDesc(dynCol) {
     const field = this.nodeColumns.find((f) => f.fldId === dynCol);
-    return field ? field.fldDesc || 'Unkown' : dynCol || 'Unkown';
+    return field ? field.fldDesc || 'Unknown' : dynCol || 'Unknown';
   }
 
   saveTasklistVisitByUser(nodeId: string) {
@@ -801,7 +808,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
         .subscribe(
           (resp) => {},
           (err) => {
-            console.log(err);
+            console.error(err);
           }
         );
     }
@@ -813,7 +820,6 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
         .pipe(take(1))
         .subscribe(
           (resp: { fldId: string; fldDesc: string }[]) => {
-
             const nodeFields = NODEFIELDS[nodeId];
             this.nodeColumns = resp.map((d) => {
               return {
@@ -824,20 +830,20 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
             this.updateTableColumns();
           },
           (err) => {
-            console.log(err);
+            console.error(err);
           }
         );
     }
   }
   filterLabels(event) {
-    this.filteredLabels = this.AllLabels.filter(d=> d.toLowerCase().indexOf(event.toLowerCase()) >=0);
+    this.filteredLabels = this.AllLabels.filter((d) => d.toLowerCase().indexOf(event.toLowerCase()) >= 0);
   }
 
-  removeLabel(element: PeriodicElement, label) {
-    element.labels = element.labels.filter(d=> d !== label);
+  removeLabel(element: TaskListData, label) {
+    element.labels = element.labels.filter((d) => d !== label);
   }
-  applyLabel(element: PeriodicElement, label) {
-    if(element.labels.indexOf(label) < 0) {
+  applyLabel(element: TaskListData, label) {
+    if (element.labels.indexOf(label) < 0) {
       element.labels.push(label);
     }
   }

@@ -1,3 +1,4 @@
+import { TaskListDataResponse } from './../_models/task-list/tasklistData';
 import { InboxNodesCount } from '@models/list-page/listpage';
 import { EndpointsProcessService } from './_endpoints/endpoints-process.service';
 
@@ -142,5 +143,9 @@ export class TaskListService {
 
   public getHeadersForNode(nodeId: string) {
     return this.http.get<any[]>(this.endpointsProcessService.getHeadersForNodeUrl(nodeId));
+  }
+
+  public getTaskListData(nodeId: string, lang: string, size: number, searchAfter: string) {
+    return this.http.post<TaskListDataResponse>(this.endpointsProcessService.getTaskListDataUrl(nodeId, lang, size, searchAfter), {});
   }
 }

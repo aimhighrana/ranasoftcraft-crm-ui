@@ -31,7 +31,7 @@ describe('TaskListDatatableComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: { queryParams, params: of(params), snapshot: { queryParams: { f: 'test' } } },
-        },
+        }
       ],
     })
       .compileComponents()
@@ -54,10 +54,37 @@ describe('TaskListDatatableComponent', () => {
       { fldId: 'requestby', order: 5 },
       { fldId: 'sentby', order: 6 },
     ];
+    const recordsList = {
+      total: 0,
+      _doc: [{
+        setting: 1,
+        Records: 'Hydrogen',
+        description: 1.0079,
+        labels: ['Pending'],
+        sent: 'L',
+        dueby: 'L',
+        requestby: 'L',
+        sentby: 'L',
+      },
+      {
+        setting: 2,
+        Records: 'Helium',
+        description: 4.0026,
+        labels: ['Forwarded'],
+        sent: 'L',
+        dueby: 'L',
+        requestby: 'L',
+        sentby: 'L',
+      },],
+      req_at: 1620206786475,
+      to: 10,
+      res_at: 1620206786489
+  };
     spyOn(taskListService, 'getHeadersForNode')
       .withArgs('inbox')
       .and.callFake(() => of(fieldList));
     spyOn(taskListService, 'saveTasklistVisitByUser').and.callFake(() => of({}));
+    spyOn(taskListService, 'getTaskListData').withArgs('inbox', 'en', component.recordsPageSize, '').and.callFake(() => of(recordsList));
   });
 
   it('should create', () => {
@@ -344,6 +371,13 @@ describe('TaskListDatatableComponent', () => {
     component.node = 'inbox';
     component.nodeColumns = [{ fldId: 'dueby', fldDesc: 'Due by' }];
     expect(component.getFieldDesc('dueby')).toEqual('Due by');
+    component.nodeColumns = [{ fldId: 'dueby', fldDesc: '' }];
+    expect(component.getFieldDesc('dueby')).toEqual('Unknown');
+    component.nodeColumns = [];
+    expect(component.getFieldDesc('dueby')).toEqual('dueby');
+    component.nodeColumns = [];
+    expect(component.getFieldDesc('')).toEqual('Unknown');
+
   });
 
   it('onPageChange()', () => {
@@ -410,6 +444,38 @@ describe('TaskListDatatableComponent', () => {
     expect(element.labels.length).toEqual(2);
     component.applyLabel(element, 'Completed');
     expect(element.labels.length).toEqual(3);
+  });
+
+  it('should get table data', () => {
+    component.node = 'inbox';
+    component.getTableData();
+    expect(taskListService.getTaskListData).toHaveBeenCalled();
+    expect(component.dataSource.docLength()).toEqual(2);
+  });
+
+  it('masterToggle()', () => {
+    spyOn(component.selection, 'clear');
+    spyOn(component.selection, 'select');
+    component.masterToggle();
+    expect(component.selection.clear).toHaveBeenCalled();
+
+    component.node = 'inbox';
+    component.getTableData();
+    expect(taskListService.getTaskListData).toHaveBeenCalled();
+    expect(component.dataSource.docValue().length).toEqual(2);
+    component.masterToggle();
+    expect(component.selection.select).toHaveBeenCalled();
+  });
+
+  it('checkboxLabel()', () => {
+    component.node = 'inbox';
+    component.getTableData();
+    let label = component.checkboxLabel(null);
+    expect(label).toEqual('deselect all');
+    component.masterToggle();
+    label = component.checkboxLabel(null);
+    expect(label).toEqual('select all');
+
   });
 
   it('ngOnDestroy()', () => {

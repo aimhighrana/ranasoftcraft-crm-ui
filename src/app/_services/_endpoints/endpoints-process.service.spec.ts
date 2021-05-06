@@ -30,4 +30,8 @@ describe('EndpointsProcessService', () => {
     expect(service.getHeadersForNodeUrl('inbox')).toContain('process/inbox/field/list');
   });
 
+  it('getTaskListDataUrl', () => {
+    expect(service.getTaskListDataUrl('inbox', 'en', 10, '')).toContain('process/tasklist/inbox/en/get-data?size=10&searchAfter=');
+  });
+
 });
