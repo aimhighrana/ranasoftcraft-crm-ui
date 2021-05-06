@@ -31,7 +31,7 @@ describe('EndpointsProcessService', () => {
   });
 
   it('getTaskListDataUrl', () => {
-    expect(service.getTaskListDataUrl('inbox', 'en', 10, '')).toContain('process/tasklist/inbox/en/get-data?size=10&searchAfter=');
+    expect(service.getTaskListDataUrl('inbox', 'en', 10, 0)).toContain('process/tasklist/inbox/en/get-data?size=10&searchAfter=0');
   });
 
 });

@@ -25,7 +25,7 @@ export class EndpointsProcessService {
     return `${this.apiUrl}/${nodeId}/field/list`;
   }
 
-  public getTaskListDataUrl(nodeId: string, lang: string, size: number, searchAfter: string): string {
+  public getTaskListDataUrl(nodeId: string, lang: string, size: number, searchAfter: any): string {
     return `${this.apiUrl}/tasklist/${nodeId}/${lang}/get-data?size=${size}&searchAfter=${searchAfter}`;
   }
 }

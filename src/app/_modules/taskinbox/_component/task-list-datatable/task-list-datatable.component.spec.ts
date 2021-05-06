@@ -84,7 +84,7 @@ describe('TaskListDatatableComponent', () => {
       .withArgs('inbox')
       .and.callFake(() => of(fieldList));
     spyOn(taskListService, 'saveTasklistVisitByUser').and.callFake(() => of({}));
-    spyOn(taskListService, 'getTaskListData').withArgs('inbox', 'en', component.recordsPageSize, '').and.callFake(() => of(recordsList));
+    spyOn(taskListService, 'getTaskListData').withArgs('inbox', 'en', component.recordsPageSize, 0).and.callFake(() => of(recordsList));
   });
 
   it('should create', () => {
@@ -475,7 +475,6 @@ describe('TaskListDatatableComponent', () => {
     component.masterToggle();
     label = component.checkboxLabel(null);
     expect(label).toEqual('select all');
-
   });
 
   it('ngOnDestroy()', () => {

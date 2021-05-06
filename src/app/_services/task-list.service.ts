@@ -145,7 +145,7 @@ export class TaskListService {
     return this.http.get<any[]>(this.endpointsProcessService.getHeadersForNodeUrl(nodeId));
   }
 
-  public getTaskListData(nodeId: string, lang: string, size: number, searchAfter: string) {
+  public getTaskListData(nodeId: string, lang: string, size: number, searchAfter: any) {
     return this.http.post<TaskListDataResponse>(this.endpointsProcessService.getTaskListDataUrl(nodeId, lang, size, searchAfter), {});
   }
 }

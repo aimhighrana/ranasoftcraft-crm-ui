@@ -766,7 +766,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     // this.selection = new SelectionModel<TaskListData>(true, []);
 
     this.selection.clear();
-    this.dataSource.getData(this.node, 'en', this.recordsPageSize, '');
+    this.dataSource.getData(this.node, 'en', this.recordsPageSize, 0);
   }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
