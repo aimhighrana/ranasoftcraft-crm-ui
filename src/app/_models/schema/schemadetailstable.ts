@@ -99,6 +99,9 @@ export class RequestForSchemaDetailsWithBr {
     filterCriterias: FilterCriteria[];
     sort: {};
     isLoadMore: boolean;
+    nodeId?: string;
+    nodeType?: string;
+
 }
 
 export class FilterCriteria {
