@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaListModuleList, SchemaModuleList } from '@models/schema/schemalist';
+import { SchemaListModuleList } from '@models/schema/schemalist';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { Subscription } from 'rxjs';
@@ -93,16 +93,16 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
     }, error => {
       console.error('Error: {}', error.message);
     });
-    
+
     this.subscriptions.push(schmeaInfoByModuleId);
   }
 
   public getModuleInfo() {
     const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
-      let module = moduleData[0];
+      const module = moduleData[0];
       if (module) {
         this.moduleData.moduleDesc = module.moduleDesc;
-        this.moduleData.moduleId = module.moduleId;  
+        this.moduleData.moduleId = module.moduleId;
       }
     }, error => {
       console.error('Error: {}', error.message);
