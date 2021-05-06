@@ -16,6 +16,7 @@ import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadeta
 import { SharedModule } from '@modules/shared/shared.module';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TransientService } from 'mdo-ui-library';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
@@ -37,6 +38,7 @@ describe('UploadDataComponent', () => {
           useValue: mockDialogRef
         }, { provide: MAT_DIALOG_DATA, useValue: {}
         },
+        TransientService,
          SchemaDetailsService,
          SchemaService
       ]

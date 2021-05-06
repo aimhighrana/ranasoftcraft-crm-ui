@@ -5,10 +5,10 @@ import { DataSource, ValidationError } from 'src/app/_models/schema/schema';
 import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaListModuleList } from '@models/schema/schemalist';
+import { TransientService } from 'mdo-ui-library';
 
 type UploadedDataType = any[][];
 @Component({
@@ -82,7 +82,7 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar,
+    private transientService: TransientService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) { }
@@ -424,12 +424,29 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
     this.schemaService.getSchemaInfoByModuleId(this.moduleId).subscribe((moduleData) => {
       if(moduleData) {
         this.moduleInfo = moduleData;
+        this.getModuleInfo(this.moduleId);
         this.getMetadataFields(this.moduleInfo.moduleId);
       }
     }, error => {
       console.error('Error: {}', error.message);
     });
  }
+
+/**
+ * get module info based on module id
+ * @param id module id
+ */
+  getModuleInfo(id) {
+  this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+    if (res && res.length) {
+      const module = res[0];
+      this.moduleInfo.moduleDesc = module.moduleDesc;
+      this.moduleInfo.moduleId = module.moduleId;
+    }
+  }, error => {
+    console.log(`Error:: ${error.message}`)
+  });
+}
 
  ngAfterViewInit() {
   this.stepper.selectionChange.subscribe((change) => {
