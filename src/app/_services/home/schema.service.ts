@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
 import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
@@ -219,8 +219,16 @@ export class SchemaService {
    * Get schema list info by moduleId
    * @param moduleId get data based on this id
    */
-  public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
+   public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
     return this.http.get<SchemaListModuleList>(this.endpointService.getSchemaInfoByModuleIdUrl(moduleId));
+  }
+
+  /**
+   * Get module info by moduleId
+   * @param moduleId get data based on this id
+   */
+  public getModuleInfoByModuleId(moduleId: string): Observable<Array<ModuleInfo>> {
+    return this.http.post<any>(this.endpointService.getModuleInfoByModuleIdUrl(), [moduleId]);
   }
 
   /**

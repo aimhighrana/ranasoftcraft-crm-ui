@@ -214,8 +214,16 @@ export class EndpointsRuleService {
    * Get url for schema info
    * @param moduleId module id/objectId
    */
-  public getSchemaInfoByModuleIdUrl(moduleId: string): string {
+   public getSchemaInfoByModuleIdUrl(moduleId: string): string {
     return `${this.origin}/schema/metadata/schema-info/${moduleId}`;
+  }
+
+  /**
+   * Get url for module info
+   * @param moduleId module id/objectId
+   */
+   public getModuleInfoByModuleIdUrl(): string {
+    return `${this.classicOrigin}/schema/getModuleInfo`;
   }
 
 
