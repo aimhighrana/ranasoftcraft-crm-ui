@@ -15,7 +15,7 @@
                 <lib-search (valueChange)="search($event)" i18n-placeholder="@@search_br" placeholder="Search business rules"></lib-search>
                 <span class="col-spacer"></span>
                 <lib-chip-list>
-                    <lib-chip disableRipple="true" type="info" [matMenuTriggerFor]="businessRuleType" label="Business rule type:">{{(selectedRuleType &&
+                    <lib-chip type="info" [matMenuTriggerFor]="businessRuleType" label="Business rule type:">{{(selectedRuleType &&
                         selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}</lib-chip>
                 </lib-chip-list>
                 <mat-menu #businessRuleType="matMenu" class="navigation-menu">

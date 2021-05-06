@@ -1013,4 +1013,39 @@ describe('UploadDatasetComponent', () => {
     component.updateDepRuleForChild(br, 0, event);
     expect(component.selectedBusinessRules.length).toEqual(3);
   });
+
+  it(`mapSubscriberInfo() `, async(() => {
+    const subscriber = {
+      userName: 'test',
+      groupid: 1345,
+      sNo: 101,
+      fName: 'testFirstName',
+      lName: 'testLastName',
+      userMdoModel: {
+        fullName: 'testFullName'
+      }
+    };
+    component.userDetails = {
+      plantCode: ''
+    } as Userdetails;
+    const res = component.mapSubscriberInfo(subscriber);
+    expect(res.userName).toEqual(subscriber.userName);
+    expect(res.groupid).toEqual(subscriber.groupid);
+    expect(res.userid).toEqual(subscriber.userName);
+    expect(res.fullName).toEqual(subscriber.userMdoModel.fullName);
+  }));
+
+  it(`updateRole(), should be called to update correct role`, async(() => {
+    const subscriber: any = {};
+    component.subscribersList = [subscriber];
+    component.updateRole('isAdmin', subscriber);
+    expect(component.subscribersList[0].isAdmin).toBeTruthy();
+    component.updateRole('isReviewer', subscriber);
+    expect(component.subscribersList[0].isReviewer).toBeTruthy();
+    component.updateRole('isViewer', subscriber);
+    expect(component.subscribersList[0].isViewer).toBeTruthy();
+    component.updateRole('isEditer', subscriber);
+    expect(component.subscribersList[0].isEditer).toBeTruthy();
+  }));
+
 });

@@ -145,7 +145,7 @@
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                                <mat-panel-title>
+                                <mat-panel-title (click)="nodeSelected(executionTreeHierarchy)">
                                     <div class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</div>
                                     <span class="f-spacer"></span>
                                     <div class="default-badge">{{ executionTreeHierarchy.docCount }}</div>
@@ -155,14 +155,15 @@
                                 <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
                                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(child.childs && child.childs.length) ? false : true">
                                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel">
-                                            <mat-panel-title>
+                                            <mat-panel-title (click)="nodeSelected(child)">
                                                 <div class="expand-title">{{ child.nodeDesc }}</div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ child.docCount }}</div>
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
                                         <mat-nav-list role="navigation" class="tree-nav-list" *ngIf="child.childs && child.childs.length">
-                                            <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs">
+                                            <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs"
+                                                (click)="nodeSelected(subChild)">
                                                 <div mat-line> {{ subChild.nodeDesc }} </div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ subChild.docCount }}</div>

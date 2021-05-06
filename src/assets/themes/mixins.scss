@@ -559,7 +559,6 @@
 
       .mat-info-icon {
         font-size: 12px;
-        height: 10px;
       }
 
       &.none-stats-chip {
@@ -764,7 +763,7 @@
 
     .mat-menu-panel {
       max-width: 300px;
-      width: 220px;
+      width: 240px;
       min-height: auto;
       // max-height: 470px;
       margin: 8px 0;
@@ -772,6 +771,11 @@
 
       .mat-menu-content:not(:empty) {
         padding: 0;
+      }
+
+      &.date-picker-menu {
+        width: 240px;
+        height: max-content;
       }
 
       &.navigation-menu {
@@ -2094,4 +2098,8 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
     width: 100%;
     text-align: start;
   }
+}
+
+.date-picker-option .dropdown-option {
+  padding: initial;
 }
