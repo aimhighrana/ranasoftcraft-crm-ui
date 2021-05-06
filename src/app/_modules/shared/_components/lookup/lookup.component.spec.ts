@@ -233,7 +233,7 @@ describe('LookupRuleComponent', () => {
 
     expect(component.getFieldLabel({} as LookupFields)).toBeFalsy();
 
-    const field = {
+    let field = {
       fieldDescri: '',
       fieldId: 'fdg444',
       fieldLookupConfig: null,
@@ -249,6 +249,30 @@ describe('LookupRuleComponent', () => {
 
     field.fieldDescri = 'Test field';
     expect(component.getFieldLabel(field)).toEqual('Test field');
+
+    field = {
+      fieldDescri: '',
+      fieldId: 'fdg444',
+      fieldLookupConfig: null,
+      lookupTargetField: '',
+      lookupTargetText: '',
+      enableUserField: false
+    }
+
+    component.fieldsObject.list = [];
+    component.allGridAndHirarchyData = [
+      {
+        children: [
+          {
+            id: 'fdg444',
+            parent: 'Test',
+            name: 'Test'
+          }
+        ]
+      }
+    ];
+
+    expect(component.getFieldLabel(field)).toEqual('Test/Test');
   })
 
   it('ngOnInit()', () => {

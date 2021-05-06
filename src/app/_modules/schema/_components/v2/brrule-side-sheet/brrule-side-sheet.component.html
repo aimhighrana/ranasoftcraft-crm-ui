@@ -222,7 +222,14 @@
                                     </mat-select>
                                 </div>
                                 <!-- Comparison value -->
-                                <div class="col" *ngIf="item.value.conditionOperator !== 'RANGE'">
+                                <div class="col" *ngIf="i == 0 && item.value.conditionOperator !== 'RANGE'">
+                                    <div class="f-row" *ngIf="item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
+                                        <lib-input label="‎" placeholder="Comparison value" [value]="item.value.conditionFieldValue" 
+                                        (valueChange)="setComparisonValue($event,i)"></lib-input>
+                                        <div class="f-col-spacer-half"></div>
+                                    </div>
+                                </div>
+                                <div class="col" *ngIf="i != 0 && item.value.conditionOperator !== 'RANGE' && item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
                                     <div class="f-row">
                                         <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="item.value.conditionFieldValue" 
                                         (valueChange)="setComparisonValue($event,i)"></lib-input>
@@ -298,8 +305,8 @@
                                                         </mat-optgroup>
                                                     </mat-select>
                                                 </div>
-                                                <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE'">
-                                                    <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="chldNode.value.conditionFieldValue"
+                                                <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE' && chldNode.value.conditionOperator !== 'EMPTY' && chldNode.value.conditionOperator !== 'NOT_EMPTY'">
+                                                    <lib-input label="‎" placeholder="Comparison value" [value]="chldNode.value.conditionFieldValue"
                                                     (valueChange)="setComparisonValueForChild($event,childIndex,i)"></lib-input>
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">

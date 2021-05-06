@@ -20,7 +20,7 @@ describe('SchemaDetailsService', () => {
     'saveNewSchemaUrl', 'getClassificationDataTableUrl', 'generateCrossEntryUri', 'doClassificationCorrectionUri', 'approveClassificationUri', 'rejectClassificationUri',
     'generateMroClassificationDescriptionUri', 'downloadMroExceutionUri', 'getSchemaDataTableColumnInfoUrl', 'getSchemaDetailsBySchemaId', 'getShowMoreSchemaTableDataUrl',
     'getOverviewChartDataUrl', 'getCategoryInfoUrl', 'getSchemaStatusUrl', 'categoryChartData', 'getMetadataFields', 'getClassificationNounMod',
-    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl']);
+    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds']);
 
     const mapperSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaDataTableResponse', 'any2OverviewChartData', 'any2CategoryInfo', 'any2SchemaStatus', 'any2CategoryChartData',
       'any2MetadataResponse']);
@@ -865,6 +865,28 @@ describe('SchemaDetailsService', () => {
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getSelectedFieldsByNodeIds(): get selected fields ', async(() => {
+    const schemaId = '837645763957';
+    const variantId = '0';
+    const url = `getSelectedFieldsByNodeIds url`;
+    // mock url
+    endpointServiceSpy.getSelectedFieldsByNodeIds.and.returnValue(url);
+    // mock data
+    const mockData = [];
+    // actual service call
+    schemaDetaService.getSelectedFieldsByNodeIds(schemaId, variantId, []).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
+      expect(actualResponse.length).toEqual(mockData.length);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&variantId=${variantId}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(mockData);
     // verify http
     httpTestingController.verify();
   }));
