@@ -312,16 +312,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
 
-    /**
-     * Get all user selected fields based on default view ..
-     */
-    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.executionTreeHierarchy)).subscribe(res => {
-      const allFields = [];
-      if(res && res.length) {
-        res.forEach(node => allFields.push(...node.fieldsList));
-      }
-      this.selectedFieldsOb.next(allFields);
-    }, error => console.error(`Error : ${error}`));
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
       if (res) {
@@ -581,8 +571,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
-    // push header columns
-    this.columns.header = select;
     this.displayedFields.next(fields);
     console.log(this.displayedFields.getValue());
   }
@@ -744,7 +732,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       schemaId: this.schemaId,
       runId: this.schemaInfo.runId,
       requestStatus: this.activeTab,
-      executionTreeHierarchy: this.executionTreeHierarchy
+      executionTreeHierarchy: this.executionTreeHierarchy && this.executionTreeHierarchy.nodeId ? this.executionTreeHierarchy: null
     }
 
     const ref = this.matDialog.open(DownloadExecutionDataComponent, {
@@ -1404,24 +1392,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   }
 
-  nodeSelected(node: SchemaExecutionTree) {
-    if(node.nodeId === this.activeNode.nodeId) {
-      return;
-    }
-    this.activeNode = node;
-    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(node))
-      .subscribe(res => {
-        const allFields = [];
-        if(res && res.length) {
-          res.forEach(n => allFields.push(...n.fieldsList));
-        };
-        this.selectedFields = sortBy(allFields, 'order');
-        this.calculateDisplayFields();
-      }, error => {
-        console.error(`Error:: ${error.message}`);
-      });
-  }
-
   /**
    * uploads csv file
    * @param evt file event
@@ -1516,6 +1486,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param node selected / clicked node details
    */
    loadNodeData(node: SchemaExecutionTree) {
+
+    if(node.nodeId === this.activeNode.nodeId) {
+      console.log('Already active');
+      return;
+    }
+    this.activeNode = node;
     console.log(node);
     this.router.navigate([], {
       relativeTo: this.activatedRouter,
@@ -1587,6 +1563,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
       if(keyFor === 'header') {
         array.push('___header__collapsible');
+        console.log(this.columns[this.nodeId]);
         if(this.nodeId !== 'header') {
           array.push(...this.columns[this.nodeId]);
         }
@@ -1597,6 +1574,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         array.push(...this.columns.header);
         array.push('___hierarchy__collapsible');
       }
+      console.log(array)
       this.displayedFields.next(array);
     }
   }
@@ -1606,37 +1584,68 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param nodeType selected node type ...
    */
   updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
-    const metadata = this.metadata.getValue();
-    if(nodeType === 'HEIRARCHY') {
-      if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(nodeId)) {
-        const fields = Object.keys(metadata.hierarchyFields[nodeId]);
-        this.columns[nodeId] = fields.splice(0,10);
-        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
-        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
-        updatedArray.push(...this.columns.header);
-        updatedArray.push(...this.columns[nodeId]);
-        this.displayedFields.next(updatedArray);
-        // TODO
-        this.columns[nodeId].forEach(fld=>{
-          this.metadataFldLst[fld] = metadata.hierarchyFields[nodeId][fld];
-        });
-      }
-    } else if(nodeType === 'GRID') {
-      if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(nodeId)) {
-        const fields = Object.keys(metadata.gridFields[nodeId]);
-        this.columns[nodeId] = fields;
-        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
-        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
-        updatedArray.push(...this.columns.header);
-        updatedArray.push(...this.columns[nodeId]);
-        this.displayedFields.next(updatedArray);
-        // TODO
-        fields.forEach(fld=>{
-          this.metadataFldLst[fld] = metadata.gridFields[nodeId][fld];
-        });
-      }
-    } else {
-      console.log('For heade ref ... api call');
-    }
+
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.activeNode))
+      .subscribe(res => {
+        const allFields = [];
+        this.columns = {};
+        const metadata = this.metadata.getValue();
+        if(res && res.length) {
+          res.forEach(node => {
+            if(node.fieldsList && node.fieldsList.length) {
+              this.columns[node.nodeId] = [];
+              node.fieldsList.forEach(f => {
+                if(!allFields.find(fld => fld.fieldId === f.fieldId)) {
+                  allFields.push(f);
+                  this.columns[node.nodeId].push(f.fieldId);
+                }
+              });
+            } else {
+              let fields = [];
+              const nType = this.getNodeTypeById(node.nodeId);
+              if(nType === 'HEIRARCHY') {
+                if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(node.nodeId)) {
+                  fields = Object.keys(metadata.hierarchyFields[node.nodeId]).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach(f => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(metadata.hierarchyFields[node.nodeId][f]);
+                  });
+                }
+              } else if(nType === 'GRID') {
+                if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(node.nodeId)) {
+                  fields = Object.keys(metadata.gridFields[node.nodeId]).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach(f => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(metadata.gridFields[node.nodeId][f]);
+                  });
+                }
+              } else {
+                console.log('For heade ref ... api call');
+              }
+            }
+          });
+          this.selectedFields = sortBy(allFields, 'order');
+          console.log(this.selectedFields);
+          this.calculateDisplayFields();
+        };
+
+      }, error => {
+        console.error(`Error:: ${error.message}`);
+      });
+
+  }
+
+  getNodeTypeById(nodeId: string) {
+    const treeArray = this.getExectionArray(this.executionTreeHierarchy);
+    const nodeDetails = treeArray.find(n => n.nodeId === nodeId);
+    return nodeDetails && nodeDetails.nodeType;
   }
 }

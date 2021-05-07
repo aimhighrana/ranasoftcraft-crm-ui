@@ -666,8 +666,6 @@ describe('SchemaDetailsComponent', () => {
       }
     });
 
-    spyOn(schemaDetailService, 'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
-
     const changes7 = {
       moduleId:{
         currentValue:'1005',
@@ -699,31 +697,6 @@ describe('SchemaDetailsComponent', () => {
         expect(component.getData).toHaveBeenCalled();
       }
     });
-
-    const changes8 = {
-      variantId:{
-        currentValue:'1',
-        firstChange:true,
-        isFirstChange:null,
-        previousValue:'0'
-      },
-      isInRunning:{
-        currentValue:true,
-        firstChange:true,
-        isFirstChange:null,
-        previousValue:false
-      },
-      activeTab:{
-        currentValue:'success',
-        firstChange:true,
-        isFirstChange:null,
-        previousValue:'error'
-      }
-    } as SimpleChanges;
-    spyOn(console, 'error');
-    component.ngOnChanges(changes8);
-    expect(component.isInRunning).toBeTrue();
-    expect(console.error).toHaveBeenCalled();
   }));
 
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
@@ -1160,7 +1133,7 @@ describe('SchemaDetailsComponent', () => {
     expect(console.error).toHaveBeenCalled();
   }));
 
-  it('nodeSelected()', async(()=>{
+  it('updateColumnBasedOnNodeSelection()', async(()=>{
 
     component.executionTreeHierarchy = {
       nodeId: 'header',
@@ -1172,19 +1145,23 @@ describe('SchemaDetailsComponent', () => {
     } as SchemaExecutionTree;
     component.activeNode = component.executionTreeHierarchy;
 
+    const response = [
+      {nodeId: 'header', nodeType:'HEADER', fieldsList: [{fieldId:'MTL_TYPE'}]}
+    ];
+
     spyOn(component, 'calculateDisplayFields');
     spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
-    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
-    component.nodeSelected(component.activeNode);
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of(response), throwError({message: 'api error'}));
 
     const newNode = new SchemaExecutionTree();
     newNode.nodeId = '1';
-    component.nodeSelected(JSON.parse(JSON.stringify(newNode)));
+    newNode.nodeType = SchemaExecutionNodeType.HEIRARCHY;
+    component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType);
     expect(component.calculateDisplayFields).toHaveBeenCalled();
 
     spyOn(console, 'error');
     newNode.nodeId = '2';
-    component.nodeSelected(JSON.parse(JSON.stringify(newNode)));
+    component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType);
     expect(console.error).toHaveBeenCalled();
   }));
 
@@ -1313,6 +1290,21 @@ describe('SchemaDetailsComponent', () => {
     component.displayedFields.next(['selected','OBJECTNUMBER','MAT_TYPE', 'MAT_GRP']);
     component.doColumnsCollapsible(null, 'close', 'MAT_TYPE');
     expect(component.displayedFields.getValue()).toBeTruthy();
+
+  }));
+
+  it('getNodeTypeById()', async(()=>{
+
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+
+    expect(component.getNodeTypeById('1')).toEqual(SchemaExecutionNodeType.HEIRARCHY);
+    expect(component.getNodeTypeById('other')).toBeFalsy();
 
   }));
 });
