@@ -3,6 +3,7 @@ export const CONDITIONS = {
         desc: 'Common Operator',
         operators: [
             'EQUAL',
+            'NOT_EQUAL',
             'STARTS_WITH',
             'ENDS_WITH',
             'CONTAINS',
