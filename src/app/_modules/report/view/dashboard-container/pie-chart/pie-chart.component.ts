@@ -307,6 +307,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         }
       } else {
         finalVal[key] = key;
+      } if(this.pieWidget.getValue().metaData.picklist === '35') {
+        finalVal[key] = this.getFields(fldid, key);
       }
     });
 

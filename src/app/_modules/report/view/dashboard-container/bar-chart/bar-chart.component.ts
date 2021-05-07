@@ -330,6 +330,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }
       } else {
         finalVal[key] = key;
+      } if(this.barWidget.getValue().metaData.picklist === '35') {
+        finalVal[key] = this.getFields(fldid, key);
       }
     });
 

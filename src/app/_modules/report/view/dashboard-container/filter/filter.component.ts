@@ -190,7 +190,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
       } else {
         finalVal[key] = key;
-      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN' || this.filterWidget.getValue().metaData.picklist === '35') {
         finalVal[key] = this.getFields(fieldId, key);
       }
     });
