@@ -45,9 +45,8 @@
         <!-- map headers -->
         <mat-step [stepControl]="dataTableCtrl">
           <ng-template matStepLabel>Map fields</ng-template>
-          <mat-card class="mat-elevation-z0 upload-error" *ngIf="uploadError.status && uploadError.status">
-            {{uploadError.message}}
-          </mat-card>
+          <lib-banner status="error" *ngIf="uploadError.status && uploadError.message" [text]="uploadError.message">
+          </lib-banner>
           <div class="f-col upload-col" *ngIf="isUploaded && currentStep>0">
             <div class="f-col empty-state">
               <div class="empty-heading">Uploading...</div>
