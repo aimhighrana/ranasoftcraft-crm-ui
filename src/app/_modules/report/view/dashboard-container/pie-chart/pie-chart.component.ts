@@ -6,7 +6,6 @@ import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -68,7 +67,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     },
     plugins: {
       datalabels: {
-        display: true,
+        display: false,
         formatter: (value, ctx) => {
           if (this.total > 0) {
             return (value * 100 / this.total).toFixed(2) + '%';
@@ -183,24 +182,27 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
     // if showLegend flag will be true it show legend on Stacked bar widget
     if (this.pieWidget.getValue().isEnableLegend) {
-      this.pieChartOptions.legend = {
-        display: true,
-        position: this.pieWidget.getValue().legendPosition,
-        onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-          // call protype of stacked bar chart componenet
-          this.legendClick(legendItem);
-        },
+      this.chart.chart.options = {
+        legend: {
+          display: true,
+          position: this.pieWidget.getValue().legendPosition,
+          onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
+            // call protype of stacked bar chart componenet
+            this.legendClick(legendItem);
+          }
+        }
       }
     }
 
     //  if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.pieWidget.getValue().isEnableDatalabels) {
-      this.pieChartOptions.plugins = {
-        ChartDataLables,
-        datalabels: {
-          align: this.pieWidget.getValue().datalabelsPosition,
-          anchor: this.pieWidget.getValue().datalabelsPosition,
-          display: 'auto'
+      this.chart.chart.options = {
+        plugins: {
+          datalabels: {
+            display: true,
+            align: this.pieWidget.getValue().datalabelsPosition,
+            anchor: this.pieWidget.getValue().datalabelsPosition,
+          }
         }
       }
     }
@@ -249,7 +251,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
     if (this.pieWidget.getValue().isEnabledBarPerc) {
       this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
-      this.pieChartOptions = {
+      this.chart.chart.options = {
         plugins: {
           datalabels: {
             display: true,
@@ -536,8 +538,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     const excelData = [];
     for (let i = 0; i < this.lablels.length; i++) {
       const obj = {} as any;
-      obj[this.pieWidget.getValue().fieldId] = this.lablels[i] + '';
-      obj.Value = this.dataSet[i] + '';
+      obj[this.pieWidget.getValue().metaData ? this.pieWidget.getValue().metaData.fieldDescri : this.pieWidget.getValue().fieldId] = this.lablels[i] + '\t';
+      obj.Value = this.dataSet[i] + '\t';
       excelData.push(obj);
     }
     this.widgetService.downloadCSV('Pie-Chart', excelData);

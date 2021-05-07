@@ -118,7 +118,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
     const subs = this.reportingListWidget.subscribe(res => {
       if (res) {
-        this.filterCriteria = [];
         this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
       }
     });
@@ -167,6 +166,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.widgetHeader = returnData;
       this.widgetHeader.displayCriteria = returnData.displayCriteria ? returnData.displayCriteria : DisplayCriteria.CODE;
       this.pageSize=returnData.pageDefaultSize || 100;
+      if(returnData.pageDefaultSize) {
+        this.pageSizeOption = [returnData.pageDefaultSize,100,200,300,400];
+      } else {
+        this.pageSizeOption = [100,200,300,400];
+      }
     }, (error)=> {
       console.log('Something went wrong while getting header meta data', error.message)
     });

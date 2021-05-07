@@ -54,10 +54,10 @@ describe('DuplicateReportComponent', () => {
   }));
 
   it('onConfirm(), should failed to duplicate a report', async(() => {
-    component.reportName = 'Copy of Test';
+    component.reportNameCtrl.setValue('Copy of Test');
     component.data = {
       reportId: '724752745672',
-      reportName: component.reportName
+      reportName: component.reportNameCtrl.value
     };
     const mockReportRes = {
       acknowledged: true,
@@ -65,16 +65,17 @@ describe('DuplicateReportComponent', () => {
       reportId: null,
       reportName: null
     } as DuplicateReport;
-    spyOn(WidgetServiceSpy, 'copyReport').withArgs(component.data.reportId, component.reportName).and.returnValue(throwError({ error: { error: mockReportRes } }));
-    component.onConfirm();
-    expect(WidgetServiceSpy.copyReport).toHaveBeenCalledWith(component.data.reportId, component.reportName);
+    spyOn(WidgetServiceSpy, 'copyReport').withArgs(component.data.reportId, component.reportNameCtrl.value).and.returnValue(throwError({ error: { error: mockReportRes } }));
+    component.onConfirm({ detail: 1 });
+    expect(component.reportNameCtrl.valid).toBeTruthy();
+    expect(WidgetServiceSpy.copyReport).toHaveBeenCalledWith(component.data.reportId, component.reportNameCtrl.value);
   }));
 
   it('onConfirm(), should duplicate a report', async(() => {
-    component.reportName = 'Copy of Test';
+    component.reportNameCtrl.setValue('Copy of Test');
     component.data = {
       reportId: '724752745672',
-      reportName: component.reportName
+      reportName: component.reportNameCtrl.value
     };
     const mockReportRes = {
       acknowledged: true,
@@ -82,10 +83,33 @@ describe('DuplicateReportComponent', () => {
       reportId: '285173683172897819',
       reportName: 'Copy of Test'
     } as DuplicateReport;
-    spyOn(WidgetServiceSpy, 'copyReport').withArgs(component.data.reportId, component.reportName).and.returnValue(of(mockReportRes));
+    spyOn(WidgetServiceSpy, 'copyReport').withArgs(component.data.reportId, component.reportNameCtrl.value).and.returnValue(of(mockReportRes));
     spyOn(router, 'navigate');
-    component.onConfirm();
-    expect(WidgetServiceSpy.copyReport).toHaveBeenCalledWith(component.data.reportId, component.reportName);
+    component.onConfirm({ detail: 1 });
+    expect(component.reportNameCtrl.valid).toBeTruthy();
+    expect(WidgetServiceSpy.copyReport).toHaveBeenCalledWith(component.data.reportId, component.reportNameCtrl.value);
     expect(router.navigate).toHaveBeenCalledWith(['/home', 'report', 'dashboard-builder', mockReportRes.reportId]);
+  }));
+
+  it('onConfirm(), should not duplicate a report', async(() => {
+    // Test required Validator
+    component.reportNameCtrl.setValue('');
+    component.data = {
+      reportId: '724752745672',
+      reportName: component.reportNameCtrl.value
+    };
+    component.onConfirm({ detail: 1 });
+    expect(component.reportNameCtrl.valid).toBeFalsy();
+    expect(component.reportNameCtrl.errors.required).not.toBeUndefined();
+
+    // Test maxlength Validator
+    component.reportNameCtrl.setValue('Copy of Copy of Copy of Module report 26 April Testing the duplicate functionality Report RR2 – Front ENuie the duplicate functionality Report RR2');
+    component.data = {
+      reportId: '724752745672',
+      reportName: component.reportNameCtrl.value
+    };
+    component.onConfirm({ detail: 1 });
+    expect(component.reportNameCtrl.valid).toBeFalsy();
+    expect(component.reportNameCtrl.errors.maxlength).not.toBeUndefined();
   }));
 });

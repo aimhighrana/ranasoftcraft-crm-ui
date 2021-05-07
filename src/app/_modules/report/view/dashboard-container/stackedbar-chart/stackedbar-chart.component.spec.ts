@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette, Widget, WidgetType, DisplayCriteria} from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette, Widget, WidgetType, DisplayCriteria, AggregationOperator} from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
@@ -11,6 +11,7 @@ import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ChartLegendLabelItem } from 'chart.js';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedModule } from '@modules/shared/shared.module';
+import { MetadataModel } from '@models/schema/schemadetailstable';
 
 describe('StackedbarChartComponent', () => {
   let component: StackedbarChartComponent;
@@ -283,8 +284,7 @@ describe('StackedbarChartComponent', () => {
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
     component.stackBarWidget.next(barWidget);
-    const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}]
-
+    const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}];
     // call actual component method
     const actualResponse = component.transformDataSets(resBuckets);
 
@@ -316,7 +316,18 @@ describe('StackedbarChartComponent', () => {
 
     expect(actualResponse1.length).toEqual(1,`After applied datasetSize length should be equals to dataSetSize`);
 
+    const barWidget1 =  new StackBarChartWidget();
+    barWidget1.dataSetSize = 1;
+    component.stackBarWidget.next(barWidget1);
 
+    const actualResponse2 = component.transformDataSets(resBuckets);
+    expect(actualResponse2.length).toEqual(1,`Data should be interval in scale range`);
+
+    const barWidget2 =  new StackBarChartWidget();
+    barWidget2.orderWith = OrderWith.ROW_ASC;
+    component.stackBarWidget.next(barWidget2);
+    const actualResponse3 = component.transformDataSets(resBuckets);
+    expect(actualResponse3.length).toEqual(3,`Data should be interval in scale range`);
   }));
 
   it('getFieldsMetadaDescaxis1(), get description of axis 1', async(()=>{
@@ -437,5 +448,23 @@ describe('StackedbarChartComponent', () => {
     component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
     res = component.checkTextCode(test);
     expect(res).toEqual('1234 -- test');
+  }));
+
+  it('downloadCSV()', async(() => {
+    // mock data
+    const barWidget =  new StackBarChartWidget();
+    barWidget.fieldIdMetaData = {fieldDescri: 'Creation Date', fieldId: 'STAGE'} as MetadataModel;
+    barWidget.groupByIdMetaData = {fieldDescri: 'Status', fieldId: 'STATUS'} as MetadataModel;
+    barWidget.fieldId= 'STAGE';
+    barWidget.groupById= 'STATUS';
+    barWidget.aggregationOperator= AggregationOperator.GROUPBY;
+    component.stackBarWidget.next(barWidget);
+    component.codeTextaxis2 = {1557467445340: '5/10/2019'};
+    component.codeTextaxis1 = {INP: 'INP'};
+    component.arrayBuckets = [{doc_count: 1, key:{STAGE: 1557467445340,STATUS: 'INP'}}];
+    const excelData = [{'Creation Date': '5/10/2019\t', Status: 'INP\t',Value: 1}];
+    spyOn(widgetService,'downloadCSV').withArgs('StackBar-Chart', excelData);
+    component.downloadCSV();
+    expect(widgetService.downloadCSV).toHaveBeenCalledWith('StackBar-Chart', excelData);
   }));
 });

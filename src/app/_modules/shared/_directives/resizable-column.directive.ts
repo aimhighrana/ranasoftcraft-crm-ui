@@ -1,11 +1,14 @@
 import { Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[prosResizableColumn]'
+  selector: '[prosResizableColumn]',
+  exportAs: 'prosResizableColumn'
 })
 export class ResizableColumnDirective implements OnInit {
 
   @Input() index: number;
+
+  @Input() minWidth = 35;
 
   @Output() widthChanged = new EventEmitter<any>();
 
@@ -20,6 +23,8 @@ export class ResizableColumnDirective implements OnInit {
   private thead: HTMLElement;
 
   private pressed: boolean;
+
+  isColResizing: boolean;
 
   private width: number;
 
@@ -44,19 +49,24 @@ export class ResizableColumnDirective implements OnInit {
 
   onMouseDown = (event: MouseEvent) => {
     this.pressed = true;
+    this.isColResizing = true;
     this.startX = event.pageX;
     this.startWidth = this.column.offsetWidth;
   };
 
   onMouseMove = (event: MouseEvent) => {
-    const offset = 35;
+
     if (this.pressed && event.buttons) {
 
       this.renderer.addClass(this.table, 'resizing');
 
       // Calculate width of column
-      this.width = this.startWidth + (event.pageX - this.startX - offset);
+      const width = this.startWidth + (event.pageX - this.startX);
+      if(width < this.minWidth) {
+        return;
+      }
 
+      this.width = width;
       const tableCells = Array.from(
         this.table.querySelectorAll('.mat-row')
       ).map((row: any) => row.querySelectorAll('.mat-cell').item(this.index));
@@ -78,6 +88,7 @@ export class ResizableColumnDirective implements OnInit {
       if (this.width !== this.startWidth) {
         this.widthChanged.emit({columnId: this.column.id, width: this.width});
       }
+      setTimeout(() => this.isColResizing = false, 100);
     }
   };
 

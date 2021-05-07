@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
-import { Count, Criteria } from '../../../_models/widget';
+import { Count, Criteria, WidgetHeader } from '../../../_models/widget';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,7 +16,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
     super();
   }
 
-  headerDesc='';
+  widgetHeader: WidgetHeader = new WidgetHeader();
   count = 0;
   arrayBuckets :any[]
 
@@ -44,7 +44,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
 
   public getHeaderMetaData():void{
     const HeaderMetadataSub = this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
-      this.headerDesc = returnData.widgetName;
+      this.widgetHeader = returnData;
     }, error=>{
       console.error(`Error : ${error}`);
     });

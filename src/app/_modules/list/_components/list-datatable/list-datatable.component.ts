@@ -176,7 +176,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.sort.sortChange.subscribe(res => {
       const col = this.currentView.fieldsReqList.find(c => c.fieldId === res.active);
       if (col) {
-        col.sortDirection = SortDirection[res.direction] || null;
+        col.sortDirection = res.direction ? SortDirection[res.direction] : null;
         // update default column sort direction
         const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
           this.recordsPageIndex = 1;
@@ -232,6 +232,9 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get view details by id
    */
   getViewDetails(viewId) {
+    if(viewId === this.currentView.viewId) {
+      return;
+    }
     const view = this.userViews.concat(this.systemViews).find(v => v.viewId === viewId);
     const defaultViewObs = view && !view.default ?
        this.listService.updateDefaultView(this.moduleId, viewId).pipe(catchError(err => of(viewId))) : of(viewId);
@@ -353,10 +356,11 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
       const fieldsList = this.currentView.fieldsReqList.map(field => field.fieldId);
       this.getFldMetadata(fieldsList);
+      this.recordsPageIndex = 1;
       this.getTableData();
 
       const activeColumns: string[] = this.currentView.fieldsReqList.map(field => field.fieldId);
-      this.displayedColumns.next(this.staticColumns.concat(activeColumns));
+      this.displayedColumns.next(Array.from(new Set(this.staticColumns.concat(activeColumns))));
     }
 
   }
@@ -365,6 +369,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get table data records
    */
   getTableData() {
+    this.selection.clear();
     const viewId = this.currentView.viewId ? this.currentView.viewId : '';
     this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.mapFilerValues());
   }
@@ -373,8 +378,10 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get page records
    */
   onPageChange(event: PageEvent) {
-    this.recordsPageIndex = event.pageIndex;
-    this.getTableData();
+    if(this.recordsPageIndex !== event.pageIndex) {
+      this.recordsPageIndex = event.pageIndex;
+      this.getTableData();
+    }
   }
 
 
@@ -436,7 +443,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   isLargeCell(row: any, fieldId: string) {
-    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData > 50;
+    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData.length > 50;
   }
 
   get displayedRecordsRange(): string {
@@ -450,7 +457,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   onColumnsResize(event) {
     const column = this.currentView.fieldsReqList.find(c => c.fieldId === event.columnId);
-    if (column) {
+    if (column && event.width) {
       column.width = `${event.width}`;
 
       const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
