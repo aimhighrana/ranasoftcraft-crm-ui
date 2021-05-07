@@ -5,10 +5,15 @@
   overflow-x: auto;
   overflow-y: hidden;
   top: 95px;
+  left: 20px;
   z-index: 110;
 
-  .filter-table {
-    overflow: hidden;
-    height: 100%;
+  .filter-button {
+    align-items: flex-start;
+
+    .filter-table {
+      overflow: hidden;
+      height: 100%;
+    }
   }
 }

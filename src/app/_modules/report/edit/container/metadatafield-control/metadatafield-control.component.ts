@@ -205,8 +205,9 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
     if(this.moduleId) {
       if(this.isCustomdataset) {
         const allfldSub = this.reportService.getCustomDatasetFields(this.moduleId).subscribe(response => {
-          this.customFields = response;
-          this.customFieldsObs = of(response);
+          const res = this.transformCustomFields(response);
+          this.customFields = res;
+          this.customFieldsObs = of(res);
           if(this.selectedFldId) {
             this.preSelectedCtrl = this.returnSelectedFldCtrl(this.selectedFldId);
           }
@@ -426,5 +427,21 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    */
   selected(option:any) {
     this.selectionChange.emit(option);
+  }
+
+  transformCustomFields(response) {
+    const metaData = [];
+    if (response && this.widgetType === 'TIMESERIES') {
+      response.forEach(res => {
+        if (res.dataType === 'DATS' || res.dataType === 'DTMS') {
+          metaData.push(res);
+        }
+      });
+    } else {
+      response.forEach(res => {
+        metaData.push(res);
+      });
+    }
+    return metaData;
   }
 }

@@ -19,9 +19,9 @@
   </div>
   <div class="row-spacer"></div>
   <mat-card-content>
-    <canvas baseChart #chart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
+    <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
       [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [colors]="barChartColors"
-      [chartType]="orientation">
+      [chartType]="this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar'">
     </canvas>
   </mat-card-content>
 </mat-card>

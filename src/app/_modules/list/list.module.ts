@@ -10,6 +10,7 @@ import { GlobalSearchComponent } from './_components/global-search/global-search
 import { ListFilterComponent } from './_components/list-filter/list-filter.component';
 import { FilterSaveModalComponent } from './_components/filter-save-modal/filter-save-modal.component';
 import { FilterChipsComponent } from './_components/filter-chips/filter-chips.component';
+import { RelationDataSearchComponent } from './_components/relation-data-search/relation-data-search.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { FilterChipsComponent } from './_components/filter-chips/filter-chips.co
     GlobalSearchComponent,
     ListFilterComponent,
     FilterSaveModalComponent,
-    FilterChipsComponent
+    FilterChipsComponent,
+    RelationDataSearchComponent
   ],
   imports: [
     CommonModule,

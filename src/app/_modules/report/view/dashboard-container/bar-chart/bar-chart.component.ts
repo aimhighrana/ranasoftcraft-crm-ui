@@ -219,12 +219,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
     // set scale range and axis lebels
     this.setChartAxisAndScaleRange();
-
-      // Bar widget color
-      // this.barChartColors = [{
-      //   backgroundColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
-      //   borderColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
-      // }];
    }
 
    public getBarChartData(widgetId: number, critria: Criteria[]): void {
@@ -265,28 +259,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.chartLegend.forEach(legend=>{
       backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
     });
-    // to convert data into percentage
-    if (this.barWidget.getValue().isEnabledBarPerc) {
-      this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
-      this.barChartOptions = {
-        plugins: {
-          datalabels: {
-            display: true,
-            formatter: (value, ctx) => {
-              if (this.total > 0) {
-                return (value * 100 / this.total).toFixed(2) + '%';
-              }
-            },
-          }
-        }
-      }
-    }
+    console.log(this.chartLegend);
+
     this.barChartData = [{
       label: this.widgetHeader.widgetName,
       barThickness: 'flex',
       data: this.dataSet,
       backgroundColor:backgroundColorArray
-      // data: this.dataSet
     }];
 
     // compute graph size
@@ -514,8 +493,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     const excelData = [];
     for (let i = 0; i < this.lablels.length; i++) {
       const obj = {} as any;
-      obj[this.barWidget.getValue().fieldId] = this.lablels[i] + '';
-      obj.Value = this.dataSet[i] + '';
+      obj[this.barWidget.getValue().metaData ? this.barWidget.getValue().metaData.fieldDescri : this.barWidget.getValue().fieldId] = this.lablels[i] + '\t';
+      obj.Value = this.dataSet[i] + '\t';
       excelData.push(obj);
     }
     this.widgetService.downloadCSV('Bar-Chart', excelData);
