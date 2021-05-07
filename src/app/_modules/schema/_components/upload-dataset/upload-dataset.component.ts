@@ -1359,7 +1359,7 @@ get selectedRunningSchedule () {
    */
   callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
     const formObject = this.removeTempId(this.requestForm.value);
-    const runNow = formObject.runTime;
+    const runNow = Boolean(this.runningScheduleList.find(x => x.value === formObject.runTime)?.key === 'runSchemaOnce');
     delete formObject.objectId;
     delete formObject.file;
     delete formObject.fileSerialNo;
