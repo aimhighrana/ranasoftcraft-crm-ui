@@ -43,10 +43,25 @@ describe('ReportingListComponent', () => {
   it('getHeaderMetaData, return header data', async (() => {
     component.widgetId = 75656;
     const response: WidgetHeader = new WidgetHeader();
+    response.pageDefaultSize = 25;
+    response.displayCriteria = DisplayCriteria.TEXT;
     spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
     component.getHeaderMetaData();
     expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
+    expect(component.pageSizeOption).toEqual([25,100,200,300,400]);
+    expect(component.widgetHeader.displayCriteria).toEqual('TEXT');
+    expect(component.pageSize).toEqual(25);
+  }));
 
+  it('getHeaderMetaData, return header data', async (() => {
+    component.widgetId = 75656;
+    const response: WidgetHeader = new WidgetHeader();
+    spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
+    component.getHeaderMetaData();
+    expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
+    expect(component.pageSizeOption).toEqual([100,200,300,400]);
+    expect(component.widgetHeader.displayCriteria).toEqual('CODE');
+    expect(component.pageSize).toEqual(100);
   }));
 
   it('getListTableMetadata, return table data', async (() => {

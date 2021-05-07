@@ -37,7 +37,7 @@ describe('CountComponent', () => {
     spyOn(WidgetServiceSpy,'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(res));
     component.getHeaderMetaData();
     expect(WidgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
-    expect(component.headerDesc).toEqual(res.widgetName);
+    expect(component.widgetHeader.widgetName).toEqual(res.widgetName);
   }));
 
   it('getCountMetadata(), return countMeatadata of the widget', async(() => {

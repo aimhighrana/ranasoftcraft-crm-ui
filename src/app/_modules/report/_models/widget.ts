@@ -320,6 +320,7 @@ export interface WidgetTimeseries {
     showInPercentage : boolean;
     bucketFilter: string;
     startDate: string;
+    metaData: MetadataModel;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',

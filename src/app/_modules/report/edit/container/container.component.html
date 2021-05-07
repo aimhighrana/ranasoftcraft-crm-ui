@@ -1,4 +1,4 @@
-<div cdkScrollable class="root">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             Dashboard builder
@@ -86,7 +86,7 @@
             </mat-card>
 
 
-            <div class="property-col" *ngIf="showProperty">
+            <div cdkScrollable class="property-col" *ngIf="showProperty">
                 <div class="f-row col-heading">
                     <div class="display-heading-large">
                         {{ selStyleWid ? selStyleWid.widgetTitle : 'Untitled' }} properties
@@ -653,7 +653,7 @@
                             </ng-template>
 
                             <div class="f-col">
-                                <mat-checkbox color="primary" formControlName="isEnableDatalabels">Enable datalabels
+                                <mat-checkbox color="primary" formControlName="isEnableDatalabels"  (change)="checkEnabledBarPerc()">Enable datalabels
                                 </mat-checkbox>
                             </div>
 
@@ -836,7 +836,7 @@
                                                     <div class="f-col value-set">
                                                         <mat-label>Value</mat-label>
                                                         <mat-form-field appearance="outline">
-                                                            <input matInput formControlName="conditionFieldValue">
+                                                            <input matInput formControlName="conditionFieldValue" matTooltip="{{selStyleWid.defaultFilters[i].conditionFieldValue ? selStyleWid.defaultFilters[i].conditionFieldValue: ''}}" matTooltipPosition="right">
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-template>

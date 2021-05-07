@@ -22,7 +22,8 @@
                         (valueChange)="searchFieldSub.next($event)">
                     </lib-search>
                     <div class="row-spacer"></div>
-                    <div class="filters-list">
+                    <div class="filters-list" prosInfiniteScroll 
+                        bufferPercentage="20" (scrollEnd)="getModuleFldMetadata(true)">
                         <mat-list>
                             <mat-list-item class="f-row" *ngFor="let filter of suggestedFilters; let index=index">
                                 <div class="f-col" (click)="upsertFilter(filter.fieldId)">
@@ -44,7 +45,7 @@
                             <lib-text-line type="base" weight="strong" textColor="secondary">
                                 <span i18n="@@apply_filters">Apply filters...</span></lib-text-line>
                         </div>
-                        <mat-list prosInfiniteScroll bufferPercentage="20" (scrollEnd)="getModuleFldMetadata(true)">
+                        <mat-list>
                             <!-- Todo: hide already applied field filters -->
                             <mat-list-item *ngFor="let field of moduleFieldsMetatdata"
                                 (click)="upsertFilter(field.fieldId)">

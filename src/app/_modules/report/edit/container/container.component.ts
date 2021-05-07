@@ -1079,4 +1079,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue('');
     }
   }
+
+  checkEnabledBarPerc(){
+    if(this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
+        this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
+    }
+  }
 }

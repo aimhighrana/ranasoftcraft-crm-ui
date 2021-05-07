@@ -15,7 +15,7 @@ describe('TaskListService', () => {
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsProcessService', ['getInboxNodesCountUrl', 'saveTasklistVisitByUserUrl', 'saveOrUpdateTasklistHeadersUrl', 'getHeadersForNodeUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsProcessService', ['getInboxNodesCountUrl', 'saveTasklistVisitByUserUrl', 'saveOrUpdateTasklistHeadersUrl', 'getHeadersForNodeUrl', 'getTaskListDataUrl']);
     TestBed.configureTestingModule({
       providers: [TaskListService, HttpClientModule, HttpClientTestingModule, { provide: EndpointsProcessService, useValue: endpointSpy}],
       imports: [AppMaterialModuleForSpec, HttpClientTestingModule, HttpClientModule],
@@ -453,6 +453,27 @@ describe('TaskListService', () => {
     // mock http call
     const mockRequst = httpTestingController.expectOne(`${url}`);
     expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getTaskListData()', async(() => {
+    service = TestBed.inject(TaskListService);
+    const url = `getTaskListDataUrl`;
+    // mock url
+    endpointServiceSpy.getTaskListDataUrl.and.returnValue(url);
+
+    const response = {};
+
+    // actual service call
+    service.getTaskListData('inbox', 'en', 10, '').subscribe((actualResponse) => {
+      expect(actualResponse).not.toBe(null);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
     // verify http

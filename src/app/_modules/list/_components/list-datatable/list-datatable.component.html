@@ -106,10 +106,12 @@
                 </ng-template>
                 <ng-template #dynamic>
                     <ng-container [matColumnDef]="dynCol">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header [start]="getColumnSortDir(dynCol)"
+                        <mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="resizableColumn.isColResizing" [start]="getColumnSortDir(dynCol)"
                             [ngStyle]="{'width.px': getColumnWidth(dynCol)}"
                             [ngClass]="{'large-cell-header': isLargeHeader(dynCol)}"
-                            prosResizableColumn [index]="index"
+                            prosResizableColumn 
+                            #resizableColumn="prosResizableColumn"
+                            [index]="index"
                             (widthChanged)="onColumnsResize($event)"
                             [id]="dynCol">
                             {{ getFieldDesc(dynCol) }}

@@ -617,10 +617,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     const excelData = [];
     this.arrayBuckets.forEach(singleBucket=>{
       const obj = {};
-      obj[this.stackBarWidget.getValue().fieldIdMetaData ?this.stackBarWidget.getValue().fieldIdMetaData.fieldDescri : this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2 ? this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]] : '';
-      obj[this.stackBarWidget.getValue().groupByIdMetaData ?this.stackBarWidget.getValue().groupByIdMetaData.fieldDescri : this.stackBarWidget.getValue().groupById] = this.codeTextaxis1 ? this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]] : '';
-      obj[this.stackBarWidget.getValue().aggregationOperator] = singleBucket.doc_count;
-      excelData.push(obj)
+      obj[this.stackBarWidget.getValue().fieldIdMetaData ?this.stackBarWidget.getValue().fieldIdMetaData.fieldDescri : this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2 ? this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]] + '\t' : '';
+      obj[this.stackBarWidget.getValue().groupByIdMetaData ?this.stackBarWidget.getValue().groupByIdMetaData.fieldDescri : this.stackBarWidget.getValue().groupById] = this.codeTextaxis1 ? this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]] + '\t' : '';
+      obj[this.stackBarWidget.getValue().aggregationOperator ? this.stackBarWidget.getValue().aggregationOperator === 'GROUPBY' ? 'Value' : this.stackBarWidget.getValue().aggregationOperator : this.stackBarWidget.getValue().aggregationOperator] = singleBucket.doc_count;
+      excelData.push(obj);
     });
     this.widgetService.downloadCSV('StackBar-Chart',excelData);
   }
@@ -673,7 +673,15 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         finalDataSet = insideRange;
       }
     } else {
-      finalDataSet = resBuckets;
+      if(this.stackBarWidget.getValue().dataSetSize) {
+        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
+          if(resBuckets[i]) {
+              finalDataSet.push(resBuckets[i]);
+          }
+        }
+      } else {
+        finalDataSet = resBuckets;
+      }
     }
     return finalDataSet;
   }
