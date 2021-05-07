@@ -1140,13 +1140,27 @@ describe('SchemaDetailsComponent', () => {
       nodeType: SchemaExecutionNodeType.HEADER,
       childs: [
         {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY},
-        {nodeId: '2', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+        {nodeId: '2', nodeType: SchemaExecutionNodeType.GRID}
       ]
     } as SchemaExecutionTree;
     component.activeNode = component.executionTreeHierarchy;
 
+    component.metadata.next(
+      {
+        headers: {},
+        hierarchyFields: {
+          MTL_DESC: {fieldId:'MTL_DESC'}
+        },
+        gridFields: {
+          region: {fieldId: 'region'},
+        }
+      } as MetadataModeleResponse
+    );
+
     const response = [
-      {nodeId: 'header', nodeType:'HEADER', fieldsList: [{fieldId:'MTL_TYPE'}]}
+      {nodeId: 'header', nodeType:'HEADER', fieldsList: [{fieldId:'MTL_TYPE'}]},
+      {nodeId: '1', nodeType:'HEIRARCHY', fieldsList: []},
+      {nodeId: '2', nodeType:'GRID', fieldsList: []}
     ];
 
     spyOn(component, 'calculateDisplayFields');

@@ -1612,7 +1612,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
                     fldMap.fieldId = f;
                     fldMap.nodeId = node.nodeId;
                     fldMap.nodeType = nType;
-                    allFields.push(metadata.hierarchyFields[node.nodeId][f]);
+                    allFields.push(fldMap);
                   });
                 }
               } else if(nType === 'GRID') {
@@ -1624,7 +1624,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
                     fldMap.fieldId = f;
                     fldMap.nodeId = node.nodeId;
                     fldMap.nodeType = nType;
-                    allFields.push(metadata.gridFields[node.nodeId][f]);
+                    allFields.push(fldMap);
                   });
                 }
               } else {
