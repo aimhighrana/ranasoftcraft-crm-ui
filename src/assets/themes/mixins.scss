@@ -2104,6 +2104,14 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
   }
 }
 
+.date-picker-option .dropdown-option {
+  padding: initial;
+}
+
+.hide-input {
+  display: none;
+}
+
 mat-tooltip-component {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

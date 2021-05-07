@@ -611,7 +611,7 @@ describe('EndpointsRuleService', () => {
 
   it('getCreateUpdateSchemaActionsListUrl(), getCreateUpdateSchemaActionsListUrl', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.getCreateUpdateSchemaActionsListUrl()).toContain('/schema/actions/bulkcreate-update');
+    expect(serObj.getCreateUpdateSchemaActionsListUrl()).toContain('/schema/metadata/actions/bulkcreate-update');
   }));
 
   it('getFindActionsBySchemaUrl(), getFindActionsBySchemaUrl', async(() => {

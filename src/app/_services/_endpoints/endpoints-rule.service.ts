@@ -600,7 +600,7 @@ export class EndpointsRuleService {
   }
 
   public getCreateUpdateSchemaActionsListUrl(): string {
-    return this.origin + `/schema/actions/bulkcreate-update`;
+    return this.origin + `/schema/metadata/actions/bulkcreate-update`;
   }
 
   public getFindActionsBySchemaUrl(schemaId: string): string {
