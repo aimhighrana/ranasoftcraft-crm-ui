@@ -136,7 +136,8 @@ describe('PieChartComponent', () => {
     const eleRef = htmlnative.getElementsByTagName('canvas')[0];
     const baseChart = new BaseChartDirective(eleRef[0], null);
     baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
-    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    baseChart.options = { plugins: { datalabels: {}}, scales : {xAxes: [{}], yAxes : [{}]}};
+    baseChart.chart.options = baseChart.options;
     component.chart = baseChart;
     component.getPieConfigurationData();
     expect(component.pieWidget.getValue().isEnableDatalabels).toBe(true);

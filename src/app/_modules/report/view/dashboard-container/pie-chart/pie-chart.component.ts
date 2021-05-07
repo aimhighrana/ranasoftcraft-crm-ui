@@ -198,7 +198,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         display: true,
         align: this.pieWidget.getValue().datalabelsPosition,
         anchor: this.pieWidget.getValue().datalabelsPosition,
-      }
+      };
       this.chart.options.plugins.datalabels = this.pieChartOptions.plugins.datalabels;
       this.chart.chart.options.plugins.datalabels = this.pieChartOptions.plugins.datalabels;
     }
