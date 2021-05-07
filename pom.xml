@@ -8,6 +8,11 @@
 	<name>Admin page html js and css</name>
 	<description>Admin page html project</description>
 	<packaging>pom</packaging>
+	<properties>
+	 	 <sonar.projectKey>prospectasoftware_ngx-mdo</sonar.projectKey>
+	  	<sonar.organization>prospectasoftware</sonar.organization>
+	  	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+	</properties>
 	<build>
 		<finalName>ngx-mdo</finalName>
 		<!-- To use the plugin goals in your POM or parent POM -->
