@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FieldConfiguration, LookupData, LookupFormData, LookupFields } from '@models/schema/schemadetailstable';
 import { Observable, of } from 'rxjs';
 import { isEqual } from 'lodash';
@@ -8,6 +8,8 @@ import { map, startWith } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchemaService } from '@services/home/schema.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 
 @Component({
   selector: 'pros-lookup-rule',
@@ -45,12 +47,67 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    */
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
+  /**
+   * Array to store all Grid And Hirarchy records
+   */
+  @Input() allGridAndHirarchyData = [];
+
+  /**
+   * Tree child
+   */
+  @ViewChild('tree') tree = null;
+
+  /**
+   * tree control
+   */
+  treeControl = null;
+
+  /**
+   * treeFlattener
+   */
+  treeFlattener = null;
+
+  /**
+   * data source
+   */
+  dataSource = null;
+
+  /**
+   * has child
+   */
+  hasChild = null;
+
+  /**
+   * transformer = return tree object.
+   * @param node node
+   * @param level level
+   */
+  private _transformer = (node: any, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level,
+      id: node.id,
+      parent: node.parent,
+      allData: node.allData
+    };
+  }
+
   constructor(
     private snackBar: MatSnackBar,
     private schemaService: SchemaService,
     private globalDialogService: GlobaldialogService) { }
 
   ngOnInit(): void {
+    this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
+      node => node.level, node => node.expandable);
+
+    this.treeFlattener = new MatTreeFlattener(
+      this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    this.hasChild = (_: number, node: { name: string, level: number, expandable: boolean, id: string, parent: string }) => node.expandable;
+
     this.initForm();
     this.getObjectTypes();
     this.patchLookupData();
@@ -133,6 +190,39 @@ export class LookupRuleComponent implements OnInit, OnChanges {
   }
 
   /**
+   * While clicking on Tree node
+   * @param selectedNode selected node
+   */
+  clickTreeNode(selectedNode) {
+    const selectedNodes = {
+      fieldDescri: selectedNode.parent + '/' + selectedNode.name,
+      fieldId: selectedNode.id
+    }
+    const alreadyExists = this.selectedFields.find(item => item.fieldId === selectedNodes.fieldId);
+    if (alreadyExists) {
+      this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
+    } else {
+      this.selectedFields.push({
+        fieldDescri: selectedNode.parent + '/' + selectedNode.name,
+        fieldId: selectedNode.id,
+        fieldLookupConfig: null,
+        lookupTargetField: '',
+        lookupTargetText: '',
+        enableUserField: false
+      });
+      this.selectedFieldsCopy.push({
+        fieldDescri: selectedNode.parent + '/' + selectedNode.name,
+        fieldId: selectedNode.id,
+        fieldLookupConfig: null,
+        lookupTargetField: '',
+        lookupTargetText: '',
+        enableUserField: false
+      });
+    }
+    this.availableField.setValue('');
+  }
+
+  /**
    * method to get all object types from the api
    */
   getObjectTypes() {
@@ -203,16 +293,36 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * Initialize autocomplete for targetfield values
    */
   initTargetAutocomplete() {
-    this.filteredFields = this.availableField.valueChanges
-      .pipe(
-        startWith(''),
-        map(keyword => {
-          return keyword ?
-            this.fieldsObject.list.filter(item => {
-              return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
-            }) : this.fieldsObject.list;
-        }),
-      )
+    this.filteredFields = this.availableField.valueChanges.pipe(startWith(''), map(keyword => {
+      if (keyword) {
+        const filterData = [];
+        this.allGridAndHirarchyData.forEach(item => {
+          if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
+            || item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
+            const parentChildData = item;
+            if (item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
+              parentChildData.children = item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 });
+            }
+            filterData.push(parentChildData);
+          }
+        });
+        this.dataSource.data = filterData;
+        if (this.tree !== null && this.tree.treeControl !== null) {
+          this.tree.treeControl.expandAll();
+        }
+        return this.fieldsObject.list.filter(item => {
+          return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+        }).length >= 1 || this.dataSource.data.length === 0 ? this.fieldsObject.list.filter(item => {
+          return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+        }) : [{ fieldDescri: 'No header data found', fieldId: null }];
+      } else {
+        this.dataSource.data = this.allGridAndHirarchyData;
+        if (this.tree !== null && this.tree.treeControl !== null) {
+          this.tree.treeControl.collapseAll();
+        }
+        return this.fieldsObject.list;
+      }
+    }));
   }
 
   /**
@@ -240,7 +350,17 @@ export class LookupRuleComponent implements OnInit, OnChanges {
     } else {
       if (field.fieldId) {
         const fieldObj = this.fieldsObject.list.find((fld) => fld.fieldId === field.fieldId);
-        return fieldObj ? fieldObj.fieldDescri : '';
+        if (fieldObj && fieldObj.fieldDescri) {
+          return fieldObj.fieldDescri;
+        } else {
+          const fieldsselected = this.allGridAndHirarchyData.find(parent => { return parent.children.find(child => { return child.id === field.fieldId }) });
+          if (fieldsselected && fieldsselected.children.length >= 1) {
+            const fieldChild = fieldsselected.children.find(child => child.id === field.fieldId);
+            if (fieldChild && fieldChild.parent && fieldChild.name) {
+              return `${fieldChild.parent}/${fieldChild.name}`;
+            }
+          }
+        }
       }
     }
   }

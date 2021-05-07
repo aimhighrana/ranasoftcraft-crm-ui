@@ -18,6 +18,24 @@
                             [value]="fieldItem.fieldId">
                             {{fieldItem.fieldDescri}}
                         </mat-option>
+                        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" #tree>
+                            <!-- This is the tree node template for leaf nodes -->
+                            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding style="cursor: pointer;"
+                                (click)="clickTreeNode(node)">
+                                <!-- use a disabled button to provide padding for tree leaf -->
+                                <lib-button disabled="true"></lib-button>
+                                {{node.name}}
+                            </mat-tree-node>
+                            <!-- This is the tree node template for expandable nodes -->
+                            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                                    <mat-icon class="mat-icon-rtl-mirror">
+                                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                    </mat-icon>
+                                </button>
+                                {{node.name}}
+                            </mat-tree-node>
+                        </mat-tree>
                     </mat-autocomplete>
                 </mat-form-field>
             </div>

@@ -8,7 +8,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of, throwError } from 'rxjs';
-import { SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { ModuleInfo, SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
@@ -23,6 +23,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
+import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -327,7 +328,12 @@ describe('SchemaDetailsComponent', () => {
 
   it('should change tab status', () => {
 
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+
     spyOn(component, 'getData');
+    spyOn(component, 'getSchemaExecutionTree');
     spyOn(component, 'calculateDisplayFields');
     spyOn(router, 'navigate');
 
@@ -367,6 +373,12 @@ describe('SchemaDetailsComponent', () => {
 
 
   it('changeTabStatus() , change the tab and get load data ', async(() =>{
+
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+
+    spyOn(component, 'getSchemaExecutionTree');
     // mock data
     component.activeTab = 'error';
     const res = component.changeTabStatus('error');
@@ -424,10 +436,10 @@ describe('SchemaDetailsComponent', () => {
         previousValue:null
       },
       varinatId:{
-        currentValue:'0',
+        currentValue:'1',
         firstChange:true,
         isFirstChange:null,
-        previousValue:null
+        previousValue:'0'
       }
     } as SimpleChanges;
 
@@ -437,12 +449,22 @@ describe('SchemaDetailsComponent', () => {
     spyOn(component, 'getSchemaDetails');
     spyOn(component, 'manageStaticColumns');
     spyOn(component, 'getData');
+    spyOn(component, 'getVariantDetails');
+    spyOn(component, 'getSchemaExecutionTree');
+
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = '5454';
+    component.userDetails.userName = 'Test';
+    component.variantId = '1';
     component.ngOnChanges(changes);
+
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
+    expect(component.getVariantDetails).toHaveBeenCalled();
+    expect(component.getSchemaExecutionTree).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res=> {
       if(res) {
         expect(component.getData).toHaveBeenCalled();
@@ -501,11 +523,15 @@ describe('SchemaDetailsComponent', () => {
       }
     } as SimpleChanges;
     component.ngOnChanges(changes2);
+    component.userDetails = null;
+    component.variantId = '0';
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
+    expect(component.variantId).toEqual('0');
+    expect(component.executionTreeHierarchy).toEqual(undefined);
     component.dataSource.brMetadata.subscribe(res2=> {
       if(res2) {
         expect(component.getData).toHaveBeenCalled();
@@ -640,7 +666,7 @@ describe('SchemaDetailsComponent', () => {
       }
     });
 
-    spyOn(schemaDetailService, 'getAllSelectedFields').and.returnValues(of([]), throwError({message: 'api error'}));
+    spyOn(schemaDetailService, 'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
 
     const changes7 = {
       moduleId:{
@@ -726,7 +752,7 @@ describe('SchemaDetailsComponent', () => {
     component.schemaId = '246726532';
     component.userDetails  = {currentRoleId:'123'} as Userdetails;
 
-    const apiResponse = {acknowledge:false};
+    const apiResponse = true;
 
     spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId)
       .and.returnValues(of(apiResponse), of(apiResponse), throwError({message: 'api error'}));
@@ -736,7 +762,6 @@ describe('SchemaDetailsComponent', () => {
 
     spyOn(component, 'getData');
     component.selection.select(row);
-    apiResponse.acknowledge = true;
     component.approveRecords('all');
     expect(component.getData).toHaveBeenCalled();
 
@@ -897,7 +922,7 @@ describe('SchemaDetailsComponent', () => {
     component.selectedFieldsOb.next([]);
     expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalled();
 
-    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false}];
+    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false, isEditable:false}];
     component.selectedFieldsOb.next(selectedFields);
     component.metadata.next({headers: {}} as MetadataModeleResponse);
     expect(component.selectedFields).toEqual(selectedFields);
@@ -1067,7 +1092,7 @@ describe('SchemaDetailsComponent', () => {
     expect(component.sortOrder).toEqual({status: 'desc'});
 
     component.sort.sort({id: 'status'} as MatSortable);
-    expect(component.getData).toHaveBeenCalledTimes(2);
+    expect(component.getData).toHaveBeenCalledTimes(3);
 
   });
 
@@ -1121,4 +1146,173 @@ describe('SchemaDetailsComponent', () => {
     component.setStatus(event, 2)
     expect(component.setNavDivPositions).toHaveBeenCalled();
   });
+
+  it('getSchemaExecutionTree(), get schema execution tree...', async(()=>{
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+    spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
+    component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
+    expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab);
+
+    spyOn(console, 'error');
+    component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('nodeSelected()', async(()=>{
+
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY},
+        {nodeId: '2', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+    component.activeNode = component.executionTreeHierarchy;
+
+    spyOn(component, 'calculateDisplayFields');
+    spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.nodeSelected(component.activeNode);
+
+    const newNode = new SchemaExecutionTree();
+    newNode.nodeId = '1';
+    component.nodeSelected(JSON.parse(JSON.stringify(newNode)));
+    expect(component.calculateDisplayFields).toHaveBeenCalled();
+
+    spyOn(console, 'error');
+    newNode.nodeId = '2';
+    component.nodeSelected(JSON.parse(JSON.stringify(newNode)));
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('getExectionArray()', async(()=>{
+
+    component.activeNode = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+
+    const arr = component.getExectionArray(component.activeNode);
+    expect(arr.length).toEqual(2);
+  }));
+
+  it('getNodeParentsHierarchy()', async(()=>{
+
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY}
+      ]
+    } as SchemaExecutionTree;
+
+    expect(component.getNodeParentsHierarchy(null)).toEqual(['header']);
+
+    component.activeNode = component.executionTreeHierarchy;
+
+    expect(component.getNodeParentsHierarchy(component.activeNode.childs[0])).toEqual(['1','header']);
+  }));
+
+  it('uploadCorrectedDataCsv(), should open files', async(() => {
+    expect(component.uploadCorrectedDataCsv()).toBeTruthy();
+  }));
+
+  it('fileUploaded(), should close upload progress', async(() => {
+    component.fileUploaded('');
+    component.fileUploaded('test');
+    expect(component.isFileUploading).toBeFalse();
+  }));
+
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: 'Error', file: null});
+    spyOn(console, 'error');
+    component.fileChange(ev);
+
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: '', file: null});
+    spyOn(console, 'error');
+    component.fileChange(ev);
+
+    expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.getModuleInfo('');
+    expect(component.moduleInfo).toBeUndefined();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    const moduleInfo = new ModuleInfo();
+    spyOn(schemaService,'getModuleInfoByModuleId').withArgs('12345').and.returnValues(of([moduleInfo]), throwError({message: 'api error'}));
+    component.getModuleInfo('12345');
+    expect(component.moduleInfo).toBeDefined();
+  }));
+
+  it('enableIcon(), enable collapsiable icon ', async(()=>{
+    // mock data
+    component.columns.header = ['MAT_TYPE','MAT_GRP'];
+
+    expect(component.enableIcon('MAT_TYPE')).toEqual(false, 'If the column is not matched the return false');
+    expect(component.enableIcon('MAT_GRP')).toEqual(true, 'If the column is  matched the return true');
+  }));
+
+  it('loadNodeData(), load the node data based on node selected ', async(()=>{
+    spyOn(router, 'navigate');
+
+    // mock data
+    const node: SchemaExecutionTree = {nodeId: 'header', nodeType: 'HEADER'} as SchemaExecutionTree;
+    component.loadNodeData(node);
+    expect(router.navigate).toHaveBeenCalledWith([], {
+      relativeTo: component.activatedRouter,
+      queryParams: {
+        node: node.nodeId,
+        'node-level': node.nodeType
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
+    });
+  }));
+
+  it('doColumnsCollapsible(), do the column collapsible', async(()=>{
+    // mock data
+    component.displayedFields.next(['selected','___header__collapsible','MAT_TYPE', 'MAT_GRP']);
+    component.columns.header = ['MAT_TYPE','MAT_GRP','TEST'];
+
+    component.doColumnsCollapsible(null, 'open', '___header__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeId = 'grid';
+    component.displayedFields.next(['selected','___grid__collapsible','MAT_TYPE', 'MAT_GRP']);
+    component.columns.grid = ['MAT_TYPE','MAT_GRP','TEST'];
+
+    component.doColumnsCollapsible(null, 'open', '___grid__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeId = 'hie';
+    component.displayedFields.next(['selected','MAT_TYPE', 'MAT_GRP']);
+    component.columns.hie = ['MAT_TYPE','MAT_GRP','TEST'];
+
+    component.doColumnsCollapsible(null, 'open', '___hierarchy__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+
+    // for close state ....
+
+    component.displayedFields.next(['selected','OBJECTNUMBER','MAT_TYPE', 'MAT_GRP']);
+    component.doColumnsCollapsible(null, 'close', 'MAT_TYPE');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+  }));
 });

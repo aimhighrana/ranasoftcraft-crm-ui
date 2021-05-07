@@ -43,7 +43,7 @@ describe('NewSchemaCollaboratorsComponent', () => {
                 { provide: FormBuilder, useValue: formBuilder },
 
                 { provide: MatDialogRef, useValue: {} },
-                { provide: MAT_DIALOG_DATA, useValue: [] },
+                { provide: MAT_DIALOG_DATA, useValue: {selectedSubscibersList: ['test']} },
                 SchemaDetailsService
             ]
         })

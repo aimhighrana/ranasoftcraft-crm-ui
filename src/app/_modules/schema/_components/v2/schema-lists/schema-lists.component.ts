@@ -71,7 +71,13 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
   private getRouteParams() {
     const activatesub = this.activatedRoute.params.subscribe((params) => {
       this.moduleId = params.moduleId;
-      if(this.moduleId) {
+      if (this.moduleId) {
+        this.moduleData = {
+          moduleDesc: '',
+          moduleId: '',
+          schemaLists: []
+        };
+        this.getModuleInfo();
         this.getSchemaList();
       }
     });
@@ -83,18 +89,31 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
    */
   public getSchemaList() {
     const schmeaInfoByModuleId = this.schemaService.getSchemaInfoByModuleId(this.moduleId).subscribe((moduleData) => {
-      this.moduleData = moduleData;
+      this.moduleData.schemaLists = moduleData.schemaLists;
     }, error => {
       console.error('Error: {}', error.message);
     });
+
     this.subscriptions.push(schmeaInfoByModuleId);
   }
 
+  public getModuleInfo() {
+    const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      const module = moduleData[0];
+      if (module) {
+        this.moduleData.moduleDesc = module.moduleDesc;
+        this.moduleData.moduleId = module.moduleId;
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+    this.subscriptions.push(moduleInfoByModuleId);
+  }
   /**
    * Function to open sidesheet to Upload data
    */
   public openUploadSideSheet() {
-    this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}]);
+    this.router.navigate([{ outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}` } }]);
   }
 
   /**

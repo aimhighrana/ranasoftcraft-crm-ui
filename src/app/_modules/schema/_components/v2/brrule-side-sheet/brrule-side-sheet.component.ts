@@ -19,6 +19,7 @@ import { ValidationError } from '@models/schema/schema';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { RuleDependentOn } from '@models/collaborator';
+import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -594,7 +595,7 @@ export class BrruleSideSheetComponent implements OnInit {
       udrTreeData: '',
       weightage: br.brWeightage,
       categoryId: br.categoryId,
-      transformationRuleType: '',
+      transformationRuleType: ''
     };
 
     let patchList = [];
@@ -981,6 +982,33 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   close() {
     this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], {queryParamsHandling: 'preserve'});
+  }
+  /**
+   * function to set form values from mat auto complete
+   */
+  selectSingle(form: FormGroup, controlName: string, $event) {
+    form.controls[controlName].setValue($event.option.value);
+  }
+
+  /**
+   * function to display category name in mat auto complete
+   */
+  displayCategoryFn(value?: string) {
+    return value ? this.categoryList.find(category => `${category.categoryId}` === `${value}`)?.categoryDesc : '';
+  }
+
+  /**
+   * function to display rule desc in mat auto complete
+   */
+   displayRuleFn(value?: string) {
+    return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
+  }
+
+  /**
+   * function to display Regex name in mat auto complete
+   */
+   displayRegexFn(value?: string) {
+    return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
   }
 
   /**
@@ -1451,5 +1479,20 @@ export class BrruleSideSheetComponent implements OnInit {
     setTimeout(() => {
       this.validationError.status = false;
     }, 3000)
+  }
+
+  /**
+   * Update udr node fieldids .....
+   * @param field selected field ctrl
+   * @param controlIndex parent ctrl index
+   * @param childElementCtrl child ctrl index ...
+   */
+   udrFieldSelectionChange(field: Metadata[] , controlIndex: number, childElementCtrl?: number) {
+    if(childElementCtrl !== undefined) {
+      this.getChildAsControl(controlIndex).at(childElementCtrl).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');
+    } else {
+      this.udrNodeArray().at(controlIndex).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');
+    }
+    console.log(this.udrNodeArray());
   }
 }

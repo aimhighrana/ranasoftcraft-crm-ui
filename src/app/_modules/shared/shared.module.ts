@@ -81,6 +81,8 @@ import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
 import { ResizableColumnDirective } from './_directives/resizable-column.directive';
 import { DateFormatPipe } from './_pipes/date-format.pipe'
+import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
+
 @NgModule({
   declarations: [
     // directives
@@ -125,6 +127,7 @@ import { DateFormatPipe } from './_pipes/date-format.pipe'
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
+    GenericFieldControlComponent
   ],
   imports: [
     // ng modules
@@ -270,7 +273,8 @@ import { DateFormatPipe } from './_pipes/date-format.pipe'
     SubscriberInviteComponent,
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
-    AutoCompleteScrollDirective
+    AutoCompleteScrollDirective,
+    GenericFieldControlComponent
   ],
   providers: [
     TitleCasePipe

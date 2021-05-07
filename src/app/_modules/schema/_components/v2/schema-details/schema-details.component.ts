@@ -6,7 +6,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab, ModuleInfo } from '@models/schema/schemalist';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -23,6 +23,9 @@ import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
+import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { sortBy } from 'lodash';
+import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 
 @Component({
   selector: 'pros-schema-details',
@@ -190,8 +193,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban' }
   ] as SchemaTableAction[];
 
   /**
@@ -212,8 +215,38 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   subscribers: Subscription[] = [];
 
+  activeNode: SchemaExecutionTree = new SchemaExecutionTree();
+
+  // holds execution tree details of schema...
+  executionTreeHierarchy: SchemaExecutionTree;
+
+  /**
+   * holds file upload progress screen show/hide status
+   */
+  isFileUploading: boolean;
+
+  /**
+   * holds module info
+   */
+  moduleInfo: ModuleInfo;
+
+  /**
+   * All selected columns , header , hierrachy or grid as a key and string [] as a columns
+   */
+  columns: any = {};
+
+  /**
+   * Selected node id ....
+   */
+  nodeId = 'header';
+
+  /**
+   * Selected node type ...
+   */
+  nodeType = 'HEADER';
+
   constructor(
-    private activatedRouter: ActivatedRoute,
+    public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
     private router: Router,
     private sharedServices: SharedServiceService,
@@ -242,6 +275,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
+      this.getModuleInfo(this.moduleId);
     }
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
@@ -268,14 +302,25 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.variantId = '0';
+      }
+      if (this.userDetails) {
+        this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
+      } else {
+        this.executionTreeHierarchy = new SchemaExecutionTree();
       }
     }
 
     /**
      * Get all user selected fields based on default view ..
      */
-    this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
-      this.selectedFieldsOb.next(res ? res : [])
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.executionTreeHierarchy)).subscribe(res => {
+      const allFields = [];
+      if(res && res.length) {
+        res.forEach(node => allFields.push(...node.fieldsList));
+      }
+      this.selectedFieldsOb.next(allFields);
     }, error => console.error(`Error : ${error}`));
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
@@ -309,6 +354,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   ngOnInit(): void {
+
+    this.activatedRouter.queryParamMap.subscribe(ar=>{
+      this.nodeId = ar.get('node') ? ar.get('node') : '';
+      this.nodeType = ar.get('node-level') ? ar.get('node-level') : '';
+      this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+    });
+
+
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
         this.getDataScope(res); // Get Data scope..
@@ -393,9 +447,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    this.userService.getUserDetails().subscribe(res=>{
+    const userDataSub = this.userService.getUserDetails().subscribe(res=>{
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
+
+    const userDataForSchemaTree = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(res=>{
+      this.getSchemaExecutionTree(res.plantCode, res.userName);
+    }, err=> console.log(`Error ${err}`));
+
+    this.subscribers.push(userDataForSchemaTree);
+    this.subscribers.push(userDataSub);
 
     /**
      * inline search changes
@@ -427,6 +488,20 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
       console.error(`Error : ${error}`);
+    });
+    this.subscribers.push(sub);
+  }
+
+  /**
+   * Call service to get schema execution tree
+   */
+  getSchemaExecutionTree(plantCode, userName) {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
+      this.executionTreeHierarchy = res;
+      this.activeNode = res;
+      }, error => {
+      this.executionTreeHierarchy = new SchemaExecutionTree();
+      console.error(error);
     });
     this.subscribers.push(sub);
   }
@@ -487,29 +562,121 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    *
    */
   calculateDisplayFields(): void {
-    const allMDF = this.metadata.getValue();
+
+    const metaFld = this.getAllNodeFields(this.activeNode);
+
     const fields = [];
     const select = [];
     const metadataLst: any = {};
     this.startColumns.forEach(col => fields.push(col));
-    for (const headerField in allMDF.headers) {
-      if (allMDF.headers.hasOwnProperty(headerField)) {
-        // if selectedFields is blank then load all fields
-        // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
-        //   select.push(headerField);
-        // }
-        // else
+    for (const headerField in metaFld) {
+      if (metaFld.hasOwnProperty(headerField)) {
         const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
         if (fields.indexOf(headerField) < 0 && (index !== -1)) {
           select[index] = headerField;
         }
-        metadataLst[headerField] = allMDF.headers[headerField];
+        metadataLst[headerField] = metaFld[headerField];
       }
     }
-    // TODO for hierarchy and grid logic ..
+
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
+    // push header columns
+    this.columns.header = select;
     this.displayedFields.next(fields);
+    console.log(this.displayedFields.getValue());
+  }
+
+  getAllNodeFields(node: SchemaExecutionTree) {
+
+    if(!node || !node.nodeId) {
+      return this.metadata.getValue() ? this.metadata.getValue().headers: {};
+    }
+    let fields = {};
+    const parentNode = this.getParentNode(node.nodeId);
+    if(parentNode) {
+      if (node.nodeType === SchemaExecutionNodeType.HEADER) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      } else if (node.nodeType === SchemaExecutionNodeType.HEIRARCHY) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().hierarchyFields[node.nodeId] || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      } else if (node.nodeType === SchemaExecutionNodeType.GRID) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().gridFields[node.nodeId] || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      }
+      console.log('fields from get all fields', parentNode);
+    } else {
+      if (node.nodeType === SchemaExecutionNodeType.HEADER) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
+      } else if (node.nodeType === SchemaExecutionNodeType.HEIRARCHY) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().hierarchyFields[node.nodeId] || {} : {};
+      } else if (node.nodeType === SchemaExecutionNodeType.GRID) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().gridFields[node.nodeId] || {} : {};
+      }
+      Object.keys(fields).forEach(f => {
+        fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+      });
+    }
+
+    return fields;
+  }
+
+  getParentNode(nodeId) {
+    const executionTreeArray = this.getExectionArray(this.executionTreeHierarchy) || [];
+    const node = executionTreeArray.find(n => (n.nodeId === nodeId));
+    if(node && node.parentNodeId) {
+      return executionTreeArray.find(n => n.nodeId === node.parentNodeId);
+    }
+    return null;
+  }
+
+  /**
+   * Map schema execution tree to an array
+   * @param node root node
+   * @param parentNodeId parent id
+   * @returns execution array
+   */
+  getExectionArray(node: SchemaExecutionTree, parentNodeId?: string) {
+    let executionTreeArray = [];
+    const index = executionTreeArray.findIndex(n => n.nodeId === node.nodeId) ;
+    if(index !== -1){
+      executionTreeArray[index] = {...node, parentNodeId} ;
+    } else {
+      executionTreeArray.push({...node, parentNodeId});
+    }
+
+    if(node && node.childs && node.childs.length) {
+      node.childs.forEach(child => {
+        executionTreeArray =  executionTreeArray.concat(this.getExectionArray(child, node.nodeId));
+      })
+    }
+
+    return executionTreeArray;
+  }
+
+  getNodeParentsHierarchy(childNode: SchemaExecutionTree) {
+    if(!childNode || !childNode.nodeId) {
+      return ['header'];
+    }
+    const parentNode = this.getParentNode(childNode.nodeId);
+    if(parentNode) {
+      return [childNode.nodeId].concat(this.getNodeParentsHierarchy(parentNode));
+    } else {
+      return ['header'];
+    }
   }
 
 
@@ -527,6 +694,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.requestStatus = this.activeTab;
     request.filterCriterias = filterCriteria;
     request.sort = sort;
+    request.nodeId = this.nodeId ? this.nodeId : '';
+    request.nodeType = this.nodeType ? this.nodeType :'';
     request.isLoadMore = isLoadMore ? isLoadMore : false;
     this.dataSource.getTableData(request);
   }
@@ -561,7 +730,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
-      editActive: true };
+      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode) };
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
@@ -570,11 +739,29 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Method for download error or execution logs
    */
   downloadExecutionDetails() {
-    const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
-    downloadLink.setAttribute('target', '_blank');
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    const data = {
+      moduleId: this.moduleId,
+      schemaId: this.schemaId,
+      runId: this.schemaInfo.runId,
+      requestStatus: this.activeTab,
+      executionTreeHierarchy: this.executionTreeHierarchy
+    }
+
+    const ref = this.matDialog.open(DownloadExecutionDataComponent, {
+      width: '600px',
+      data
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if(res) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = this.endpointservice.downloadExecutionDetailsByNodesUrl(this.schemaId, this.activeTab, res);
+        console.log(downloadLink.href);
+        downloadLink.setAttribute('target', '_blank');
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      }
+    });
 
   }
 
@@ -587,8 +774,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId) {
+      return;
+    }
+
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && !field.editable) {
+    if (field && !field.isEditable) {
       console.log('Edit is disabled for this field ! ', fldid);
       return;
     }
@@ -754,9 +945,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
-      if (res.acknowledge) {
+      if (res === true) {
         this.getData();
         this.selection.clear();
+        this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -789,6 +981,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
       if(res && res.acknowledge) {
+        this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.getData();
             this.selection.clear();
@@ -932,17 +1125,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   getFieldInputType(fieldId) {
 
-    if (this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
+    if (this.metadataFldLst[fieldId] && this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
       return this.FIELD_TYPE.NUMBER;
     }
-    if (this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
+    if (this.metadataFldLst[fieldId] && this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
       return this.FIELD_TYPE.DATE;
     }
-    if ((this.metadataFldLst[fieldId].isCheckList === 'false')
+    if (this.metadataFldLst[fieldId] && (this.metadataFldLst[fieldId].isCheckList === 'false')
       && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
       return this.FIELD_TYPE.SINGLE_SELECT;
     }
-    if ((this.metadataFldLst[fieldId].isCheckList === 'true')
+    if (this.metadataFldLst[fieldId] && (this.metadataFldLst[fieldId].isCheckList === 'true')
       && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
       return this.FIELD_TYPE.MULTI_SELECT;
     }
@@ -1138,6 +1331,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   uploadCorrectedData() {
     this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: this.schemaId, runid: this.schemaInfo.runId}});
   }
+
+  /**
+   * Opens files in local system for uploading csv
+   */
+  uploadCorrectedDataCsv() {
+    if (document.getElementById('uploadFileCtrl')) {
+      document.getElementById('uploadFileCtrl').click();
+    }
+
+    return true;
+  }
+
   /**
    * function to toggle the icon
    * and emit the toggle event
@@ -1197,5 +1402,241 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     grabberElement.style.right = '0%';
     this.navscroll.nativeElement.appendChild(grabberElement);
 
+  }
+
+  nodeSelected(node: SchemaExecutionTree) {
+    if(node.nodeId === this.activeNode.nodeId) {
+      return;
+    }
+    this.activeNode = node;
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(node))
+      .subscribe(res => {
+        const allFields = [];
+        if(res && res.length) {
+          res.forEach(n => allFields.push(...n.fieldsList));
+        };
+        this.selectedFields = sortBy(allFields, 'order');
+        this.calculateDisplayFields();
+      }, error => {
+        console.error(`Error:: ${error.message}`);
+      });
+  }
+
+  /**
+   * uploads csv file
+   * @param evt file event
+   */
+  fileChange(evt: Event) {
+    const validResponse = this.checkForValidFile(evt);
+    if (validResponse.file) {
+      const activeNodeId = this.activeNode.nodeId || 'header';
+      const activeNodeType = this.activeNode.nodeType || 'HEADER';
+      const moduleDesc = this.moduleInfo.moduleDesc ? `${this.moduleInfo.moduleDesc} Number` : '';
+      this.schemaDetailService.uploadCsvFileData(validResponse.file, this.schemaId, activeNodeId, activeNodeType, '', moduleDesc)
+        .subscribe(res => {
+          if (res) {
+            this.isFileUploading = true;
+          }
+      }, error => {
+        console.log(`Error:: ${error.message}`);
+      });
+    } else {
+      const errMsg = validResponse.errMsg || 'Unable to upload file';
+      this.transientService.open(`Error :: ${errMsg}`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${errMsg}`);
+    }
+  }
+
+  /**
+   * Validates for valid csv file and file size limit
+   * @param evt file event
+   * @returns returns file or error message
+   */
+  checkForValidFile(evt: Event) {
+    const res = {
+      errMsg: '',
+      file: null
+    };
+    if (evt !== undefined) {
+      const target: DataTransfer = (evt.target) as unknown as DataTransfer;
+      if (target.files.length !== 1) {
+        res.errMsg = 'Cannot use multiple files';
+      }
+      // check file type
+      let type = '';
+      try {
+        type = target.files[0].name.split('.')[1];
+      } catch (ex) {
+        console.error(ex)
+      }
+      if (type === 'xlsx' || type === 'xls' || type === 'csv') {
+        // check size of file
+        const size = target.files[0].size;
+
+        const sizeKb = Math.round((size / 1024));
+        if (sizeKb > (10 * 1024)) {
+          res.errMsg = `File size too large , upload less then 10 MB`;
+        }
+        res.file = target.files[0];
+      } else {
+        res.errMsg = `Unsupported file format, allowed file formats are .xlsx, .xls and .csv`;
+      }
+    }
+
+    return res;
+  }
+
+  /**
+   * Closes file upload progress screen along with a toast message
+   * @param msg output message from upload progress screen
+   */
+  fileUploaded(msg) {
+    this.isFileUploading = false;
+    if (msg) {
+      this.transientService.open(msg, 'Okay', { duration: 2000 });
+    }
+  }
+
+  /**
+   * get module info based on module id
+   * @param id module id
+   */
+  getModuleInfo(id) {
+    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+      if (res && res.length) {
+        this.moduleInfo = res[0];
+      }
+    }, error => {
+      console.log(`Error:: ${error.message}`)
+    });
+  }
+
+  /**
+   * Navigate the detail page based on node clicked ....
+   * @param node selected / clicked node details
+   */
+   loadNodeData(node: SchemaExecutionTree) {
+    console.log(node);
+    this.router.navigate([], {
+      relativeTo: this.activatedRouter,
+      queryParams: {
+        node: node.nodeId,
+        'node-level': node.nodeType
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
+    });
+  }
+  /**
+   * Enable collapsiable icon ...
+   * @param col column ...
+   * @returns will return true  or false
+   */
+  enableIcon(col: string): boolean {
+    let found = false;
+    if(this.columns.header.indexOf(col) === this.columns.header.length-1) {
+      found = true;
+    }
+    return found;
+  }
+  /**
+   * Manage column collapsiable or expandable ..
+   * @param evt events
+   * @param state state will be open || close based on that manage columns
+   * @param fld operation on this field...
+   */
+  doColumnsCollapsible(evt, state: string, fld: string) {
+    if(state === 'open') {
+
+      switch(fld) {
+        case '___header__collapsible':
+          const __header_coll_indx = this.displayedFields.getValue().indexOf('___header__collapsible');
+          const array = this.displayedFields.getValue().splice(0,__header_coll_indx);
+          array.push(...this.columns.header);
+          if(this.nodeId !== 'header') {
+            array.push(...this.columns[this.nodeId]);
+          }
+          this.displayedFields.next(array);
+          break;
+
+        case '___grid__collapsible':
+          const __grid_coll_indx = this.displayedFields.getValue().indexOf('___grid__collapsible');
+          const grid_array = this.displayedFields.getValue().splice(0,__grid_coll_indx);
+          grid_array.push(...this.columns[this.nodeId]);
+          this.displayedFields.next(grid_array);
+          break;
+
+        case '___hierarchy__collapsible':
+          const __hie_coll_indx = this.displayedFields.getValue().indexOf('___hierarchy__collapsible');
+          const hie_array = this.displayedFields.getValue().splice(0,__hie_coll_indx);
+          hie_array.push(...this.columns[this.nodeId]);
+          this.displayedFields.next(hie_array);
+          break;
+
+      }
+
+    } else if(state === 'close') {
+      const objNrIdx = this.displayedFields.getValue().indexOf('OBJECTNUMBER');
+      const array = this.displayedFields.getValue().splice(0,objNrIdx+1);
+      let keyFor = null;
+      for(const cl in this.columns) {
+        if(this.columns[cl].indexOf(fld) !== -1) {
+          keyFor = cl;
+          break;
+        }
+      }
+      if(keyFor === 'header') {
+        array.push('___header__collapsible');
+        if(this.nodeId !== 'header') {
+          array.push(...this.columns[this.nodeId]);
+        }
+      } else if(keyFor !== null && this.nodeType === 'GRID') {
+        array.push(...this.columns.header);
+        array.push('___grid__collapsible');
+      } else if(keyFor !== null && this.nodeType === 'HEIRARCHY') {
+        array.push(...this.columns.header);
+        array.push('___hierarchy__collapsible');
+      }
+      this.displayedFields.next(array);
+    }
+  }
+  /**
+   * Update the selected columns ... based on selected node
+   * @param nodeId selected node id ...
+   * @param nodeType selected node type ...
+   */
+  updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
+    const metadata = this.metadata.getValue();
+    if(nodeType === 'HEIRARCHY') {
+      if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(nodeId)) {
+        const fields = Object.keys(metadata.hierarchyFields[nodeId]);
+        this.columns[nodeId] = fields.splice(0,10);
+        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
+        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
+        updatedArray.push(...this.columns.header);
+        updatedArray.push(...this.columns[nodeId]);
+        this.displayedFields.next(updatedArray);
+        // TODO
+        this.columns[nodeId].forEach(fld=>{
+          this.metadataFldLst[fld] = metadata.hierarchyFields[nodeId][fld];
+        });
+      }
+    } else if(nodeType === 'GRID') {
+      if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(nodeId)) {
+        const fields = Object.keys(metadata.gridFields[nodeId]);
+        this.columns[nodeId] = fields;
+        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
+        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
+        updatedArray.push(...this.columns.header);
+        updatedArray.push(...this.columns[nodeId]);
+        this.displayedFields.next(updatedArray);
+        // TODO
+        fields.forEach(fld=>{
+          this.metadataFldLst[fld] = metadata.gridFields[nodeId][fld];
+        });
+      }
+    } else {
+      console.log('For heade ref ... api call');
+    }
   }
 }

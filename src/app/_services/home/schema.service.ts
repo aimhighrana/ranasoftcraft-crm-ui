@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
+import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
-import { EndpointsClassicService } from '../_endpoints/endpoints-classic.service';
-import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
+import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,8 @@ export class SchemaService {
   private availableWeightage: BehaviorSubject<number> = new BehaviorSubject(null);
   constructor(
     private http: HttpClient,
-    private endpointService: EndpointsClassicService,
+    private endpointService: EndpointsRuleService,
+    private endpointClassic: EndpointsClassicService,
     private any2tsService: Any2tsService,
   ) { }
 
@@ -77,26 +79,7 @@ export class SchemaService {
     return this.excelValues.getValue();
   }
 
-  public getAllSchemaGroup(): Observable<SchemaGroupResponse[]> {
-    return this.http.get(this.endpointService.getSchemaGroupsUrl()).pipe(map(data => {
-      return this.any2tsService.any2SchemaGroupResponse(data);
-    }));
-  }
-  public getSchemaGroupDetailsBySchemaGrpId(schemaGroupId: string): Observable<SchemaGroupDetailsResponse> {
-    return this.http.get<any>(this.endpointService.getSchemaGroupDetailsByGrpIdUrl(schemaGroupId)).pipe(map(data => {
-      return this.any2tsService.any2SchemaDetails(data);
-    }));
-  }
 
-  public getSchemaGroupCounts(groupId: number): Observable<SchemaGroupCountResponse> {
-    return this.http.get<any>(this.endpointService.getSchemaGroupCountUrl(groupId)).pipe(map(data => {
-      return this.any2tsService.any2SchemaGroupCountResposne(data);
-    }));
-  }
-
-  public createSchemaGroup(createSchemaGroupRequest: CreateSchemaGroupRequest): Observable<any> {
-    return this.http.post<any>(this.endpointService.getCreateSchemaGroupUrl(), createSchemaGroupRequest);
-  }
 
   public getAllSchemabymoduleids(getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq): Observable<GetAllSchemabymoduleidsRes[]> {
     return this.http.post<any>(this.endpointService.getAllSchemabymoduleids(), getAllSchemabymoduleidsReq).pipe(map(data => {
@@ -105,24 +88,17 @@ export class SchemaService {
   }
 
   public getAllObjectType(): Observable<ObjectTypeResponse[]> {
-    return this.http.get<any>(this.endpointService.getAllObjecttypeUrl()).pipe(map(data => {
+    return this.http.get<any>(this.endpointClassic.getAllObjecttypeUrl()).pipe(map(data => {
       return this.any2tsService.any2ObjectType(data);
     }));
   }
 
-  public getSchemaGroupDetailsByGroupId(schemaGroupId: string): Observable<SchemaGroupWithAssignSchemas> {
-    return this.http.get<any>(this.endpointService.groupDetailswithAssignedschemaUrl(schemaGroupId)).pipe(map(response => {
-      return this.any2tsService.any2SchemaGroupWithAssignSchemasResponse(response);
-    }));
-  }
+
 
   public scheduleSchemaCount(schemaId: string): Observable<number> {
-    return this.http.get<any>(this.endpointService.scheduleSchemaCount(schemaId));
+    return this.http.get<any>(this.endpointClassic.scheduleSchemaCount(schemaId));
   }
 
-  public deleteSchemaGroup(groupId: string): Observable<boolean> {
-    return this.http.delete<boolean>(this.endpointService.deleteSchemaGroupUrl(groupId));
-  }
 
   public uploadUpdateFileData(file: File, fileSno: string): Observable<string> {
     const formData = new FormData();
@@ -243,8 +219,16 @@ export class SchemaService {
    * Get schema list info by moduleId
    * @param moduleId get data based on this id
    */
-  public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
+   public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
     return this.http.get<SchemaListModuleList>(this.endpointService.getSchemaInfoByModuleIdUrl(moduleId));
+  }
+
+  /**
+   * Get module info by moduleId
+   * @param moduleId get data based on this id
+   */
+  public getModuleInfoByModuleId(moduleId: string): Observable<Array<ModuleInfo>> {
+    return this.http.post<any>(this.endpointService.getModuleInfoByModuleIdUrl(), [moduleId]);
   }
 
   /**
@@ -338,5 +322,9 @@ export class SchemaService {
    */
   public getSchemaExecutionProgressDetails(schemaId: string): Observable<SchemaExecutionProgressResponse> {
     return this.http.get<SchemaExecutionProgressResponse>(this.endpointService.schemaExecutionProgressDetailUrl(schemaId));
+  }
+
+  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
+    return this.http.get<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus));
   }
 }

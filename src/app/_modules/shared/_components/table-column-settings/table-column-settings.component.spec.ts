@@ -60,7 +60,7 @@ describe('TableColumnSettingsComponent', () => {
 
   it('persistenceTableView(), should call http for save table column ', async(()=>{
     component.data = {schemaId:'327', variantId:'736472'};
-    const selFld = [{fieldId : 'id', order: 0, editable: true}];
+    const selFld = [{fieldId : 'id', order: 0, editable: true, isEditable:true}];
     // mock data
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = component.data.schemaId;
@@ -122,7 +122,7 @@ describe('TableColumnSettingsComponent', () => {
       fieldId:'MATL_TYPE'
     } as MetadataModel];
 
-    const selFld = [{fieldId : 'MATL_TYPE', order: 0, editable: true}];
+    const selFld = [{fieldId : 'MATL_TYPE', order: 0, editable: true,isEditable:true}];
     component.data  = {selectedFields:selFld, schemaId:'72356742', variantId:'67242'};
 
 

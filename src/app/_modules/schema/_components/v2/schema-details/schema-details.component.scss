@@ -130,10 +130,15 @@ div.root {
 
       .datasource {
         overflow-x: auto;
-        height: 100%;
+        height: calc(100% - 56px);
 
-        mat-table.mat-table {
+        table.mat-table {
           display: table;
+
+          .mat-row,
+          .mat-header-row {
+            border: none;
+          }
 
           .mat-header-cell,
           .mat-cell {
@@ -143,25 +148,28 @@ div.root {
               overflow: visible;
             }
 
-            &.vertical-cell {
-              writing-mode: vertical-rl;
-
-              .verticalsub-text {
-                padding-top: 32px;
-              }
-            }
-
             .collapse-icon {
-              padding: 6px;
-              font-size: 8px;
-              width: 8px;
-              height: 8px;
+              padding: 4px;
               border-radius: 50%;
               cursor: pointer;
-              position: relative;
-              bottom: -28px;
+              position: absolute;
+              text-align: center;
+              width: 8px;
+              height: 8px;
+              font-size: 8px;
+              line-height: 8px;
               right: 12px;
             }
+          }
+
+          .verticalsub-text {
+            // padding-top: 32px;
+            text-orientation: mixed;
+            writing-mode: vertical-lr;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .mat-column-_select_columns,

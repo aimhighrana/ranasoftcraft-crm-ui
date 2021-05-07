@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionOn, UserMdoModel } from '@models/collaborator';
 import { Observable, of, Subscription } from 'rxjs';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SubscriberInviteComponent } from '@modules/shared/_components/subscriber-invite/subscriber-invite.component';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
 @Component({
   selector: 'pros-new-schema-collaborators',
   templateUrl: './new-schema-collaborators.component.html',
@@ -52,13 +52,13 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
    * @param dialogRef mat dialog ref object
    * @param data data from parent component
    * @param schemaDetailsService schema deails service object
-   * @param snackBar snackbar object
+   * @param transientService transientService object
    */
   constructor(
     public dialogRef: MatDialogRef<NewSchemaCollaboratorsComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     public schemaDetailsService: SchemaDetailsService,
-    public snackBar: MatSnackBar,
+    public transientService: TransientService,
     private globalDialogService: GlobaldialogService) {
     if (data && data.selectedSubscibersList && data.selectedSubscibersList.length > 0) {
       this.incomingSelectedSubscribers = data.selectedSubscibersList;
@@ -82,7 +82,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
         this.subscribers = this.markSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
         this.filteredSubscribers = this.markSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
       }, () => {
-        this.snackBar.open('Error getting subscribers', 'okay', {
+        this.transientService.open('Error getting subscribers', 'okay', {
           duration: 1000
         })
       });

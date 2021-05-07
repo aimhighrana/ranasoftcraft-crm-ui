@@ -34,31 +34,27 @@
                     <lib-filter-option (click)="applyFilter('date','this_month');">
                         <div mat-line i18n="@@this_month">This month</div>
                     </lib-filter-option>
-                    <lib-filter-option (click)="applyFilter('date','specific_date'); specificDate.open()" prosClickStopPropagation>
-                        <div class="f-row">
+                    <lib-filter-option class="date-picker-option" (click)="applyFilter('date','specific_date')" prosClickStopPropagation>
+                        <div class="f-row" mat-menu-item [matMenuTriggerFor]="datePickerMenu">
                             <div class="mat-line" i18n="@@specific_date">
                                 Specific date
                             </div> 
                             <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> chevron-right</mat-icon>
-                            <mat-form-field style="width: 0px;">
-                                <input matInput  [matDatepicker]="specificDate" disabled style="display: none;" [max]="maxDate" (dateChange) ="changeSpecificDate($event)">
-                                <mat-datepicker #specificDate disabled="false"></mat-datepicker>
-                            </mat-form-field>
                         </div>
                     </lib-filter-option>
-                    <lib-filter-option (click)="applyFilter('date','date_range'); date_range.open()" prosClickStopPropagation>
-                        <div class="f-row">
+                    <lib-filter-option class="date-picker-option" (click)="applyFilter('date','date_range');" prosClickStopPropagation>
+                        <div class="f-row" mat-menu-item [matMenuTriggerFor]="dateRangePickerMenu">
                             <div class="mat-line" i18n="@@date_range">
                                 Date range
                             </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons">chevron-right</mat-icon>                            
     
-                            <mat-form-field style="width: 0px;">
+                            <!--mat-form-field style="width: 0px;">
                                 <mat-date-range-input [rangePicker]="date_range" [max]="maxDate" separator="">
                                     <input matStartDate i18n-placeholder="@@start_date" placeholder="Start date" style="display: none;" (dateChange)="changeDateRange('start', $event)">
                                     <input matEndDate i18n-placeholder="@@end_date" placeholder="End date" style="display: none;" (dateChange)="changeDateRange('end', $event)">
                                 </mat-date-range-input>                                  
                                 <mat-date-range-picker #date_range></mat-date-range-picker>
-                            </mat-form-field>
+                            </mat-form-field-->
                         </div>
                     </lib-filter-option>
                 </div>
@@ -78,6 +74,17 @@
                             </div>
                         </lib-filter-option>
                     </div>
+                </div>
+            </mat-menu>
+
+            <mat-menu  #datePickerMenu="matMenu" class="date-picker-menu navigation-menu">
+                <div class="f-col">
+                    <lib-date-picker [maxDate]="maxDate" prosClickStopPropagation [hideInput]="true" (valueChange) ="changeSpecificDate({value:$event})" #specificDate></lib-date-picker>
+                </div>
+            </mat-menu>
+            <mat-menu  #dateRangePickerMenu="matMenu" class="date-picker-menu navigation-menu">
+                <div class="f-col">
+                    <lib-date-range-picker [dateLimit]="{start: {max: maxDate}, end: {max: maxDate}}" prosClickStopPropagation [hideInput]="true" (valueChange) ="changeDateRange($event)" #rangeDate></lib-date-range-picker>
                 </div>
             </mat-menu>
         </mat-chip-list>

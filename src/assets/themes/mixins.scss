@@ -559,7 +559,6 @@
 
       .mat-info-icon {
         font-size: 12px;
-        height: 10px;
       }
 
       &.none-stats-chip {
@@ -764,7 +763,7 @@
 
     .mat-menu-panel {
       max-width: 300px;
-      width: 220px;
+      width: 240px;
       min-height: auto;
       // max-height: 470px;
       margin: 8px 0;
@@ -774,11 +773,33 @@
         padding: 0;
       }
 
+      &.date-picker-menu {
+        width: 240px;
+        height: max-content;
+      }
+
       &.navigation-menu {
         .menu-customdropdown {
           max-height: 360px;
           min-height: auto;
           overflow: auto;
+
+          &.search-module-dropdown {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            overflow-y: auto;
+
+            .lib-button {
+              width: 100%;
+
+              button {
+                width: 100%;
+                text-align: left;
+                margin-left: 5px;
+              }
+            }
+          }
         }
 
         mat-divider.mat-divider {
@@ -1087,6 +1108,10 @@
     .mat-header-cell {
       font-size: 14px;
       font-weight: 600;
+
+      .mat-sort-header {
+        display: inline-block;
+      }
     }
 
     .mat-row:hover {
@@ -2086,4 +2111,8 @@ mat-tooltip-component {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.date-picker-option .dropdown-option {
+  padding: initial;
 }

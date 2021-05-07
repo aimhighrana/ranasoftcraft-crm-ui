@@ -81,6 +81,18 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-dialog\businessrulelibrary-dialog.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-schema-collaborators\new-schema-collaborators.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="Column" datatype="html">
         <source>Column</source>
@@ -221,6 +233,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-data-sidesheet\upload-data.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="drag_drop_file" datatype="html">
         <source>Drag &amp; drop or select a file to upload</source>
@@ -248,6 +264,22 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">254</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">318</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">246</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">317</context>
         </context-group>
       </trans-unit>
       <trans-unit id="summary" datatype="html">
@@ -313,6 +345,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">88</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">165</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="category" datatype="html">
         <source>Category</source>
@@ -324,6 +364,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="br_category_tooltip_msg" datatype="html">
@@ -349,6 +393,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">89</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">168</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="br_weightage_tooltip_msg" datatype="html">
         <source>Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100</source>
@@ -373,6 +425,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">93</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">173</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_rule_name_to_add" datatype="html">
         <source>Type rule name to add</source>
@@ -384,6 +440,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">99</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">180</context>
         </context-group>
       </trans-unit>
       <trans-unit id="add_br_rule" datatype="html">
@@ -405,6 +465,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="rule_type_missing_msg" datatype="html">
         <source>Please enter rule type</source>
@@ -419,6 +487,10 @@
         <target>กรุณากรอก weightage</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
           <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
@@ -437,6 +509,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">67</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="error_message" datatype="html">
         <source>Error message</source>
@@ -445,6 +521,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">71</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="fields" datatype="html">
         <source>Fields</source>
@@ -452,6 +532,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">106</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="field" datatype="html">
@@ -517,6 +605,22 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">88</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">192</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">352</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
+        <source>Type inside the search box to find fields</source>
+        <target>اكتب داخل مربع البحث للعثور على حقول</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="master_record_parameters" datatype="html">
         <source>Master record parameters</source>
@@ -569,6 +673,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">69</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">153</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="data_scope" datatype="html">
         <source>Data scope</source>
@@ -601,6 +709,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\datascope-sidesheet\datascope-sidesheet.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="scope" datatype="html">
         <source>Scope</source>
@@ -620,6 +732,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">51</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">126</context>
         </context-group>
       </trans-unit>
       <trans-unit id="close" datatype="html">
@@ -728,6 +844,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\save-variant-dialog\save-variant-dialog.component.html</context>
           <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">463</context>
         </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
@@ -1005,6 +1125,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">186</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">249</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">309</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="brs_null_message" datatype="html">
         <source>You don't have any business rules selected. Type the business rule in the box above to add one.</source>
@@ -1025,6 +1153,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">222</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">332</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="role" datatype="html">
         <source>Role</source>
@@ -1033,6 +1165,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">223</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">333</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="data_allocation" datatype="html">
         <source>Data allocation</source>
@@ -1040,6 +1176,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">224</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">334</context>
         </context-group>
       </trans-unit>
       <trans-unit id="type_subscriber_name" datatype="html">
@@ -1061,6 +1201,18 @@
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">342</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-schema-collaborators\new-schema-collaborators.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="admin" datatype="html">
         <source>Admin</source>
@@ -1072,6 +1224,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">369</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reviewer" datatype="html">
@@ -1085,6 +1245,14 @@
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">41</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">370</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="viewer" datatype="html">
         <source>Viewer</source>
@@ -1097,6 +1265,14 @@
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">42</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">371</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="editor" datatype="html">
         <source>Editor</source>
@@ -1107,7 +1283,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">372</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="subscriber_null_message" datatype="html">
@@ -1125,6 +1309,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">354</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-schema-collaborators\new-schema-collaborators.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="search_subscribers" datatype="html">
         <source>Search subscribers</source>
@@ -1132,6 +1324,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">19</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-schema-collaborators\new-schema-collaborators.component.html</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="add" datatype="html">
@@ -1141,6 +1337,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">43</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-dialog\businessrulelibrary-dialog.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-schema-collaborators\new-schema-collaborators.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="invite" datatype="html">
         <source>Invite</source>
@@ -1148,6 +1352,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="add_user" datatype="html">
@@ -1157,6 +1365,10 @@
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="email_address" datatype="html">
         <source>Email address</source>
@@ -1164,6 +1376,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="email_required" datatype="html">
@@ -1179,7 +1395,11 @@
         <target>บทบาทเป็นสิ่งจำเป็น</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite\subscriber-invite.component.html</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="settings" datatype="html">
@@ -1316,6 +1536,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">213</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="plant_data" datatype="html">
@@ -1468,6 +1692,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-sidesheet\businessrulelibrary-sidesheet.component.html</context>
           <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-dialog\businessrulelibrary-dialog.component.html</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="business_rule_type" datatype="html">
@@ -1656,6 +1884,370 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\filter\filter.component.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="access_token_tooltip" datatype="html">
+        <source>Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.</source>
+        <target>โปรดป้อนโทเค็นการเข้าถึงไลบรารีอะไหล่ของคุณ หากคุณไม่สามารถเข้าถึงคลังอะไหล่ของเราโปรดติดต่อ sales@prospecta.com สำหรับข้อมูลเพิ่มเติม</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="enter_access_token" datatype="html">
+        <source>Enter access token</source>
+        <target>ป้อนโทเค็นการเข้าถึง</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="access_token_msg" datatype="html">
+        <source>Please enter access token</source>
+        <target>โปรดป้อนโทเค็นการเข้าถึง</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fields_missing_msg" datatype="html">
+        <source>Please select the fields</source>
+        <target>โปรดเลือกฟิลด์</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="standard_function" datatype="html">
+        <source>Standard function</source>
+        <target>ฟังก์ชั่นมาตรฐาน</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">152</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">147</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="standard_fn_missing" datatype="html">
+        <source>Please select the standard function</source>
+        <target>โปรดเลือกฟังก์ชันมาตรฐาน</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">164</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_field" datatype="html">
+        <source>Select field</source>
+        <target>เลือกฟิลด์</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">197</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">187</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_operator" datatype="html">
+        <source>Select operator</source>
+        <target>เลือกตัวดำเนินการ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">206</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">281</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">197</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">277</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="comparison_value" datatype="html">
+        <source>Comparison value</source>
+        <target>ค่าเปรียบเทียบ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">206</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">298</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">296</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="start_value" datatype="html">
+        <source>start value</source>
+        <target>ค่าเริ่มต้น</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">232</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">303</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">301</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="end_value" datatype="html">
+        <source>end value</source>
+        <target>ค่าสิ้นสุด</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">306</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">304</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_child_rule" datatype="html">
+        <source>Add child rule</source>
+        <target>เพิ่มกฎลูก</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">250</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">242</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="module_name" datatype="html">
+        <source>Module name</source>
+        <target>ชื่อโมดูล</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="module_name_required" datatype="html">
+        <source>Module name is required</source>
+        <target>ต้องระบุชื่อโมดูล</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preview_row" datatype="html">
+        <source>Preview row</source>
+        <target>แสดงตัวอย่างแถว</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="target_field" datatype="html">
+        <source>Target field</source>
+        <target>ฟิลด์เป้าหมาย</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="enter_value" datatype="html">
+        <source>Enter a value</source>
+        <target>ป้อนค่า</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="required_field_msg" datatype="html">
+        <source>This field is required</source>
+        <target>จำเป็นต้องกรอกข้อมูลในฟิลด์นี้</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="schema_name_required" datatype="html">
+        <source>Schema name is required</source>
+        <target>ต้องระบุชื่อสคีมา</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">130</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weightage_help_msg" datatype="html">
+        <source>Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100</source>
+        <target>คะแนนที่กำหนดให้กับบันทึกเมื่อตรวจสอบความถูกต้องของกฎทางธุรกิจได้สำเร็จ สำหรับน้ำหนักรวมสคีมาของกฎทางธุรกิจทั้งหมดต้องไม่เกิน 100</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">169</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="no_br_added_msg" datatype="html">
+        <source>No business rule added, please add at least one business rule to continue</source>
+        <target>ไม่ได้เพิ่มกฎทางธุรกิจโปรดเพิ่มกฎทางธุรกิจอย่างน้อยหนึ่งข้อเพื่อดำเนินการต่อ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">193</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_br_rule" datatype="html">
+        <source>Add Business Rule</source>
+        <target>เพิ่มกฎทางธุรกิจ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">196</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="not_configured" datatype="html">
+        <source>Not configured</source>
+        <target>ไม่ได้กำหนดค่า</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">224</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">283</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="configure" datatype="html">
+        <source>Configure</source>
+        <target>กำหนดค่า</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">297</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_subscribers" datatype="html">
+        <source>Select subscribers</source>
+        <target>เลือกสมาชิก</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">339</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="no_subscribers_msg" datatype="html">
+        <source>No subscribers added, please add at least one subscriber to continue</source>
+        <target>ไม่มีการเพิ่มสมาชิกโปรดเพิ่มสมาชิกอย่างน้อยหนึ่งคนเพื่อดำเนินการต่อ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">353</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="enable_schedule" datatype="html">
+        <source>Enable schedule</source>
+        <target>เปิดใช้งานกำหนดการ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">442</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_schedule" datatype="html">
+        <source>Add schedule</source>
+        <target>เพิ่มกำหนดการ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">444</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">450</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="back" datatype="html">
+        <source>Back</source>
+        <target>กลับ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">467</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="choose_diff_file" datatype="html">
+        <source>Choose a different file</source>
+        <target>เลือกไฟล์อื่น</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">469</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="next" datatype="html">
+        <source>Next</source>
+        <target>ต่อไป</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">472</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="done" datatype="html">
+        <source>Done</source>
+        <target>เสร็จแล้ว</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">475</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="search_br" datatype="html">
+        <source>Search business rules</source>
+        <target>ค้นหากฎทางธุรกิจ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_name_missing" datatype="html">
+        <source>Please enter rule name</source>
+        <target>โปรดป้อนชื่อกฎ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="error_msg_missing" datatype="html">
+        <source>Please enter error message</source>
+        <target>กรุณากรอกข้อความแสดงข้อผิดพลาด</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="regex_value" datatype="html">
+        <source>Regex value</source>
+        <target>ค่า Regex</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">160</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="regex_missing" datatype="html">
+        <source>Please enter regex</source>
+        <target>โปรดป้อน regex</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">164</context>
         </context-group>
       </trans-unit>
       <trans-unit id="language_format" datatype="html">

@@ -3,17 +3,16 @@ import { TestBed, async } from '@angular/core/testing';
 import { SchemaVariantService } from './schema-variant.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Any2tsService } from '../../any2ts.service';
-import { SchemaVariantResponse, SendSchemavariantRequest } from 'src/app/_models/schema/schemalist';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 describe('SchemaVariantService', () => {
   let httpTestingController: HttpTestingController;
   let schemaVariantService: SchemaVariantService;
-  let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
+  // let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsRuleService>;
   beforeEach(async(() => {
     const any2TsSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaVariantResponse']);
-    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['schemaVarinatDetails', 'getVariantdetailsByvariantIdUrl',
+    const endpointSpy = jasmine.createSpyObj('EndpointsRuleService', ['schemaVarinatDetails', 'getVariantdetailsByvariantIdUrl',
         'deleteVariantUrl', 'saveUpdateVariantUrl', 'getSchemaVariantsUrl', 'getAllDataScopesUri', 'getAllDataScopeUrl']);
     TestBed.configureTestingModule({
       imports: [
@@ -22,13 +21,13 @@ describe('SchemaVariantService', () => {
       providers: [
         SchemaVariantService,
         { provide: Any2tsService, useValue: any2TsSpy },
-        { provide: EndpointsClassicService, useValue: endpointSpy },
+        { provide: EndpointsRuleService, useValue: endpointSpy },
       ]
     });
     httpTestingController = TestBed.inject(HttpTestingController);
     schemaVariantService = TestBed.inject(SchemaVariantService);
-    any2tsServiceSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
-    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
+    // any2tsServiceSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
+    endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
   }));
 
   it('should be created', () => {
@@ -36,29 +35,7 @@ describe('SchemaVariantService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('schemavariantDetailsBySchemaId() : should call' , () => {
-    const url = 'get all variant of schema';
-    // mock url
-    endpointServiceSpy.schemaVarinatDetails.and.returnValue(url);
 
-    // mock data
-    const mockData = {} as any;
-    const schemaVariants: SchemaVariantResponse[] = [];
-    any2tsServiceSpy.any2SchemaVariantResponse.withArgs(mockData).and.returnValue(schemaVariants);
-    // actual call
-    const sendData: SendSchemavariantRequest = new SendSchemavariantRequest();
-    schemaVariantService.schemavariantDetailsBySchemaId(sendData).subscribe(actualData => {
-      expect(actualData).toEqual(schemaVariants);
-    });
-
-    // mock http
-    const mockRequest = httpTestingController.expectOne(url);
-    expect(mockRequest.request.method).toEqual('POST');
-    expect(mockRequest.request.responseType).toEqual('json');
-    mockRequest.flush(mockData);
-    // verify http
-    httpTestingController.verify();
-  });
 
   it('getVariantdetailsByvariantId(): should call', () =>{
     const url = 'get all variant details of variant';

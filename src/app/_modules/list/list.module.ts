@@ -12,7 +12,6 @@ import { FilterSaveModalComponent } from './_components/filter-save-modal/filter
 import { FilterChipsComponent } from './_components/filter-chips/filter-chips.component';
 import { RelationDataSearchComponent } from './_components/relation-data-search/relation-data-search.component';
 
-
 @NgModule({
   declarations: [
     ListComponent,

@@ -4,6 +4,7 @@ import { async, ComponentFixture, discardPeriodicTasks, fakeAsync, TestBed, tick
 import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaService } from '@services/home/schema.service';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
@@ -13,6 +14,7 @@ describe('SchemaProgressComponent', () => {
   let component: SchemaProgressComponent;
   let fixture: ComponentFixture<SchemaProgressComponent>;
   let schemaService: SchemaService;
+  let schemaDetailsService: SchemaDetailsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,6 +32,7 @@ describe('SchemaProgressComponent', () => {
     fixture = TestBed.createComponent(SchemaProgressComponent);
     component = fixture.componentInstance;
     schemaService = fixture.debugElement.injector.get(SchemaService);
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
     // fixture.detectChanges();
   });
 
@@ -47,6 +50,21 @@ describe('SchemaProgressComponent', () => {
       expect(component.schemaProgress).toEqual(res);
     })
   });
+
+  it('getFileUploadProgress(), should return upload progress file', async() => {
+    const schemaId = '155224'
+    spyOn(schemaDetailsService, 'getUploadProgressPercent').withArgs(schemaId, '').and.returnValue(of({} as any));
+    component.getFileUploadProgress(schemaId);
+    expect(schemaDetailsService.getUploadProgressPercent).toHaveBeenCalledWith(schemaId, '');
+
+    schemaDetailsService.getUploadProgressPercent(schemaId, '').subscribe((res: any) => {
+      expect(component.dataUploadedPercent).toEqual(res);
+    });
+  });
+
+  it('closeFileUploadProgress(), should emit output', async(() => {
+    expect(component.closeFileUploadProgress()).toBeTruthy();
+  }));
 
   it('ngOnchanges(), should called the ngOnchanges', async() => {
     let changes = {
@@ -78,4 +96,17 @@ describe('SchemaProgressComponent', () => {
     expect(component.schemaExecutionProgressInfo).toHaveBeenCalled();
     discardPeriodicTasks();
   }))
+
+  it('ngOnInit(), should call upload progress', fakeAsync(() => {
+    spyOn(component, 'getFileUploadProgress');
+    component.isFileUploading = true;
+    component.ngOnInit();
+    expect(component.progressHttpCallInterval).toEqual(3000);
+
+    component.progressHttpCallInterval = 10;
+    expect(component.getFileUploadProgress).toHaveBeenCalledTimes(1);
+    tick(component.progressHttpCallInterval);
+    expect(component.getFileUploadProgress).toHaveBeenCalled();
+    discardPeriodicTasks();
+  }));
 });
