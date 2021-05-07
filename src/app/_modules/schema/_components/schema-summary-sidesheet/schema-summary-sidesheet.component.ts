@@ -778,7 +778,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           console.log(result);
           this.runSchema();
           this.close();
-          this.toasterService.open('This action has been confirmed..', 'Okay', {
+          this.toasterService.open('Schema run triggered successfully..', 'Okay', {
             duration: 2000
           })
         }, (error) => {
