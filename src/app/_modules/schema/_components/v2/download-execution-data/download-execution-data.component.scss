@@ -14,12 +14,41 @@ mat-card.root {
     max-height: 450px;
     overflow: auto;
 
-    mat-panel-title {
-      align-items: center;
+    mat-accordion.mat-accordion {
+      mat-expansion-panel {
+        .mat-expansion-panel-header {
+          padding: 0 0 0 8px;
 
-      .expand-title {
-        margin-left: 8px;
+          mat-panel-title {
+            align-items: center;
+
+            .expand-title {
+              margin-left: 8px;
+            }
+          }
+        }
+
+        .undertree-expansion-panel {
+          padding-left: 42px;
+        }
+
+        mat-nav-list {
+          mat-list-item {
+            font-size: 0.9rem;
+            height: 48px;
+          }
+        }
       }
     }
+
+    .default-badge {
+      margin: 0 8px;
+      min-width: 24px;
+      text-align: right;
+    }
+  }
+
+  .actions-row {
+    margin-bottom: 12px;
   }
 }

@@ -119,12 +119,12 @@
 
         <div class="f-row listing-container" #listingContainer>
             <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav"
-                  (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
+                  #navscroll id="navscroll">
                 <div class="nav-tree" *ngIf="executionTreeHierarchy">
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(executionTreeHierarchy)" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                                <mat-panel-title (click)="nodeSelected(executionTreeHierarchy)">
+                                <mat-panel-title>
                                     <div class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</div>
                                     <span class="f-spacer"></span>
                                     <div class="default-badge">{{ executionTreeHierarchy.docCount }}</div>
@@ -134,7 +134,7 @@
                                 <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
                                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(child)"  [hideToggle]="(child.childs && child.childs.length) ? false : true">
                                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel">
-                                            <mat-panel-title (click)="nodeSelected(child)">
+                                            <mat-panel-title>
                                                 <div class="expand-title">{{ child.nodeDesc }}</div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ child.docCount }}</div>
@@ -142,7 +142,7 @@
                                         </mat-expansion-panel-header>
                                         <mat-nav-list role="navigation" class="tree-nav-list" *ngIf="child.childs && child.childs.length">
                                             <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs" prosClickStopPropagation 
-                                                (click)="nodeSelected(subChild); loadNodeData(subChild)">
+                                                (click)="loadNodeData(subChild)">
                                                 <div mat-line> {{ subChild.nodeDesc }} </div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ subChild.docCount }}</div>

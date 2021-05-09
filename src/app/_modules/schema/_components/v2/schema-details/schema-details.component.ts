@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
@@ -245,6 +245,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   nodeType = 'HEADER';
 
+  /**
+   * flag to enable/disable resizeable
+   */
+   grab = false;
+
   constructor(
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -312,16 +317,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
 
-    /**
-     * Get all user selected fields based on default view ..
-     */
-    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.executionTreeHierarchy)).subscribe(res => {
-      const allFields = [];
-      if(res && res.length) {
-        res.forEach(node => allFields.push(...node.fieldsList));
-      }
-      this.selectedFieldsOb.next(allFields);
-    }, error => console.error(`Error : ${error}`));
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
       if (res) {
@@ -581,8 +576,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
-    // push header columns
-    this.columns.header = select;
     this.displayedFields.next(fields);
     console.log(this.displayedFields.getValue());
   }
@@ -744,7 +737,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       schemaId: this.schemaId,
       runId: this.schemaInfo.runId,
       requestStatus: this.activeTab,
-      executionTreeHierarchy: this.executionTreeHierarchy
+      executionTreeHierarchy: this.executionTreeHierarchy && this.executionTreeHierarchy.nodeId ? this.executionTreeHierarchy: null
     }
 
     const ref = this.matDialog.open(DownloadExecutionDataComponent, {
@@ -825,6 +818,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
         const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        if(this.nodeType === 'GRID') {
+          request.gridId = this.nodeId;
+        } else if(this.nodeType === 'HEIRARCHY') {
+          request.heirerchyId = this.nodeId;
+        }
+
+        // get the rowsno ...
+        if(this.nodeType === 'GRID' || this.nodeType === 'HEIRARCHY') {
+          request.rowSno = row.objnr ? row.objnr.fieldData : '';
+        }
+
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
           row[fldid].fieldData = value;
           if (res.acknowledge) {
@@ -1359,29 +1363,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  @HostListener('window:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent){
-    this.mousePosition = { x: event.clientX, y: event.clientY };
-    if (this.status === SchemaNavGrab.RESIZE) {
-      this.resize();
-      this.navscroll.nativeElement.style.cursor = 'col-resize';
-    }
-    else {
-      this.navscroll.nativeElement.style.cursor = 'default';
-    }
-  }
-
   public setNavDivPositions() {
     const { left, top } = this.navscroll.nativeElement.getBoundingClientRect();
     this.boxPosition = { left, top };
-  }
-
-  public resize() {
-    const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
-    this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
-      Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
-        this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
-        this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
   }
 
   public setStatus(event: MouseEvent, status: number) {
@@ -1390,7 +1374,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     else this.setNavDivPositions();
     this.status = status;
   }
+
   public enableResize(){
+    const sidebar = document.getElementById('navscroll')
     const grabberElement = document.createElement('div');
     grabberElement.style.height = '100%';
     grabberElement.style.width = '2px';
@@ -1400,26 +1386,49 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     grabberElement.style.resize = 'horizontal';
     grabberElement.style.overflow = 'auto';
     grabberElement.style.right = '0%';
-    this.navscroll.nativeElement.appendChild(grabberElement);
 
-  }
+    grabberElement.addEventListener('mousedown', () => {
+      this.grab = true;
+      sidebar.style.cursor = 'col-resize';
+    });
 
-  nodeSelected(node: SchemaExecutionTree) {
-    if(node.nodeId === this.activeNode.nodeId) {
-      return;
-    }
-    this.activeNode = node;
-    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(node))
-      .subscribe(res => {
-        const allFields = [];
-        if(res && res.length) {
-          res.forEach(n => allFields.push(...n.fieldsList));
-        };
-        this.selectedFields = sortBy(allFields, 'order');
-        this.calculateDisplayFields();
-      }, error => {
-        console.error(`Error:: ${error.message}`);
-      });
+    grabberElement.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+    });
+
+    sidebar.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+      grabberElement.style.backgroundColor = '#fff';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (this.grab) {
+        this.grab = false;
+        sidebar.style.cursor = 'default';
+      }
+    })
+
+    document.addEventListener('mousemove', (e) => {
+      if (this.grab) {
+        this.mousePosition = { x: e.clientX, y: e.clientY };
+      if (this.status === SchemaNavGrab.RESIZE) {
+        this.navscroll.nativeElement.style.cursor = 'col-resize';
+      } else {
+        this.navscroll.nativeElement.style.cursor = 'default';
+      }
+
+      const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
+      this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
+        Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
+          this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
+          this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
+        }
+    });
+
+    this.navscroll.nativeElement.prepend(grabberElement);
+
   }
 
   /**
@@ -1516,6 +1525,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param node selected / clicked node details
    */
    loadNodeData(node: SchemaExecutionTree) {
+
+    if(node.nodeId === this.activeNode.nodeId) {
+      console.log('Already active');
+      return;
+    }
+    this.activeNode = node;
     console.log(node);
     this.router.navigate([], {
       relativeTo: this.activatedRouter,
@@ -1534,7 +1549,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   enableIcon(col: string): boolean {
     let found = false;
-    if(this.columns.header.indexOf(col) === this.columns.header.length-1) {
+    if(this.columns.header && (this.columns.header.indexOf(col) === this.columns.header.length-1)) {
       found = true;
     }
     return found;
@@ -1587,6 +1602,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
       if(keyFor === 'header') {
         array.push('___header__collapsible');
+        console.log(this.columns[this.nodeId]);
         if(this.nodeId !== 'header') {
           array.push(...this.columns[this.nodeId]);
         }
@@ -1597,6 +1613,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         array.push(...this.columns.header);
         array.push('___hierarchy__collapsible');
       }
+      console.log(array)
       this.displayedFields.next(array);
     }
   }
@@ -1606,37 +1623,68 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param nodeType selected node type ...
    */
   updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
-    const metadata = this.metadata.getValue();
-    if(nodeType === 'HEIRARCHY') {
-      if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(nodeId)) {
-        const fields = Object.keys(metadata.hierarchyFields[nodeId]);
-        this.columns[nodeId] = fields.splice(0,10);
-        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
-        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
-        updatedArray.push(...this.columns.header);
-        updatedArray.push(...this.columns[nodeId]);
-        this.displayedFields.next(updatedArray);
-        // TODO
-        this.columns[nodeId].forEach(fld=>{
-          this.metadataFldLst[fld] = metadata.hierarchyFields[nodeId][fld];
-        });
-      }
-    } else if(nodeType === 'GRID') {
-      if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(nodeId)) {
-        const fields = Object.keys(metadata.gridFields[nodeId]);
-        this.columns[nodeId] = fields;
-        const array = this.displayedFields.getValue() ? this.displayedFields.getValue() : [];
-        const updatedArray = array.splice(0, array.indexOf('OBJECTNUMBER')+1);
-        updatedArray.push(...this.columns.header);
-        updatedArray.push(...this.columns[nodeId]);
-        this.displayedFields.next(updatedArray);
-        // TODO
-        fields.forEach(fld=>{
-          this.metadataFldLst[fld] = metadata.gridFields[nodeId][fld];
-        });
-      }
-    } else {
-      console.log('For heade ref ... api call');
-    }
+
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.activeNode))
+      .subscribe(res => {
+        const allFields = [];
+        this.columns = {};
+        const metadata = this.metadata.getValue();
+        if(res && res.length) {
+          res.forEach(node => {
+            if(node.fieldsList && node.fieldsList.length) {
+              this.columns[node.nodeId] = [];
+              node.fieldsList.forEach(f => {
+                if(!allFields.find(fld => fld.fieldId === f.fieldId)) {
+                  allFields.push(f);
+                  this.columns[node.nodeId].push(f.fieldId);
+                }
+              });
+            } else {
+              let fields = [];
+              const nType = this.getNodeTypeById(node.nodeId);
+              if(nType === 'HEIRARCHY') {
+                if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(node.nodeId)) {
+                  fields = Object.keys(metadata.hierarchyFields[node.nodeId]).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach(f => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(fldMap);
+                  });
+                }
+              } else if(nType === 'GRID') {
+                if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(node.nodeId)) {
+                  fields = Object.keys(metadata.gridFields[node.nodeId]).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach(f => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(fldMap);
+                  });
+                }
+              } else {
+                console.log('For heade ref ... api call');
+              }
+            }
+          });
+          this.selectedFields = sortBy(allFields, 'order');
+          console.log(this.selectedFields);
+          this.calculateDisplayFields();
+        };
+
+      }, error => {
+        console.error(`Error:: ${error.message}`);
+      });
+
+  }
+
+  getNodeTypeById(nodeId: string) {
+    const treeArray = this.getExectionArray(this.executionTreeHierarchy);
+    const nodeDetails = treeArray.find(n => n.nodeId === nodeId);
+    return nodeDetails && nodeDetails.nodeType;
   }
 }

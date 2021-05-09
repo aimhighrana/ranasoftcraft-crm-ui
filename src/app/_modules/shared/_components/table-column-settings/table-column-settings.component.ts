@@ -131,7 +131,6 @@ export class TableColumnSettingsComponent implements OnInit{
   // header
   public headerDetails() {
     this.header = [];
-
     const fields = this.data.allNodeFields ? this.data.allNodeFields :  (this.data.fields ? this.data.fields.headers: {});
     if(this.data && this.data.selectedFields && this.data.selectedFields.length > 0){
       for(const field of this.data.selectedFields) {

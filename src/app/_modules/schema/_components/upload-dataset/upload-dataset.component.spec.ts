@@ -272,6 +272,7 @@ describe('UploadDatasetComponent', () => {
     object.blocks = true;
     object.object = [{}];
     expect(component.createBrObject(object, formData.udrTreeData).udrDto.blocks.length).toBe(1);
+    expect(component.createBrObject(object, null).udrDto.udrHierarchies.length).toBe(0);
   }));
 
   it(`mapSubscriberInfo() `, async(() => {
@@ -282,17 +283,29 @@ describe('UploadDatasetComponent', () => {
       fName: 'testFirstName',
       lName: 'testLastName',
       userMdoModel: {
-        fullName: 'testFullName'
+        fName: 'testFirstName',
+        lName: 'testLastName'
       }
     };
     component.userDetails = {
       plantCode: ''
     } as Userdetails;
-    const res = component.mapSubscriberInfo(subscriber);
+    let res = component.mapSubscriberInfo(subscriber);
     expect(res.userName).toEqual(subscriber.userName);
     expect(res.groupid).toEqual(subscriber.groupid);
     expect(res.userid).toEqual(subscriber.userName);
-    expect(res.fullName).toEqual(subscriber.userMdoModel.fullName);
+    expect(res.fullName).toBeUndefined();
+    expect(res.fName).toEqual(subscriber.userMdoModel.fName);
+    expect(res.lName).toEqual(subscriber.userMdoModel.lName);
+    delete subscriber.fName;
+    delete subscriber.lName;
+    res = component.mapSubscriberInfo(subscriber);
+    expect(res.fName).toEqual(subscriber.userMdoModel.fName);
+    expect(res.lName).toEqual(subscriber.userMdoModel.lName);
+    delete subscriber.userMdoModel;
+    res = component.mapSubscriberInfo(subscriber);
+    expect(res.fName).toEqual('');
+    expect(res.lName).toEqual('');
   }));
 
   it(`updateRole(), should be called to update correct role`, async(() => {
