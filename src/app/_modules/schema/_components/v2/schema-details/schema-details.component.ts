@@ -1386,7 +1386,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     grabberElement.style.resize = 'horizontal';
     grabberElement.style.overflow = 'auto';
     grabberElement.style.right = '0%';
-    grabberElement.id = 'test_9237726432';
 
     grabberElement.addEventListener('mousedown', () => {
       this.grab = true;
