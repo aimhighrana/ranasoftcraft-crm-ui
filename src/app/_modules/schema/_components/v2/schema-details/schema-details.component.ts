@@ -1550,7 +1550,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   enableIcon(col: string): boolean {
     let found = false;
-    if(this.columns.header.indexOf(col) === this.columns.header.length-1) {
+    if(this.columns.header && (this.columns.header.indexOf(col) === this.columns.header.length-1)) {
       found = true;
     }
     return found;
