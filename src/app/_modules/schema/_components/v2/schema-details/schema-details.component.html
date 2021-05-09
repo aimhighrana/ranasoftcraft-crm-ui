@@ -119,7 +119,7 @@
 
         <div class="f-row listing-container" #listingContainer>
             <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav"
-                  (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
+                  #navscroll id="navscroll">
                 <div class="nav-tree" *ngIf="executionTreeHierarchy">
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(executionTreeHierarchy)" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">

@@ -1082,32 +1082,6 @@ describe('SchemaDetailsComponent', () => {
 
   });
 
-  it('resize(), resize sidebar', () => {
-    component.mousePosition = {
-      x: 8,
-      y: 20
-    }
-    fixture.detectChanges();
-    component.navscroll=fixture.componentInstance.navscroll;
-    component.boxPosition = { left:10, top:20 };
-    component.resize();
-    expect(component.widthOfSchemaNav).toEqual(0)
-
-    component.mousePosition = {
-      x: 18,
-      y: 20
-    }
-    component.boxPosition = { left:10, top:20 };
-    component.resize();
-    expect(component.widthOfSchemaNav).toEqual(8)
-
-    component.mousePosition = {
-      x: 400,
-      y: 20
-    }
-    component.resize();
-    expect(component.arrowIcon).toEqual('chevron-left')
-  });
 
   it('setStatus(), setStatus sidebar', () => {
     const event = new MouseEvent('');

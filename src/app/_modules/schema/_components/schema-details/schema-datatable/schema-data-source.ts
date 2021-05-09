@@ -182,7 +182,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
                 }
                 if(req.nodeType === 'HEIRARCHY') {
-                    const hyvs = doc.hyvs ? doc.hyvs : {};
+                    let hyvs = doc.hyvs ? doc.hyvs : {};
+                    hyvs = this.checkFieldIsInError(hyvs);
                     if(hyvs.hasOwnProperty(req.nodeId)) {
                         const rows = hyvs[req.nodeId].rows ? hyvs[req.nodeId].rows : [];
                         for(const r of rows) {
@@ -223,7 +224,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                     }
 
                 } else if (req.nodeType === 'GRID') {
-                    const gvs = doc.gvs ? doc.gvs : {};
+                    let gvs = doc.gvs ? doc.gvs : {};
+                    gvs = this.checkFieldIsInError(gvs);
                     if(gvs.hasOwnProperty(req.nodeId)) {
                         const rows = gvs[req.nodeId].rows ? gvs[req.nodeId].rows : [];
                         for(const r of rows) {
