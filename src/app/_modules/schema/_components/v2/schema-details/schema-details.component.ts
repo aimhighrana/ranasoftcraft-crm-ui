@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
@@ -244,6 +244,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Selected node type ...
    */
   nodeType = 'HEADER';
+
+  /**
+   * flag to enable/disable resizeable
+   */
+   grab = false;
 
   constructor(
     public activatedRouter: ActivatedRoute,
@@ -813,6 +818,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
         const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        if(this.nodeType === 'GRID') {
+          request.gridId = this.nodeId;
+        } else if(this.nodeType === 'HEIRARCHY') {
+          request.heirerchyId = this.nodeId;
+        }
+
+        // get the rowsno ...
+        if(this.nodeType === 'GRID' || this.nodeType === 'HEIRARCHY') {
+          request.rowSno = row.objnr ? row.objnr.fieldData : '';
+        }
+
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
           row[fldid].fieldData = value;
           if (res.acknowledge) {
@@ -1347,29 +1363,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  @HostListener('window:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent){
-    this.mousePosition = { x: event.clientX, y: event.clientY };
-    if (this.status === SchemaNavGrab.RESIZE) {
-      this.resize();
-      this.navscroll.nativeElement.style.cursor = 'col-resize';
-    }
-    else {
-      this.navscroll.nativeElement.style.cursor = 'default';
-    }
-  }
-
   public setNavDivPositions() {
     const { left, top } = this.navscroll.nativeElement.getBoundingClientRect();
     this.boxPosition = { left, top };
-  }
-
-  public resize() {
-    const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
-    this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
-      Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
-        this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
-        this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
   }
 
   public setStatus(event: MouseEvent, status: number) {
@@ -1378,7 +1374,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     else this.setNavDivPositions();
     this.status = status;
   }
+
   public enableResize(){
+    const sidebar = document.getElementById('navscroll')
     const grabberElement = document.createElement('div');
     grabberElement.style.height = '100%';
     grabberElement.style.width = '2px';
@@ -1388,7 +1386,49 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     grabberElement.style.resize = 'horizontal';
     grabberElement.style.overflow = 'auto';
     grabberElement.style.right = '0%';
-    this.navscroll.nativeElement.appendChild(grabberElement);
+    grabberElement.id = 'test_9237726432';
+
+    grabberElement.addEventListener('mousedown', () => {
+      this.grab = true;
+      sidebar.style.cursor = 'col-resize';
+    });
+
+    grabberElement.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+    });
+
+    sidebar.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+      grabberElement.style.backgroundColor = '#fff';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (this.grab) {
+        this.grab = false;
+        sidebar.style.cursor = 'default';
+      }
+    })
+
+    document.addEventListener('mousemove', (e) => {
+      if (this.grab) {
+        this.mousePosition = { x: e.clientX, y: e.clientY };
+      if (this.status === SchemaNavGrab.RESIZE) {
+        this.navscroll.nativeElement.style.cursor = 'col-resize';
+      } else {
+        this.navscroll.nativeElement.style.cursor = 'default';
+      }
+
+      const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
+      this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
+        Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
+          this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
+          this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
+        }
+    });
+
+    this.navscroll.nativeElement.prepend(grabberElement);
 
   }
 
