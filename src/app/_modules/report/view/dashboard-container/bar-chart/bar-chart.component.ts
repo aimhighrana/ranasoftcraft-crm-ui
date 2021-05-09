@@ -69,7 +69,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     },
     plugins: {
       datalabels: {
-        display: false
+        display: false,
       },
       zoom: {
         pan: {
@@ -592,6 +592,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }],
       }
     }
+    this.barChartOptions.scales = this.chart.chart.options.scales;
   }
 
   /**

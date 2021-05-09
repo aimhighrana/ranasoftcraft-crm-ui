@@ -6,7 +6,6 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
-import   ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -68,12 +67,16 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     scales : {
       xAxes : [
         {
-          display : true
+          scaleLabel:{
+            display : false
+          }
         }
       ],
       yAxes : [
         {
-          display : true
+          scaleLabel:{
+            display : false
+          }
         }
       ]
     }
@@ -192,27 +195,23 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
     // if showLegend flag will be true it show legend on Stacked bar widget
     if (this.stackBarWidget.getValue().isEnableLegend) {
-      this.chart.chart.options = {
-        legend: {
-          display: false,
-          position: this.stackBarWidget.getValue().legendPosition,
-          onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-            // call protype of stacked bar chart componenet
-            this.legendClick(legendItem);
-          }
-        }
-      }
+      this.barChartOptions.legend = {
+        ...this.barChartOptions.legend,
+        display: true,
+        position: this.stackBarWidget.getValue().legendPosition
+      };
+      this.chart.options.legend = this.barChartOptions.legend;
+      this.chart.chart.options.legend = this.barChartOptions.legend;
     }
     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.stackBarWidget.getValue().isEnableDatalabels) {
-      this.chart.chart.options.plugins = {
-        ChartDataLables,
-        datalabels: {
-          align: this.stackBarWidget.getValue().datalabelsPosition,
-          anchor: this.stackBarWidget.getValue().datalabelsPosition,
-          display: 'auto'
-        }
-      }
+      this.barChartOptions.plugins.datalabels = {
+        ...this.barChartOptions.plugins.datalabels,
+        display: true,
+        align: this.stackBarWidget.getValue().datalabelsPosition,
+        anchor: this.stackBarWidget.getValue().datalabelsPosition,
+      };
+      this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
     }
     // show axis labels and scales range
     this.setChartAxisAndScaleRange();
@@ -695,7 +694,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
         if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.chart.chart.options.scales = {
+          this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -713,7 +712,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             }]
           }
         } else {
-          this.chart.chart.options.scales = {
+          this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -732,7 +731,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           }
         }
     } else {
-      this.chart.chart.options.scales = {
+      this.barChartOptions.scales = {
         xAxes: [{
           scaleLabel: {
             display: true,
@@ -753,6 +752,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }],
       }
     }
+    this.chart.chart.options.scales = this.barChartOptions.scales;
   }
 
   /**
