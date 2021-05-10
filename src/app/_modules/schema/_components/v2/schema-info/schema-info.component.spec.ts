@@ -963,4 +963,10 @@ describe('SchemaInfoComponent', () => {
     component.updateDepRuleForChild(br, 0, event);
     expect(component.businessRuleData.length).toEqual(3);
   });
+
+  it('getModuleInfo(), should get module info', async(() => {
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.getModuleInfo();
+    expect(component.schemaDetails).toBeUndefined();
+  }));
 });

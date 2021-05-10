@@ -216,8 +216,22 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
+      this.getModuleInfo();
       this.schemaSummaryForm.controls.schemaThreshold.setValue(this.schemaDetails.schemaThreshold);
     }, (error) => console.error('Error : {}', error.message));
+  }
+
+  public getModuleInfo() {
+    const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      const module = moduleData[0];
+      if (module) {
+        this.schemaDetails.moduleDescription = module.moduleDesc;
+        this.schemaDetails.moduleId = module.moduleId;
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+    this.subscriptions.push(moduleInfoByModuleId);
   }
 
   /**

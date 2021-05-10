@@ -144,3 +144,30 @@ div.root {
     margin: 0 auto;
   }
 }
+
+.rule-border-row {
+  div {
+    &.col-reorder {
+      width: 45px;
+      box-sizing: border-box;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    &.col-action {
+      width: 75px;
+      box-sizing: border-box;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    &.col-enabled {
+      width: 65px;
+      box-sizing: border-box;
+      flex-grow: 0;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
