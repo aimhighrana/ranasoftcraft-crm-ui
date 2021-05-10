@@ -7,16 +7,16 @@
             <mat-menu #display_in="matMenu" class="navigation-menu">
                 <div class="f-col">
                     <lib-filter-option (click)="applyFilter('unit','day')">
-                        <div mat-line i18n="daily">Daily</div>
+                        <div mat-line i18n="@@daily">Daily</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('unit','week')">
-                        <div mat-line i18n="weekly">Weekly</div>
+                        <div mat-line i18n="@@weekly">Weekly</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('unit','month')">
-                        <div mat-line i18n="monthly">Monthly</div>
+                        <div mat-line i18n="@@monthly">Monthly</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('unit','year')">
-                        <div mat-line i18n="yearly">Yearly</div>
+                        <div mat-line i18n="@@yearly">Yearly</div>
                     </lib-filter-option>
                 </div>
             </mat-menu>

@@ -366,10 +366,10 @@
                     </div>
 
                     <div class="col col-x4" [matMenuTriggerFor]="subscriberlist">
-                        <lib-button i18n="admin" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">Admin</lib-button>
-                        <lib-button i18n="reviewer" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isReviewer">Reviewer</lib-button>
-                        <lib-button  i18n="viewer"type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isViewer">Viewer</lib-button>
-                        <lib-button i18n="editor" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isEditer">Editor</lib-button>
+                        <lib-button i18n="@@admin" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">Admin</lib-button>
+                        <lib-button i18n="@@reviewer" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isReviewer">Reviewer</lib-button>
+                        <lib-button  i18n="@@viewer"type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isViewer">Viewer</lib-button>
+                        <lib-button i18n="@@editor" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isEditer">Editor</lib-button>
                     </div>
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role.code, subscriber,l)">
