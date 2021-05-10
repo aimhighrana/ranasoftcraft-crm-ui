@@ -272,11 +272,13 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * function to change all selected column to a DisplayCriteria
    */
   changeAllDisplayCriteria() {
-    this.data.selectedColumns.forEach(row => {
-      if (row.pickList === '1' || row.pickList === '30' || row.pickList === '37') {
+    const selectDisplayCriteria = (row: MetadataModel) => {
+  if (row.picklist === '1' || row.picklist === '30' || row.picklist === '37') {
         row.displayCriteria = this.allDisplayCriteria;
       }
-    });
+    }
+    this.headers.forEach(row => selectDisplayCriteria(row));
+    this.data.selectedColumns.forEach(row => selectDisplayCriteria(row));
   }
 
   /**
