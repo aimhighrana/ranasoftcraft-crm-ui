@@ -83,6 +83,8 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
       this.filterCriteria = new Array();
       criteria.forEach(loop => this.filterCriteria.push(loop));
       this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+    } else {
+      this.emitFilterApplied.emit(false);
     }
   }
 

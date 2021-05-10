@@ -57,10 +57,6 @@ describe('DashboardComponent', () => {
   });
 
   it('clearFilters(), should clear filters', () => {
-    component.emitClearBtnEvent = true;
-    component.clearFilters();
-    expect(component.emitClearBtnEvent).toEqual(false);
-
     component.emitClearBtnEvent = false;
     component.clearFilters();
     expect(component.emitClearBtnEvent).toEqual(true);
@@ -79,5 +75,19 @@ describe('DashboardComponent', () => {
     component.duplicateReport();
     expect(dialogSpy).toHaveBeenCalled();
     expect(dialogSpy).toHaveBeenCalledWith(DuplicateReportComponent, { data: { reportName: 'Test', reportId: 222 }, disableClose: true, width: '600px', height: '250px' });
+  });
+
+  it('showClearBtnEmit(), should enable Clear filter(s) button', () => {
+    expect(component.showClearFilterBtn).toEqual(false);
+    component.showClearBtnEmit(true);
+    expect(component.showClearFilterBtn).toEqual(true);
+    expect(component.emitClearBtnEvent).toEqual(false);
+  });
+
+  it('showClearBtnEmit(), should disenable Clear filter(s) button', () => {
+    component.showClearFilterBtn = true;
+    component.showClearBtnEmit(false);
+    expect(component.showClearFilterBtn).toEqual(false);
+    expect(component.emitClearBtnEvent).toEqual(true);
   });
 });
