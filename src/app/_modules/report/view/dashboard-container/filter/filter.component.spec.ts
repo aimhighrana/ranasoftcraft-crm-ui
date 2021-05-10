@@ -216,13 +216,19 @@ describe('FilterComponent', () => {
   it('getFieldsMetadaDesc(), should return the dropdown value of the field', async(() => {
     const buckets = [{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c: '200010'}]}}}}]}}},{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c: '200010',t:'testing'}]}}}}]}}}, {doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{}}}}]}}}];
     component.values = [{CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: '200010'} as DropDownValues, {CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: 'testing'} as DropDownValues]
+    const filterWidget= new FilterWidget()
+     filterWidget.metaData={fieldId:'MATL_GROUP',picklist:'1'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
     component.getFieldsMetadaDesc(buckets, 'MATL_GROUP');
     expect(component.values.length).toEqual(2);
     expect(component.values[0].TEXT).toEqual('200010');
     expect(component.values[1].TEXT).toEqual('testing');
 
-    const buckets2 = [{doc_count:2,key:{FILTER:'n'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'n'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'y'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'y'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
+    const buckets2 = [{doc_count:2,key:{FILTER:'n'},'top_hits#items':{hits:{hits:[{_source:{staticFields: {OVERDUE: {vc: [{c: 'n'}]}}}}]}}}, {doc_count:2,key:{FILTER:'y'},'top_hits#items':{hits:{hits:[{_source:{staticFields: {OVERDUE: {vc: [{c: 'y'}]}}}}]}}}];
     component.values = [{CODE: 'n', FIELDNAME: 'OVERDUE', TEXT: 'n'} as DropDownValues, {CODE: 'y', FIELDNAME: 'OVERDUE', TEXT: 'y'} as DropDownValues]
+    const filterWidget1= new FilterWidget()
+     filterWidget1.metaData={fieldId:'OVERDUE',picklist:'1'} as MetadataModel;
+    component.filterWidget.next(filterWidget1);
     component.getFieldsMetadaDesc(buckets2, 'OVERDUE');
     expect(component.values.length).toEqual(2);
     expect(component.values[0].TEXT).toEqual('No');

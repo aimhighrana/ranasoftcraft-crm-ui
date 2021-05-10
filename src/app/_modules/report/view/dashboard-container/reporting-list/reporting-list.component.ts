@@ -263,13 +263,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                 }
               });
               let textvalue = valArray.toString();
+              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
               textvalue = textvalue === 'null' ? '' : textvalue
               let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
               codeValue = codeValue === 'null' ? '' : codeValue;
-              if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
+              if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN' || reportingWidget.fldMetaData.picklist === '35') {
                 textvalue = this.getFields(column, codeValue);
+                codeValue = textvalue;
               }
-              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
               const displayCriteria = reportingWidget && reportingWidget.displayCriteria ? reportingWidget.displayCriteria : this.widgetHeader.displayCriteria;
               switch(displayCriteria) {
                 case DisplayCriteria.CODE :

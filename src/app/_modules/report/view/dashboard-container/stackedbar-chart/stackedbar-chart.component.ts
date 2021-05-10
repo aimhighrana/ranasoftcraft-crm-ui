@@ -67,12 +67,16 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     scales : {
       xAxes : [
         {
-          display : true
+          scaleLabel:{
+            display : false
+          }
         }
       ],
       yAxes : [
         {
-          display : true
+          scaleLabel:{
+            display : false
+          }
         }
       ]
     }
@@ -694,7 +698,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
         if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.chart.chart.options.scales = {
+          this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -712,7 +716,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             }]
           }
         } else {
-          this.chart.chart.options.scales = {
+          this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -731,7 +735,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           }
         }
     } else {
-      this.chart.chart.options.scales = {
+      this.barChartOptions.scales = {
         xAxes: [{
           scaleLabel: {
             display: true,
@@ -752,6 +756,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }],
       }
     }
+    this.chart.chart.options.scales = this.barChartOptions.scales;
   }
 
   /**

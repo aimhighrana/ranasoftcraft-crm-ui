@@ -99,6 +99,12 @@ export abstract class GenericWidgetComponent {
         break;
 
       default:
+        if(codeValue === 'off') {
+          finalValue = 'False'
+        }
+        if(codeValue === 'on') {
+          finalValue = 'True'
+        }
         break;
     }
     return finalValue;

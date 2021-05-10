@@ -1067,7 +1067,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
         (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
     if (val) {
-      if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+      if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN' || this.timeseriesData.timeSeries.metaData.picklist === '35') {
         labelValue = this.getFields(fieldId, val[0].c);
       } else {
         labelValue = val[0];
