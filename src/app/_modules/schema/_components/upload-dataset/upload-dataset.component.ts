@@ -652,7 +652,7 @@ get selectedRunningSchedule () {
     this.stepSubmitted = true;
     // this.uploadError.status = false;
 
-    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid){
+    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid && where === 'next'){
       this.showValidationError('Please fix error below to continue.');
       this.requestForm.controls.objectDesc.markAsTouched();
     }
