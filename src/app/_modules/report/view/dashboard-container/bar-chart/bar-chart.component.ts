@@ -197,25 +197,25 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
     // if showLegend flag will be true it show legend on Bar widget
     if (this.barWidget.getValue().isEnableLegend) {
-      this.chart.chart.options = {
-        legend: {
+      this.barChartOptions.legend = {
+          ...this.barChartOptions.legend,
           display: true,
           position: this.barWidget.getValue().legendPosition
-        }
-      }
+      };
+      this.chart.options.legend = this.barChartOptions.legend;
+      this.chart.chart.options.legend = this.barChartOptions.legend;
     }
 
     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.barWidget.getValue().isEnableDatalabels) {
-      this.chart.chart.options = {
-        plugins: {
-          datalabels: {
-            display: true,
-            align: this.barWidget.getValue().datalabelsPosition,
-            anchor: this.barWidget.getValue().datalabelsPosition,
-          }
-        }
-      }
+      this.barChartOptions.plugins.datalabels = {
+        ...this.barChartOptions.plugins.datalabels,
+        display: true,
+        align: this.barWidget.getValue().datalabelsPosition,
+        anchor: this.barWidget.getValue().datalabelsPosition,
+      };
+      this.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+      this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
     }
     // set scale range and axis lebels
     this.setChartAxisAndScaleRange();
@@ -259,7 +259,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.chartLegend.forEach(legend=>{
       backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
     });
-    console.log(this.chartLegend);
 
     this.barChartData = [{
       label: this.widgetHeader.widgetName,
@@ -638,8 +637,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * Open Color palette...
    */
   openColorPalette() {
-    console.log(this.barChartData);
-    console.log(this.chartLegend);
     const req: WidgetColorPalette = new WidgetColorPalette();
     req.widgetId = String(this.widgetId);
     req.reportId = String(this.reportId);

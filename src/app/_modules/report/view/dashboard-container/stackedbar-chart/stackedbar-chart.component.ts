@@ -190,7 +190,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getBarConfigurationData() : void {
     // bar orientation based on orientation value
-
     this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
     // if showLegend flag will be true it show legend on Stacked bar widget
@@ -198,20 +197,25 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       this.barChartOptions.legend = {
         ...this.barChartOptions.legend,
         display: true,
-        position: this.stackBarWidget.getValue().legendPosition
+        position: this.stackBarWidget.getValue().legendPosition,
       };
-      this.chart.options.legend = this.barChartOptions.legend;
-      this.chart.chart.options.legend = this.barChartOptions.legend;
+      if (this.chart) {
+        this.chart.options.legend = this.barChartOptions.legend;
+        this.chart.chart.options.legend = this.barChartOptions.legend;
+      }
     }
     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.stackBarWidget.getValue().isEnableDatalabels) {
       this.barChartOptions.plugins.datalabels = {
         ...this.barChartOptions.plugins.datalabels,
-        display: true,
         align: this.stackBarWidget.getValue().datalabelsPosition,
         anchor: this.stackBarWidget.getValue().datalabelsPosition,
+        display: 'auto'
       };
-      this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+      if (this.chart) {
+        this.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+        this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+      }
     }
     // show axis labels and scales range
     this.setChartAxisAndScaleRange();
