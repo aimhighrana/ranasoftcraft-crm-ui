@@ -37,7 +37,7 @@
                         <mat-checkbox color="primary" (change)="selectionChange(header)" [checked]="isChecked(header)">
                             {{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}
                         </mat-checkbox>
-                        <mat-form-field appearance="outline" *ngIf="header.pickList == '1' || header.pickList == '30' || header.pickList == '37'">
+                        <mat-form-field appearance="outline" *ngIf="header.picklist == '1' || header.picklist == '30' || header.picklist == '37'">
                             <mat-select [(ngModel)]="header.displayCriteria" (ngModelChange)="manageAllDisplayCriteria()">
                                 <mat-option value="TEXT" i18n="@@text">Text</mat-option>
                                 <mat-option value="CODE" i18n="@@code">Code</mat-option>

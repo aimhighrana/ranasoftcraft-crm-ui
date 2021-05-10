@@ -303,19 +303,19 @@ describe('ReportDatatableColumnSettingsComponent', () => {
           fieldId: 'NDCTYPE',
           fieldDescri: 'NDC TYPE MATERIAL',
           displayCriteria: DisplayCriteria.TEXT,
-          pickList: '1'
+          picklist: '1'
         },
         {
           fieldId: 'MATL_TYPE',
           fieldDescri: 'MATERIAL TYPE',
           displayCriteria: DisplayCriteria.CODE,
-          pickList: '30'
+          picklist: '30'
         },
         {
           fieldId: 'DATE',
           fieldDescri: 'DATE',
           displayCriteria: DisplayCriteria.CODE,
-          pickList: '37'
+          picklist: '37'
         }
       ],
       isWorkflowdataSet: false,
