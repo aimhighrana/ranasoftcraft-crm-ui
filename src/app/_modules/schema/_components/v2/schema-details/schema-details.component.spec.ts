@@ -313,7 +313,19 @@ describe('SchemaDetailsComponent', () => {
     spyOn(component.filterCriteria, 'next');
     component.removeAppliedFilter(filterCriteria);
     expect(component.filterCriteria.next).toHaveBeenCalledTimes(0);
+  });
 
+  it('removeAppliedFilter() should remove an applied filter', () => {
+
+    component.inlineSearch('material');
+
+    const filterCriteria = {
+        fieldId: 'id',
+        type: 'INLINE'
+      } as FilterCriteria ;
+    spyOn(component.filterCriteria, 'next');
+    component.removeAppliedFilter(filterCriteria);
+    expect(component.filterCriteria.next).toHaveBeenCalledTimes(1);
   });
 
   it('should reset applied filter', () => {
@@ -323,7 +335,6 @@ describe('SchemaDetailsComponent', () => {
 
     component.resetAppliedFilter();
     expect(component.filterCriteria.getValue().length).toEqual(0);
-
   });
 
   it('should change tab status', () => {
@@ -361,6 +372,8 @@ describe('SchemaDetailsComponent', () => {
     component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
     component.getData([], null, 0, true);
 
+    expect(dataSourceSpy.getTableData).toBeTruthy();
+    component.getData([], null, 1, true);
     expect(dataSourceSpy.getTableData).toBeTruthy();
   }));
 
@@ -1182,6 +1195,7 @@ describe('SchemaDetailsComponent', () => {
     component.activeNode = component.executionTreeHierarchy;
 
     expect(component.getNodeParentsHierarchy(component.activeNode.childs[0])).toEqual(['1','header']);
+    expect(component.getNodeParentsHierarchy({} as SchemaExecutionTree)).toEqual(['header']);
   }));
 
   it('uploadCorrectedDataCsv(), should open files', async(() => {
