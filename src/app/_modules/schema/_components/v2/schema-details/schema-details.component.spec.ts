@@ -214,6 +214,8 @@ describe('SchemaDetailsComponent', () => {
     result = component.formatCellData('diw_15', ['USA', 'France']);
     expect(result).toEqual('USA,France');
 
+    result = component.formatCellData('diw_15', 'null');
+    expect(result).toEqual('');
   })
 
   /* it('should filter field options', () => {
@@ -849,7 +851,8 @@ describe('SchemaDetailsComponent', () => {
     expect(component.isEditer).toBeTrue()
     expect(component.isReviewer).toBeTrue();
     expect(component.isApprover).toBeTrue();
-
+    component.schemaInfo.collaboratorModels.isReviewer = false;
+    expect(component.isApprover).toBeTrue();
   });
 
   it('should filter primary and secondary actions', () => {
