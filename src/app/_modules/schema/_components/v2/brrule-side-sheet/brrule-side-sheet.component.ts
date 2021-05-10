@@ -990,7 +990,7 @@ export class BrruleSideSheetComponent implements OnInit {
     form.controls[controlName].setValue($event.option.value);
     if (controlName === 'standard_function') {
       const code = this.preDefinedRegex.find(x => x.FUNC_TYPE === $event.option.value)?.FUNC_CODE;
-      form.controls['regex'].setValue(code);
+      form.controls.regex.setValue(code);
     }
   }
 
