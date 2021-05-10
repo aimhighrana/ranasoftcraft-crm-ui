@@ -907,7 +907,7 @@ get selectedRunningSchedule () {
   toggleBrStatus(event, Br) {
     this.requestForm.controls.coreSchemaBr.value.map((br) => {
       if (br.fields === Br.fields) {
-        br.status = event.checked ? '1' : '0';
+        br.status = event ? '1' : '0';
       }
     });
   }
