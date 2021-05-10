@@ -6,7 +6,6 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
-import   ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -187,31 +186,31 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getBarConfigurationData() : void {
     // bar orientation based on orientation value
-
     this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
     // if showLegend flag will be true it show legend on Stacked bar widget
     if (this.stackBarWidget.getValue().isEnableLegend) {
-      this.chart.chart.options = {
-        legend: {
-          display: false,
-          position: this.stackBarWidget.getValue().legendPosition,
-          onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-            // call protype of stacked bar chart componenet
-            this.legendClick(legendItem);
-          }
-        }
+      this.barChartOptions.legend = {
+        ...this.barChartOptions.legend,
+        display: true,
+        position: this.stackBarWidget.getValue().legendPosition,
+      };
+      if (this.chart) {
+        this.chart.options.legend = this.barChartOptions.legend;
+        this.chart.chart.options.legend = this.barChartOptions.legend;
       }
     }
     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.stackBarWidget.getValue().isEnableDatalabels) {
-      this.chart.chart.options.plugins = {
-        ChartDataLables,
-        datalabels: {
-          align: this.stackBarWidget.getValue().datalabelsPosition,
-          anchor: this.stackBarWidget.getValue().datalabelsPosition,
-          display: 'auto'
-        }
+      this.barChartOptions.plugins.datalabels = {
+        ...this.barChartOptions.plugins.datalabels,
+        align: this.stackBarWidget.getValue().datalabelsPosition,
+        anchor: this.stackBarWidget.getValue().datalabelsPosition,
+        display: 'auto'
+      };
+      if (this.chart) {
+        this.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+        this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
       }
     }
     // show axis labels and scales range

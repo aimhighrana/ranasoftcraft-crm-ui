@@ -93,7 +93,7 @@ describe('DuplicateReportComponent', () => {
 
   it('onConfirm(), should not duplicate a report', async(() => {
     // Test required Validator
-    component.reportNameCtrl.setValue('');
+    component.reportNameCtrl.setValue(' ');
     component.data = {
       reportId: '724752745672',
       reportName: component.reportNameCtrl.value

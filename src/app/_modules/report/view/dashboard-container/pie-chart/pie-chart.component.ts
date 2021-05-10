@@ -182,29 +182,25 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
     // if showLegend flag will be true it show legend on Stacked bar widget
     if (this.pieWidget.getValue().isEnableLegend) {
-      this.chart.chart.options = {
-        legend: {
-          display: true,
-          position: this.pieWidget.getValue().legendPosition,
-          onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-            // call protype of stacked bar chart componenet
-            this.legendClick(legendItem);
-          }
-        }
-      }
+      this.pieChartOptions.legend = {
+        ...this.pieChartOptions.legend,
+        display: true,
+        position: this.pieWidget.getValue().legendPosition,
+      };
+      this.chart.options.legend = this.pieChartOptions.legend;
+      this.chart.chart.options.legend = this.pieChartOptions.legend;
     }
 
     //  if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.pieWidget.getValue().isEnableDatalabels) {
-      this.chart.chart.options = {
-        plugins: {
-          datalabels: {
-            display: true,
-            align: this.pieWidget.getValue().datalabelsPosition,
-            anchor: this.pieWidget.getValue().datalabelsPosition,
-          }
-        }
-      }
+      this.pieChartOptions.plugins.datalabels = {
+        ...this.pieChartOptions.plugins.datalabels,
+        display: true,
+        align: this.pieWidget.getValue().datalabelsPosition,
+        anchor: this.pieWidget.getValue().datalabelsPosition,
+      };
+      this.chart.options.plugins.datalabels = this.pieChartOptions.plugins.datalabels;
+      this.chart.chart.options.plugins.datalabels = this.pieChartOptions.plugins.datalabels;
     }
   }
 
@@ -252,6 +248,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     if (this.pieWidget.getValue().isEnabledBarPerc) {
       this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
       this.chart.chart.options = {
+        ...this.chart.chart.options,
         plugins: {
           datalabels: {
             display: true,
@@ -569,10 +566,6 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    * Open Color palette...
    */
   openColorPalette() {
-    console.log(this.pieChartColors);
-    console.log(this.pieChartData);
-    console.log(this.lablels);
-    console.log(this.chartLegend);
     const req: WidgetColorPalette = new WidgetColorPalette();
     req.widgetId = String(this.widgetId);
     req.reportId = String(this.reportId);
