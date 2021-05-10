@@ -85,7 +85,7 @@ export class EndpointsRuleService {
   }
 
   public uploadDataUrl(objectType: string, fileSno: string): string {
-    return `${this.origin}/schema/upload-data/${objectType}/${fileSno}`;
+    return `${this.classicOrigin}/schema/upload-data/${objectType}/${fileSno}`;
   }
 
   public getBusinessRulesInfoByModuleIdUrl() {
