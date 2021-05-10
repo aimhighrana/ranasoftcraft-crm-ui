@@ -69,7 +69,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     },
     plugins: {
       datalabels: {
-        display: false
+        display: false,
       },
       zoom: {
         pan: {
@@ -308,6 +308,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }
       } else {
         finalVal[key] = key;
+      } if(this.barWidget.getValue().metaData.picklist === '35') {
+        finalVal[key] = this.getFields(fldid, key);
       }
     });
 
@@ -589,6 +591,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }],
       }
     }
+    this.barChartOptions.scales = this.chart.chart.options.scales;
   }
 
   /**
