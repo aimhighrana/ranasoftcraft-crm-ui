@@ -652,7 +652,7 @@ get selectedRunningSchedule () {
     this.stepSubmitted = true;
     // this.uploadError.status = false;
 
-    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid){
+    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid && where === 'next'){
       this.showValidationError('Please fix error below to continue.');
       this.requestForm.controls.objectDesc.markAsTouched();
     }
@@ -907,7 +907,7 @@ get selectedRunningSchedule () {
   toggleBrStatus(event, Br) {
     this.requestForm.controls.coreSchemaBr.value.map((br) => {
       if (br.fields === Br.fields) {
-        br.status = event.checked ? '1' : '0';
+        br.status = event ? '1' : '0';
       }
     });
   }

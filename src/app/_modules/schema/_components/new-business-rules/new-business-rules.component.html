@@ -213,7 +213,7 @@
             </div>
 
             <!-- Comparison value -->
-            <div class="col" *ngIf="udrBlock.operator !== 'RANGE'">
+            <div class="col" *ngIf="udrBlock.operator !== 'RANGE' && udrBlock.operator !== 'EMPTY' && udrBlock.operator !== 'NOT_EMPTY'">
               <lib-input label="‎" placeholder="Comparison value" [value]="udrBlock.comparisonValue"
                 (valueChange)="setComparisonValue($event,i)"></lib-input>
             </div>
@@ -292,7 +292,7 @@
                     </mat-select>
                   </div>
 
-                  <div class="col" *ngIf="child.operator !== 'RANGE'">
+                  <div class="col" *ngIf="child.operator !== 'RANGE' && child.operator !== 'EMPTY' && child.operator !== 'NOT_EMPTY'">
                     <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="child.comparisonValue"
                       (valueChange)="setComparisonValueForChild($event,child,i)"></lib-input>
                   </div>
