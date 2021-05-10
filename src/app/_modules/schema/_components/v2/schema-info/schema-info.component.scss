@@ -147,18 +147,20 @@ div.root {
 
 .rule-border-row {
   div {
-    &.col-reorder {    
+    &.col-reorder {
       width: 45px;
       box-sizing: border-box;
       flex-grow: 0;
       flex-shrink: 0;
     }
+
     &.col-action {
       width: 75px;
       box-sizing: border-box;
       flex-grow: 0;
       flex-shrink: 0;
     }
+
     &.col-enabled {
       width: 65px;
       box-sizing: border-box;
