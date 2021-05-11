@@ -1687,4 +1687,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     const nodeDetails = treeArray.find(n => n.nodeId === nodeId);
     return nodeDetails && nodeDetails.nodeType;
   }
+
+  isHeaderColumn(dynCols) {
+    return this.columns.header?.includes(dynCols);
+  }
+
 }
