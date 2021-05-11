@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition } from '../../../_models/widget';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -202,8 +202,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           display: true,
           position: this.barWidget.getValue().legendPosition
       };
-      this.chart.options.legend = this.barChartOptions.legend;
-      this.chart.chart.options.legend = this.barChartOptions.legend;
+      if (this.chart) {
+        this.chart.options.legend = this.barChartOptions.legend;
+        this.chart.chart.options.legend = this.barChartOptions.legend;
+      }
     }
 
     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
@@ -214,8 +216,15 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         align: this.barWidget.getValue().datalabelsPosition,
         anchor: this.barWidget.getValue().datalabelsPosition,
       };
-      this.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
-      this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+      if (this.barWidget.getValue().datalabelsPosition === AlignPosition.END) {
+        // Datalabel was being cut off the screen when the height was small.
+        this.barChartOptions.plugins.datalabels.offset = 0;
+        this.barChartOptions.plugins.datalabels.padding = 0;
+      }
+      if (this.chart) {
+        this.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+        this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
+      }
     }
     // set scale range and axis lebels
     this.setChartAxisAndScaleRange();
@@ -533,7 +542,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.barWidget.getValue().scaleFrom, max:this.barWidget.getValue().scaleTo, stepSize:this.barWidget.getValue().stepSize};
         if(this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.chart.chart.options.scales = {
+          this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -551,7 +560,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             }]
           }
         } else {
-          this.chart.chart.options.scales = {
+          this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -570,7 +579,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           }
         }
     } else {
-      this.chart.chart.options.scales = {
+      this.barChartOptions.scales = {
         xAxes: [{
           scaleLabel: {
             display: true,
@@ -591,7 +600,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }],
       }
     }
-    this.barChartOptions.scales = this.chart.chart.options.scales;
+    if (this.chart) {
+      this.chart.options.scales = this.barChartOptions.scales;
+      this.chart.chart.options.scales = this.barChartOptions.scales;
+    }
   }
 
   /**

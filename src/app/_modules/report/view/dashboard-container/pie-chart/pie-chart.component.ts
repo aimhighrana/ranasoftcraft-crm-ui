@@ -42,6 +42,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   public pieChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {

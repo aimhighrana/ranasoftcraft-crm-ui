@@ -1,3 +1,15 @@
+.mat-table {
+  overflow-x: scroll;
+}
+
+.mat-cell,
+.mat-header-cell {
+  word-wrap: initial;
+  line-break: unset;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 mat-card.widget {
   box-sizing: border-box;
   padding: 8px;
