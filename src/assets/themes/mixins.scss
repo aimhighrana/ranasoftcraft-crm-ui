@@ -1059,10 +1059,8 @@
       border-color: $color-app-border;
     }
 
-    .mat-header-cell {
-      &.mat-table-sticky {
-        background: $color-app-accent;
-      }
+    .mat-header-cell.mat-table-sticky {
+      background: $color-app-accent;
     }
 
     .mat-cell {
