@@ -370,7 +370,7 @@ export class EndpointsRuleService {
    * endpoint for save/update schema data scope
    */
   public saveUpdateDataScopeUrl(): string {
-    return `${this.origin}/schema/variant/create-update-single`;
+    return `${this.origin}/schema/metadata/variant/create-update-single`;
   }
 
   /**

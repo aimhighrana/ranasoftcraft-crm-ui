@@ -412,7 +412,7 @@ describe('EndpointsRuleService', () => {
 
   it('saveUpdateDataScopeUrl(),should return saveUpdateDataScopeUrl url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/variant/create-update-single');
+    expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/metadata/variant/create-update-single');
   }));
 
   it('getAllDataScopeUrl(),should return getAllDataScopeUrl url', async(() => {
