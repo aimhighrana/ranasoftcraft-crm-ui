@@ -250,11 +250,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
    grab = false;
 
-  /**
-   * holds table header label
-   */
-  dataHeader = 'Header';
-
   constructor(
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -723,7 +718,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
 
     if (this.userDetails) {
-      this.dataHeader = 'Header';
       this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     }
   }
@@ -1542,7 +1536,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     this.activeNode = node;
     console.log(node);
-    this.dataHeader = node.nodeDesc || 'Header';
     this.router.navigate([], {
       relativeTo: this.activatedRouter,
       queryParams: {
