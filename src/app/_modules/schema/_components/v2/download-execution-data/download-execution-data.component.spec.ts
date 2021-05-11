@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SchemaService } from '@services/home/schema.service';
+import { TransientService } from 'mdo-ui-library';
+import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { DownloadExecutionDataComponent } from './download-execution-data.component';
@@ -8,6 +11,8 @@ import { DownloadExecutionDataComponent } from './download-execution-data.compon
 describe('DownloadExecutionDataComponent', () => {
   let component: DownloadExecutionDataComponent;
   let fixture: ComponentFixture<DownloadExecutionDataComponent>;
+  let schemaService: SchemaService;
+  let transientService: TransientService;
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
@@ -20,7 +25,10 @@ describe('DownloadExecutionDataComponent', () => {
         {
           provide: MatDialogRef,
           useValue: mockDialogRef
-        }, { provide: MAT_DIALOG_DATA, useValue: {}
+        }, { provide: MAT_DIALOG_DATA, useValue: {
+          schemaId: '1701',
+          requestStatus: 'error'
+        }
         }
       ]
     })
@@ -30,7 +38,10 @@ describe('DownloadExecutionDataComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DownloadExecutionDataComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+
+    schemaService = fixture.debugElement.injector.get(SchemaService);
+    transientService = fixture.debugElement.injector.get(TransientService);
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -43,8 +54,17 @@ describe('DownloadExecutionDataComponent', () => {
   });
 
   it('should downloadExecutionDetails', () => {
+
+    spyOn(schemaService, 'downloadExecutionDetailsByNodes').and.returnValues(of({message: 'success'}), throwError({message:'api error'}));
+    spyOn(transientService, 'open');
     component.downloadExecutionDetails();
-    expect(mockDialogRef.close).toHaveBeenCalledWith(component.selectedNodes);
+    expect(transientService.open).toHaveBeenCalled();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+
+    spyOn(console, 'error');
+    component.downloadExecutionDetails();
+    expect(console.error).toHaveBeenCalled();
+    expect(component.downloadError).toBeTrue();
   });
 
   it('should nodeSelectionChanged', () => {

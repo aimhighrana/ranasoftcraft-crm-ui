@@ -370,8 +370,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     this.activatedRouter.queryParamMap.subscribe(ar=>{
       if(!this.isRefresh) {
+        const nodeId = ar.get('node') || 'header';
+        if(nodeId !== this.nodeId) {
         this.selectedNodeChange(ar);
-        this.getData(this.filterCriteria.getValue(), this.sortOrder);
+        }
       }
       this.isRefresh = false;
     });
@@ -381,15 +383,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getDataScope(res); // Get Data scope..
       }
     })
-
-    /**
-     * Get onload data ..
-     */
-    this.dataSource.brMetadata.subscribe(res => {
-      if (res) {
-        this.getData();
-      }
-    });
 
     /**
      * After choose columns get updated columns ..
@@ -470,9 +463,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   selectedNodeChange(params: ParamMap) {
-      this.nodeId = params.get('node') ? params.get('node') : '';
-      this.nodeType = params.get('node-level') ? params.get('node-level') : '';
+      this.nodeId = params.get('node') || 'header';
+      this.nodeType = params.get('node-level') || 'HEADER';
       this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+      this.getData(this.filterCriteria.getValue(), this.sortOrder);
   }
 
   /**
@@ -716,7 +710,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       return false;
     }
     this.activeTab = status;
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status: this.activeTab } });
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], {
+      queryParams: { status: this.activeTab }, queryParamsHandling: 'merge'
+    });
 
     // update state of columns
     this.manageStaticColumns();
@@ -751,29 +747,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       executionTreeHierarchy: this.executionTreeHierarchy && this.executionTreeHierarchy.nodeId ? this.executionTreeHierarchy: null
     }
 
-    const ref = this.matDialog.open(DownloadExecutionDataComponent, {
+    this.matDialog.open(DownloadExecutionDataComponent, {
       width: '600px',
       data
     });
-
-    ref.afterClosed().subscribe(res => {
-      if(res) {
-        const sub = this.schemaService.downloadExecutionDetailsByNodes(this.schemaId, this.activeTab, res).subscribe(
-          resp => {
-            this.transientService.open('Download successfully started', null, {
-              duration: 1000
-            });
-          },
-          err => {
-            this.transientService.open('Something went wrong, try later', null, {
-              duration: 1000
-            });
-            console.error(`Error:: ${err.message}`);
-          });
-          this.subscribers.push(sub);
-      }
-    });
-
   }
 
   /**

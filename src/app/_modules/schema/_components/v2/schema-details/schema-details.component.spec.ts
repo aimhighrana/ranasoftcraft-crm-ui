@@ -390,7 +390,9 @@ describe('SchemaDetailsComponent', () => {
     component.metadata.next({headers:{MATL_TYPE:{fieldId:'MATL_TYPE'}}} as MetadataModeleResponse);
     component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
     component.changeTabStatus('success');
-    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', component.moduleId, component.schemaId],{queryParams:{status:component.activeTab}} );
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', component.moduleId, component.schemaId], {
+      queryParams: { status: component.activeTab }, queryParamsHandling: 'merge'
+    } );
 
   }));
 
@@ -1065,7 +1067,7 @@ describe('SchemaDetailsComponent', () => {
     expect(component.sortOrder).toEqual({status: 'desc'});
 
     component.sort.sort({id: 'status'} as MatSortable);
-    expect(component.getData).toHaveBeenCalledTimes(3);
+    expect(component.getData).toHaveBeenCalledTimes(2);
 
   });
 
