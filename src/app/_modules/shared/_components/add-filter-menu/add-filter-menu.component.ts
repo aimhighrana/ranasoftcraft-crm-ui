@@ -203,7 +203,6 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
         this.tarnsformMetada(fld);
       }
     });
-    this.getFldMetadata();
 
     this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
       node => node.level, node => node.expandable);

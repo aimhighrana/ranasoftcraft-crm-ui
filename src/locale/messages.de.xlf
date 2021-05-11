@@ -2322,6 +2322,14 @@
           <context context-type="linenumber">124</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="execution_download_error" datatype="html">
+        <source>Something went wrong, try later</source>
+        <target> Etwas ist schief gelaufen, versuchen Sie es später </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\download-execution-data\download-execution-data.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -6,12 +6,15 @@
     </div>
     
     <div class="nav-tree" *ngIf="data.executionTreeHierarchy">
+        <lib-banner *ngIf="downloadError" status="error"
+            text="Something went wrong, try later" i18n-text="@@execution_download_error"></lib-banner>
         <mat-accordion>
-            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(data.executionTreeHierarchy.childs && data.executionTreeHierarchy.childs.length) ? false : true">
+            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(data.executionTreeHierarchy.childs && data.executionTreeHierarchy.childs.length) ? false : true"
+                expanded="true">
                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                     <mat-panel-title>
                         <lib-checkbox [checked]="selectedNodes.indexOf(data.executionTreeHierarchy.nodeId) !== -1"
-                            (valueChange)="nodeSelectionChanged(data.executionTreeHierarchy.nodeId)"></lib-checkbox>
+                            (valueChange)="nodeSelectionChanged(data.executionTreeHierarchy.nodeId)" prosClickStopPropagation></lib-checkbox>
                         <div class="expand-title">{{ data.executionTreeHierarchy.nodeDesc }}</div>
                         <span class="f-spacer"></span>
                         <div class="default-badge">{{ data.executionTreeHierarchy.docCount }}</div>
