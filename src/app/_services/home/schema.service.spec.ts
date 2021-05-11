@@ -26,7 +26,7 @@ describe('SchemaService', () => {
     'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree', 'getModuleInfoByModuleIdUrl']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
     'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
-    const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount']);
+    const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount', 'downloadExecutionDetailsByNodesUrl']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -724,6 +724,25 @@ describe('SchemaService', () => {
 
     const httpReq = httpTestingController.expectOne(url);
     expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(httpMockData);
+
+    httpTestingController.verify();
+  }));
+
+  it('downloadExecutionDetailsByNodes()', async(() => {
+
+    const url = 'test downloadExecutionDetailsByNodesUrl';
+    endpointClassicServiceSpy.downloadExecutionDetailsByNodesUrl.and.returnValue(url);
+
+    const httpMockData = {
+      message: 'success'
+    };
+    schemaService.downloadExecutionDetailsByNodes('1701', 'error', ['header']).subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
     httpReq.flush(httpMockData);
 
     httpTestingController.verify();

@@ -894,14 +894,11 @@ describe('SchemaDetailsComponent', () => {
     expect(component.selectedFields.length).toEqual(0);
 
     spyOn(schemaDetailService, 'updateSchemaTableView').and.returnValue(of([]));
-    component.metadata.next({headers: {}} as MetadataModeleResponse);
-    component.selectedFieldsOb.next([]);
+    component.selectedFieldsOb.next(true);
     expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalled();
 
-    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false, isEditable:false}];
-    component.selectedFieldsOb.next(selectedFields);
-    component.metadata.next({headers: {}} as MetadataModeleResponse);
-    expect(component.selectedFields).toEqual(selectedFields);
+    component.selectedFieldsOb.next(false);
+    expect(component.calculateDisplayFields).toHaveBeenCalled();
 
   }));
 
@@ -1140,7 +1137,7 @@ describe('SchemaDetailsComponent', () => {
       {nodeId: '2', nodeType:'GRID', fieldsList: []}
     ];
 
-    spyOn(component, 'calculateDisplayFields');
+    spyOn(component.selectedFieldsOb, 'next');
     spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
     spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of(response), throwError({message: 'api error'}));
 
@@ -1148,7 +1145,7 @@ describe('SchemaDetailsComponent', () => {
     newNode.nodeId = '1';
     newNode.nodeType = SchemaExecutionNodeType.HEIRARCHY;
     component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType);
-    expect(component.calculateDisplayFields).toHaveBeenCalled();
+    expect(component.selectedFieldsOb.next).toHaveBeenCalled();
 
     spyOn(console, 'error');
     newNode.nodeId = '2';
@@ -1298,4 +1295,17 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getNodeTypeById('other')).toBeFalsy();
 
   }));
+
+/*   it('selectedNodeChange()', async(()=>{
+
+    const params = component.activatedRouter.snapshot.queryParamMap;
+    params.push
+    {node: 'header', 'node-level': 'HEADER'} as ParamMap;
+
+    spyOn(component, 'updateColumnBasedOnNodeSelection');
+    component.selectedNodeChange(params);
+    expect(component.updateColumnBasedOnNodeSelection).toHaveBeenCalledWith('header', 'HEADER');
+
+  })); */
+
 });

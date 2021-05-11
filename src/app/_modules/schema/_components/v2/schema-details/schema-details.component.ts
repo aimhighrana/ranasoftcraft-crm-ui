@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
@@ -21,7 +21,7 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
-import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { sortBy } from 'lodash';
@@ -65,7 +65,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    * Store info about user selected field and order
    */
-  selectedFieldsOb: BehaviorSubject<SchemaTableViewFldMap[]> = new BehaviorSubject(null);
+  selectedFieldsOb: Subject<boolean> = new Subject();
   /**
    * Hold meta data map , fieldId as key and metadamodel as value
    */
@@ -250,6 +250,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
    grab = false;
 
+   isRefresh = false;
+
+   executionTreeObs: Subject<SchemaExecutionTree> = new Subject();
+
   constructor(
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -275,29 +279,30 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   ngOnChanges(changes: SimpleChanges): void {
     // check if any things is change then refresh again
-    let isRefresh = false;
+    this.isRefresh = false;
 
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
-      isRefresh = true;
+      this.isRefresh = true;
       this.getModuleInfo(this.moduleId);
+      this.metadata.next(null);
     }
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
-      isRefresh = true;
+      this.isRefresh = true;
     }
 
     if (changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue;
-      isRefresh = true;
+      this.isRefresh = true;
     }
 
     if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
       this.isInRunning = changes.isInRunning.currentValue;
     }
 
-    if (isRefresh && !this.isInRunning) {
+    if (this.isRefresh && !this.isInRunning) {
       this.activeTab='error';
       this.getDataScope();
       this.getFldMetadata();
@@ -310,11 +315,24 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       } else {
         this.variantId = '0';
       }
-      if (this.userDetails) {
+      this.executionTreeObs = new Subject();
+      if (this.userDetails && this.userDetails.userName) {
         this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
       } else {
         this.executionTreeHierarchy = new SchemaExecutionTree();
       }
+
+      combineLatest([this.metadata, this.executionTreeObs]).pipe(
+        filter(res => !!res[0] && !!res[1]),
+        take(1)
+      )
+      .subscribe(res => {
+          const params = this.activatedRouter.snapshot.queryParamMap;
+          const nodeId = params.get('node') || 'header';
+          const treeArray = this.getExectionArray(this.executionTreeHierarchy);
+          this.activeNode = treeArray.find(n => n.nodeId === nodeId);
+          this.selectedNodeChange(params);
+      });
     }
 
     this.manageStaticColumns();
@@ -351,12 +369,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   ngOnInit(): void {
 
     this.activatedRouter.queryParamMap.subscribe(ar=>{
-      this.nodeId = ar.get('node') ? ar.get('node') : '';
-      this.nodeType = ar.get('node-level') ? ar.get('node-level') : '';
-      this.getData(this.filterCriteria.getValue(), this.sortOrder);
-      this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+      if(!this.isRefresh) {
+        this.selectedNodeChange(ar);
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      }
+      this.isRefresh = false;
     });
-
 
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
@@ -390,37 +408,21 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
      * Combine obserable for metadata and selected field by user
      * And calcute display field and order
      */
-    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
-      if (res[0]) {
-        const selcteFlds = res[1] ? res[1] : [];
-        if(!selcteFlds.length) {
-          const orderFld: SchemaTableViewFldMap[] = [];
-          Object.keys(res[0].headers).forEach((header, index)=>{
-            if(index <= 9) {
-              const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-              choosenField.order = index;
-              choosenField.fieldId = header;
-              orderFld.push(choosenField);
-            }
-          });
+    this.selectedFieldsOb.subscribe(updateTableView => {
+        if(updateTableView) {
           const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
           schemaTableViewRequest.schemaId = this.schemaId;
           schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
-          schemaTableViewRequest.schemaTableViewMapping = orderFld;
+          schemaTableViewRequest.schemaTableViewMapping = this.selectedFields;
           const sub =  this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
             console.log(response);
           }, error => {
             console.error('Exception while persist table view');
           });
           this.subscribers.push(sub);
-
-          this.selectedFields = orderFld;
-        } else {
-          this.selectedFields = res[1] ? res[1] : [];
         }
         this.calculateDisplayFields();
-      }
-    });
+      });
 
     /**
      * After filter applied should call for get data
@@ -446,8 +448,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
 
-    const userDataForSchemaTree = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(res=>{
-      this.getSchemaExecutionTree(res.plantCode, res.userName);
+    const userDataForSchemaTree = this.userService.getUserDetails().pipe(
+      filter(details => !!details && !!details.userName),
+      distinctUntilChanged(),
+      take(1)
+      ).subscribe(res=>{
+        this.getSchemaExecutionTree(res.plantCode, res.userName);
     }, err=> console.log(`Error ${err}`));
 
     this.subscribers.push(userDataForSchemaTree);
@@ -461,6 +467,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
 
+  }
+
+  selectedNodeChange(params: ParamMap) {
+      this.nodeId = params.get('node') ? params.get('node') : '';
+      this.nodeType = params.get('node-level') ? params.get('node-level') : '';
+      this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
   }
 
   /**
@@ -493,7 +505,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   getSchemaExecutionTree(plantCode, userName) {
     const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
       this.executionTreeHierarchy = res;
-      this.activeNode = res;
+      this.executionTreeObs.next(res);
       }, error => {
       this.executionTreeHierarchy = new SchemaExecutionTree();
       console.error(error);
@@ -514,19 +526,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           finalFiletr.push(inline);
         }
         res.filterCriteria.forEach(fil => {
-          const filter: FilterCriteria = new FilterCriteria();
-          filter.fieldId = fil.fieldId;
-          filter.type = fil.type;
-          filter.values = fil.values;
+          const fltr: FilterCriteria = new FilterCriteria();
+          fltr.fieldId = fil.fieldId;
+          fltr.type = fil.type;
+          fltr.values = fil.values;
 
           const dropVal: DropDownValue[] = [];
-          filter.values.forEach(val => {
+          fltr.values.forEach(val => {
             const dd: DropDownValue = { CODE: val, FIELDNAME: fil.fieldId } as DropDownValue;
             dropVal.push(dd);
           });
 
-          filter.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
-          finalFiletr.push(filter);
+          fltr.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
+          finalFiletr.push(fltr);
         });
 
         this.filterCriteria.next(finalFiletr);
@@ -610,7 +622,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         const parentFields = this.getAllNodeFields(parentNode);
         fields = {...fields, ...parentFields};
       }
-      console.log('fields from get all fields', parentNode);
     } else {
       if (node.nodeType === SchemaExecutionNodeType.HEADER) {
         fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
@@ -747,12 +758,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     ref.afterClosed().subscribe(res => {
       if(res) {
-        const downloadLink = document.createElement('a');
-        downloadLink.href = this.endpointservice.downloadExecutionDetailsByNodesUrl(this.schemaId, this.activeTab, res);
-        console.log(downloadLink.href);
-        downloadLink.setAttribute('target', '_blank');
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
+        const sub = this.schemaService.downloadExecutionDetailsByNodes(this.schemaId, this.activeTab, res).subscribe(
+          resp => {
+            this.transientService.open('Download successfully started', null, {
+              duration: 1000
+            });
+          },
+          err => {
+            this.transientService.open('Something went wrong, try later', null, {
+              duration: 1000
+            });
+            console.error(`Error:: ${err.message}`);
+          });
+          this.subscribers.push(sub);
       }
     });
 
@@ -1623,10 +1641,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param nodeType selected node type ...
    */
   updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
-
     this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.activeNode))
       .subscribe(res => {
         const allFields = [];
+        let updateTableView = false;
         this.columns = {};
         const metadata = this.metadata.getValue();
         if(res && res.length) {
@@ -1646,34 +1664,49 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
                 if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(node.nodeId)) {
                   fields = Object.keys(metadata.hierarchyFields[node.nodeId]).slice(0,10);
                   this.columns[node.nodeId] = fields;
-                  fields.forEach(f => {
+                  fields.forEach((f, index) => {
                     const fldMap = new SchemaTableViewFldMap();
                     fldMap.fieldId = f;
+                    fldMap.order = index;
                     fldMap.nodeId = node.nodeId;
                     fldMap.nodeType = nType;
                     allFields.push(fldMap);
                   });
+                  updateTableView = true;
                 }
               } else if(nType === 'GRID') {
                 if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(node.nodeId)) {
                   fields = Object.keys(metadata.gridFields[node.nodeId]).slice(0,10);
                   this.columns[node.nodeId] = fields;
-                  fields.forEach(f => {
+                  fields.forEach((f,index) => {
                     const fldMap = new SchemaTableViewFldMap();
                     fldMap.fieldId = f;
+                    fldMap.order = index;
                     fldMap.nodeId = node.nodeId;
                     fldMap.nodeType = nType;
                     allFields.push(fldMap);
                   });
+                  updateTableView = true;
                 }
-              } else {
-                console.log('For heade ref ... api call');
+              } else if(nType === 'HEADER') {
+                if(metadata && metadata.headers) {
+                  fields = Object.keys(metadata.headers).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach((f,index) => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.order = index;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(fldMap);
+                  });
+                  updateTableView = true;
+                }
               }
             }
           });
           this.selectedFields = sortBy(allFields, 'order');
-          console.log(this.selectedFields);
-          this.calculateDisplayFields();
+          this.selectedFieldsOb.next(updateTableView);
         };
 
       }, error => {

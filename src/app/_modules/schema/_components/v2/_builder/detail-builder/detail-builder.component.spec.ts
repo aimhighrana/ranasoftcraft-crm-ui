@@ -66,10 +66,11 @@ describe('DetailBuilderComponent', () => {
     spyOn(schemaService, 'getSchemaDetailsBySchemaId').withArgs(res.schemaId).and.returnValue(of(res));
 
     // call actual method ..
-    component.getSchemaDetails('1005','72345254872');
+    component.getSchemaDetails('1005','72345254872','0');
 
     expect(component.moduleId).toEqual(res.moduleId);
     expect(component.schemaId).toEqual(res.schemaId);
+    expect(component.variantId).toEqual('0');
     expect(component.displayFormat).toEqual(DetailView.DATAQUALITY_VIEW);
   }));
 });
