@@ -24,7 +24,6 @@ import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
-import { sortBy } from 'lodash';
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 
 @Component({
@@ -1551,7 +1550,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if(this.columns.header && (this.columns.header.indexOf(col) === this.columns.header.length-1)) {
       found = true;
     }
-    return found;
+    return found && (this.nodeId !== 'header');
   }
   /**
    * Manage column collapsiable or expandable ..
@@ -1622,7 +1621,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param nodeType selected node type ...
    */
   updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
-    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.activeNode))
+    const nodeIds = this.getNodeParentsHierarchy(this.activeNode);
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, nodeIds.reverse())
       .subscribe(res => {
         const allFields = [];
         let updateTableView = false;
@@ -1686,7 +1686,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
               }
             }
           });
-          this.selectedFields = sortBy(allFields, 'order');
+          this.selectedFields = allFields;
           this.selectedFieldsOb.next(updateTableView);
         };
 
