@@ -99,6 +99,8 @@ describe('FilterComponent', () => {
     component.optionClicked(event);
     expect(component.optionClicked).toBeTruthy();
     expect(component.toggleSelection).toHaveBeenCalled();
+
+    const event1 = {option:{value:{CODE:'4',FIELDNAME:'EVENT_ID',TEXT:'Change'}}} as MatAutocompleteSelectedEvent;    
   }));
 
   it('toggleSelection(), toggle selection ', async(()=>{
@@ -110,6 +112,7 @@ describe('FilterComponent', () => {
 
   it('fieldDisplayFn(), should return field desc', async(()=>{
     expect(component.fieldDisplayFn({TEXT:'Matl Desc'})).toEqual('Matl Desc');
+    expect(component.fieldDisplayFn('')).toEqual('');
   }));
 
   it('returnSelectedDropValues(), should return selected drop values', async(()=>{
@@ -326,4 +329,27 @@ describe('FilterComponent', () => {
     res = component.checkTextCode(test);
     expect(res).toEqual('1234 -- test');
   }));
+
+  it('setSelectedQuickDateFilter', async(()=> {
+    const code = 'TODAY';
+    component.setSelectedQuickDateFilter(code);
+    expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
+
+    const code1 = 'DAY_7';
+    component.setSelectedQuickDateFilter(code1);
+    expect(component.dateFilterQuickSelect[1].isSelected).toEqual(true);
+
+    const code2 = 'DAY_10';
+    component.setSelectedQuickDateFilter(code2);
+    expect(component.dateFilterQuickSelect[2].isSelected).toEqual(true);
+
+    const code3 = 'DAY_20';
+    component.setSelectedQuickDateFilter(code3);
+    expect(component.dateFilterQuickSelect[3].isSelected).toEqual(true);
+
+    const code4 = 'DAY_30';
+    component.setSelectedQuickDateFilter(code4);
+    expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
+  }))
+  
 });
