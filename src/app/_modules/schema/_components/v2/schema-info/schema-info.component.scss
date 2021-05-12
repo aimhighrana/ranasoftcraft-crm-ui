@@ -1,8 +1,8 @@
 div.root {
   user-select: none;
-  height: 100%;
   padding: 0 16px;
   overflow: hidden;
+  height: calc(100% - 10px);
 
   .breadcrum-toolbar {
     align-items: center;

@@ -2127,3 +2127,9 @@ mat-tooltip-component {
   -ms-user-select: none;
   user-select: none;
 }
+
+.schema-info-tabs {
+  mat-tab-group {
+    height: calc(100% - 75px);
+  }
+}
