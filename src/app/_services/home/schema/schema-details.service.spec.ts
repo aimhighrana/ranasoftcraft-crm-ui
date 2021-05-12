@@ -227,6 +227,7 @@ describe('SchemaDetailsService', () => {
     // mock url
     endpointClassicServiceSpy.getWorkFlowFieldsUrl.and.returnValue(url);
 
+
     const request = ['1005'];
     const response = {};
 
