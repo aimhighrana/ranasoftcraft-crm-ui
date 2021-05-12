@@ -188,9 +188,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
-          if (!singlerow.displayCriteria) {
-            singlerow.displayCriteria = DisplayCriteria.CODE;
-          }
           const obj = { fields: singlerow.fields, fieldOrder: singlerow.fieldOrder }
           fieldsArray.push(obj);
           this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc : singlerow.fldMetaData.fieldDescri;
