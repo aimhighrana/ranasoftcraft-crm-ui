@@ -99,8 +99,6 @@ describe('FilterComponent', () => {
     component.optionClicked(event);
     expect(component.optionClicked).toBeTruthy();
     expect(component.toggleSelection).toHaveBeenCalled();
-
-    const event1 = {option:{value:{CODE:'4',FIELDNAME:'EVENT_ID',TEXT:'Change'}}} as MatAutocompleteSelectedEvent;    
   }));
 
   it('toggleSelection(), toggle selection ', async(()=>{
@@ -351,5 +349,5 @@ describe('FilterComponent', () => {
     component.setSelectedQuickDateFilter(code4);
     expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
   }))
-  
+
 });
