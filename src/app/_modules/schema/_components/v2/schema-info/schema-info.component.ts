@@ -1147,8 +1147,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.brId = childIdx.brIdStr;
     request.order = childIdx.order;
     request.status = childIdx.status
-    request.dependantStatus = childIdx.dependantStatus;
-
+    request.dependantStatus = this.depRuleList.find(x => x.value === childIdx.dependantStatus)?.key;
     const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
       if (res) {
         this.getBusinessRuleList(this.schemaId);
@@ -1180,7 +1179,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     return status ? status : 'ALL';
   }
   getCurrentBrStatusObj(status) {
-    return this.depRuleList.find(depRule => depRule.value === status) || this.depRuleList[0];
+    return this.depRuleList.find(depRule => depRule.key === status || depRule.value === status) || this.depRuleList[0];
   }
   /**
    * ANGULAR HOOK
