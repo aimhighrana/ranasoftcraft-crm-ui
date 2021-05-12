@@ -1207,7 +1207,8 @@
   }
 
   .schema-details-table .mat-table .schema-header-cell {
-    &.mat-header-cell, &.mat-cell {
+    &.mat-header-cell,
+    &.mat-cell {
       background: $color-app-accent;
     }
   }
