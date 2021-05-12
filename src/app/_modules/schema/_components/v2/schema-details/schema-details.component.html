@@ -162,7 +162,7 @@
 
 
             <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">
-                <div class="listset-text" i18n="@@header">Header</div>
+                <div class="listset-text"> {{ activeNode.nodeDesc || 'Header' }} </div>
                 <!-- if have data then render table -->
                 <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
                     <pros-table-loading [columnCount]="displayedFields.length">

@@ -723,6 +723,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     } else {
       this.getData();
     }
+
+    if (this.userDetails) {
+      this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
+    }
   }
 
   /**
