@@ -62,6 +62,7 @@
                             </mat-option>
                         </mat-autocomplete>
                     </div>
+                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required)">Please select category</mat-error>
                 </div>
                 
                 <div class="f-col mdo-form-field">
@@ -140,7 +141,7 @@
                             </mat-tree>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
                         Please select the fields
                     </mat-error>
                 </div>
