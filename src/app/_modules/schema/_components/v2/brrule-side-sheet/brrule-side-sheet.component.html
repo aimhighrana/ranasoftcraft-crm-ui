@@ -140,7 +140,7 @@
                             </mat-tree>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
                         Please select the fields
                     </mat-error>
                 </div>
