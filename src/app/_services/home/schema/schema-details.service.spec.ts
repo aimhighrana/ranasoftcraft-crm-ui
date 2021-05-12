@@ -7,8 +7,10 @@ import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { HttpResponse } from '@angular/common/http';
 import { Any2tsService } from '@services/any2ts.service';
 import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 describe('SchemaDetailsService', () => {
   let endpointServiceSpy: jasmine.SpyObj<EndpointsRuleService>;
+  let endpointClassicServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   let schemaDetaService: SchemaDetailsService;
   let httpTestingController: HttpTestingController;
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
@@ -25,17 +27,21 @@ describe('SchemaDetailsService', () => {
     const mapperSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaDataTableResponse', 'any2OverviewChartData', 'any2CategoryInfo', 'any2SchemaStatus', 'any2CategoryChartData',
       'any2MetadataResponse']);
 
+    const endpointclassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getWorkFlowFieldsUrl']);
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         SchemaDetailsService,
         { provide: EndpointsRuleService, useValue: endpointSpy },
-        { provide: Any2tsService, useValue: mapperSpy}
+        { provide: Any2tsService, useValue: mapperSpy},
+        { provide: EndpointsClassicService, useValue: endpointclassicSpy}
       ]
     }).compileComponents();
     schemaDetaService = TestBed.inject(SchemaDetailsService);
     httpTestingController = TestBed.inject(HttpTestingController);
     endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
+    endpointClassicServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
     any2tsSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
   });
 
@@ -215,11 +221,11 @@ describe('SchemaDetailsService', () => {
     httpTestingController.verify();
   }));
 
-  it('should getWorkflowFields()', async(() => {
+  fit('should getWorkflowFields()', async(() => {
 
     const url = `getWorkFlowFieldsUrl`;
     // mock url
-    endpointServiceSpy.getWorkFlowFieldsUrl.and.returnValue(url);
+    endpointClassicServiceSpy.getWorkFlowFieldsUrl.and.returnValue(url);
 
     const request = ['1005'];
     const response = {};
