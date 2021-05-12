@@ -603,7 +603,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
     let label = 'Are you sure to delete ?';
     if (this.businessRuleData[index].dep_rules)
-      label = 'After delete the dependent rules will removed';
+      label = 'All the dependent rules will also be deleted. Do you wish to proceed ?';
     this.globalDialogService.confirm({ label }, (response) => {
       if (response && response === 'yes') {
         const forkObj = {};
