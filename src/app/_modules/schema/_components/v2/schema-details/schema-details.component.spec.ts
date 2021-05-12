@@ -1244,6 +1244,7 @@ describe('SchemaDetailsComponent', () => {
   it('enableIcon(), enable collapsiable icon ', async(()=>{
     // mock data
     component.columns.header = ['MAT_TYPE','MAT_GRP'];
+    component.nodeId = 'other';
 
     expect(component.enableIcon('MAT_TYPE')).toEqual(false, 'If the column is not matched the return false');
     expect(component.enableIcon('MAT_GRP')).toEqual(true, 'If the column is  matched the return true');
