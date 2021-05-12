@@ -221,7 +221,7 @@ describe('SchemaDetailsService', () => {
     httpTestingController.verify();
   }));
 
-  fit('should getWorkflowFields()', async(() => {
+  it('should getWorkflowFields()', async(() => {
 
     const url = `getWorkFlowFieldsUrl`;
     // mock url
