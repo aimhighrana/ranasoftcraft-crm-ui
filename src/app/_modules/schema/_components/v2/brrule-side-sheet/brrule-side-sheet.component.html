@@ -62,6 +62,7 @@
                             </mat-option>
                         </mat-autocomplete>
                     </div>
+                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required)">Please select category</mat-error>
                 </div>
                 
                 <div class="f-col mdo-form-field">
