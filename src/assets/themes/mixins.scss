@@ -1206,8 +1206,10 @@
     }
   }
 
-  .schema-details-table .mat-table th.schema-header-cell.mat-header-cell {
-    background: $color-app-accent;
+  .schema-details-table .mat-table .schema-header-cell {
+    &.mat-header-cell, &.mat-cell {
+      background: $color-app-accent;
+    }
   }
 
   //Mat-Stepper
