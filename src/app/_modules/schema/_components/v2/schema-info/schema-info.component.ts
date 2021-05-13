@@ -557,7 +557,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   drop(event: CdkDragDrop<any>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      const br = this.businessRuleData[event.currentIndex];
       this.updateBrOrder();
     }
   }
