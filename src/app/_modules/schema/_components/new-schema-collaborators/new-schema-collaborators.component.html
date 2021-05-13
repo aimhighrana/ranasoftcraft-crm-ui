@@ -30,7 +30,7 @@
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let subscriber of filteredSubscribers">
                     <div class="mat-line">
-                        <mat-card-header>
+                        <mat-card-header class="row-reverse">
                             <lib-avatar [initials]="shortName(subscriber.fName, subscriber.lName) | uppercase"></lib-avatar>
                             <mat-card-title mat-line>{{subscriber.fullName}} </mat-card-title>
                         </mat-card-header>
