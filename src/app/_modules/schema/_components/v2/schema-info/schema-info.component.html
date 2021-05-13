@@ -252,8 +252,8 @@
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
-                    <div class="col col-x4"><strong>Subscriber</strong></div>
-                    <div class="col col-x8"><strong>Role</strong></div>
+                    <div class="col col-x8"><strong>Subscriber</strong></div>
+                    <div class="col col-x4"><strong>Role</strong></div>
                     <div class="col col-x16"><strong>Data allocation</strong></div>
                     <div class="col mat-item-end"></div>
                 </div>
@@ -289,7 +289,7 @@
                             </ng-template>
 
                         </div>
-                        <div class="col col-x4">
+                        <div class="col col-x8">
                             <mat-card-header>
                                 <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true"
                                     [ngIfElse]="isInvited">
@@ -306,7 +306,7 @@
 
                             </mat-card-header>
                         </div>
-                        <div class="col col-x8" [matMenuTriggerFor]="subscriberRole">
+                        <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
                             <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">
                                 Admin </lib-button>
                             <lib-button type="minor" icon="caret-down" iconPosition="before"
