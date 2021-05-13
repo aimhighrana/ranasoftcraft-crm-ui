@@ -67,8 +67,7 @@
         <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav
             [ngStyle]="{'width.px': secondarySideBarOpened ? '260' : '16'}">
             <!-- secondary side nav -->
-            <pros-secondary-navbar [activatedPrimaryNav]="isNavSelected" (toggleEmitter)="toggleSecondarySideBar()">
-            </pros-secondary-navbar>
+            <pros-secondary-navbar [activatedPrimaryNav]="isNavSelected" [secondarySideBarOpened]="secondarySideBarOpened" (toggleEmitter)="toggleSecondarySideBar()"></pros-secondary-navbar>
         </mat-sidenav>
       <mat-sidenav-content id="secondaryContent" #secondaryContent
         [ngStyle]="{'marginLeft.px': secondarySideBarOpened ? '200' : '73'}">
