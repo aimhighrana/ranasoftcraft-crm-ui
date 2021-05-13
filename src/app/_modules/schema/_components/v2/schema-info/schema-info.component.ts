@@ -555,44 +555,44 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param event updateable ordre
    */
   drop(event: CdkDragDrop<any>) {
-    console.log(event.item.data);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       const br = this.businessRuleData[event.currentIndex];
-      this.updateBrOrder(br, event.currentIndex);
+      this.updateBrOrder();
     }
   }
 
-  updateBrOrder(br, currentIndex) {
-    if (br) {
-      const forkObj = {};
-      let counter = 0;
-      const request: CoreSchemaBrMap = new CoreSchemaBrMap();
-      request.schemaId = this.schemaId;
-      request.brId = br.brIdStr;
-      request.order = currentIndex;
-      request.brWeightage = Number(br.brWeightage);
-      request.status = br.status ? br.status : '0';
-      request.dependantStatus = br.dependantStatus;
-      forkObj[counter] = this.schemaService.updateBrMap(request);
-      counter++;
-      if (br.dep_rules)
-        br.dep_rules.forEach(element => {
-          request.schemaId = this.schemaId;
-          request.brId = element.brIdStr;
-          request.order = ++currentIndex;
-          request.brWeightage = Number(element.brWeightage);
-          request.status = br.status ? br.status : '0';
-          request.dependantStatus = element.dependantStatus;
-          forkObj[counter] = this.schemaService.updateBrMap(request);
-          counter++;
-        });
-      forkJoin(forkObj).subscribe(res => {
-        if (res)
-          this.getBusinessRuleList(this.schemaId);
-      });
-
-    }
+  updateBrOrder() {
+    const forkObj = {};
+    let currentIndex = 0;
+    this.businessRuleData.forEach((br) => {
+      if (br) {
+        const request: CoreSchemaBrMap = new CoreSchemaBrMap();
+        request.schemaId = this.schemaId;
+        request.brId = br.brIdStr;
+        request.order = currentIndex;
+        request.brWeightage = Number(br.brWeightage);
+        request.status = br.status ? br.status : '0';
+        request.dependantStatus = br.dependantStatus;
+        forkObj[currentIndex] = this.schemaService.updateBrMap(request);
+        currentIndex++;
+        if (br.dep_rules)
+          br.dep_rules.forEach(element => {
+            request.schemaId = this.schemaId;
+            request.brId = element.brIdStr;
+            request.order = currentIndex;
+            request.brWeightage = Number(element.brWeightage);
+            request.status = br.status ? br.status : '0';
+            request.dependantStatus = element.dependantStatus;
+            forkObj[currentIndex] = this.schemaService.updateBrMap(request);
+            currentIndex++;
+          });
+      }
+    });
+    forkJoin(forkObj).subscribe(res => {
+      if (res)
+        this.getBusinessRuleList(this.schemaId);
+    });
   }
 
   /**
