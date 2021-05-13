@@ -74,7 +74,7 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
   newInvite(): FormGroup {
     return this._formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required]
+      role: ['viewer', Validators.required]
     });
   }
 
@@ -90,7 +90,7 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    * @param inviteIndex pass the row index to remove
    */
   removeInvite(inviteIndex: number) {
-    this.globalDialogService.confirm({ label: 'Sure to delete ?' }, (res) => {
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (res) => {
       this.removeInviteAfterConfirm(res, inviteIndex);
     });
   }

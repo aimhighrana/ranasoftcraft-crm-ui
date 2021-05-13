@@ -60,6 +60,7 @@
               </mat-option>
             </mat-autocomplete>
           </div>
+          <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required)">Please select category</mat-error>
         </div>
 
         <div class="f-col mdo-form-field">
@@ -67,8 +68,6 @@
             [hint]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required ? 'Please enter Rule name' : ''"
             [hasError]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
           </lib-input>
-          <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required" i18n="@@rule_name_missing">
-            Please enter rule name</mat-error>
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
@@ -76,9 +75,6 @@
             [hint]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required ? 'Please enter Error message' : ''"
             [hasError]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
           </lib-input>
-          <mat-error
-            *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required" i18n="@@error_msg_missing">
-            Please enter error message</mat-error>
         </div>
 
         <div class="f-col mdo-form-field"
@@ -138,7 +134,7 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-          <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+          <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
             Please select the fields
           </mat-error>
         </div>
