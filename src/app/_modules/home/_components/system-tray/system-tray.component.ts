@@ -49,7 +49,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    */
   constructor(
     private router: Router,
-    private globalDialogService: GlobaldialogService,
+    public globalDialogService: GlobaldialogService,
     public userService: UserService,
     public homeService: HomeService,
   ) { }
