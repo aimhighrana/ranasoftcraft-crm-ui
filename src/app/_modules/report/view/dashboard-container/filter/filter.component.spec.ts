@@ -328,6 +328,17 @@ describe('FilterComponent', () => {
     expect(res).toEqual('1234 -- test');
   }));
 
+  it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.widgetId = 12345;
+    component.widgetInfo = new Widget();
+    component.widgetInfo.widgetType = WidgetType.FILTER;
+    component.widgetInfo.widgetId = component.widgetId.toString();
+    spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption.key).and.returnValue(of({}));
+    component.saveDisplayCriteria();
+    expect(widgetService.saveDisplayCriteria).toHaveBeenCalledWith('12345', WidgetType.FILTER, DisplayCriteria.TEXT);
+  }));
+
   it('setSelectedQuickDateFilter', async(()=> {
     const code = 'TODAY';
     component.setSelectedQuickDateFilter(code);
