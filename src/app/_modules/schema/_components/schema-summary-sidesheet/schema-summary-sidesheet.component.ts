@@ -230,6 +230,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
+      this.getModuleInfo();
       this.schemaName.setValue(this.schemaDetails.schemaDescription);
       this.schemaThresholdControl.setValue(this.schemaDetails.schemaThreshold);
       if (this.schemaDetails.runId && this.isFromCheckData) {
@@ -241,6 +242,18 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     }, (error) => console.error('Error : {}', error.message));
   }
 
+  public getModuleInfo() {
+    const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      const module = moduleData[0];
+      if (module) {
+        this.schemaDetails.moduleDescription = module.moduleDesc;
+        this.schemaDetails.moduleId = module.moduleId;
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+    this.subscriptions.push(moduleInfoByModuleId);
+  }
 
   /**
    * Function to get dataScope/variants of schema
