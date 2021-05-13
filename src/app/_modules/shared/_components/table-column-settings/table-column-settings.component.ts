@@ -199,12 +199,12 @@ export class TableColumnSettingsComponent implements OnInit{
    */
   searchFld(value: string) {
     if(value) {
-      const sugg = this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
-      this.suggestedFlds = sugg.map(map => map.fieldId);
-      if (this.suggestedFlds.length && this.scrollable){
-        const item = document.getElementById(this.suggestedFlds[0]);
-        this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
-      }
+      this.headerFieldObs = of(this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
+      // this.suggestedFlds = sugg.map(map => map.fieldId);
+      // if (this.suggestedFlds.length && this.scrollable){
+      //   const item = document.getElementById(this.suggestedFlds[0]);
+      //   this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
+      // }
     } else {
       this.headerFieldObs = of(this.header);
       this.suggestedFlds = [];

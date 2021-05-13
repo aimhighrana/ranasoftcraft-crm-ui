@@ -265,7 +265,7 @@ describe('TableColumnSettingsComponent', () => {
     expect(component.suggestedFlds.length).toEqual(0);
 
     component.searchFld('re');
-    expect(component.suggestedFlds.length).toEqual(1);
+    expect(component.suggestedFlds.length).toEqual(0);
 
   });
 
