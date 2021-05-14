@@ -59,6 +59,8 @@ export class SharedServiceService {
 
   private taskinboxViewDetailsSub: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  private schemaRunSub: Subject<boolean> = new Subject();
+
   constructor() {}
 
   public setChooseColumnData(data: any) {
@@ -225,5 +227,12 @@ export class SharedServiceService {
   }
   public gettaskinboxViewDetailsData(): Observable<any> {
     return this.taskinboxViewDetailsSub.asObservable();
+  }
+
+  public setSchemaRunNotif(data: boolean) {
+    this.schemaRunSub.next(data);
+  }
+  public getSchemaRunNotif(): Observable<any> {
+    return this.schemaRunSub.asObservable();
   }
 }
