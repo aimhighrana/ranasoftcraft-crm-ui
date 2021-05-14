@@ -483,8 +483,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   updateBr(br: CoreSchemaBrInfo, event?: any, eventName?: string) {
     const request: CoreSchemaBrMap = new CoreSchemaBrMap();
-    if (event instanceof MatSliderChange) {
-      request.brWeightage = (event as MatSliderChange).value;
+    if (eventName === 'slider') {
+      request.brWeightage = event || 0;
     } else if (eventName === 'checkbox') {
       request.status = event ? '1' : '0';
     }
