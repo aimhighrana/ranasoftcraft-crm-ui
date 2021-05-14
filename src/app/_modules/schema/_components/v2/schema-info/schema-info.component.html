@@ -200,7 +200,10 @@
                                         </div>
                                         <div class="col col-x8 mat-item-center">
                                             <div class="f-row slider-row">
-                                                <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1" minValue="0" (valueChange)="updateBr(deps,$event)" [value]="deps.brWeightage" [maxValue]="availableWeightage(deps.brWeightage)" color="primary">
+                                                <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1" minValue="0" 
+                                                (valueChange)="deps.brWeightage=$event; updateBr(deps,$event)" 
+                                                [value]="deps.brWeightage" 
+                                                [maxValue]="availableWeightage(deps.brWeightage)" color="primary">
                                             </lib-range-slider>
                                                 <span class="f-col-spacer-half"></span>
                                                 <div class="percent-count">{{deps.brWeightage}}%</div>

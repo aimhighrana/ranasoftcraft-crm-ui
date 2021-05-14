@@ -122,7 +122,10 @@
                   #navscroll id="navscroll">
                 <div class="nav-tree" *ngIf="executionTreeHierarchy">
                     <mat-accordion>
-                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(executionTreeHierarchy)" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation 
+                            [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true"
+                            expanded="true"
+                            (click)="loadNodeData(executionTreeHierarchy)"> 
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                                 <mat-panel-title>
                                     <div class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</div>
@@ -132,7 +135,10 @@
                             </mat-expansion-panel-header>
                             <div *ngIf="executionTreeHierarchy.childs && executionTreeHierarchy.childs.length">
                                 <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
-                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation (click)="loadNodeData(child)"  [hideToggle]="(child.childs && child.childs.length) ? false : true">
+                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation 
+                                    expanded="true"
+                                    (click)="loadNodeData(child)"  
+                                    [hideToggle]="(child.childs && child.childs.length) ? false : true">
                                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel">
                                             <mat-panel-title>
                                                 <div class="expand-title">{{ child.nodeDesc }}</div>
