@@ -406,6 +406,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
       this.schemaDetails.isInRunning = true;
+      this.sharedService.setSchemaRunNotif(true);
     }, (error) => {
       console.log('Something went wrong while running schema', error.message);
     });
