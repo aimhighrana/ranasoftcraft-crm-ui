@@ -5,7 +5,7 @@ import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { ButtonArr, ChartLegend, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
+import { ButtonArr, ChartLegend, ChartType, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
 import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -13,6 +13,8 @@ import { MatDialog } from '@angular/material/dialog';
 import ChartDataLables from 'chartjs-plugin-datalabels';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChartType as CType} from 'chart.js';
+
 
 const btnArray: ButtonArr[] = [
   { id: 0, value: 'millisecond', isActive: false },
@@ -29,6 +31,7 @@ const btnArray: ButtonArr[] = [
 })
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
+  chartType: CType = 'line';
   responseData: any;
   displayCriteriaOptions = [
     {
@@ -349,6 +352,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getTimeSeriesMetadata(): void {
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.timeseriesData = res;
+      this.chartType = this.timeseriesData.timeSeries.chartType === ChartType.LINE ? 'line' : 'bar';
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
         this.isGroupByChart = true;
@@ -537,8 +541,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         this.transformForGroupBy(responseData, true);
       } else if (metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter) {
         this.tarnsformForShowInPercentage(responseData, metadata.timeSeries.showInPercentage);
-      }
-      else {
+      } else {
         if (this.timeseriesData.timeSeries.chartType === 'BAR') {
           this.dataSet = this.transformDataForComparison(responseData);
         } else {
@@ -1062,10 +1065,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   codeTextValue(innerBucket: any, fieldId: string): any {
     let labelValue = '';
     const hits = innerBucket['top_hits#data_hits'] ? innerBucket['top_hits#data_hits'].hits.hits[0] : null;
-    const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+    const val = hits ? hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
       (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
       (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+        (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null : null;
     if (val) {
       if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN' || this.timeseriesData.timeSeries.metaData.picklist === '35') {
         labelValue = this.getFields(fieldId, val[0].c);

@@ -279,9 +279,12 @@ describe('TimeseriesWidgetComponent', () => {
 
   it('codeTextValue()', async(() => {
     component.timeseriesData = {timeSeries : {metaData :{picklist:'1', fieldId:'MATL_GROUP'}}} as TimeSeriesWidget;
-    const innerBucket = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
+    let innerBucket: any = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
     const fieldid = 'MATL_GROUP';
     expect(component.codeTextValue(innerBucket,fieldid)).toEqual({c:'200010', t:'testing'});
+
+    innerBucket = {key:'200010'};
+    expect(component.codeTextValue(innerBucket,fieldid)).toEqual('200010');
   }));
 
   it('dateAndCountFormat()', async(() => {
