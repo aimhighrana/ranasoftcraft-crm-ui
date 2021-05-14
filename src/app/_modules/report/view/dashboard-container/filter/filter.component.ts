@@ -126,6 +126,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue !== changes.hasFilterCriteria.previousValue && changes.hasFilterCriteria.currentValue ) {
       this.clearFilterCriteria();
+      this.filterFormControl.setValue('');
     }
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
