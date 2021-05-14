@@ -253,7 +253,7 @@ describe('EndpointsRuleService', () => {
 
   it('getVariantdetailsByvariantIdUrl(),should return all variant detials by variantId', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.getVariantdetailsByvariantIdUrl('355555320681 ')).toContain('schema/metadata/variant/355555320681');
+    expect(serObj.getVariantdetailsByvariantIdUrl('355555320681 ')).toContain('schema/variant/355555320681');
   }));
 
   it('deleteVariantUrl(),should delete variant details', async(() => {
