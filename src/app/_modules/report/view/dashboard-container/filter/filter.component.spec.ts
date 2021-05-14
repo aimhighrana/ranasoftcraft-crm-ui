@@ -326,6 +326,13 @@ describe('FilterComponent', () => {
     component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
     res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234 -- test');
+
+    component.displayCriteriaOption.key = undefined;
+    res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('test');
+
+    res = component.setDisplayCriteria(test.c, '');
+    expect(res).toEqual('1234');
   }));
 
   it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {
