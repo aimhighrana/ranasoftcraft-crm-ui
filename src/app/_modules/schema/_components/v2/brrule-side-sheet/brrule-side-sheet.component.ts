@@ -1060,7 +1060,8 @@ export class BrruleSideSheetComponent implements OnInit {
         brWeightage: this.form.value.weightage,
         isCopied: false,
         copiedFrom: '',
-        dependantStatus: this.coreSchemaBrInfo.dependantStatus
+        dependantStatus: this.coreSchemaBrInfo.dependantStatus,
+        order: this.coreSchemaBrInfo.order
       } as CoreSchemaBrInfo;
 
       const blocks: UDRBlocksModel[] = [];
