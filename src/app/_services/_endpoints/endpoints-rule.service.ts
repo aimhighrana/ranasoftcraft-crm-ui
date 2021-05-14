@@ -199,7 +199,7 @@ export class EndpointsRuleService {
   }
 
   public getVariantdetailsByvariantIdUrl(variantId: string): string {
-    return `${this.origin}/schema/metadata/variant/${variantId}`;
+    return `${this.classicOrigin}/schema/variant/${variantId}`;
   }
 
   public deleteVariantUrl(variantId: string): string {

@@ -138,7 +138,7 @@
                                     <div class="f-row slider-row">
                                         <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1"
                                             minValue="0"
-                                            (valueChange)="businessRule.brWeightage=$event;updateBr(businessRule,$event)"
+                                            (valueChange)="businessRule.brWeightage=$event;updateBr(businessRule,$event, 'slider')"
                                             [value]="businessRule.brWeightage"
                                             [maxValue]="availableWeightage(businessRule.brWeightage)" color="primary">
                                         </lib-range-slider><span class="f-col-spacer-half"></span>
@@ -201,7 +201,7 @@
                                         <div class="col col-x8 mat-item-center">
                                             <div class="f-row slider-row">
                                                 <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1" minValue="0" 
-                                                (valueChange)="deps.brWeightage=$event; updateBr(deps,$event)" 
+                                                (valueChange)="deps.brWeightage=$event; updateBr(deps,$event, 'slider')" 
                                                 [value]="deps.brWeightage" 
                                                 [maxValue]="availableWeightage(deps.brWeightage)" color="primary">
                                             </lib-range-slider>
