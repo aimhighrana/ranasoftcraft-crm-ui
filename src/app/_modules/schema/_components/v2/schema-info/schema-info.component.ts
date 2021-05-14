@@ -8,7 +8,6 @@ import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
-import { MatSliderChange } from '@angular/material/slider';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
