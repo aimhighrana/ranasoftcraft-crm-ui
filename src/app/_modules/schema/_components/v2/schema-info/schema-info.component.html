@@ -190,7 +190,7 @@
                                             <lib-button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
                                                 {{ deps.categoryInfo ? (deps.categoryInfo.categoryDesc ?
                                                 deps.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
-                                                <mat-icon fontSet="mdo-icons">caret-down</mat-icon>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
                                             </lib-button>
                                             <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
                                                 <button mat-menu-item *ngFor="let cat of category"
@@ -201,9 +201,9 @@
                                         <div class="col col-x8 mat-item-center">
                                             <div class="f-row slider-row">
                                                 <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1" minValue="0" 
+                                                (valueChange)="deps.brWeightage=$event; updateBr(deps,$event)" 
                                                 [value]="deps.brWeightage" 
-                                                [maxValue]="availableWeightage(deps.brWeightage)" color="primary"
-                                                (valueChange)="deps.brWeightage=$event; updateBr(deps,$event)">
+                                                [maxValue]="availableWeightage(deps.brWeightage)" color="primary">
                                             </lib-range-slider>
                                                 <span class="f-col-spacer-half"></span>
                                                 <div class="percent-count">{{deps.brWeightage}}%</div>
