@@ -28,14 +28,4 @@ describe('SharedServiceService', () => {
       expect(data).toEqual(mockData);
     });
   }));
-
-  it('should notify schema run ', async(()=>{
-    let result;
-    service.getChooseColumnData().subscribe(data=>{
-      result = data;
-    });
-    service.setSchemaRunNotif(true);
-    expect(result).toEqual(true);
-  }));
-
 });

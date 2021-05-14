@@ -61,7 +61,7 @@ describe('DetailBuilderComponent', () => {
 
     sharedService.setSchemaRunNotif(true);
 
-    expect(component.getSchemaDetails).toHaveBeenCalledTimes(2);
+    expect(component.getSchemaDetails).toHaveBeenCalledTimes(3);
   }));
 
   it(`getSchemaDetails(), get schema details for define view `, async(()=>{
