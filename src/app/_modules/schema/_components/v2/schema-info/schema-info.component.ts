@@ -1111,7 +1111,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       request.brId = br.brIdStr;
       request.order = br.order;
       request.status = br.status
-      request.dependantStatus = br.dependantStatus;
+      request.dependantStatus = event.key || br.dependantStatus;
       const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
         if (res) {
           this.getBusinessRuleList(this.schemaId);

@@ -190,7 +190,7 @@
                                             <lib-button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
                                                 {{ deps.categoryInfo ? (deps.categoryInfo.categoryDesc ?
                                                 deps.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
-                                                <mat-icon fontSet="mdo-icons">caret-down</mat-icon>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
                                             </lib-button>
                                             <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
                                                 <button mat-menu-item *ngFor="let cat of category"
