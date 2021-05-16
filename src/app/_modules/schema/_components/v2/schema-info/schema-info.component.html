@@ -331,7 +331,7 @@
                                     <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                         [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                         <label>
-                                            {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                            {{ ctrl.filterCtrl && ctrl.filterCtrl.fldCtrl ? ctrl.filterCtrl.fldCtrl.fieldDesc || ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
                                             :
                                         </label>
                                         <ng-template
