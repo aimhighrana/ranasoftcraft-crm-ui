@@ -260,7 +260,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                 }
               });
               let textvalue = valArray.toString();
-              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
+              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields === column) : null;
               textvalue = textvalue === 'null' ? '' : textvalue
               let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
               codeValue = codeValue === 'null' ? '' : codeValue;
@@ -317,7 +317,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   *
   */
  downloadCSV(): void {
-  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], {queryParamsHandling: 'preserve'})
+  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], { queryParams: { conditionList: `${JSON.stringify(this.filterCriteria)}` } })
 }
 
   /**
@@ -356,7 +356,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   isDateType(column: string): boolean {
-    const val = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
+    const val = this.tableColumnMetaData ? this.tableColumnMetaData : [];
     const hasFld = val.filter(fil => fil.fields === column)[0];
     return hasFld ? (hasFld.fldMetaData ? ((hasFld.fldMetaData.dataType === 'DATS' || hasFld.fldMetaData.dataType === 'DTMS') ? true : false) : false) : false;
   }

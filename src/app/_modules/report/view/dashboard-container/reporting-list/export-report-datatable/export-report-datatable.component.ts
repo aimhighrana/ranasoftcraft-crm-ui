@@ -10,6 +10,7 @@ import { UserService } from '@services/user/userservice.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { debounceTime } from 'rxjs/operators';
+import { Criteria } from '@modules/report/_models/widget';
 
 @Component({
   selector: 'pros-export-report-datatable',
@@ -39,6 +40,7 @@ export class ExportReportDatatableComponent implements OnInit {
   selectedEmail = '';
   pageCtrl: FormControl = new FormControl('');
   userInfo: WidgetDownloadUser;
+  filterCriterias: string
 
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -46,7 +48,6 @@ export class ExportReportDatatableComponent implements OnInit {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private router: Router,
-    private dialog: MatDialog,
     private snackbar: MatSnackBar,
     private globalDialogService: GlobaldialogService
   ) { }
@@ -54,6 +55,12 @@ export class ExportReportDatatableComponent implements OnInit {
   ngOnInit(): void {
 
     this.getUserDetails();
+
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.filterCriterias = params.conditionList;
+      console.log(this.filterCriterias);
+    })
+  
     this.activatedRoute.params.subscribe(params => {
       this.widgetId = params.widgetId;
     });
@@ -203,7 +210,7 @@ export class ExportReportDatatableComponent implements OnInit {
    */
   saveReportDownloadUserList() {
     const userList: WidgetDownloadUser[] = this.selectedUsers.map(element => ({ userName: element.userName, email: element.email }))
-    this.reportServie.saveUpdateportDownload(userList, this.widgetId, this.userInfo.userName).subscribe(res => {
+    this.reportServie.saveUpdateportDownload(userList, this.widgetId, this.userInfo.userName, this.filterCriterias).subscribe(res => {
       this.close();
       this.snackbar.open(`Downloading Started`, 'Close', { duration: 3000 });
     }, errro => {

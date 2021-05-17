@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
+import { Criteria, DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@models/collaborator';
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
@@ -65,8 +65,8 @@ export class ReportService {
     return this.http.post<ReportDashboardPermission[]>(this.endpointService.saveUpdateReportCollaborator(), request);
   }
 
-  public saveUpdateportDownload(request: WidgetDownloadUser[],widgetId:string, userName :string): Observable<ReportDashboardPermission[]> {
-    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId,userName), request);
+  public saveUpdateportDownload(request: WidgetDownloadUser[],widgetId:string, userName :string, conditionList: any): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId,userName), request, {params: {conditionList}});
   }
 
   public deleteCollaborator(permissionId: string): Observable<boolean> {
