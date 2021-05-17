@@ -194,16 +194,13 @@
                 <mat-option selected>-- None --</mat-option>
                 <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                   <ng-container *ngFor="let child of group.childs">
-                    <mat-option  *ngIf="child !== 'FIELD2FIELD'" [value]="child">
+                    <mat-option [value]="child">
                       <ng-container *ngIf="child !== 'EQUAL'">
                         {{child | replaceUnderscorePipe}}
                       </ng-container>
                       <ng-container *ngIf="child === 'EQUAL'">
                         {{'EQUALS'}}
                       </ng-container>
-                      <!--ng-container *ngIf="child === 'FIELD2FIELD'">
-                        {{'FIELD TO FIELD'}}
-                      </ng-container-->
                     </mat-option>
                   </ng-container>
                 </mat-optgroup>
@@ -276,16 +273,13 @@
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                         <ng-container *ngFor="let child of group.childs">
-                          <mat-option  *ngIf="child !== 'FIELD2FIELD'" [value]="child">
+                          <mat-option [value]="child">
                             <ng-container *ngIf="child !== 'EQUAL'">
                               {{child | replaceUnderscorePipe}}
                             </ng-container>
                             <ng-container *ngIf="child === 'EQUAL'">
                               {{'EQUALS'}}
                             </ng-container>
-                            <!--ng-container *ngIf="child === 'FIELD2FIELD'">
-                              {{'FIELD TO FIELD'}}
-                            </ng-container-->
                           </mat-option>
                         </ng-container>
                       </mat-optgroup>
