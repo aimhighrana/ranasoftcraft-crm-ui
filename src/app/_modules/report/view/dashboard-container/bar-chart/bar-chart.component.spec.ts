@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SharedModule } from '@modules/shared/shared.module';
 import { ChartLegendLabelItem } from 'chart.js';
 
-fdescribe('BarChartComponent', () => {
+describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
   let htmlnative: HTMLElement;
