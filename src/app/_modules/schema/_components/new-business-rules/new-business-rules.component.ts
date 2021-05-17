@@ -327,6 +327,8 @@ export class NewBusinessRulesComponent implements OnInit {
 
         // Initializing autocomplete
         this.initiateAutocomplete();
+
+        this.form.controls['rule_type'].setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
     }
 
     /**

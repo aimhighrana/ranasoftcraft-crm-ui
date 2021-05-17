@@ -292,6 +292,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
         } else {
           this.getFieldsByModuleId();
+          this.form.controls['rule_type'].setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
         }
       });
     });
