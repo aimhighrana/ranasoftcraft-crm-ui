@@ -1,9 +1,9 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition } from '../../../_models/widget';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
+import { ChartOptions, ChartTooltipItem, ChartData, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -65,7 +65,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.stackClickFilter(event, activeElements);
     },
     legend: {
-      display: false
+      display: false,
+      onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
+        // call protype of stacked bar chart componenet
+        this.legendClick(legendItem);
+      }
     },
     plugins: {
       datalabels: {
@@ -112,9 +116,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   };
 
-  public barChartData: any[] = [
+  public barChartData: ChartDataSets[] = [
     {
       label: 'Loading..',
+      stack: 'a',
       barThickness: 80,
       data: [0, 0, 0, 0, 0, 0, 0]
     },
@@ -255,17 +260,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       }
     }
 
-    const backgroundColorArray = [];
-    this.chartLegend.forEach(legend=>{
-      backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
-    });
+    this.setBarChartData();
 
-    this.barChartData = [{
-      label: this.widgetHeader.widgetName,
-      barThickness: 'flex',
-      data: this.dataSet,
-      backgroundColor:backgroundColorArray
-    }];
 
     // compute graph size
 
@@ -275,6 +271,34 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     if(this.chart) {
       this.chart.update();
     }
+  }
+
+  /**
+   * Set barChartData of ChartDataSets[]. This get the legends to show in chart with labels
+   */
+  setBarChartData() {
+    const barChartData: ChartDataSets[] = [];
+    let dataIndex = 0;
+    this.chartLegend.forEach((legend, index) => {
+      const data: number[] = []
+      this.dataSet.forEach((d, dIndex) => {
+        if (dIndex === dataIndex) {
+          data.push(+d);
+        } else {
+          data.push(null);
+        }
+      });
+      dataIndex = dataIndex + 1;
+      const obj: ChartDataSets = {
+        data,
+        label: this.lablels[index],
+        barThickness: 'flex',
+        backgroundColor: this.getUpdatedColorCode(legend.code),
+        stack: 'a'
+      };
+      barChartData.push(obj)
+    });
+    this.barChartData = barChartData;
   }
 
   /**
@@ -506,6 +530,43 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   */
   downloadImage() {
     this.widgetService.downloadImage(this.chart.toBase64Image(), 'Bar-Chart.png');
+  }
+
+  /**
+   * After click on chart legend
+   * legendItem
+   */
+   legendClick(legendItem: ChartLegendLabelItem) {
+    let clickedLegend =  this.chartLegend[legendItem.datasetIndex] ? this.chartLegend[legendItem.datasetIndex].code : '';
+    if(clickedLegend === this.barWidget.value.blankValueAlias){
+      clickedLegend ='';
+    }
+    const fieldId = this.barWidget.getValue().fieldId;
+    let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+    this.removeOldFilterCriteria(appliedFilters);
+      if(appliedFilters.length >0) {
+        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
+        if(cri.length ===0) {
+          const critera1: Criteria = new Criteria();
+          critera1.fieldId = fieldId;
+          critera1.conditionFieldId = fieldId;
+          critera1.conditionFieldValue = clickedLegend;
+          critera1.blockType = BlockType.COND;
+          critera1.conditionOperator = ConditionOperator.EQUAL;
+          appliedFilters.push(critera1);
+        }
+      } else {
+        appliedFilters = [];
+        const critera1: Criteria = new Criteria();
+        critera1.fieldId = fieldId;
+        critera1.conditionFieldId = fieldId
+        critera1.conditionFieldValue = clickedLegend;
+        critera1.blockType = BlockType.COND;
+        critera1.conditionOperator = ConditionOperator.EQUAL;
+        appliedFilters.push(critera1);
+      }
+      appliedFilters.forEach(app => this.filterCriteria.push(app));
+      this.emitEvtFilterCriteria(this.filterCriteria);
   }
 
   /**
