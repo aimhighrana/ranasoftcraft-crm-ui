@@ -189,7 +189,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                         for(const r of rows) {
                             const _rrData = rowData;
                             for(const robj in r) {
-                                if(robj === 'ISS_ST_LOC') {
+                                if(r.hasOwnProperty(robj)) {
                                     const cell: SchemaTableData = new SchemaTableData();
                                     cell.fieldId = robj;
                                     cell.fieldDesc = r[robj].ls ? r[robj].ls : 'Unknown';
