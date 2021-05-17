@@ -1506,7 +1506,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   runCompleted($event) {
     this.isInRunning = false;
-    this.transientService.open('Schema run completed!', 'Okay', { duration: 2000 });
+    this.getData();
   }
 
   /**
