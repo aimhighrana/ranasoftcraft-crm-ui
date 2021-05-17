@@ -193,8 +193,8 @@
               <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
                 <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                  <ng-container *ngIf="child !== 'FIELD2FIELD'">
-                    <mat-option *ngFor="let child of group.childs" [value]="child">
+                  <ng-container *ngFor="let child of group.childs">
+                    <mat-option  *ngIf="child !== 'FIELD2FIELD'" [value]="child">
                       <ng-container *ngIf="child !== 'EQUAL'">
                         {{child | replaceUnderscorePipe}}
                       </ng-container>
@@ -275,8 +275,8 @@
                     <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                        <ng-container *ngIf="child !== 'FIELD2FIELD'">
-                          <mat-option *ngFor="let child of group.childs" [value]="child">
+                        <ng-container *ngFor="let child of group.childs">
+                          <mat-option  *ngIf="child !== 'FIELD2FIELD'" [value]="child">
                             <ng-container *ngIf="child !== 'EQUAL'">
                               {{child | replaceUnderscorePipe}}
                             </ng-container>
