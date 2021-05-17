@@ -1504,6 +1504,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  runCompleted($event) {
+    this.isInRunning = false;
+    this.transientService.open('Schema run completed!', 'Okay', { duration: 2000 });
+  }
+
   /**
    * get module info based on module id
    * @param id module id

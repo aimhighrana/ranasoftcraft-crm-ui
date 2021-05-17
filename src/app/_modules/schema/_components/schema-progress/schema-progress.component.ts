@@ -24,7 +24,12 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * To indicate file is completed or stopped
    */
-  @Output() fileUploaded = new EventEmitter<any>();
+   @Output() fileUploaded = new EventEmitter<any>();
+
+   /**
+    * To indicate schema run is completed or stopped
+    */
+   @Output() runCompleted = new EventEmitter<any>();
 
   /**
    * To hold execution current status
@@ -82,6 +87,9 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       const execSubscription = this.schemaService.getSchemaExecutionProgressDetails(schemaId).subscribe(response => {
         this.schemaProgress = response;
+        if (response?.percentage >= 100) {
+          this.runCompleted.emit(response);
+        }
       }, (error) => {
         console.log(`Something went wrong while getting schema execution progress, ${error.message}`);
       });
