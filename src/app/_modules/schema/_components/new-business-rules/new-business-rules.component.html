@@ -193,17 +193,16 @@
               <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
                 <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                  <mat-option *ngFor="let child of group.childs" [value]="child">
-                    <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
-                      {{child | replaceUnderscorePipe}}
-                    </ng-container>
-                    <ng-container *ngIf="child === 'EQUAL'">
-                      {{'EQUALS'}}
-                    </ng-container>
-                    <ng-container *ngIf="child === 'FIELD2FIELD'">
-                      {{'FIELD TO FIELD'}}
-                    </ng-container>
-                  </mat-option>
+                  <ng-container *ngFor="let child of group.childs">
+                    <mat-option [value]="child">
+                      <ng-container *ngIf="child !== 'EQUAL'">
+                        {{child | replaceUnderscorePipe}}
+                      </ng-container>
+                      <ng-container *ngIf="child === 'EQUAL'">
+                        {{'EQUALS'}}
+                      </ng-container>
+                    </mat-option>
+                  </ng-container>
                 </mat-optgroup>
               </mat-select>
             </div>
@@ -273,17 +272,16 @@
                     <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                        <mat-option *ngFor="let child of group.childs" [value]="child">
-                          <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
-                            {{child | replaceUnderscorePipe}}
-                          </ng-container>
-                          <ng-container *ngIf="child === 'EQUAL'">
-                            {{'EQUALS'}}
-                          </ng-container>
-                          <ng-container *ngIf="child === 'FIELD2FIELD'">
-                            {{'FIELD TO FIELD'}}
-                          </ng-container>
-                        </mat-option>
+                        <ng-container *ngFor="let child of group.childs">
+                          <mat-option [value]="child">
+                            <ng-container *ngIf="child !== 'EQUAL'">
+                              {{child | replaceUnderscorePipe}}
+                            </ng-container>
+                            <ng-container *ngIf="child === 'EQUAL'">
+                              {{'EQUALS'}}
+                            </ng-container>
+                          </mat-option>
+                        </ng-container>
                       </mat-optgroup>
                     </mat-select>
                   </div>
