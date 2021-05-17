@@ -158,7 +158,9 @@ describe('SchemaInfoComponent', () => {
       moduleId: '1005',
       isCopied: false,
       brWeightage: '19',
-      status: '1'
+      status: '1',
+      dependantStatus: 'SUCCESS',
+      order: 1
     } as CoreSchemaBrInfo;
 
     component.schemaId = '44514235';
@@ -176,6 +178,8 @@ describe('SchemaInfoComponent', () => {
     request.isCopied = br.isCopied;
     request.brWeightage = br.brWeightage;
     request.status = br.status;
+    request.dependantStatus = br.dependantStatus;
+    request.order = br.order;
 
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
@@ -193,7 +197,9 @@ describe('SchemaInfoComponent', () => {
       duplicacyField : [{fieldId:'Test'}],
       duplicacyMaster:[],
       brWeightage: '19',
-      status: '1'
+      status: '1',
+      dependantStatus: 'SUCCESS',
+      order: 1
     } as CoreSchemaBrInfo;
     brDupList.push(brDup);
 
@@ -209,6 +215,8 @@ describe('SchemaInfoComponent', () => {
     requestDup.isCopied = brDup.isCopied;
     requestDup.brWeightage = br.brWeightage;
     requestDup.status = br.status;
+    requestDup.dependantStatus = br.dependantStatus;
+    requestDup.order = br.order;
 
     const params = { objectId: component.moduleId, autoMerge: '', groupId: '' };
     const model = new DuplicateRuleModel();

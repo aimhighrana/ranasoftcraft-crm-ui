@@ -523,6 +523,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.isCopied = false;
     request.brWeightage = br.brWeightage;
     request.status = br.status;
+    request.dependantStatus = br.dependantStatus;
+    request.order = br.order;
     const model = new DuplicateRuleModel();
     model.coreBrInfo = { ...request };
     const params = { objectId: this.moduleId, autoMerge: '', groupId: '' };
