@@ -202,8 +202,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                                     // check cell is in error
                                     if(reqTye === 'error') {
                                         // const errCell =  this.checkFieldIsInError(hdfld);
-                                        cell.isInError = hyvs[robj].isInError ? hyvs[robj].isInError : false;
-                                        cell.errorMsg = hyvs[robj].message ? hyvs[robj].message.toString() : '';
+                                        cell.isInError = (hyvs[robj] && hyvs[robj].isInError) ? hyvs[robj].isInError : false;
+                                        cell.errorMsg = (hyvs[robj] && hyvs[robj].message) ? hyvs[robj].message.toString() : '';
                                     }
 
                                     // check for old values
@@ -244,8 +244,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                                     // check cell is in error
                                     if(reqTye === 'error') {
                                         // const errCell =  this.checkFieldIsInError(hdfld);
-                                        cell.isInError = gvs[robj].isInError ? gvs[robj].isInError : false;
-                                        cell.errorMsg = gvs[robj].message ? gvs[robj].message.toString() : '';
+                                        cell.isInError = (gvs[robj] && gvs[robj].isInError) ? gvs[robj].isInError : false;
+                                        cell.errorMsg = (gvs[robj] && gvs[robj].message) ? gvs[robj].message.toString() : '';
                                     }
 
                                     // check for old values
