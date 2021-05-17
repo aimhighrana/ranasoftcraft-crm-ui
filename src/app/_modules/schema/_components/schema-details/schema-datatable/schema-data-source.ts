@@ -189,7 +189,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                         for(const r of rows) {
                             const _rrData = rowData;
                             for(const robj in r) {
-                                if(r.hasOwnProperty(robj)) {
+                                if(robj === 'ISS_ST_LOC') {
                                     const cell: SchemaTableData = new SchemaTableData();
                                     cell.fieldId = robj;
                                     cell.fieldDesc = r[robj].ls ? r[robj].ls : 'Unknown';
@@ -202,8 +202,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                                     // check cell is in error
                                     if(reqTye === 'error') {
                                         // const errCell =  this.checkFieldIsInError(hdfld);
-                                        cell.isInError = r[robj].isInError ? r[robj].isInError : false;
-                                        cell.errorMsg = r[robj].message ? r[robj].message.toString() : '';
+                                        cell.isInError = hyvs[robj].isInError ? hyvs[robj].isInError : false;
+                                        cell.errorMsg = hyvs[robj].message ? hyvs[robj].message.toString() : '';
                                     }
 
                                     // check for old values
@@ -244,8 +244,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                                     // check cell is in error
                                     if(reqTye === 'error') {
                                         // const errCell =  this.checkFieldIsInError(hdfld);
-                                        cell.isInError = r[robj].isInError ? r[robj].isInError : false;
-                                        cell.errorMsg = r[robj].message ? r[robj].message.toString() : '';
+                                        cell.isInError = gvs[robj].isInError ? gvs[robj].isInError : false;
+                                        cell.errorMsg = gvs[robj].message ? gvs[robj].message.toString() : '';
                                     }
 
                                     // check for old values
@@ -284,13 +284,16 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
         if(brMetadata) {
             brMetadata.forEach(br=>{
                 // check with udr
+                const errorMessage = br.dynamicMessage ? br.dynamicMessage : br.brDescription;
                 if(br.udrblocks) {
                     const fields = br.udrblocks.map(map => map.conditionFieldId);
                     fields.forEach(brFld=>{
                         if(rowData.hasOwnProperty(brFld)) {
                             rowData[brFld].isInError = true;
                             const exitingMsg =  rowData[brFld].message ? rowData[brFld].message : [];
-                            exitingMsg.push(br.dynamicMessage ? br.dynamicMessage : br.brDescription);
+                            if(exitingMsg.indexOf(errorMessage) === -1) {
+                                exitingMsg.push(errorMessage);
+                            }
                             rowData[brFld].message = exitingMsg;
                         } else {
                             rowData[brFld] = {fId: brFld,vc: [{c: '',t: ''}],ls: '', isInError:true,message:[br.dynamicMessage ? br.dynamicMessage : br.brDescription]};
@@ -302,7 +305,9 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                         if(rowData.hasOwnProperty(brFld)) {
                             rowData[brFld].isInError = true;
                             const exitingMsg =  rowData[brFld].message ? rowData[brFld].message : [];
-                            exitingMsg.push(br.dynamicMessage ? br.dynamicMessage : br.brDescription);
+                            if(exitingMsg.indexOf(errorMessage) === -1) {
+                                exitingMsg.push(errorMessage);
+                            }
                             rowData[brFld].message = exitingMsg;
                         } else {
                             rowData[brFld] = {fId: brFld,vc: [{c: '',t: ''}],ls: '', isInError:true,message:[br.dynamicMessage ? br.dynamicMessage : br.brDescription]};
