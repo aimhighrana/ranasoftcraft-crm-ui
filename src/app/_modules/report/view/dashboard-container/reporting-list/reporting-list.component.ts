@@ -356,7 +356,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   isDateType(column: string): boolean {
-    const val = this.tableColumnMetaData ? this.tableColumnMetaData : [];
+    const val = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
     const hasFld = val.filter(fil => fil.fields === column)[0];
     return hasFld ? (hasFld.fldMetaData ? ((hasFld.fldMetaData.dataType === 'DATS' || hasFld.fldMetaData.dataType === 'DTMS') ? true : false) : false) : false;
   }

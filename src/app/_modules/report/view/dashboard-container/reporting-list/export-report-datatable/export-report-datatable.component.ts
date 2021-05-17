@@ -1,5 +1,4 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PermissionOn, WidgetDownloadUser } from '@models/collaborator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -10,7 +9,6 @@ import { UserService } from '@services/user/userservice.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { debounceTime } from 'rxjs/operators';
-import { Criteria } from '@modules/report/_models/widget';
 
 @Component({
   selector: 'pros-export-report-datatable',
@@ -60,7 +58,7 @@ export class ExportReportDatatableComponent implements OnInit {
       this.filterCriterias = params.conditionList;
       console.log(this.filterCriterias);
     })
-  
+
     this.activatedRoute.params.subscribe(params => {
       this.widgetId = params.widgetId;
     });

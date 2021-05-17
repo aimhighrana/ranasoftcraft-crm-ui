@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Criteria, DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
+import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@models/collaborator';
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
