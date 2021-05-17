@@ -368,9 +368,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   ngOnInit(): void {
 
     this.activatedRouter.queryParamMap.subscribe(ar=>{
-      const nodeId = ar.get('node') || 'header';
-      if(nodeId !== this.nodeId) {
+      if(!this.isRefresh) {
+        const nodeId = ar.get('node') || 'header';
+        if(nodeId !== this.nodeId) {
         this.selectedNodeChange(ar);
+        }
       }
       this.isRefresh = false;
     });
