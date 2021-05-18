@@ -903,12 +903,13 @@ describe('SchemaDetailsComponent', () => {
 
     let columnsData = { selectedFields: null, tableActionsList: [{ actionText: 'Approve'} as SchemaTableAction]};
     spyOn(component, 'calculateDisplayFields');
+    spyOn(component, 'updateColumnBasedOnNodeSelection');
     sharedService.setChooseColumnData(columnsData);
     expect(component.tableActionsList.length).toEqual(1);
 
     columnsData = {selectedFields: [], tableActionsList: [] };
     sharedService.setChooseColumnData(columnsData);
-    expect(component.selectedFields.length).toEqual(0);
+    expect(component.updateColumnBasedOnNodeSelection).toHaveBeenCalled();
 
     spyOn(schemaDetailService, 'updateSchemaTableView').and.returnValue(of([]));
     component.selectedFieldsOb.next(true);
