@@ -373,28 +373,50 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     if (this.timeseriesData.timeSeries.scaleFrom !== null && this.timeseriesData.timeSeries.scaleFrom !== undefined
       && this.timeseriesData.timeSeries.scaleTo !== null && this.timeseriesData.timeSeries.scaleTo !== undefined
       && this.timeseriesData.timeSeries.stepSize !== null && this.timeseriesData.timeSeries.stepSize !== undefined) {
-      const ticks = { displamin: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
-      this.chart.chart.options.scales = {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: this.timeseriesData.timeSeries.seriesWith
-          },
-          scaleLabel: {
-            display: true,
-            labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
-          }, ticks
-        }],
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
-          }, ticks
-        }]
-      };
+      const ticks = { min: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+        this.timeSeriesOption.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : '',
+            },
+            ticks : {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ?  20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            },ticks
+          }]
+        };
+      } else {
+        this.timeSeriesOption.scales = {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: this.timeseriesData.timeSeries.seriesWith
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+            }, ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            }, ticks
+          }]
+        }
+      }
     } else {
-      if (this.timeseriesData.timeSeries.chartType === 'BAR') {
-        this.chart.chart.options.scales = {
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+        this.timeSeriesOption.scales = {
           xAxes: [{
             scaleLabel: {
               display: true,
@@ -412,7 +434,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
               padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 40 : 0
             }
           }]
-        }
+        };
       } else {
         this.chart.chart.options.scales = {
           xAxes: [{
@@ -438,6 +460,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           }]
         };
       }
+    }
+    if (this.chart) {
+      this.chart.options.scales = this.timeSeriesOption.scales;
+      this.chart.chart.options.scales = this.timeSeriesOption.scales;
     }
   }
 
@@ -715,7 +741,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
     this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
     this.setLegendForChart(); // calling it to set legend
-    console.log(finalOutput);
     return finalOutput;
   }
 
