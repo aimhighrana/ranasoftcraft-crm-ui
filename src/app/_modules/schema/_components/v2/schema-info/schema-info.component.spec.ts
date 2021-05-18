@@ -969,5 +969,5 @@ describe('SchemaInfoComponent', () => {
     component.getModuleInfo();
     expect(component.schemaDetails).toBeUndefined();
   }));
-  
+
 });
