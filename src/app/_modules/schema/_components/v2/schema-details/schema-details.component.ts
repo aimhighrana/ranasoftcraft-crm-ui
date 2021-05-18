@@ -388,8 +388,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
      */
     this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
       if (result && !result.editActive) {
-        this.selectedFields = result.selectedFields ? result.selectedFields : [];
-        this.calculateDisplayFields();
+        this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
         if (result.tableActionsList && result.tableActionsList.length) {
           this.tableActionsList = result.tableActionsList
         }
