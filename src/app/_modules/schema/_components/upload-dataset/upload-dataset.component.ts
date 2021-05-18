@@ -308,16 +308,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   stepSubmitted = false;
   dependantStatusList = [
     {
-      key: 'All',
+      key: 'ALL',
       value: 'ALL'
     },
     {
-      key: 'Success',
+      key: 'SUCCESS',
       value: 'SUCCESS'
     },
     {
-      key: 'Failure',
-      value: 'ERROR'
+      key: 'ERROR',
+      value: 'FAILURE'
     }
   ];
 
@@ -1892,7 +1892,7 @@ get selectedRunningSchedule () {
     this.addChildatSameRoot(tobeChild,index)
     }
        const idxforChild=this.selectedBusinessRules[index-1].dep_rules.indexOf(tobeChild);
-    this.selectedBusinessRules[index-1].dep_rules[idxforChild].dependantStatus=event.value;
+    this.selectedBusinessRules[index-1].dep_rules[idxforChild].dependantStatus=this.getSelectedDependantStatus(event.value)?.key;
     this.selectedBusinessRules.splice(index,1)
     }
   }
@@ -1912,7 +1912,7 @@ get selectedRunningSchedule () {
     } else {
       idx = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
     }
-    this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=event.value;
+    this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=this.getSelectedDependantStatus(event.value)?.key;
     if(event.value===RuleDependentOn.ALL)
    { const childIdx=this.selectedBusinessRules[idx].dep_rules[index]
    console.log(childIdx)
@@ -1921,4 +1921,7 @@ get selectedRunningSchedule () {
    this.selectedBusinessRules[idx].dep_rules.splice(index,1);
    }
    }
+  getSelectedDependantStatus(value: string) {
+    return this.dependantStatusList.find(x => x.key === value || x.value === value);
+  }
 }
