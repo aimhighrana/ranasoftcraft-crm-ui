@@ -31,16 +31,21 @@
 
   mat-card.secondary-card {
     border-radius: 0;
-    padding: 0 16px;
+    padding: 0;
     height: 100%;
     user-select: none;
     overflow: hidden;
     width: 100%;
 
+    .secondary-padd-lr {
+      padding: 0 16px;
+    }
+
     .nav-tree {
       height: calc(100% - 40px - 36px - 40px);
       overflow-y: auto;
       overflow-x: hidden;
+      padding: 0 16px;
 
       mat-accordion.mat-accordion {
         mat-expansion-panel {

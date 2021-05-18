@@ -2,27 +2,8 @@ mat-card.root {
   padding: 0 16px;
   user-select: none;
 
-  .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    margin-bottom: 32px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    min-height: 40px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
-
-  .paragraph-text {
-    text-align: justify;
+  .pbase {
     margin-right: 48px;
-    line-height: 16px;
   }
 
   pros-svg-icon {
@@ -39,8 +20,9 @@ mat-card.root {
         font-size: 0.8rem;
       }
 
-      button {
+      .lib-button {
         min-width: 100px;
+        display: flex;
       }
     }
   }

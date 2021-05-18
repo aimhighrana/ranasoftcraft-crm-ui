@@ -205,7 +205,7 @@
                                 <lib-button type="plain">{{ getActionViewTypeDesc(action.actionViewType) }}</lib-button>
                             </ng-template>
                             <ng-template #commonAction>
-                                <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down">
+                                <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down" iconFontType="solid">
                                     {{ getActionViewTypeDesc(action.actionViewType) }}
                                 </lib-button>
                                 <mat-menu #displayMenu="matMenu" class="navigation-menu">
