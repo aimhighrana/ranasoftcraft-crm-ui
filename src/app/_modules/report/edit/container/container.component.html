@@ -142,7 +142,7 @@
                                         <mat-label>Data set</mat-label>
                                     </ng-template>
                                     <mat-form-field appearance="outline">
-                                        <input #dataSets matInput [matAutocomplete]="dataSetCtrl"
+                                        <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl"
                                             (keyup)="searchDataSet($event.target.value)" id="dataSets">
                                         <mat-autocomplete #dataSetCtrl="matAutocomplete"
                                             [displayWith]="displayWithDataSet">

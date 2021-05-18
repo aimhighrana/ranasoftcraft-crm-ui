@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
@@ -31,8 +31,6 @@ import { distinctUntilChanged } from 'rxjs/operators';
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly OrderWith = OrderWith;
-
-  @ViewChild('dataSets') dataSetRef: ElementRef<HTMLInputElement>;
 
   /** when user click enable/disable widget property */
   showProperty = false;
@@ -572,14 +570,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           setTimeout(() => {
-            this.dataSetRef.nativeElement.value = hasObj.objectdesc;
+            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
           }, 1000);
         }
       } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           setTimeout(() => {
-            this.dataSetRef.nativeElement.value = hasObj.objectdesc;
+            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
           }, 1000);
         }
       }
@@ -863,7 +861,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
-    this.dataSetRef.nativeElement.value = '';
+    (document.getElementById('dataSets') as HTMLInputElement).value = '';
   }
 
   /**
@@ -975,13 +973,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param id widget type choose by user
    */
   addWidget(event: MouseEvent, id) {
-    if (this.dataSetRef) {
-      this.dataSetRef.nativeElement.value = '';
-    }
     const movedX = event.movementX;
     const movedY = event.movementY;
 
-    // console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
+    console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
     // drop added widget
     const dropableWidget = new Widget();
@@ -1023,7 +1018,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.isSerieswithDisabled = false;
       this.preapreNewWidgetPosition(dropableWidget);
-      this.showStyle(dropableWidget);
     }
   }
 
