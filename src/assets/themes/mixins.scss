@@ -1268,6 +1268,10 @@
       .mat-expansion-panel-header {
         padding: 0 2px;
 
+        &.cdk-focused {
+          background: $color-app-hover;
+        }
+
         .mat-expansion-indicator {
           height: 10px;
         }
