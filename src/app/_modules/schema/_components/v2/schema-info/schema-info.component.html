@@ -105,7 +105,9 @@
                             [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'"
                             (emitExtraLabelClick)="openBusinessRuleSideSheet()" i18n-extraOptionLabel="@@add_br_rule"
                             extraOptionLabel="Add new business rule" (optionSelectedEmit)="addBusinessRule($event)"
-                            (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '', '0')">
+                            disableInternalFilter="true"
+                            (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '')"
+                            (emitScrollEnd)="getAllBusinessRulesList(moduleId, brSearchString, '', true)">
                         </pros-form-input-autoselect>
                     </div>
                 </div>
