@@ -1,27 +1,23 @@
 <div class="root">
-    <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
-            {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
-            {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
-        </div>
+    <div class="f-row-spacer-half"></div>
+    <div class="f-row">
+        <lib-text-line type="leading">{{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
+            {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}</lib-text-line>
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
-        <div class="f-row">
-            <lib-button-group>
-                <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
-                    <!-- <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> -->
-                    <ng-container i18n="@@check_data"> Check data </ng-container>
-                </lib-button>
-                <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
-                    <!-- <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon> -->
-                </lib-button>
-            </lib-button-group>
-            <!-- menu to add business rule and subscriber -->
-            <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
-                <button mat-menu-item (click)="deleteSchema()" i18n="@@delete" [disableRipple]="true"> Delete </button>
-            </mat-menu>
-
-        </div>
+        <lib-button-group>
+            <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
+                <!-- <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> -->
+                <ng-container i18n="@@check_data"> Check data </ng-container>
+            </lib-button>
+            <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
+                <!-- <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon> -->
+            </lib-button>
+        </lib-button-group>
+        <!-- menu to add business rule and subscriber -->
+        <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
+            <button mat-menu-item (click)="deleteSchema()" i18n="@@delete" [disableRipple]="true"> Delete </button>
+        </mat-menu>
     </div>
 
     <div class="row-spacer"></div>
@@ -85,14 +81,14 @@
                     <div class="col col-x4"><strong><span i18n="@@business_rule">Business rule</span></strong></div>
                     <div class="col col-x4"><strong class="f-row"><span i18n="@@category">Category</span> &nbsp;
                             <mat-icon i18n-libTooltip="@@br_category_tooltip_msg"
-                                libTooltip="Dimension of data quality to be measured" fontSet="mdo-icons">
+                                libTooltip="Dimension of data quality to be measured" fontSet="mdo-icons" iconFontType="solid">
                                 question-circle</mat-icon>
                         </strong></div>
                     <div class="col col-x8 mat-item-center"><strong class="f-row"><span
                                 i18n="@@weightage">Weightage</span> &nbsp;
                             <mat-icon i18n-libTooltip="@@br_weightage_tooltip_msg"
                                 libTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100"
-                                fontSet="mdo-icons">
+                                fontSet="mdo-icons" iconFontType="solid">
                                 question-circle</mat-icon>
                         </strong></div>
                     <div class="col col-enabled"><strong i18n="@@enabled">Enabled</strong></div>
@@ -286,7 +282,7 @@
                             <ng-template #invitedUserProfile>
                                 <mat-card-header>
                                     <div mat-card-avatar>
-                                        <mat-icon fontSet="mdo-icons">home-channel2</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">user</mat-icon>
                                     </div>
                                 </mat-card-header>
                             </ng-template>
@@ -310,13 +306,13 @@
                             </mat-card-header>
                         </div>
                         <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
-                            <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">
+                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isAdmin">
                                 Admin </lib-button>
-                            <lib-button type="minor" icon="caret-down" iconPosition="before"
+                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isReviewer"> Reviewer </lib-button>
-                            <lib-button type="minor" icon="caret-down" iconPosition="before"
+                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isViewer"> Viewer </lib-button>
-                            <lib-button type="minor" icon="caret-down" iconPosition="before"
+                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isEditer"> Editor </lib-button>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">

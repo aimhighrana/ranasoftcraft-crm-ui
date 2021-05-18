@@ -4,42 +4,17 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
-  .breadcrum-toolbar {
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 0;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 40px;
-      align-items: center;
-    }
-
-    .counts::after {
-      content: "\a";
-      width: 2px;
-      height: 2px;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 8px;
-      vertical-align: middle;
-    }
-
-    .counts:last-of-type::after {
-      display: none;
-    }
-  }
-
   .filter-container {
     flex-wrap: wrap;
     margin: 8px 0;
 
-    pros-search-input {
+    .lib-search {
       width: 213px;
       margin-right: 4px;
+    }
+
+    .mdo-filter-matchip {
+      margin: 0 4px;
     }
   }
 
@@ -143,6 +118,7 @@ div.root {
           .mat-header-cell,
           .mat-cell {
             min-width: 170px;
+            max-width: 170px;
 
             &.coll-visible {
               overflow: visible;
@@ -173,10 +149,16 @@ div.root {
           }
 
           .mat-column-_select_columns,
-          .mat-column-_assigned_buckets {
+          .mat-column-_assigned_buckets,
+          .mat-column-_row_actions {
             min-width: 36px;
             max-width: 36px;
             border-right: none;
+          }
+
+          .mat-column-___header__collapsible {
+            min-width: 36px;
+            max-width: 36px;
           }
 
           .mat-column-_score_weightage {
@@ -184,25 +166,15 @@ div.root {
             border-right: none;
 
             .progress-cell {
-              align-items: center;
-              flex: 1;
+              width: 120px;
 
               mat-progress-bar {
                 flex: 1;
               }
             }
           }
-
-          .mat-column-_row_actions {
-            min-width: 36px;
-            border-right: none;
-          }
         }
       }
     }
-  }
-
-  .mdo-chip-list > .lib-search {
-    margin-right: 5px;
   }
 }
