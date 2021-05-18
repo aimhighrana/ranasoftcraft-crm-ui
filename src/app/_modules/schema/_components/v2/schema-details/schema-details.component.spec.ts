@@ -24,6 +24,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -47,7 +48,8 @@ describe('SchemaDetailsComponent', () => {
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,
-        SharedModule
+        SharedModule,
+        MdoUiLibraryModule
       ],providers:[
         {
           provide: SchemaDataSource,
@@ -1313,16 +1315,15 @@ describe('SchemaDetailsComponent', () => {
 
   }));
 
-/*   it('selectedNodeChange()', async(()=>{
+  it(`isHeaderColumn() , check whether the field is header field or note `, async(()=>{
+    // mock data
+    component.columns.header = ['MATL_TYPE','MATL_GRP'];
+    const res = component.isHeaderColumn('MATL_TYPE');
+    expect(res).toBeTrue();
 
-    const params = component.activatedRouter.snapshot.queryParamMap;
-    params.push
-    {node: 'header', 'node-level': 'HEADER'} as ParamMap;
+    const res1 = component.isHeaderColumn('MATL_TYP3');
+    expect(res1).toBeFalse();
 
-    spyOn(component, 'updateColumnBasedOnNodeSelection');
-    component.selectedNodeChange(params);
-    expect(component.updateColumnBasedOnNodeSelection).toHaveBeenCalledWith('header', 'HEADER');
-
-  })); */
+  }));
 
 });

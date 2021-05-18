@@ -1,5 +1,4 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PermissionOn, WidgetDownloadUser } from '@models/collaborator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -39,6 +38,7 @@ export class ExportReportDatatableComponent implements OnInit {
   selectedEmail = '';
   pageCtrl: FormControl = new FormControl('');
   userInfo: WidgetDownloadUser;
+  filterCriterias: string
 
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -46,7 +46,6 @@ export class ExportReportDatatableComponent implements OnInit {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private router: Router,
-    private dialog: MatDialog,
     private snackbar: MatSnackBar,
     private globalDialogService: GlobaldialogService
   ) { }
@@ -54,6 +53,12 @@ export class ExportReportDatatableComponent implements OnInit {
   ngOnInit(): void {
 
     this.getUserDetails();
+
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.filterCriterias = params.conditionList;
+      console.log(this.filterCriterias);
+    })
+
     this.activatedRoute.params.subscribe(params => {
       this.widgetId = params.widgetId;
     });
@@ -203,7 +208,7 @@ export class ExportReportDatatableComponent implements OnInit {
    */
   saveReportDownloadUserList() {
     const userList: WidgetDownloadUser[] = this.selectedUsers.map(element => ({ userName: element.userName, email: element.email }))
-    this.reportServie.saveUpdateportDownload(userList, this.widgetId, this.userInfo.userName).subscribe(res => {
+    this.reportServie.saveUpdateportDownload(userList, this.widgetId, this.userInfo.userName, this.filterCriterias).subscribe(res => {
       this.close();
       this.snackbar.open(`Downloading Started`, 'Close', { duration: 3000 });
     }, errro => {

@@ -1637,6 +1637,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           res.forEach(node => {
             if(node.fieldsList && node.fieldsList.length) {
               this.columns[node.nodeId] = [];
+              node.fieldsList = node.fieldsList.sort((a, b) => a.order - b.order);
               node.fieldsList.forEach(f => {
                 if(!allFields.find(fld => fld.fieldId === f.fieldId)) {
                   allFields.push(f);
