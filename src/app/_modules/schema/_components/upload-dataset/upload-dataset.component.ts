@@ -1922,6 +1922,6 @@ get selectedRunningSchedule () {
    }
    }
   getSelectedDependantStatus(value: string) {
-    return this.dependantStatusList.find(x => x.key === value || x.value === value);
+    return this.dependantStatusList.find(x => x.key === value || x.value === value) || this.dependantStatusList[0];
   }
 }
