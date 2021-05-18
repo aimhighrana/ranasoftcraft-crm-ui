@@ -117,8 +117,17 @@ describe('ReportingListComponent', () => {
     const filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
     const chnages: SimpleChanges = {filterCriteria:{currentValue:filterCriteria, previousValue: null, firstChange:null, isFirstChange:null}};
     spyOn(component.reportingListWidget, 'next');
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
     component.ngOnChanges(chnages);
     expect(component.reportingListWidget.next).toHaveBeenCalled();
+
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(chnages);
+    expect(component.ngOnChanges).toBeTruthy();
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
   }));
 
   it('getListdata(), should return the data of field', async(() => {

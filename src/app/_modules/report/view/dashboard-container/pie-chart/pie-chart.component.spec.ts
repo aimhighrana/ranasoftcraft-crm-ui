@@ -11,7 +11,6 @@ import { ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
-import { SimpleChanges } from '@angular/core';
 import { SharedModule } from '@modules/shared/shared.module';
 
 describe('PieChartComponent', () => {
@@ -304,12 +303,20 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
 
   }));
 
-  it('ngOnChanges(), should check if there are new filter criteria', async(() => {
-    const filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
-    const chnages: SimpleChanges = {filterCriteria:{currentValue:filterCriteria, previousValue: null, firstChange:null, isFirstChange:null}};
-    spyOn(component.pieWidget, 'next');
-    component.ngOnChanges(chnages);
-    expect(component.pieWidget.next).toHaveBeenCalled();
+  it('ngOnChanges(), while change rule type', async(()=>{
+    // mock data
+    const changes: import('@angular/core').SimpleChanges = {filterCriteria:{currentValue:true, previousValue:false,firstChange:null,isFirstChange:null}, boxSize:{currentValue:35, previousValue:26,firstChange:null,isFirstChange:null}};
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.boxSize).toEqual(35);
+
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.lablels.length).toEqual(0);
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
   }));
 
 });

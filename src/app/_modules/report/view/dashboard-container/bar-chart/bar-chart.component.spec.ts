@@ -303,4 +303,20 @@ describe('BarChartComponent', () => {
     expect(component.chartLegend.length).toEqual(2);
   }));
 
+  it('ngOnChanges(), while change rule type', async(()=>{
+    // mock data
+    const changes: import('@angular/core').SimpleChanges = {filterCriteria:{currentValue:true, previousValue:false,firstChange:null,isFirstChange:null}, boxSize:{currentValue:35, previousValue:26,firstChange:null,isFirstChange:null}};
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.boxSize).toEqual(35);
+
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.lablels.length).toEqual(0);
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
+  }));
+
 });

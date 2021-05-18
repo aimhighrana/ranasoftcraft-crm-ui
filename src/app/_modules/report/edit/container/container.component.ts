@@ -204,7 +204,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isCustomdataSet: [false],
       pageDefaultSize: [''],
       isFieldDistinct: [false],
-      displayCriteria: [DisplayCriteria.TEXT]
+      displayCriteria: [DisplayCriteria.TEXT],
+      isEnableGlobalFilter: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -257,6 +258,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
         changedWidget.displayCriteria = latestVal.displayCriteria;
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
+        changedWidget.isEnableGlobalFilter = latestVal.isEnableGlobalFilter;
 
         // hold selected field control
         if (typeof latestVal.field !== 'string') {
@@ -525,7 +527,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
           objectType: data.objectType ? data.objectType: '',
-          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false
+          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
+          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
         });
 
         // set value to properties frm ctrl
