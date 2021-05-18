@@ -509,6 +509,10 @@
                             </div>
 
                             <div class="f-col">
+                                <mat-checkbox color="primary" formControlName="isEnableGlobalFilter">Global Filters not applicable</mat-checkbox>
+                            </div>
+
+                            <div class="f-col">
                                 <!-- FOR IMAGE WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'IMAGE'">
                                     <mat-label>Image link</mat-label>

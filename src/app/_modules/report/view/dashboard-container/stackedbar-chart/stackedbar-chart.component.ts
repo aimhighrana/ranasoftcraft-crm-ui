@@ -103,7 +103,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
   }
   ngOnChanges(changes: SimpleChanges):void{
-    this.stackBarWidget.next(this.stackBarWidget.getValue());
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
+      this.stackBarWidget.next(this.stackBarWidget.getValue());
+    }
+
     if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }

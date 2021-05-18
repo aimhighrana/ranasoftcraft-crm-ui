@@ -175,7 +175,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.clearFilterCriteria();
     }
 
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && !this.widgetInf.getValue().isEnableGlobalFilter) {
       this.lablels = [];
       this.chartLegend = [];
       this.widgetInf.next(this.widgetInf.getValue());

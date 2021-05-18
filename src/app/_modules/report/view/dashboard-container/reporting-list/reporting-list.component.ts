@@ -93,7 +93,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.reportingListWidget.next(this.reportingListWidget.getValue());
     }
   }
