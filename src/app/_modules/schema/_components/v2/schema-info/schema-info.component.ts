@@ -641,6 +641,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         const brToBeDelete = childIdx.filter((businessRule) => businessRule.brId === br.brId)[0];
         const index = this.businessRuleData.indexOf(brToBeDelete);
         this.businessRuleData[idx].dep_rules.splice(index, 1);
+
+        const forkObj = {};
+        let counter = 0;
+        if (br.brIdStr) {
+          forkObj[counter] = this.schemaService.deleteBr(br.brIdStr);
+          counter++;
+          const deleteSubscriber = forkJoin(forkObj).subscribe(res => {
+            if (res)
+              this.getBusinessRuleList(this.schemaId);
+          });
+          this.subscriptions.push(deleteSubscriber);
+        }
       }
     })
   }
