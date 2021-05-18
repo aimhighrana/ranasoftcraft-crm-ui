@@ -1213,4 +1213,5 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     })
   }
+
 }
