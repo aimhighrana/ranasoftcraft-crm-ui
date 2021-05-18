@@ -220,9 +220,6 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     })
     if (flag === false) {
-      if (!checkbox.displayCriteria) {
-        checkbox.displayCriteria = DisplayCriteria.CODE;
-      }
       this.data.selectedColumns.push(checkbox);
     }
     this.manageStateOfCheckbox()
@@ -355,11 +352,11 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
       prepareData.push(obj);
     });
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.data.widgetId, this.data.widgetType, null, prepareData).subscribe(res => {
-    }, error => {
-      console.error('Error while updating report data table column settings', error.message);
-    });
-    this.subscriptions.push(saveDisplayCriteria);
+    // const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.data.widgetId, this.data.widgetType, null, prepareData).subscribe(res => {
+    // }, error => {
+    //   console.error('Error while updating report data table column settings', error.message);
+    // });
+    // this.subscriptions.push(saveDisplayCriteria);
     const reportDataTable = this.schemaDetailsService.createUpdateReportDataTable(this.data.widgetId, prepareData).subscribe(response => {
       this.close();
       this.data.isRefresh = true;

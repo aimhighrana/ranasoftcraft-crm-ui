@@ -292,6 +292,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
         } else {
           this.getFieldsByModuleId();
+          this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
         }
       });
     });
@@ -1060,6 +1061,8 @@ export class BrruleSideSheetComponent implements OnInit {
         brWeightage: this.form.value.weightage,
         isCopied: false,
         copiedFrom: '',
+        dependantStatus: this.coreSchemaBrInfo.dependantStatus,
+        order: this.coreSchemaBrInfo.order
       } as CoreSchemaBrInfo;
 
       const blocks: UDRBlocksModel[] = [];

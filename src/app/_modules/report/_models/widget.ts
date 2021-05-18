@@ -150,6 +150,7 @@ export interface DropDownValues {
     TEXT: string;
     langu: string;
     CODE: string;
+    display: string
 }
 
 export enum AggregationOperator {

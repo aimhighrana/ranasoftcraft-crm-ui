@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DetailView } from '@models/schema/schemadetailstable';
 import { SchemaListDetails } from '@models/schema/schemalist';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Subscription } from 'rxjs';
 
@@ -53,7 +54,8 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRouter: ActivatedRoute,
-    private schemaService: SchemalistService
+    private schemaService: SchemalistService,
+    private sharedService: SharedServiceService
   ) { }
 
   ngOnDestroy(): void {
@@ -79,6 +81,14 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
      this.activatedRouter.queryParams.subscribe(queryParams=> {
       this.activeTab = queryParams.status ? queryParams.status: 'error';
     });
+
+    // Subscribe to schema run notifier
+    const sub = this.sharedService.getSchemaRunNotif().subscribe(info => {
+      if(info) {
+        this.getSchemaDetails(this.moduleId, this.schemaId, this.variantId);
+      }
+    });
+    this.subscribers.push(sub);
 
     // // TODO .. based on schema type ..
     // this.displayFormat = DetailView.CLASSIFICATION_VIEW;

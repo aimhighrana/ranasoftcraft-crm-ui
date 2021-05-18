@@ -199,12 +199,12 @@ export class TableColumnSettingsComponent implements OnInit{
    */
   searchFld(value: string) {
     if(value) {
-      const sugg = this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
-      this.suggestedFlds = sugg.map(map => map.fieldId);
-      if (this.suggestedFlds.length && this.scrollable){
-        const item = document.getElementById(this.suggestedFlds[0]);
-        this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
-      }
+      this.headerFieldObs = of(this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
+      // this.suggestedFlds = sugg.map(map => map.fieldId);
+      // if (this.suggestedFlds.length && this.scrollable){
+      //   const item = document.getElementById(this.suggestedFlds[0]);
+      //   this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
+      // }
     } else {
       this.headerFieldObs = of(this.header);
       this.suggestedFlds = [];
@@ -225,7 +225,7 @@ export class TableColumnSettingsComponent implements OnInit{
     } else {
       const fieldView = new SchemaTableViewFldMap();
       fieldView.fieldId = fld.fieldId;
-      fieldView.editable = false;
+      fieldView.isEditable = false;
       this.data.selectedFields.push(fieldView);
     }
     // this.submitColumn();
@@ -252,7 +252,7 @@ export class TableColumnSettingsComponent implements OnInit{
       this.data.selectedFields = this.headerArray.map(header => {
         const fieldView = new SchemaTableViewFldMap();
         fieldView.fieldId = header;
-        fieldView.editable = false;
+        fieldView.isEditable = false;
         return fieldView;
       });
     } else {
@@ -283,7 +283,7 @@ export class TableColumnSettingsComponent implements OnInit{
       choosenField = this.data.selectedFields.find(field =>field.fieldId === h.fieldId);
       if( choosenField ) {
         choosenField.order = order;
-        choosenField.isEditable = choosenField.editable;
+        choosenField.isEditable = choosenField.isEditable;
         choosenField.nodeId = h.nodeId;
         choosenField.nodeType = h.nodeType;
         orderFld.push(choosenField);
@@ -297,13 +297,13 @@ export class TableColumnSettingsComponent implements OnInit{
   editableChange(fld: MetadataModel){
     const field = this.data.selectedFields.find(f => f.fieldId === fld.fieldId);
     if (field){
-      field.editable = !field.editable;
+      field.isEditable = !field.isEditable;
     }
     // this.submitColumn();
   }
 
   isEditEnabled(fld : MetadataModel){
-    return this.data.selectedFields.findIndex(field => (field.fieldId === fld.fieldId) && field.editable ) !== -1;
+    return this.data.selectedFields.findIndex(field => (field.fieldId === fld.fieldId) && field.isEditable ) !== -1;
   }
 
   /**

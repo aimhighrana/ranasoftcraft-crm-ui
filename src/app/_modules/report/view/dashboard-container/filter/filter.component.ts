@@ -180,7 +180,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-          valArray.push(this.checkTextCode(v));
+          if(v.t) {
+            valArray.push(v.t);
+          }
         });
         const finalText = valArray.toString();
         if(finalText) {
@@ -200,6 +202,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           const index = this.values.indexOf(valOld[0]);
           valOld[0].TEXT = finalVal[key];
           valOld[0].FIELDNAME = fieldId;
+          valOld[0].display = this.setDisplayCriteria(key, finalVal[key]);
           this.values[index] = valOld[0];
         }
     });
@@ -223,7 +226,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-          valArray.push(this.checkTextCode(v));
+          if(v.t) {
+            valArray.push(v.t);
+          }
         });
         const finalText = valArray.toString();
         if(finalText) {
@@ -242,6 +247,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           const index = this.values.indexOf(valOld[0]);
           valOld[0].TEXT = finalVal[key];
           valOld[0].FIELDNAME = fieldId;
+          valOld[0].display = this.setDisplayCriteria(key, finalVal[key]);
           this.values[index] = valOld[0];
         }
     });
@@ -388,7 +394,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37'|| this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35')) {
       const metadatas: DropDownValues[] = [];
       buckets.forEach(bucket => {
-        const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER} as DropDownValues;
+        const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER, display: this.setDisplayCriteria(bucket.key.FILTER, bucket.key.FILTER)} as DropDownValues;
         metadatas.push(metaData);
       });
       this.values = metadatas;
@@ -507,7 +513,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         const existValue = this.selectedDropVals.filter(exist => exist.CODE === value.conditionFieldValue);
         const textVal = this.values.filter(val => val.CODE === value.conditionFieldValue);
         const text = textVal.length >0 ? textVal[0].TEXT : existValue.length > 0? existValue[0].TEXT : value.conditionFieldValue;
-        returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null});
+        returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null, display: this.setDisplayCriteria(value.conditionFieldValue, text)});
       }
 
     });
@@ -760,21 +766,16 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   /**
    * Return the value of DisplayCriteria
    */
-  checkTextCode(v: { c: string; t: string; }): string {
+  setDisplayCriteria(c: string, t: string): string {
     switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
-        if(v.c) {
-          return v.c;
-        }
-        break;
+        return c || '';
         case DisplayCriteria.TEXT:
-          if(v.t) {
-            return v.t;
-          }
-        break;
+          return t || '';
+        case DisplayCriteria.CODE_TEXT:
+          return `${c || ''} -- ${t || ''}`;
         default:
-          return `${v.c || ''} -- ${v.t || ''}`;
-        break;
+          break;
     }
     return '';
   }
@@ -784,9 +785,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   saveDisplayCriteria() {
     const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
-      this.filteredOptions = of([]);
-      this.values = [];
-      this.updateFilter(this.filterWidget.value.fieldId, this.returnData);
+      this.filteredOptions.subscribe(sub=>{
+        sub.forEach(v => {
+          v.display = this.setDisplayCriteria(v.CODE, v.TEXT);
+        });
+      });
       // Update filterFormControl with updated values
       if (this.filterFormControl.value) {
         this.filteredOptions.subscribe(sub=>{
@@ -803,7 +806,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.selectedDropVals.forEach(item => {
             sub.forEach(v => {
               if (v.CODE === item.CODE) {
-                item.TEXT = v.TEXT;
+                item.display = v.display;
               }
             });
           });

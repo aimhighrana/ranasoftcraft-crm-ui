@@ -4,16 +4,10 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large" *ngIf="!isFromCheckData; else fromPrimaryNav">
+                <div class="display-heading-large">
                     {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
                     {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
                 </div>
-                <ng-template #fromPrimaryNav>
-                    <div class="display-heading-large">
-                        {{moduleDesc ? moduleDesc : 'Untitled'}} /
-                        {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
-                    </div>
-                </ng-template>
 
                 <!-- <button mat-button [matMenuTriggerFor]="check">
                     <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
@@ -43,9 +37,12 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
-                <div class="f-col mdo-form-field" *ngIf="isFromCheckData">
-                    <lib-input i18n-label="@@schema_name" label="Schema name" [type]="'text'"  placeholder="Schema name" [value]="schemaDetails.schemaDescription" [formControl]="schemaName">
+                <div class="f-col mdo-form-field">
+                    <lib-input i18n-label="@@schema_name" label="Schema name" [type]="'text'"  placeholder="Schema name" [formControl]="schemaName">
                     </lib-input>
+                    <mat-error i18n="@@schema_name_required" *ngIf="submitted && schemaName.invalid">
+                        Schema name is required
+                    </mat-error>
                 </div>
 
                 <div class="f-col mdo-form-field">

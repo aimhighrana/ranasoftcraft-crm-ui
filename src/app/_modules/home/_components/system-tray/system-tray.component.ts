@@ -7,6 +7,7 @@ import { CustomNotification } from '@models/customNotification';
 import { MatTabGroup } from '@angular/material/tabs';
 import { HomeService } from '@services/home/home.service'
 import { JobQueue } from '@models/jobQueue';
+import { GlobaldialogService } from '@services/globaldialog.service';
 @Component({
   selector: 'pros-system-tray',
   templateUrl: './system-tray.component.html',
@@ -48,6 +49,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    */
   constructor(
     private router: Router,
+    public globalDialogService: GlobaldialogService,
     public userService: UserService,
     public homeService: HomeService,
   ) { }
@@ -99,9 +101,8 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
         notifications.forEach((notification) => {
           notification.showMore = false;
         })
-        this.notifications.length = 0;
-        this.notifications.push(...notifications)
-      })
+        this.notifications = [...notifications];
+      });
   }
 
   /**
@@ -134,9 +135,13 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    * @param notificationid id of selected notification
    */
   deleteNotification(notificationid) {
-    this.homeService.deleteNotification([notificationid]).subscribe(() => {
-      this.getNotifications();
-    })
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if(response && response === 'yes') {
+        this.homeService.deleteNotification([notificationid]).subscribe(() => {
+          this.getNotifications();
+        });
+      }
+    });
   }
 
   /**

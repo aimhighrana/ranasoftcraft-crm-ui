@@ -25,7 +25,6 @@ export const CONDITIONS = {
         desc: 'Special Operators',
         operators: [
             'REGEX',
-            'FIELD2FIELD',
             'LOCATION'
         ]
     },

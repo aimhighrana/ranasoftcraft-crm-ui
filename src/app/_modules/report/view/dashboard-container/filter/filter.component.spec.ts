@@ -313,19 +313,30 @@ describe('FilterComponent', () => {
    expect(component.filterCriteria.length).toEqual(1);
   }));
 
-  it('checkTextCode(), should return string from DisplayCriteria', async(()=> {
+  it('setDisplayCriteria(), should return string from DisplayCriteria', async(()=> {
     component.displayCriteriaOption.key = DisplayCriteria.TEXT;
     const test = { t: 'test', c: '1234'};
-    let res = component.checkTextCode(test);
+    let res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('test');
 
     component.displayCriteriaOption.key = DisplayCriteria.CODE;
-    res = component.checkTextCode(test);
+    res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234');
 
     component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
-    res = component.checkTextCode(test);
+    res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234 -- test');
+  }));
+
+  it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.widgetId = 12345;
+    component.widgetInfo = new Widget();
+    component.widgetInfo.widgetType = WidgetType.FILTER;
+    component.widgetInfo.widgetId = component.widgetId.toString();
+    spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption.key).and.returnValue(of({}));
+    component.saveDisplayCriteria();
+    expect(widgetService.saveDisplayCriteria).toHaveBeenCalledWith('12345', WidgetType.FILTER, DisplayCriteria.TEXT);
   }));
 
   it('setSelectedQuickDateFilter', async(()=> {
