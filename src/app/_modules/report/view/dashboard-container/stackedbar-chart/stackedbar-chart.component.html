@@ -22,7 +22,7 @@
     <div [ngStyle]="{'width.px' : (widgetInfo.width * boxSize - 20)}" class="bar-height"> 
       <div [ngStyle]="{'width' : '100%', 'position' : 'relative'}" class="bar-height">
         <canvas class="bar-height" baseChart
-          [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [colors]="barChartColors"
+          [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
           [chartType]="this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar'">
         </canvas>
     </div>
