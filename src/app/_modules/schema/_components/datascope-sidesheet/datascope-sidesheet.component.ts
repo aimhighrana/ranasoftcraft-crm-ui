@@ -162,7 +162,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     if(ctrl.values.length > 1) {
       return ctrl.values.length;
     }else {
-      return ctrl.textValues ? ctrl.textValues[0] : ctrl.selectedValues[0].TEXT;
+      return ctrl.textValues ? ctrl.textValues[0] : (ctrl.selectedValues[0]?.TEXT);
     }
   }
 
