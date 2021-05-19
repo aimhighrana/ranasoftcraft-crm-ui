@@ -184,6 +184,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * Function to save varient
    */
   saveVarient() {
+    if (!this.variantName.value || !this.variantInfo.filterCriteria || !this.variantInfo.filterCriteria.length) {
+      return;
+    }
     this.variantInfo.variantName = this.variantName.value;
     this.variantInfo.variantId = this.variantInfo.variantId === 'new' ? '' : this.variantInfo.variantId;
     this.variantInfo.schemaId = this.schemaId;
