@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'pros-businessrulelibrary-sidesheet',
