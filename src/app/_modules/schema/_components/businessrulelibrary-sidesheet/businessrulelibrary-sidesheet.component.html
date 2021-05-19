@@ -37,8 +37,8 @@
                 <mat-list-item role="listitem" *ngFor="let brItem of businessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
                     <span class="f-spacer"></span>
-                    <lib-button *ngIf="!isSelected(brItem); else doneButton"
-                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" icon="plus"></lib-button>
+                    <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
+                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
  
                     <ng-template #doneButton>
                         <lib-button (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
