@@ -32,7 +32,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   }
 
   ngOnChanges(changes: SimpleChanges):void{
-    if (changes && changes.filterCriteria && changes.filterCriteria.previousValue !== changes.filterCriteria.currentValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.previousValue !== changes.filterCriteria.currentValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.getCountData(this.widgetId,this.filterCriteria);
     }
   }

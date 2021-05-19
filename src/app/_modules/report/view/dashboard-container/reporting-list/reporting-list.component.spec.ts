@@ -92,10 +92,11 @@ describe('ReportingListComponent', () => {
   //   expect(component.details(data)).not.toBe(null);
   // }))
   it('downloadCSV, download the data', async (() => {
+    component.filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
     spyOn(router, 'navigate');
     const widgetId= component.widgetId;
     component.downloadCSV()
-    expect(router.navigate).toHaveBeenCalledWith(['',{ outlets: { sb: `sb/report/download-widget/${widgetId}` }}],  {queryParamsHandling: 'preserve'});
+    expect(router.navigate).toHaveBeenCalledWith(['',{ outlets: { sb: `sb/report/download-widget/${widgetId}` }}],  { queryParams: { conditionList: `${JSON.stringify(component.filterCriteria)}` }, queryParamsHandling: 'preserve' });
   }));
 
   it('sortTable(), sort the data in asc or desc ', async(() =>{
@@ -116,8 +117,17 @@ describe('ReportingListComponent', () => {
     const filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
     const chnages: SimpleChanges = {filterCriteria:{currentValue:filterCriteria, previousValue: null, firstChange:null, isFirstChange:null}};
     spyOn(component.reportingListWidget, 'next');
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
     component.ngOnChanges(chnages);
     expect(component.reportingListWidget.next).toHaveBeenCalled();
+
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(chnages);
+    expect(component.ngOnChanges).toBeTruthy();
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
   }));
 
   it('getListdata(), should return the data of field', async(() => {
@@ -127,8 +137,8 @@ describe('ReportingListComponent', () => {
     const widgetId = 1612965351574;
     const criteria = [];
     const soringMap = null;
-    component.tableColumnMetaData = [{widgetId: 1612965351574, fields:'REQUESTOR_DATE', fieldOrder:'REQUESTOR_DATE', fieldDesc:'REQUESTOR_DATE', sno:65467465, fldMetaData:{picklist:'1', fieldId:'REQUESTOR_DATE'} as MetadataModel, displayCriteria: DisplayCriteria.TEXT}];
-    component.displayedColumnsId = ['objectNumber','REQUESTOR_DATE','WFID','TIME_TAKEN','FORWARDENABLED','OVERDUE'];
+    component.tableColumnMetaData = [{fields:'REQUESTOR_DATE', fldMetaData:{picklist:'1', fieldId:'REQUESTOR_DATE'} as MetadataModel, displayCriteria: DisplayCriteria.TEXT}as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget,{ fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget,{ fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget,{ fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
+    component.displayedColumnsId = ['REQUESTOR_DATE', 'WFID','objectNumber', 'OVERDUE','FORWARDENABLED', 'TIME_TAKEN'];
     const reportingW = [{ fields: 'REQUESTOR_DATE', fldMetaData: { dataType: 'DTMS', picklist: '1' } } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'WFID', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'TIME_TAKEN', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'FORWARDENABLED', fldMetaData: { dataType: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { dataType: '0' } } as ReportingWidget];
     component.reportingListWidget.next(reportingW);
     component.widgetHeader = {displayCriteria: DisplayCriteria.CODE} as WidgetHeader;

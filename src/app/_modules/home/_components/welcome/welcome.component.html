@@ -1,14 +1,20 @@
 <mat-card class="mat-elevation-z0 root">
-    <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">Welcome to Master Data Online</div>
-    </div>
+    <div class="row-spacer"></div>
 
     <div class="f-row">
-        <p class="paragraph-text">Master Data Online (MDO) delivers trustworthy and reliable data to business users. By
+        <lib-text-line type="leading">Welcome to Master Data Online</lib-text-line>
+    </div>
+
+    <div class="row-spacer"></div>
+    <div class="row-spacer"></div>
+
+    <div class="f-row">
+        <lib-text-line class="pbase" type="base" enableWrap="true">Master Data Online (MDO) delivers trustworthy and
+            reliable data to business users. By
             mediating, managing and governing master data it can be shared by multiple master data domains. It enables
             business users to easily create information with standardized business rules, workflows and approval
             processes. Available both on cloud and enterprise models, MDO can integrate with SAP, Salesforce, Microsoft
-            and other leading enterprise solutions.</p>
+            and other leading enterprise solutions.</lib-text-line>
 
         <pros-svg-icon size="100" icon="MDO_LOGO" class="welcome-logo"></pros-svg-icon>
     </div>
@@ -29,7 +35,7 @@
                 <mat-icon fontSet="mdo-icons">check</mat-icon>
                 <div class="col-spacer"></div>
             </div>
-            <lib-button type="minor">Learn</lib-button>
+            <lib-button type="minor" class="lib-button">Learn</lib-button>
         </mat-list-item>
 
         <mat-divider></mat-divider>
@@ -38,7 +44,7 @@
             <mat-icon mat-list-icon fontSet="mdo-icons">sliders-h</mat-icon>
             <div mat-line>Configure your profile</div>
             <div mat-line class="short-line">Set up your system preferences and upload your profile picture</div>
-            <lib-button type="minor">Configure</lib-button>
+            <lib-button type="minor" class="lib-button">Configure</lib-button>
         </mat-list-item>
 
         <mat-divider></mat-divider>
@@ -47,7 +53,7 @@
             <mat-icon mat-list-icon fontSet="mdo-icons">user-plus</mat-icon>
             <div mat-line>Invite your colleagues</div>
             <div mat-line class="short-line">Invite others to join your team in MDO and start collaborating</div>
-            <lib-button type="minor">Invite</lib-button>
+            <lib-button type="minor" class="lib-button">Invite</lib-button>
         </mat-list-item>
 
         <mat-divider></mat-divider>
@@ -56,9 +62,8 @@
             <mat-icon mat-list-icon fontSet="mdo-icons-solid">magic</mat-icon>
             <div mat-line>Check your data</div>
             <div mat-line class="short-line">Validate your data by uploading a new or using existing dataset</div>
-            <lib-button type="minor" [matMenuTriggerFor]="check" iconFontType="solid" icon="caret-down"
-                (menuOpened)="moduleSearchInput.clearSearch();">Check</lib-button>
-
+            <lib-button type="minor" class="lib-button" [matMenuTriggerFor]="check" iconFontType="solid"
+                icon="caret-down" (menuOpened)="moduleSearchInput.clearSearch();">Check</lib-button>
 
             <!-- module-menu -->
             <mat-menu #check="matMenu" class="navigation-menu">

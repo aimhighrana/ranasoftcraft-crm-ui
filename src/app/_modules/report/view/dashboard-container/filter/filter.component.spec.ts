@@ -12,6 +12,7 @@ import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SimpleChanges } from '@angular/core';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
@@ -197,13 +198,21 @@ describe('FilterComponent', () => {
   }));
 
   it(`ngOnChanges(), should call reset when reset filter`, async(()=>{
+    component.filterFormControl.setValue('test');
+    const filterWidget = new FilterWidget();
+    filterWidget.fieldId = 'ZMRO';
+    filterWidget.metaData = {dataType: 'NUMC', picklist:'0'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
+    component.filterCriteria = [];
+    component.filterResponse = new FilterResponse();
     // mock data
-    const chnages:import('@angular/core').SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    const chnages: SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
 
     // call actual method
     component.ngOnChanges(chnages);
 
     expect(component.enableClearIcon).toEqual(false, 'When reset successfully then enableClearIcon should be false');
+    expect(component.filterFormControl.value).toEqual('');
   }));
 
   it('updateObjRefDescription(), update description of objRef in filter', async(()=>{
@@ -326,6 +335,13 @@ describe('FilterComponent', () => {
     component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
     res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234 -- test');
+
+    component.displayCriteriaOption.key = undefined;
+    res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('test');
+
+    res = component.setDisplayCriteria(test.c, '');
+    expect(res).toEqual('1234');
   }));
 
   it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {

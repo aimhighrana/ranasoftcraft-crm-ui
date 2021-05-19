@@ -58,7 +58,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -92,7 +92,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -127,7 +127,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.widgetId = 123;
 
@@ -166,7 +166,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -266,7 +266,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -279,9 +279,12 @@ describe('TimeseriesWidgetComponent', () => {
 
   it('codeTextValue()', async(() => {
     component.timeseriesData = {timeSeries : {metaData :{picklist:'1', fieldId:'MATL_GROUP'}}} as TimeSeriesWidget;
-    const innerBucket = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
+    let innerBucket: any = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
     const fieldid = 'MATL_GROUP';
     expect(component.codeTextValue(innerBucket,fieldid)).toEqual({c:'200010', t:'testing'});
+
+    innerBucket = {key:'200010'};
+    expect(component.codeTextValue(innerBucket,fieldid)).toEqual('200010');
   }));
 
   it('dateAndCountFormat()', async(() => {

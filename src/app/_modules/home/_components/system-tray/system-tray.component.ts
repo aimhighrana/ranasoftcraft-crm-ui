@@ -137,8 +137,11 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
   deleteNotification(notificationid) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if(response && response === 'yes') {
-        this.homeService.deleteNotification([notificationid]).subscribe(() => {
-          this.getNotifications();
+        const subscriber = this.homeService.deleteNotification([notificationid]).subscribe(() => {
+          subscriber.unsubscribe();
+          setTimeout(() => {
+            this.getNotifications();
+          }, 1000);
         });
       }
     });

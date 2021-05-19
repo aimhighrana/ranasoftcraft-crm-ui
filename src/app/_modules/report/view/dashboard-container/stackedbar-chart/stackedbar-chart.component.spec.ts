@@ -468,4 +468,21 @@ describe('StackedbarChartComponent', () => {
     component.downloadCSV();
     expect(widgetService.downloadCSV).toHaveBeenCalledWith('StackBar-Chart', excelData);
   }));
+
+  it('ngOnChanges(), while change rule type', async(()=>{
+    // mock data
+    const changes: import('@angular/core').SimpleChanges = {filterCriteria:{currentValue:true, previousValue:false,firstChange:null,isFirstChange:null}, boxSize:{currentValue:35, previousValue:26,firstChange:null,isFirstChange:null}};
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.boxSize).toEqual(35);
+
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
+    spyOn(component.stackBarWidget, 'next');
+    component.ngOnChanges(changes);
+    expect(component.stackBarWidget.next).toHaveBeenCalled();
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
+  }));
 });
