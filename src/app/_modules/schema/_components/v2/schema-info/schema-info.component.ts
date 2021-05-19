@@ -112,6 +112,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   schemaValueChanged: Subject<string> = new Subject<string>();
   schemaThresholdChanged: Subject<string> = new Subject<string>();
 
+  /**
+   * Applied search string on brs list
+   */
+  brSearchString = '';
+
+  brListFetchCount = 0 ;
+
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
@@ -139,7 +146,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const getBrSubscription = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
         this.getBusinessRuleList(this.schemaId);
-        this.getAllBusinessRulesList(this.moduleId, '', '', '0')
+        this.getAllBusinessRulesList(this.moduleId, '', '');
       }
     });
     this.subscriptions.push(getBrSubscription);
@@ -171,7 +178,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
     this.getCollaborators('', 0); // To get all the subscribers
 
-    this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To get all business rules list
+    this.getAllBusinessRulesList(this.moduleId, '', ''); // To get all business rules list
   }
 
   /**
@@ -965,12 +972,25 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param moduleId ID of module
    * @param searchString string to be searched
    * @param brType type of business rule
-   * @param fetchCount count to be fetched data
+   * @param loadMore load more
    */
-  getAllBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
-    const getAllBrSubscription = this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
-      if (rules && rules.length > 0) {
-        this.allBusinessRulesList = rules;
+  getAllBusinessRulesList(moduleId: string, searchString: string, brType: string, loadMore?) {
+    console.log('loading more ', loadMore);
+    this.brSearchString = searchString || '';
+    if(loadMore) {
+      this.brListFetchCount++;
+    } else {
+      this.brListFetchCount = 0;
+    }
+    const getAllBrSubscription = this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, `${this.brListFetchCount}`).subscribe((rules: CoreSchemaBrInfo[]) => {
+      if(loadMore) {
+        if(rules && rules.length) {
+          this.allBusinessRulesList = [...this.allBusinessRulesList, ...rules];
+        } else {
+          this.brListFetchCount--;
+        }
+      } else {
+        this.allBusinessRulesList =rules || [];
       }
     }, (error) => {
       console.error('Error while getting all business rules list', error.message);
@@ -1207,4 +1227,5 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     })
   }
+
 }
