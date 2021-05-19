@@ -116,7 +116,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   };
 
-  public barChartData: ChartDataSets[] = [
+  public barChartData: any[] = [
     {
       label: 'Loading..',
       stack: 'a',
@@ -277,7 +277,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * Set barChartData of ChartDataSets[]. This get the legends to show in chart with labels
    */
   setBarChartData() {
-    const barChartData: ChartDataSets[] = [];
+    const barChartData: any[] = [];
     let dataIndex = 0;
     this.chartLegend.forEach((legend, index) => {
       const data: number[] = []
@@ -703,11 +703,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     req.reportId = String(this.reportId);
     req.widgetDesc = this.widgetHeader.desc;
     req.colorPalettes = [];
-    this.chartLegend.forEach(legend=>{
+    this.barChartData.forEach(legend=>{
       req.colorPalettes.push({
-        code: legend.code,
-        colorCode: this.barChartData[0] ? this.barChartData[0].backgroundColor[legend.legendIndex] : this.getRandomColor(),
-        text: legend.text
+        code: legend.label,
+        colorCode: legend.backgroundColor ? legend.backgroundColor : this.getRandomColor(),
+        text: legend.label
       });
     });
     super.openColorPalette(req);

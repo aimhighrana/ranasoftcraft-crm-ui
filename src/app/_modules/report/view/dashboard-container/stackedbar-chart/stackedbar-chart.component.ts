@@ -44,7 +44,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   arrayBuckets :any[];
   listxAxis2 :any[]=new Array();
   barChartLabels: Label[] = new Array();
-  barChartColors:Array<any> = [{backgroundColor: ['red', 'yellow', 'green', 'orange','pink']}];
   barChartData: any[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
   barChartOptions: ChartOptions = {
     responsive: true,
@@ -527,6 +526,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   updateLabelsaxis2():void{
+    this.barChartData = [];
     this.listxAxis2.forEach(singleLis=>{
         const singleobj= {} as any;
         singleobj.data=this.dataObj[singleLis];
@@ -540,8 +540,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         // singleobj.backgroundColor=this.getRandomColor();
         singleobj.backgroundColor=this.getUpdatedColorCode(singleobj.fieldCode);
         singleobj.borderColor=this.getRandomColor();
-
-
         this.barChartData.push(singleobj);
       });
       for(let i=0;i<this.barChartLabels.length;i++){
@@ -759,7 +757,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }],
       }
     }
-    this.chart.chart.options.scales = this.barChartOptions.scales;
+    if(this.chart) {
+      this.chart.chart.options.scales = this.barChartOptions.scales;
+    }
   }
 
   /**

@@ -20,7 +20,7 @@
   <div class="row-spacer"></div>
   <mat-card-content>
     <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
-      [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [colors]="barChartColors"
+      [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
       [chartType]="this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar'">
     </canvas>
   </mat-card-content>
