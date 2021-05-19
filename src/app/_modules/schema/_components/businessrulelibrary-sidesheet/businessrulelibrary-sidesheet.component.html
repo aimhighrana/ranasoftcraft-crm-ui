@@ -37,11 +37,11 @@
                 <mat-list-item role="listitem" *cdkVirtualFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
                     <span class="f-spacer"></span>
-                    <lib-button *ngIf="!isSelected(brItem); else doneButton"
-                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" icon="plus"></lib-button>
+                    <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
+                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
  
                     <ng-template #doneButton>
-                        <lib-button (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
+                        <lib-button class="br-sidesheet-btn" (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
                     </ng-template>
                 </mat-list-item>
             </mat-list>
