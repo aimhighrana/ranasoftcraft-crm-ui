@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget } from '../../../_models/widget';
+import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget, Criteria } from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
@@ -12,6 +12,7 @@ import { WidgetService } from '@services/widgets/widget.service';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedModule } from '@modules/shared/shared.module';
+import { ChartLegendLabelItem } from 'chart.js';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
@@ -249,16 +250,44 @@ describe('BarChartComponent', () => {
 
     spyOn(service,'getWidgetData').withArgs('653267432',[]).and.returnValue(of(buckets));
 
-    const pieWidget: BarChartWidget = new BarChartWidget();
-    pieWidget.fieldId = 'MATL_GROUP';
-    pieWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
 
-    component.barWidget.next(pieWidget);
+    component.barWidget.next(barWidget);
 
     component.widgetInfo = new Widget();
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
+  }));
+
+  it('setBarChartData(), should get barChartData', async(()=>{
+    component.lablels = ['HERS -- Manufacturer Part', 'PMB -- PMB', 'ZMRO --  ZMRO-MRO Material'];
+    component.dataSet = ['1', '99', '433122'];
+    component.chartLegend = [
+      {text: 'Manufacturer Part', code: 'HERS', legendIndex: 0},
+      {text: 'PMB', code: 'PMB', legendIndex: 1},
+      {text: ' ZMRO-MRO Material', code: 'ZMRO', legendIndex: 2}
+    ];
+
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
+
+    component.barWidget.next(barWidget);
+
+    component.widgetInfo = new Widget();
+    component.setBarChartData();
+
+    expect(component.barChartData[0].label).toEqual(component.lablels[0]);
+    expect(component.barChartData[0].data).toEqual([1,null,null]);
+
+    expect(component.barChartData[1].label).toEqual(component.lablels[1]);
+    expect(component.barChartData[1].data).toEqual([null,99,null]);
+
+    expect(component.barChartData[2].label).toEqual(component.lablels[2]);
+    expect(component.barChartData[2].data).toEqual([null,null,433122]);
   }));
 
   it('openColorPalette(), should open color palette dialog', async(()=>{
@@ -267,7 +296,7 @@ describe('BarChartComponent', () => {
     component.widgetHeader = {desc: 'Bar Chart'} as WidgetHeader;
     component.barChartData = [
       {
-        fieldCode: 'HAWA',
+        // fieldCode: 'HAWA',
         backgroundColor: '#f1f1f1',
         label: 'Hawa material'
       }
@@ -303,4 +332,42 @@ describe('BarChartComponent', () => {
     expect(component.chartLegend.length).toEqual(2);
   }));
 
+  it('ngOnChanges(), while change rule type', async(()=>{
+    // mock data
+    const changes: import('@angular/core').SimpleChanges = {filterCriteria:{currentValue:true, previousValue:false,firstChange:null,isFirstChange:null}, boxSize:{currentValue:35, previousValue:26,firstChange:null,isFirstChange:null}};
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.boxSize).toEqual(35);
+
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.lablels.length).toEqual(0);
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
+  }));
+
+  it('legendClick(), legend click ', async(()=>{
+    const item: ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+
+    component.chartLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
+
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_TYPE';
+    component.barWidget.next(barWidget);
+
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
+
+    component.legendClick(item);
+
+    expect(component.filterCriteria.length).toEqual(2);
+
+    component.filterCriteria = [];
+
+    component.legendClick(item);
+
+    expect(component.filterCriteria.length).toEqual(1);
+
+  }));
 });

@@ -44,7 +44,7 @@ describe('UdrConditionFormComponent', () => {
     expect(ope.length).toEqual(3);
     expect(ope[0].childs.length).toEqual(6);
     expect(ope[1].childs.length).toEqual(5);
-    expect(ope[2].childs.length).toEqual(3);
+    expect(ope[2].childs.length).toEqual(2);
 
   }));
 

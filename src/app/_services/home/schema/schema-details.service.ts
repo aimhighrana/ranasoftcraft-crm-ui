@@ -58,7 +58,7 @@ export class SchemaDetailsService {
   }
 
   public getWorkflowFields(ObjectType: string[]): Observable<any>{
-    return this.http.post<any>(this.endpointService.getWorkFlowFieldsUrl(), ObjectType);
+    return this.http.post<any>(this.endpointClassic.getWorkFlowFieldsUrl(), ObjectType);
   }
 
   public getAllSelectedFields(schemaId: string, variantId: string): Observable<SchemaTableViewFldMap[]> {

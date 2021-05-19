@@ -76,11 +76,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
   @Input()
   activatedPrimaryNav: string;
-
-  /**
-   * icon arrow value
-   */
-  arrowIcon = 'chevron-left';
+  @Input()
+  secondarySideBarOpened: boolean;
 
   /** To check page reloaded or not */
   isPageReload = true;
@@ -472,11 +469,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    * and emit the toggle event
    */
   toggleSideBar(hidePrimary = false) {
-    if (this.arrowIcon === 'chevron-left') {
-      this.arrowIcon = 'chevron-right';
-    } else {
-      this.arrowIcon = 'chevron-left'
-    }
     this.toggleEmitter.emit(hidePrimary)
   }
 

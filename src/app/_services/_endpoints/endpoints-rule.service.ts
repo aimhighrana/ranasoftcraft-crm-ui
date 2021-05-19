@@ -199,7 +199,7 @@ export class EndpointsRuleService {
   }
 
   public getVariantdetailsByvariantIdUrl(variantId: string): string {
-    return `${this.origin}/schema/metadata/variant/${variantId}`;
+    return `${this.classicOrigin}/schema/variant/${variantId}`;
   }
 
   public deleteVariantUrl(variantId: string): string {
@@ -370,7 +370,7 @@ export class EndpointsRuleService {
    * endpoint for save/update schema data scope
    */
   public saveUpdateDataScopeUrl(): string {
-    return `${this.origin}/schema/variant/create-update-single`;
+    return `${this.origin}/schema/metadata/variant/create-update-single`;
   }
 
   /**

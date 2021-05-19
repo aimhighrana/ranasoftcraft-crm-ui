@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DetailView } from '@models/schema/schemadetailstable';
 import { SchemaListDetails } from '@models/schema/schemalist';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Subscription } from 'rxjs';
 
@@ -53,7 +54,8 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRouter: ActivatedRoute,
-    private schemaService: SchemalistService
+    private schemaService: SchemalistService,
+    private sharedService: SharedServiceService
   ) { }
 
   ngOnDestroy(): void {
@@ -66,14 +68,10 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
     // get moduel , schema and variant ids from params
     this.activatedRouter.params.subscribe(params=>{
       // only update module id once schema details are loaded
-      /* if(this.moduleId !== params.moduleId) {
-        this.moduleId = params.moduleId;
-      } */
       if(this.schemaId !== params.schemaId) {
         // this.schemaId = params.schemaId;
-        this.getSchemaDetails(params.moduleId, params.schemaId);
-      }
-      if(this.variantId !== params.variantId) {
+        this.getSchemaDetails(params.moduleId, params.schemaId, params.variantId);
+      } else if(this.variantId !== params.variantId) {
         this.variantId = params.variantId ? params.variantId : '0' ;
       }
 
@@ -84,6 +82,14 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
       this.activeTab = queryParams.status ? queryParams.status: 'error';
     });
 
+    // Subscribe to schema run notifier
+    const sub = this.sharedService.getSchemaRunNotif().subscribe(info => {
+      if(info) {
+        this.getSchemaDetails(this.moduleId, this.schemaId, this.variantId);
+      }
+    });
+    this.subscribers.push(sub);
+
     // // TODO .. based on schema type ..
     // this.displayFormat = DetailView.CLASSIFICATION_VIEW;
 
@@ -93,11 +99,12 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
    * Get schema details / information by schema id
    * @param schemaId append on request as parameter
    */
-  getSchemaDetails(moduleId: string, schemaId: string) {
+  getSchemaDetails(moduleId: string, schemaId: string, variantId: string) {
     const sub = this.schemaService.getSchemaDetailsBySchemaId(schemaId).subscribe(res=>{
       // update all inputs once schema details gets loaded
       this.moduleId = moduleId;
       this.schemaId = schemaId;
+      this.variantId = variantId || '0';
       this.schemaDetails = res;
       this.displayFormat = (res.schemaCategory || DetailView.DATAQUALITY_VIEW) as DetailView;
       console.log(this.schemaDetails);

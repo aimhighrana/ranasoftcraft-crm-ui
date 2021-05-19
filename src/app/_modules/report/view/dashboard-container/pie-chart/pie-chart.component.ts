@@ -42,6 +42,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   public pieChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
@@ -112,7 +113,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.lablels = [];
       this.chartLegend = [];
       this.pieWidget.next(this.pieWidget.getValue());

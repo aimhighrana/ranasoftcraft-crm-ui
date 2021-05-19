@@ -8,7 +8,7 @@
                 <div class="display-heading-large" i18n="@@add_subscribers">Add subscribers</div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
-                <lib-button [disabled]="true" (click)="openSubscriberInviteDialog()" iconPosition="before" type="minor" icon="user-plus" i18n="@@invite_people_to_team"> Invite people to your team </lib-button>
+                <lib-button (click)="openSubscriberInviteDialog()" iconPosition="before" type="minor" icon="user-plus" i18n="@@invite_people_to_team"> Invite people to your team </lib-button>
                 <span class="f-col-spacer-half"></span>
                 <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
             </div>
@@ -30,7 +30,7 @@
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let subscriber of filteredSubscribers">
                     <div class="mat-line">
-                        <mat-card-header>
+                        <mat-card-header class="row-reverse">
                             <lib-avatar [initials]="shortName(subscriber.fName, subscriber.lName) | uppercase"></lib-avatar>
                             <mat-card-title mat-line>{{subscriber.fullName}} </mat-card-title>
                         </mat-card-header>

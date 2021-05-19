@@ -246,7 +246,7 @@
                                         <!-- <div class="top-tiparrow"></div> -->
                                         <div class="f-col">
                                             <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
-                                            <lib-radio-group layout="vertical" [(value)]="businessRule.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
+                                            <lib-radio-group layout="vertical" [value]="getSelectedDependantStatus(businessRule.dependantStatus)" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                         </div>
                                     </mat-menu>
                                     <lib-button (click)="deleteBR(businessRule)" type="plain" icon="trash-alt"></lib-button>
@@ -259,7 +259,8 @@
                                     <div class="f-row colunm-box rule-border-row">
                                         <div class="col">
                                     
-                                            <lib-button type="plain" icon="subdirectory_arrow_right" cdkDragHandle>
+                                            <lib-button type="plain" cdkDragHandle>
+                                                <mat-icon [fontSet]="fontSet">subdirectory_arrow_right</mat-icon>
                                             </lib-button>
 
                                         </div>
@@ -304,7 +305,7 @@
                                                 <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
                                                     <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
-                                                    <lib-radio-group layout="vertical" [(value)]="deps.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
+                                                    <lib-radio-group layout="vertical" [value]="getSelectedDependantStatus(deps.dependantStatus)" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
                                                 </div>
                                             </mat-menu>
                                            

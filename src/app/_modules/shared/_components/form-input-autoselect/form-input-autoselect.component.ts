@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, startWith, debounceTime } from 'rxjs/operators';
 import { isEqual } from 'lodash';
 
@@ -96,6 +96,12 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   isExtraLabel = true;
 
   /**
+   * Disable internal filter
+   */
+  @Input()
+  disableInternalFilter = false;
+
+  /**
    * Event emitter for the selected option
    */
   @Output()
@@ -139,6 +145,13 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
    * option that holds a value to identify if the results array is empty
    */
   hasResult: boolean;
+
+  /**
+   * emit options container scroll end
+   */
+  @Output()
+  emitScrollEnd: EventEmitter<boolean> = new EventEmitter();
+
 
   /**
    * Constructor of class
@@ -280,9 +293,14 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
 
     if(changes.updatedOptionsList) {
       if(changes.updatedOptionsList[preVal] && !isEqual(changes.updatedOptionsList[preVal], changes.updatedOptionsList.currentValue)){
-        if(changes.updatedOptionsList.currentValue && changes.updatedOptionsList.currentValue.length>0) {
+        if(changes.updatedOptionsList.currentValue) {
           this.optionList = changes.updatedOptionsList.currentValue;
-          this.initFilter();
+          if(!this.disableInternalFilter) {
+            this.initFilter();
+          } else {
+            this.filteredOptions = of(this.optionList);
+            this.hasResult = !!this.optionList.length;
+          }
         }
       }
     }
@@ -290,5 +308,13 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
     if(changes.loader && changes.loader[preVal] !== changes.loader.currentValue) {
       this.loader = changes.loader.currentValue;
     }
+  }
+
+  /**
+   * on options container scroll end
+   */
+   onScrollEnd(event) {
+    console.log(event);
+    this.emitScrollEnd.emit(true);
   }
 }

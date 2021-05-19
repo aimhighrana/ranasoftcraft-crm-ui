@@ -9,7 +9,7 @@
     </div>
     <mat-autocomplete #mdofieldauto="matAutocomplete" [displayWith]="mdoFieldDisplayWith"
       (optionSelected)="emitOptionSelected($event)">
-      <div class="autodropdown-scroll">
+      <div class="autodropdown-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="onScrollEnd($event)">
         <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy"
           [value]="getValue(option)" [matTooltip]="getTooltipText(option)">
           {{ getLabel(option) || 'UNTITLED' }}

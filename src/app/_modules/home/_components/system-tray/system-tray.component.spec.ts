@@ -65,7 +65,7 @@ describe('SystemTrayComponent', () => {
       })
     })
 
-    deleteNotificationSpy = spyOn(component.homeService, 'deleteNotification').and.callFake(() => {
+    deleteNotificationSpy = spyOn(component.globalDialogService, 'confirm').and.callFake(() => {
       return of([])
     });
 

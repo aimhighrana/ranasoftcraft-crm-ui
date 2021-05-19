@@ -24,6 +24,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -47,7 +48,8 @@ describe('SchemaDetailsComponent', () => {
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,
-        SharedModule
+        SharedModule,
+        MdoUiLibraryModule
       ],providers:[
         {
           provide: SchemaDataSource,
@@ -403,7 +405,9 @@ describe('SchemaDetailsComponent', () => {
     component.metadata.next({headers:{MATL_TYPE:{fieldId:'MATL_TYPE'}}} as MetadataModeleResponse);
     component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
     component.changeTabStatus('success');
-    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', component.moduleId, component.schemaId],{queryParams:{status:component.activeTab}} );
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', component.moduleId, component.schemaId], {
+      queryParams: { status: component.activeTab }, queryParamsHandling: 'merge'
+    } );
 
   }));
 
@@ -899,22 +903,20 @@ describe('SchemaDetailsComponent', () => {
 
     let columnsData = { selectedFields: null, tableActionsList: [{ actionText: 'Approve'} as SchemaTableAction]};
     spyOn(component, 'calculateDisplayFields');
+    spyOn(component, 'updateColumnBasedOnNodeSelection');
     sharedService.setChooseColumnData(columnsData);
     expect(component.tableActionsList.length).toEqual(1);
 
     columnsData = {selectedFields: [], tableActionsList: [] };
     sharedService.setChooseColumnData(columnsData);
-    expect(component.selectedFields.length).toEqual(0);
+    expect(component.updateColumnBasedOnNodeSelection).toHaveBeenCalled();
 
     spyOn(schemaDetailService, 'updateSchemaTableView').and.returnValue(of([]));
-    component.metadata.next({headers: {}} as MetadataModeleResponse);
-    component.selectedFieldsOb.next([]);
+    component.selectedFieldsOb.next(true);
     expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalled();
 
-    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false, isEditable:false}];
-    component.selectedFieldsOb.next(selectedFields);
-    component.metadata.next({headers: {}} as MetadataModeleResponse);
-    expect(component.selectedFields).toEqual(selectedFields);
+    component.selectedFieldsOb.next(false);
+    expect(component.calculateDisplayFields).toHaveBeenCalled();
 
   }));
 
@@ -1081,7 +1083,7 @@ describe('SchemaDetailsComponent', () => {
     expect(component.sortOrder).toEqual({status: 'desc'});
 
     component.sort.sort({id: 'status'} as MatSortable);
-    expect(component.getData).toHaveBeenCalledTimes(3);
+    expect(component.getData).toHaveBeenCalledTimes(2);
 
   });
 
@@ -1153,7 +1155,7 @@ describe('SchemaDetailsComponent', () => {
       {nodeId: '2', nodeType:'GRID', fieldsList: []}
     ];
 
-    spyOn(component, 'calculateDisplayFields');
+    spyOn(component.selectedFieldsOb, 'next');
     spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
     spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of(response), throwError({message: 'api error'}));
 
@@ -1161,7 +1163,7 @@ describe('SchemaDetailsComponent', () => {
     newNode.nodeId = '1';
     newNode.nodeType = SchemaExecutionNodeType.HEIRARCHY;
     component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType);
-    expect(component.calculateDisplayFields).toHaveBeenCalled();
+    expect(component.selectedFieldsOb.next).toHaveBeenCalled();
 
     spyOn(console, 'error');
     newNode.nodeId = '2';
@@ -1245,6 +1247,7 @@ describe('SchemaDetailsComponent', () => {
   it('enableIcon(), enable collapsiable icon ', async(()=>{
     // mock data
     component.columns.header = ['MAT_TYPE','MAT_GRP'];
+    component.nodeId = 'other';
 
     expect(component.enableIcon('MAT_TYPE')).toEqual(false, 'If the column is not matched the return false');
     expect(component.enableIcon('MAT_GRP')).toEqual(true, 'If the column is  matched the return true');
@@ -1312,4 +1315,16 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getNodeTypeById('other')).toBeFalsy();
 
   }));
+
+  it(`isHeaderColumn() , check whether the field is header field or note `, async(()=>{
+    // mock data
+    component.columns.header = ['MATL_TYPE','MATL_GRP'];
+    const res = component.isHeaderColumn('MATL_TYPE');
+    expect(res).toBeTrue();
+
+    const res1 = component.isHeaderColumn('MATL_TYP3');
+    expect(res1).toBeFalse();
+
+  }));
+
 });

@@ -1,7 +1,7 @@
 <div class="root">
   <mat-card class="secondary-card mat-elevation-z0">
     <div class="f-row-spacer-half"></div>
-    <div class="f-row">
+    <div class="f-row secondary-padd-lr">
       <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
       <span class="f-spacer"></span>
       <lib-button type="plain" iconFontType="light" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
@@ -20,9 +20,11 @@
     </div>
 
     <div class="row-spacer"></div>
-
-    <lib-search  placeholder="Search" #schemaSearchInput (valueChange)=(searchSchema($event))></lib-search>
+    <div class="secondary-padd-lr">
+      <lib-search  placeholder="Search" #schemaSearchInput (valueChange)=(searchSchema($event))></lib-search>
     <!-- placeholder="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'" -->
+    </div>
+    
     
     <div class="row-spacer"></div>
 
@@ -79,7 +81,7 @@
                 [routerLinkActive]="'selected'">
                 <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
                 <span class="f-spacer"></span>
-                <mat-spinner *ngIf="schema.isInRunning" color="primary" diameter="15"></mat-spinner>
+                <lib-spinner *ngIf="schema.isInRunning" size="24"></lib-spinner>
               </mat-list-item>
             </mat-nav-list>
           </mat-expansion-panel>
@@ -140,7 +142,7 @@
 
   <div class="split-col" (click)="toggleSideBar()">
     <div class="split-arrow">
-      <mat-icon fontSet="mdo-icons">{{arrowIcon}}</mat-icon>
+      <mat-icon fontSet="mdo-icons">{{secondarySideBarOpened ? 'chevron-left' : 'chevron-right'}}</mat-icon>
     </div>
   </div>
 </div>

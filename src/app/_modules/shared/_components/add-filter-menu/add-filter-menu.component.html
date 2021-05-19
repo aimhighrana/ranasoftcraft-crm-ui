@@ -18,7 +18,7 @@
                     <mat-list-item prosClickStopPropagation (click)="ctrlFlds(node.allData)">
                         <div class="mat-line">
                             {{node.name}}
-                        </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right</mat-icon>
+                        </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons" class="arrow-right"> arrow-right</mat-icon>
                     </mat-list-item>
                 </mat-tree-node>
                 <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>

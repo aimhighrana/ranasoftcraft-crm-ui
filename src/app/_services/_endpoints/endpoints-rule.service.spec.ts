@@ -253,7 +253,7 @@ describe('EndpointsRuleService', () => {
 
   it('getVariantdetailsByvariantIdUrl(),should return all variant detials by variantId', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.getVariantdetailsByvariantIdUrl('355555320681 ')).toContain('schema/metadata/variant/355555320681');
+    expect(serObj.getVariantdetailsByvariantIdUrl('355555320681 ')).toContain('schema/variant/355555320681');
   }));
 
   it('deleteVariantUrl(),should delete variant details', async(() => {
@@ -412,7 +412,7 @@ describe('EndpointsRuleService', () => {
 
   it('saveUpdateDataScopeUrl(),should return saveUpdateDataScopeUrl url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/variant/create-update-single');
+    expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/metadata/variant/create-update-single');
   }));
 
   it('getAllDataScopeUrl(),should return getAllDataScopeUrl url', async(() => {

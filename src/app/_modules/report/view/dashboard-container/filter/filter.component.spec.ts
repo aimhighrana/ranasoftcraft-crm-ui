@@ -12,6 +12,7 @@ import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SimpleChanges } from '@angular/core';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
@@ -110,6 +111,7 @@ describe('FilterComponent', () => {
 
   it('fieldDisplayFn(), should return field desc', async(()=>{
     expect(component.fieldDisplayFn({TEXT:'Matl Desc'})).toEqual('Matl Desc');
+    expect(component.fieldDisplayFn('')).toEqual('');
   }));
 
   it('returnSelectedDropValues(), should return selected drop values', async(()=>{
@@ -196,13 +198,21 @@ describe('FilterComponent', () => {
   }));
 
   it(`ngOnChanges(), should call reset when reset filter`, async(()=>{
+    component.filterFormControl.setValue('test');
+    const filterWidget = new FilterWidget();
+    filterWidget.fieldId = 'ZMRO';
+    filterWidget.metaData = {dataType: 'NUMC', picklist:'0'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
+    component.filterCriteria = [];
+    component.filterResponse = new FilterResponse();
     // mock data
-    const chnages:import('@angular/core').SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    const chnages: SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
 
     // call actual method
     component.ngOnChanges(chnages);
 
     expect(component.enableClearIcon).toEqual(false, 'When reset successfully then enableClearIcon should be false');
+    expect(component.filterFormControl.value).toEqual('');
   }));
 
   it('updateObjRefDescription(), update description of objRef in filter', async(()=>{
@@ -312,18 +322,59 @@ describe('FilterComponent', () => {
    expect(component.filterCriteria.length).toEqual(1);
   }));
 
-  it('checkTextCode(), should return string from DisplayCriteria', async(()=> {
+  it('setDisplayCriteria(), should return string from DisplayCriteria', async(()=> {
     component.displayCriteriaOption.key = DisplayCriteria.TEXT;
     const test = { t: 'test', c: '1234'};
-    let res = component.checkTextCode(test);
+    let res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('test');
 
     component.displayCriteriaOption.key = DisplayCriteria.CODE;
-    res = component.checkTextCode(test);
+    res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234');
 
     component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
-    res = component.checkTextCode(test);
+    res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234 -- test');
+
+    component.displayCriteriaOption.key = undefined;
+    res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('test');
+
+    res = component.setDisplayCriteria(test.c, '');
+    expect(res).toEqual('1234');
   }));
+
+  it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.widgetId = 12345;
+    component.widgetInfo = new Widget();
+    component.widgetInfo.widgetType = WidgetType.FILTER;
+    component.widgetInfo.widgetId = component.widgetId.toString();
+    spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption.key).and.returnValue(of({}));
+    component.saveDisplayCriteria();
+    expect(widgetService.saveDisplayCriteria).toHaveBeenCalledWith('12345', WidgetType.FILTER, DisplayCriteria.TEXT);
+  }));
+
+  it('setSelectedQuickDateFilter', async(()=> {
+    const code = 'TODAY';
+    component.setSelectedQuickDateFilter(code);
+    expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
+
+    const code1 = 'DAY_7';
+    component.setSelectedQuickDateFilter(code1);
+    expect(component.dateFilterQuickSelect[1].isSelected).toEqual(true);
+
+    const code2 = 'DAY_10';
+    component.setSelectedQuickDateFilter(code2);
+    expect(component.dateFilterQuickSelect[2].isSelected).toEqual(true);
+
+    const code3 = 'DAY_20';
+    component.setSelectedQuickDateFilter(code3);
+    expect(component.dateFilterQuickSelect[3].isSelected).toEqual(true);
+
+    const code4 = 'DAY_30';
+    component.setSelectedQuickDateFilter(code4);
+    expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
+  }))
+
 });

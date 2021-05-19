@@ -93,9 +93,12 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   getDataScopeDetails(variantId: string) {
     const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
       const variantDetais = this.schemaVariantService.getVariantdetailsByvariantId(variantId, user.currentRoleId, user.plantCode, user.userName).subscribe((res) => {
-        this.variantInfo.variantName = res.variantName;
-        this.variantInfo.filterCriteria = res.filterCriteria;
-        this.variantInfo.variantId = res.variantId;
+        if (res) {
+          this.variantInfo.variantName = res.variantName || '';
+          this.variantName.setValue(this.variantInfo.variantName);
+          this.variantInfo.filterCriteria = res.filterCriteria || [];
+          this.variantInfo.variantId = res.variantId || '';
+        }
       }, (error) => {
         console.log('Something went wrong while getting variant details.', error.message);
       })

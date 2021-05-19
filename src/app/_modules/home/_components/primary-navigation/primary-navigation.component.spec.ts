@@ -163,12 +163,28 @@ describe('PrimaryNavigationComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/1004/35343`}}], {queryParams: {name: 'Material'}});
   });
 
+  it('should call getMdoState()', async () => {
+    localStorage.removeItem('mdo-state');
+    component.getMdoState();
+    expect(component.secondarySideBarOpened).toBeTruthy();
+
+    localStorage.setItem('mdo-state', 'eyJpc1NlY29uZGFyeU9wZW4iOmZhbHNlfQ==');
+    component.getMdoState();
+    expect(component.secondarySideBarOpened).toBeFalsy();
+
+    localStorage.setItem('mdo-state', 'eyJpc1NlY29uZGFyeU9wZW4iOnRydWV9');
+    component.getMdoState();
+    expect(component.secondarySideBarOpened).toBeTruthy();
+  });
+
   it('should call toggleSecondarySideBar()', async () => {
     component.toggleSecondarySideBar();
+    expect(component.secondarySideBarOpened).toBeFalsy();
     expect(document.getElementById('secondarySidenav').style.width='16px').toBeTruthy();
     expect(document.getElementById('secondaryContent').style.marginLeft='73px').toBeTruthy();
 
     component.toggleSecondarySideBar();
+    expect(component.secondarySideBarOpened).toBeTruthy();
     expect(document.getElementById('secondarySidenav').style.width='260px').toBeTruthy();
     expect(document.getElementById('secondaryContent').style.marginLeft='200px').toBeTruthy();
   });

@@ -10,11 +10,13 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { DetailBuilderComponent } from './detail-builder.component';
 import { ActivatedRoute } from '@angular/router';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 describe('DetailBuilderComponent', () => {
   let component: DetailBuilderComponent;
   let fixture: ComponentFixture<DetailBuilderComponent>;
   let schemaService: SchemalistService;
+  let sharedService: SharedServiceService;
   const routeParams = {schemaId: 'schema1', variantId: '0'};
   const queryParams = {status: 'error'};
 
@@ -39,6 +41,7 @@ describe('DetailBuilderComponent', () => {
     fixture = TestBed.createComponent(DetailBuilderComponent);
     component = fixture.componentInstance;
     schemaService = fixture.debugElement.injector.get(SchemalistService);
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
   });
 
   it('should create', () => {
@@ -55,7 +58,10 @@ describe('DetailBuilderComponent', () => {
     component.variantId = '1';
     queryParams.status = '';
     component.ngOnInit();
-    expect(component.getSchemaDetails).toHaveBeenCalledTimes(1);
+
+    sharedService.setSchemaRunNotif(true);
+
+    expect(component.getSchemaDetails).toHaveBeenCalledTimes(3);
   }));
 
   it(`getSchemaDetails(), get schema details for define view `, async(()=>{
@@ -66,10 +72,11 @@ describe('DetailBuilderComponent', () => {
     spyOn(schemaService, 'getSchemaDetailsBySchemaId').withArgs(res.schemaId).and.returnValue(of(res));
 
     // call actual method ..
-    component.getSchemaDetails('1005','72345254872');
+    component.getSchemaDetails('1005','72345254872','0');
 
     expect(component.moduleId).toEqual(res.moduleId);
     expect(component.schemaId).toEqual(res.schemaId);
+    expect(component.variantId).toEqual('0');
     expect(component.displayFormat).toEqual(DetailView.DATAQUALITY_VIEW);
   }));
 });

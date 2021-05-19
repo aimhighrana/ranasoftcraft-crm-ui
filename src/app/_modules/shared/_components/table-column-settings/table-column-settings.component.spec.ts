@@ -265,7 +265,7 @@ describe('TableColumnSettingsComponent', () => {
     expect(component.suggestedFlds.length).toEqual(0);
 
     component.searchFld('re');
-    expect(component.suggestedFlds.length).toEqual(1);
+    expect(component.suggestedFlds.length).toEqual(0);
 
   });
 
@@ -286,7 +286,7 @@ describe('TableColumnSettingsComponent', () => {
 
   it('should update on field editable change', () => {
 
-    component.data = {selectedFields: [{fieldId: 'region', editable: false}]};
+    component.data = {selectedFields: [{fieldId: 'region', editable: true}]};
 
     component.editableChange({fieldId: 'region'} as MetadataModel);
     component.editableChange({fieldId: 'matl_grp'} as MetadataModel);
@@ -296,8 +296,8 @@ describe('TableColumnSettingsComponent', () => {
 
   it('should check if field is editable', () => {
 
-    component.data = {selectedFields: [{fieldId: 'region', editable: true}]};
-    expect(component.isEditEnabled({fieldId: 'region'} as MetadataModel)).toBeTrue();
+    component.data = {selectedFields: [{fieldId: 'region', editable: false}]};
+    expect(component.isEditEnabled({fieldId: 'region'} as MetadataModel)).toBeFalse();
 
   });
 
@@ -420,6 +420,20 @@ describe('TableColumnSettingsComponent', () => {
       component.drop(event);
       expect(event.previousContainer).toEqual(previousContainer);
 
-  })
+  });
+
+  it(`selectionChange(), should update checkbox state ... `, async(()=>{
+    // mock data
+    component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
+
+    component.selectionChange({fieldId:'MATL_TYPE'} as MetadataModel);
+
+    expect(component.data.selectedFields.length).toEqual(0, 'After splice the length should be 0');
+
+    component.selectionChange({fieldId:'MATL_GRP'} as MetadataModel);
+
+    expect(component.data.selectedFields.length).toEqual(1, 'After push the length should be 1');
+
+  }));
 
 });

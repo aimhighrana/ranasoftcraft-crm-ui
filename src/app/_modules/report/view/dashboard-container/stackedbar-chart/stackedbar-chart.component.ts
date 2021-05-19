@@ -48,6 +48,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   barChartData: any[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
   barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
@@ -103,7 +104,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
   }
   ngOnChanges(changes: SimpleChanges):void{
-    this.stackBarWidget.next(this.stackBarWidget.getValue());
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
+      this.stackBarWidget.next(this.stackBarWidget.getValue());
+    }
+
     if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }
@@ -756,7 +760,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }],
       }
     }
-    this.chart.chart.options.scales = this.barChartOptions.scales;
+    if (this.chart) {
+      this.chart.options.scales = this.barChartOptions.scales;
+      this.chart.chart.options.scales = this.barChartOptions.scales;
+    }
   }
 
   /**

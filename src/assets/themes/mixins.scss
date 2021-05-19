@@ -576,6 +576,7 @@
         line-height: 0.9em;
         border: 1px solid $color-app-border;
         background-color: mat-color($background-palette, card);
+        margin: 0 4px;
 
         label {
           margin: 0 4px;
@@ -817,7 +818,6 @@
 
           .mat-menu-icon {
             font-size: 12px;
-            height: 12px;
             width: 12px;
             color: mat-color($foreground-palette, text);
             margin-right: 4px;
@@ -1148,6 +1148,10 @@
         border-right: none;
       }
 
+      .correction {
+        color: $color-status-info;
+      }
+
       &.line-cut {
         text-decoration: line-through;
       }
@@ -1206,6 +1210,12 @@
     }
   }
 
+  .schema-details-table .mat-table {
+    .schema-header-cell {
+      background: $color-app-accent;
+    }
+  }
+
   //Mat-Stepper
   mat-horizontal-stepper {
     .mat-horizontal-stepper-header-container {
@@ -1258,8 +1268,16 @@
       .mat-expansion-panel-header {
         padding: 0 2px;
 
+        &.cdk-focused {
+          background: $color-app-hover;
+        }
+
+        .mat-expansion-indicator {
+          height: 10px;
+        }
+
         .mat-expansion-indicator::after {
-          padding: 5px;
+          padding: 3px;
           vertical-align: top;
           color: $color-text-primary;
         }
@@ -1371,10 +1389,6 @@
       .global-menu {
         color: $color-text-offcanvas;
 
-        .create-new {
-          background: mat-color($background-palette, card);
-        }
-
         .admin-badge {
           .mat-badge-content {
             background: transparent;
@@ -1385,6 +1399,7 @@
             font-size: 11px;
             color: $color-text-offcanvas;
             border: none;
+            overflow: visible;
           }
         }
       }
@@ -2069,7 +2084,6 @@
   .mat-expansion-indicator::after {
     padding: 5px;
     vertical-align: top;
-    color: #272d37;
   }
 
   .task-badge {
@@ -2119,4 +2133,10 @@ mat-tooltip-component {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.schema-info-tabs {
+  mat-tab-group {
+    height: calc(100% - 75px);
+  }
 }

@@ -247,11 +247,12 @@ export class SchemaService {
   }
 
   public getWorkflowData(): Observable<WorkflowResponse[]>{
-    return this.http.get<any>(this.endpointService.getWorkflowDataURL());
+    return this.http.get<any>(this.endpointClassic.getWorkflowDataURL());
   }
 
+
   public getWorkFlowPath(ObjectType: string[]): Observable<WorkflowPath[]> {
-    return this.http.post<WorkflowPath[]>(this.endpointService.getWorkFlowPathUrl(),ObjectType);
+    return this.http.post<WorkflowPath[]>(this.endpointClassic.getWorkFlowPathUrl(),ObjectType);
   }
 
   /**
@@ -326,5 +327,9 @@ export class SchemaService {
 
   public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
     return this.http.get<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus));
+  }
+
+  public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[]): Observable<any> {
+    return this.http.get<any>(this.endpointClassic.downloadExecutionDetailsByNodesUrl(schemaId, status, nodes));
   }
 }

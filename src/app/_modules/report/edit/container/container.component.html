@@ -509,6 +509,10 @@
                             </div>
 
                             <div class="f-col">
+                                <mat-checkbox color="primary" formControlName="isEnableGlobalFilter">Global Filters not applicable</mat-checkbox>
+                            </div>
+
+                            <div class="f-col">
                                 <!-- FOR IMAGE WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'IMAGE'">
                                     <mat-label>Image link</mat-label>
@@ -613,7 +617,7 @@
                                     </mat-form-field>
                                 </div>
                                 <ng-template
-                                    [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                    [ngIf]="selStyleWid">
                                     <div class="f-col">
                                         <div class="f-row">
                                             <div class="f-col">

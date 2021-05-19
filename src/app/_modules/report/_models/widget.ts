@@ -35,6 +35,7 @@ export class Widget {
     pageDefaultSize:number;
     isFieldDistinct: boolean;
     displayCriteria: DisplayCriteria;
+    isEnableGlobalFilter: boolean;
 }
 
 export interface DateFilterCtrl {
@@ -149,6 +150,7 @@ export interface DropDownValues {
     TEXT: string;
     langu: string;
     CODE: string;
+    display: string
 }
 
 export enum AggregationOperator {
@@ -273,6 +275,7 @@ export class WidgetHeader {
     pageDefaultSize: number;
     isCustomdataSet: boolean;
     displayCriteria: DisplayCriteria;
+    isEnableGlobalFilter: boolean;
 }
 
 export interface ChartLegend{
@@ -296,6 +299,7 @@ export interface TimeSeriesWidget {
     indexName: string;
     desc: string;
     timeSeries: WidgetTimeseries;
+    isEnableGlobalFilter: boolean;
 }
 export interface WidgetTimeseries {
     widgetId: number;

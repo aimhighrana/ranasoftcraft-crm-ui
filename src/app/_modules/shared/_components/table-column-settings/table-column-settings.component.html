@@ -44,7 +44,7 @@
                     </div>
                     <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)"
                         #scrollableContainer>
-                        <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
+                        <div *ngFor="let fld of headerFieldObs | async" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                             <div class="f-row colunm-box">
                                 <div class="col">
                                     <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
@@ -205,7 +205,7 @@
                                 <lib-button type="plain">{{ getActionViewTypeDesc(action.actionViewType) }}</lib-button>
                             </ng-template>
                             <ng-template #commonAction>
-                                <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down">
+                                <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down" iconFontType="solid">
                                     {{ getActionViewTypeDesc(action.actionViewType) }}
                                 </lib-button>
                                 <mat-menu #displayMenu="matMenu" class="navigation-menu">

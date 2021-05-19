@@ -93,7 +93,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.reportingListWidget.next(this.reportingListWidget.getValue());
     }
   }
@@ -188,17 +188,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
-          if (!singlerow.displayCriteria) {
-            singlerow.displayCriteria = DisplayCriteria.CODE;
-          }
           const obj = { fields: singlerow.fields, fieldOrder: singlerow.fieldOrder }
           fieldsArray.push(obj);
           this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc : singlerow.fldMetaData.fieldDescri;
         });
         const sortedFields = this.sortDisplayedColumns(fieldsArray)
         this.displayedColumnsId = [...this.displayedColumnsId, ...sortedFields.map(elm => elm.fields)]
-        this.reportingListWidget.next(returnData);
         this.tableColumnMetaData = returnData;
+        this.reportingListWidget.next(returnData);
       }
     }, (error)=> {
       console.log('Something went wrong while getting table meta data', error.message)
@@ -263,7 +260,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                 }
               });
               let textvalue = valArray.toString();
-              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
+              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields === column) : null;
               textvalue = textvalue === 'null' ? '' : textvalue
               let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
               codeValue = codeValue === 'null' ? '' : codeValue;
@@ -320,7 +317,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   *
   */
  downloadCSV(): void {
-  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], {queryParamsHandling: 'preserve'})
+  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], { queryParams: { conditionList: `${JSON.stringify(this.filterCriteria)}` }, queryParamsHandling: 'preserve' })
 }
 
   /**
@@ -377,7 +374,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       objectType: this.widgetHeader.objectType,
       selectedColumns: sortedColumns.map(columnMetaData => {
         columnMetaData.fldMetaData.sno = columnMetaData.sno;
-        columnMetaData.fldMetaData.displayCriteria = columnMetaData.displayCriteria;
+        columnMetaData.fldMetaData.displayCriteria = columnMetaData.displayCriteria ? columnMetaData.displayCriteria : this.widgetHeader.displayCriteria;
         return columnMetaData.fldMetaData
       }),
       isWorkflowdataSet: this.widgetHeader.isWorkflowdataSet,
