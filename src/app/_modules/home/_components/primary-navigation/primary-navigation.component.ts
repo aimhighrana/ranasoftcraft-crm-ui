@@ -18,7 +18,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * To apply the CSS class on selection of primary navigation
    */
-
   isNavSelected = ''
 
   udSub: Subscription;
@@ -28,31 +27,26 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * flag to check if secondary sidebar is opened
    */
-
   secondarySideBarOpened = true;
 
   /**
    * sidebar content viewchild
    */
-
   @ViewChild('secondaryContent') secondaryContent: MatSidenavContent;
 
   /**
    * flag to enable/disable resizeable
    */
-
   grab = false;
 
   /**
    * Subject for notify localstorage for mdo nav state  state ..
    */
-
   private appStateSubject: BehaviorSubject<boolean> = new BehaviorSubject(null);
 
   /**
    * To store count of notifications
    */
-
   notificationsCount = 0;
   constructor(
     private userService: UserService,
@@ -64,6 +58,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   ) { }
 
   ngOnInit(): void {
+    this.getMdoState();
 
     this.udSub = this.userService.getUserDetails().subscribe(
       (response: Userdetails) => {
@@ -88,19 +83,24 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
 
   ngAfterViewInit() {
     this.enableResizeable();
+  }
+
+  ngOnDestroy() {
+    this.udSub.unsubscribe();
+    this.appStateSubject.complete();
+    this.appStateSubject.unsubscribe();
+  }
+
+  /**
+   * Get state from local storage
+   */
+  getMdoState() {
     try {
       const appState = localStorage.getItem('mdo-state');
       if (appState) {
         const json = JSON.parse(atob(appState));
-        const secondaryNav = json.isSecondaryOpen ? json.isSecondaryOpen : false;
-        this.secondaryContent = secondaryNav;
-        if (secondaryNav) {
-          document.getElementById('secondarySidenav').style.width = '260px';
-          document.getElementById('secondaryContent').style.marginLeft = '200px';
-        } else {
-          document.getElementById('secondarySidenav').style.width = '16px';
-          document.getElementById('secondaryContent').style.marginLeft = '73px';
-        }
+        const secondaryNav: boolean = json.isSecondaryOpen ? json.isSecondaryOpen : false;
+        this.secondarySideBarOpened = secondaryNav;
       }
     } catch (ex) {
       // console.error(`Error while getting state from localstorage .. ${ex}`)
@@ -111,16 +111,10 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
     return this.loadingService.isLoading();
   }
 
-  ngOnDestroy() {
-    this.udSub.unsubscribe();
-    this.appStateSubject.complete();
-    this.appStateSubject.unsubscribe();
-  }
 
   /**
    * Get selected role description
    */
-
   get selectedRoleDesc(): string {
     if (this.userDetails.currentRoleId) {
       const selRole = this.userDetails.assignedRoles.filter(fil => fil.roleId === this.userDetails.currentRoleId)[0];
@@ -132,7 +126,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * function to enable resizeable
    */
-
   enableResizeable() {
     const sidebar = document.getElementById('secondarySidenav')
     const content = this.secondaryContent.getElementRef().nativeElement;
@@ -179,17 +172,9 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * function to modify the width of secondary sidebar
    */
-
   toggleSecondarySideBar() {
-    if (this.secondarySideBarOpened) {
-      document.getElementById('secondarySidenav').style.width = '16px';
-      document.getElementById('secondaryContent').style.marginLeft = '73px';
-      this.secondarySideBarOpened = false;
-    } else {
-      document.getElementById('secondarySidenav').style.width = '260px';
-      document.getElementById('secondaryContent').style.marginLeft = '200px';
-      this.secondarySideBarOpened = true;
-    }
+    console.log('secondaryContent', this.secondaryContent);
+    this.secondarySideBarOpened =! this.secondarySideBarOpened;
     this.appStateSubject.next(true);
   }
 
@@ -198,7 +183,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * function to send navigation value to parent..
    * @param val navigation value..
    */
-
   sendToParent(val: string) {
     this.isNavSelected = val;
     if (val === 'welcome') {
@@ -210,7 +194,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * function to check for navigation selection on reloading page
    * @param url current url
    */
-
   checkNavOnReload(url: string) {
     if (url.includes('/home/dash/welcome') || url.includes('/home/schema/schema-details')) {
       this.isNavSelected = 'welcome'
@@ -227,7 +210,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * Function to listen for the changes and
    * update the count
    */
-
   getNotificationsCount() {
      this.sharedService.updateNotifications.subscribe(() => {
         this.homeService.getNotificationCount(this.userDetails.userName).subscribe((nCount) => {
@@ -239,7 +221,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * Function to show dialog
    */
-
   selectedModule(event) {
     if (!event) {
       const dialogRef = this.matDialog.open(UploadDatasetComponent, {
@@ -264,7 +245,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * Function to open notification tray
    */
-
   openSystemTray() {
     this.router.navigate([{ outlets: { sb: ['sb', 'system-tray'] } }]);
   }
@@ -273,7 +253,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * Function to create new schema
    * @param moduleId: module Id
    */
-
   createSchema({ moduleId, schemaId, moduleDesc }) {
     if (moduleId && schemaId) {
       this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${schemaId}` } }], { queryParams: { name: moduleDesc } })
@@ -286,7 +265,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   /**
    * Signout ...
    */
-
   signOut() {
     try {
       delete localStorage['JWT-TOKEN'];
