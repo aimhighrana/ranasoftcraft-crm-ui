@@ -132,7 +132,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** store workflow path for workflow dataset */
   workflowPath: WorkflowPath[];
-  workflowPathOb: Observable<WorkflowPath[]> = of([])
+  workflowPathOb: Observable<WorkflowPath[]> = of([]);
+
+  objectDesc: FormControl = new FormControl('');
 
   constructor(
     private formBuilder: FormBuilder,
@@ -565,20 +567,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
+      this.objectDesc.setValue('');
       // make while edit widget ..
       if (!data.isWorkflowdataSet && !data.isCustomdataSet && data.objectType) {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          setTimeout(() => {
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          }, 1000);
+          this.objectDesc.setValue(hasObj);
         }
       } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          setTimeout(() => {
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          }, 1000);
+          this.objectDesc.setValue(hasObj);
         }
       }
     }
@@ -861,7 +860,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
-    (document.getElementById('dataSets') as HTMLInputElement).value = '';
+    this.objectDesc.setValue('');
   }
 
   /**
@@ -976,7 +975,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const movedX = event.movementX;
     const movedY = event.movementY;
 
-    console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
+    // console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
     // drop added widget
     const dropableWidget = new Widget();
@@ -1018,6 +1017,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.isSerieswithDisabled = false;
       this.preapreNewWidgetPosition(dropableWidget);
+      this.showStyle(dropableWidget);
     }
   }
 
