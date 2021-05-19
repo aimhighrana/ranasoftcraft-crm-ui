@@ -58,7 +58,7 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
   subscriptions: Subscription[] = [];
 
   /**
-   * Metadata of fields... based on module it ... 
+   * Metadata of fields... based on module it ...
    */
   @Input()
   metataData: MetadataModeleResponse = null;
@@ -149,7 +149,7 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
       });
       this.subscriptions.push(allfldSub);
     }
-      
+
   }
 
   /**

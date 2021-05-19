@@ -193,7 +193,7 @@ export class BrruleSideSheetComponent implements OnInit {
   hasChild = null;
 
   /**
-   * Hold the metadata fields response .... 
+   * Hold the metadata fields response ....
    */
   metataData: MetadataModeleResponse = null;
 
