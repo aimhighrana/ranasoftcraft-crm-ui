@@ -20,7 +20,7 @@ import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 
 
-fdescribe('SecondaryNavbarComponent', () => {
+describe('SecondaryNavbarComponent', () => {
   let component: SecondaryNavbarComponent;
   let fixture: ComponentFixture<SecondaryNavbarComponent>;
   let schemaServiceSpy: SchemaService;
