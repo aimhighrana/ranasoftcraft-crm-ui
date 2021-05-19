@@ -408,10 +408,10 @@ describe('SchemaInfoComponent', () => {
   it('getAllBusinessRulesList(), should get all business rules', async() => {
     spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValues(of([]), of([{brId: '1'}, {brId: '2'}] as CoreSchemaBrInfo[]));
     component.moduleId = '1004';
-    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    component.getAllBusinessRulesList(component.moduleId, '', '');
     expect(component.allBusinessRulesList.length).toEqual(0);
 
-    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    component.getAllBusinessRulesList(component.moduleId, '', '', true);
     expect(component.allBusinessRulesList.length).toEqual(2);
 
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalledTimes(2);
