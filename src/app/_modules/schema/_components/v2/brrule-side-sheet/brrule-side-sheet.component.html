@@ -200,7 +200,7 @@
                                             {{fieldItem.fieldDescri}}
                                         </mat-option>
                                     </mat-select> -->
-                                    <pros-generic-field-control [moduleId]="moduleId" [selectedFldId]="item.controls.conditionFieldId ? [item.controls.conditionFieldId.value] : []" 
+                                    <pros-generic-field-control [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="item.controls.conditionFieldId ? [item.controls.conditionFieldId.value] : []" 
                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i)"></pros-generic-field-control>
                                 </div>
                                 <!-- operators -->
@@ -285,7 +285,7 @@
                                                             {{fieldItem.fieldDescri}}
                                                         </mat-option>
                                                     </mat-select> -->
-                                                    <pros-generic-field-control [moduleId]="moduleId" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
+                                                    <pros-generic-field-control [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
                                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
                                                 <div class="col">
