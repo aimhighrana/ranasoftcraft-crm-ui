@@ -562,6 +562,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update the business rule order
+   */
   updateBrOrder() {
     const forkObj = {};
     let currentIndex = 0;
