@@ -6,6 +6,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'pros-businessrulelibrary-sidesheet',
@@ -114,12 +115,26 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * function to select a business rule from the list.
    */
   selectBusinessRule(rule: CoreSchemaBrInfo, action: string) {
+    const findBR = (list: Array<CoreSchemaBrInfo>) => list.find(br => br.brId === rule.brId);
+    const deletedBR = findBR(this.BusinessRulesToBeDelete);
+    if(deletedBR) {
+      this.BusinessRulesToBeDelete.splice(this.BusinessRulesToBeDelete.indexOf(deletedBR), 1);
+      return;
+    }
+    const existingBR = findBR(this.alreadySelectedBrs);
+    if (existingBR) {
+      this.BusinessRulesToBeDelete.push(existingBR);
+      return;
+    }
     if (action === this.constants.ADD) {
       this.selectedBusinessRule.push(rule);
     } else {
       const br = this.selectedBusinessRule.filter((businessRule) => businessRule.brId === rule.brId)[0];
-      const index = this.selectedBusinessRule.indexOf(br);
-      this.selectedBusinessRule.splice(index, 1)
+      if (br) {
+        const index = this.selectedBusinessRule.indexOf(br);
+        this.selectedBusinessRule.splice(index, 1)
+
+      }
     }
   }
 
@@ -137,7 +152,8 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   isSelected(rule: CoreSchemaBrInfo): boolean {
     const selected = this.selectedBusinessRule.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
     const alreadySelected = this.alreadySelectedBrs.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
-    return (selected.length > 0 || alreadySelected.length > 0);
+    const deletedBRs = this.BusinessRulesToBeDelete.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
+    return (selected.length > 0 || alreadySelected.length > 0 && !deletedBRs.length);
   }
 
   /**
@@ -171,7 +187,12 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   saveSelection() {
     if (this.outlet === 'sb') {
+      let count = 0;
       console.log('test  ' + this.selectedBusinessRule);
+      const forkObj= {};
+      this.BusinessRulesToBeDelete.forEach((businessRule) => {
+        forkObj[count++] = this.schemaService.deleteBr(businessRule.brIdStr);
+      });
       this.selectedBusinessRule.forEach(businessRule => {
         const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
@@ -185,26 +206,16 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
         request.moduleId = this.moduleId;
         request.copiedFrom = businessRule.brIdStr;
 
-        if(businessRule.brType === 'BR_DUPLICATE_CHECK')
-    {
-       this.schemaService.copyDuplicateRule(request).subscribe((response) => {
-        console.log(response);
-      }, (error) => {
-        console.log('Error while adding business rule', error.message);
-      })
-    }
-    else
-    {
-      this.schemaService.createBusinessRule(request).subscribe((response) => {
-        console.log(response);
-      }, (error) => {
-        console.log('Error while adding business rule', error.message);
-      })
-
-
-       }
-    });
-      this.sharedService.setAfterBrSave(true);
+        if(businessRule.brType === 'BR_DUPLICATE_CHECK') {
+          forkObj[count++] = this.schemaService.copyDuplicateRule(request);
+        } else {
+          forkObj[count++] = this.schemaService.createBusinessRule(request);
+        }
+      });
+      forkJoin(forkObj).subscribe(() => {
+        this.sharedService.setAfterBrSave(true);
+        this.closeDialogComponent();
+      });
     }
     else {
       this.selectedBusinessRule.forEach((businessRule) => {
@@ -213,8 +224,8 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
         businessRule.copiedFrom = null;
       })
       this.sharedService.setAfterBrSave(this.selectedBusinessRule);
+      this.closeDialogComponent();
     }
-    this.closeDialogComponent();
   }
 
   /**
