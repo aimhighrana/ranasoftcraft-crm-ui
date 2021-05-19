@@ -1504,6 +1504,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  runCompleted($event) {
+    this.isInRunning = false;
+    this.getData();
+  }
+
   /**
    * get module info based on module id
    * @param id module id
