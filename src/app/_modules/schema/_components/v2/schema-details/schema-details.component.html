@@ -38,7 +38,7 @@
         <pros-schema-progress [schemaId]="schemaId" [isFileUploading]="isFileUploading" (fileUploaded)="fileUploaded($event)"></pros-schema-progress>
     </ng-template>
     <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
-        <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
+        <pros-schema-progress [schemaId]="schemaId" (runCompleted)="runCompleted($event)"></pros-schema-progress>
     </ng-template>
     <ng-template #schemaInfoTemplate>
         <div class="f-row filter-container">
@@ -277,7 +277,7 @@
                             <ng-container matColumnDef="OBJECTNUMBER" sticky>
                                 <th mat-header-cell *matHeaderCellDef>
                                     <!-- Add class on headercell "coll-visible" -->
-                                    <div i18n="@@object_number" mat-sort-header>Object Number</div>
+                                    <div mat-sort-header>{{variantName}}</div>
                                     
                                 </th>
                                 <td class="schema-header-cell" mat-cell *matCellDef="let element">   

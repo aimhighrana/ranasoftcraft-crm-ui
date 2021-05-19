@@ -47,6 +47,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   barChartData: any[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
   barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
@@ -757,7 +758,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }],
       }
     }
-    if(this.chart) {
+    if (this.chart) {
+      this.chart.options.scales = this.barChartOptions.scales;
       this.chart.chart.options.scales = this.barChartOptions.scales;
     }
   }

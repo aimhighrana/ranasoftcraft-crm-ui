@@ -57,6 +57,11 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
    */
   subscriptions: Subscription[] = [];
 
+  /**
+   * Metadata of fields... based on module it ...
+   */
+  @Input()
+  metataData: MetadataModeleResponse = null;
 
   constructor(
     private schemaDetailsService: SchemaDetailsService
@@ -72,7 +77,6 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
-      this.getFields();
     }
 
     if(changes && changes.selectedFldId && changes.selectedFldId.currentValue !== changes.selectedFldId.previousValue) {
@@ -81,6 +85,11 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
 
     if(changes && changes.isMultiSelection && changes.isMultiSelection.previousValue !== changes.isMultiSelection.currentValue) {
       this.isMultiSelection = changes.isMultiSelection.currentValue;
+    }
+
+    if(changes && changes.metataData && changes.metataData.previousValue !== changes.metataData.currentValue && changes.metataData.currentValue) {
+      this.metataData = changes.metataData.currentValue;
+      this.getFields();
     }
   }
 
@@ -120,7 +129,14 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
    * Should call http for get all fields
    */
   getFields() {
-    if(this.moduleId) {
+    if(this.metataData ) {
+      const res = this.transformFieldRes(this.metataData);
+      this.fields = res;
+      this.fieldsObs = of(res);
+      if(this.selectedFldId) {
+        this.preSelectedCtrl = this.returnSelectedFldCtrl(this.selectedFldId);
+      }
+    } else if(this.moduleId) {
       const allfldSub = this.schemaDetailsService.getMetadataFields(this.moduleId).subscribe(response => {
         const res = this.transformFieldRes(response);
         this.fields = res;
@@ -133,6 +149,7 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
       });
       this.subscriptions.push(allfldSub);
     }
+
   }
 
   /**

@@ -193,6 +193,11 @@ export class BrruleSideSheetComponent implements OnInit {
   hasChild = null;
 
   /**
+   * Hold the metadata fields response ....
+   */
+  metataData: MetadataModeleResponse = null;
+
+  /**
    * transformation rule type list
    */
   transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
@@ -853,6 +858,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (!this.moduleId) { return };
     this.schemaDetailsService.getMetadataFields(this.moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
+        this.metataData = metadataModeleResponse;
         const keys = Object.keys(metadataModeleResponse.headers);
         keys.forEach((key) => {
           this.fieldsList.push(metadataModeleResponse.headers[key])

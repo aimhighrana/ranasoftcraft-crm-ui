@@ -11,34 +11,34 @@
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-               <lib-search (value)="getBusinessRulesList(moduleId, $event, '', '0')" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
+               <lib-search (valueChange)="brSearchSubject.next($event)" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
                 <span class="col-spacer"></span>
                 <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
                         <label><span i18n="@@business_rule_type">Business rule type</span>:</label> <span
-                            class="info">{{(selectedRuleType && selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}
+                            class="info">{{selectedRuleType ? selectedRuleType : 'All'}}
                         </span>
                     </mat-chip>
                 </mat-chip-list>
                 <mat-menu #businessRuleType="matMenu" class="navigation-menu">
+                    <button mat-menu-item (click)="selectCurrentRuleType('')"> All </button>
                     <ng-container *ngFor="let type of businessRuleTypes">
                         <button mat-menu-item *ngIf="type.isImplemented"
-                            (click)="selectCurrentRuleType(type)">{{type.ruleDesc}}</button>
+                            (click)="selectCurrentRuleType(type.ruleType)">{{type.ruleDesc}}</button>
                     </ng-container>
                 </mat-menu>
             </div>
         </div>
     </div>
 
-    <div class="f-col sidesheetcontent-listing">
-        <cdk-virtual-scroll-viewport itemSize="10" (scroll)="onScroll($event)" class="viewport-scroll">
+    <div class="f-col sidesheetcontent-listing" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="onScrollEnd()">
         <div class="mdo-justify">
-            <mat-list role="list" class="rule-list" filteredBusinessRulesList.length>
-                <mat-list-item role="listitem" *cdkVirtualFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
+            <mat-list role="list" class="rule-list">
+                <mat-list-item role="listitem" *ngFor="let brItem of businessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
                     <span class="f-spacer"></span>
-                    <lib-button *ngIf="!isSelected(brItem); else doneButton"
-                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" icon="plus"></lib-button>
+                    <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
+                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
  
                     <ng-template #doneButton>
                         <lib-button (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
@@ -46,6 +46,5 @@
                 </mat-list-item>
             </mat-list>
         </div>
-    </cdk-virtual-scroll-viewport>
     </div>
 </div>
