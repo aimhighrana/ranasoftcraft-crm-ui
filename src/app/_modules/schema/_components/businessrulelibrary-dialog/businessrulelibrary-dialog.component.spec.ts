@@ -53,16 +53,6 @@ describe('BusinessrulelibraryDialogComponent', () => {
     expect(component.filteredBusinessRulesList.length).toEqual(1);
   }));
 
-  it('filterRuleByType(), set business rule type', async(() => {
-    component.businessRulesList = [
-      { sno: 100295071201799440, brId: '335555169201799400', apiKey: '', brType: 'BR_CUSTOM_SCRIPT', refId: 0, fields: '', regex: '', order: 1, message: '', script: '', brInfo: '', brExpose: 0, status: '1', categoryId: null, standardFunction: '', brWeightage: null, totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '335555169201799441', percentage: 0 },
-      { sno: 104024870140765550, brId: '450251510140765600', apiKey: '', brType: 'BR_MANDATORY_FIELDS', refId: 0, fields: 'lyxsjyab4751', regex: '', order: 1, message: 'lucknow', script: '', brInfo: 'India', brExpose: 0, status: '1', categoryId: '17052018003', standardFunction: '', brWeightage: '20', totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '450251510140765548', percentage: 0 }
-    ];
-    const selectedRuleType = component.businessRuleTypes[8];
-    component.filterRuleByType(selectedRuleType)
-    expect(component.filteredBusinessRulesList.length).toEqual(1);
-  }));
-
   it(`getAllBusinessRules(), get business rules service`, async(() => {
     const returnData: CoreSchemaBrInfo[] = [];
     spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValue(of(returnData));
