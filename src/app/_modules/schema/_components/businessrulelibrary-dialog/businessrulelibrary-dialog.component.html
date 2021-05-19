@@ -19,6 +19,7 @@
                         selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}</lib-chip>
                 </lib-chip-list>
                 <mat-menu #businessRuleType="matMenu" class="navigation-menu">
+                    <button mat-menu-item (click)="selectCurrentRuleType(null)"> All </button>
                     <ng-container *ngFor="let type of businessRuleTypes">
                         <button mat-menu-item *ngIf="type.isImplemented"
                             (click)="selectCurrentRuleType(type)">{{type.ruleDesc}}</button>

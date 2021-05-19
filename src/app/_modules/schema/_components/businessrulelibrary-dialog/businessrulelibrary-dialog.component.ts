@@ -27,6 +27,8 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
 
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
 
+  searchString = '';
+
 
   constructor(
     private dialogRef: MatDialogRef<Component>,
@@ -64,11 +66,13 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
    * using the ruleInfo as searchTerm
    */
   search(searchTerm: string) {
+    this.searchString = searchTerm ||'';
     if (searchTerm && searchTerm.trim()) {
       this.filteredBusinessRulesList =
         this.businessRulesList.filter((rule: CoreSchemaBrInfo) => {
           if (rule.brInfo) {
-            return rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase());
+            return this.selectedRuleType ? rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase()) && rule.brType === this.selectedRuleType.ruleType
+                   : rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase());
           }
         }
         );
@@ -136,15 +140,7 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
    */
   selectCurrentRuleType(ruleType: BusinessRules) {
     this.selectedRuleType = ruleType;
-    this.filterRuleByType(ruleType);
-  }
-
-  /**
-   * filter business rules by rule type
-   */
-  filterRuleByType(selectedRuleType: BusinessRules) {
-    const existingRules = this.businessRulesList;
-    this.filteredBusinessRulesList = existingRules.filter((rule) => rule.brType === selectedRuleType.ruleType);
+    this.search(this.searchString);
   }
 
   /**
