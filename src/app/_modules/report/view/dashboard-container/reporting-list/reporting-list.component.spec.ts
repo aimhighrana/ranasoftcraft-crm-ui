@@ -96,7 +96,7 @@ describe('ReportingListComponent', () => {
     spyOn(router, 'navigate');
     const widgetId= component.widgetId;
     component.downloadCSV()
-    expect(router.navigate).toHaveBeenCalledWith(['',{ outlets: { sb: `sb/report/download-widget/${widgetId}` }}],  { queryParams: { conditionList: `${JSON.stringify(component.filterCriteria)}` }, queryParamsHandling: 'preserve' });
+    expect(router.navigate).toHaveBeenCalledWith(['',{ outlets: { sb: `sb/report/download-widget/${widgetId}` }}],  { queryParams: { conditionList: `${JSON.stringify(component.filterCriteria)}` }, queryParamsHandling: 'merge' });
   }));
 
   it('sortTable(), sort the data in asc or desc ', async(() =>{

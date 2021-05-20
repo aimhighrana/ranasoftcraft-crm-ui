@@ -142,8 +142,8 @@
                                         <mat-label>Data set</mat-label>
                                     </ng-template>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl"
-                                            (keyup)="searchDataSet($event.target.value)" id="dataSets">
+                                        <input matInput [formControl]="objectDesc" [matAutocomplete]="dataSetCtrl"
+                                            (keyup)="searchDataSet($event.target.value)">
                                         <mat-autocomplete #dataSetCtrl="matAutocomplete"
                                             [displayWith]="displayWithDataSet">
                                             <mat-optgroup label="Module">

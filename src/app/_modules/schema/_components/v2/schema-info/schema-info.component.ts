@@ -569,29 +569,33 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update the business rule order
+   */
   updateBrOrder() {
     const forkObj = {};
     let currentIndex = 0;
     this.businessRuleData.forEach((br) => {
       if (br) {
-        const request: CoreSchemaBrMap = new CoreSchemaBrMap();
-        request.schemaId = this.schemaId;
-        request.brId = br.brIdStr;
-        request.order = currentIndex;
-        request.brWeightage = Number(br.brWeightage);
-        request.status = br.status ? br.status : '0';
-        request.dependantStatus = br.dependantStatus;
-        forkObj[currentIndex] = this.schemaService.updateBrMap(request);
+        const parentRequest: CoreSchemaBrMap = new CoreSchemaBrMap();
+        parentRequest.schemaId = this.schemaId;
+        parentRequest.brId = br.brIdStr;
+        parentRequest.order = currentIndex;
+        parentRequest.brWeightage = Number(br.brWeightage);
+        parentRequest.status = br.status ? br.status : '0';
+        parentRequest.dependantStatus = br.dependantStatus;
+        forkObj[currentIndex] = this.schemaService.updateBrMap(parentRequest);
         currentIndex++;
         if (br.dep_rules)
           br.dep_rules.forEach(element => {
-            request.schemaId = this.schemaId;
-            request.brId = element.brIdStr;
-            request.order = currentIndex;
-            request.brWeightage = Number(element.brWeightage);
-            request.status = br.status ? br.status : '0';
-            request.dependantStatus = element.dependantStatus;
-            forkObj[currentIndex] = this.schemaService.updateBrMap(request);
+            const childRequest: CoreSchemaBrMap = new CoreSchemaBrMap();
+            childRequest.schemaId = this.schemaId;
+            childRequest.brId = element.brIdStr;
+            childRequest.order = currentIndex;
+            childRequest.brWeightage = Number(element.brWeightage);
+            childRequest.status = br.status ? br.status : '0';
+            childRequest.dependantStatus = element.dependantStatus;
+            forkObj[currentIndex] = this.schemaService.updateBrMap(childRequest);
             currentIndex++;
           });
       }

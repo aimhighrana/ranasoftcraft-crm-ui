@@ -1,12 +1,13 @@
 <div class="root">
   <div class="f-row breadcrum-toolbar">
     <div class="display-heading-large">
-      Color palette "{{ widgetColorPalette ? widgetColorPalette.widgetDesc : 'Unknown'}}"
+      Color palette {{ widgetColorPalette ? widgetColorPalette.widgetDesc : 'Unknown'}}
     </div>
     <div class="f-spacer"></div>
-    <button mat-button (click)="close(true)">
+    <lib-button icon="times" type = "plain" (click)="close(true)"></lib-button>
+    <!-- <button mat-button (click)="close(true)">
       <mat-icon fontSet="mdo-icons">close</mat-icon>
-    </button>
+    </button> -->
   </div>
   <div class="f-col palette-list">
     <mat-list *ngIf="widgetColorPalette">
