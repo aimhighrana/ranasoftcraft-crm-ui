@@ -402,18 +402,28 @@
                                     <mat-form-field appearance="outline">
                                         <input matInput [matAutocomplete]="chooseColumn"
                                             (keyup)="searchChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete"
-                                            [displayWith]="chooseColumnDisWith">
-                                            <mat-option *ngFor="let field of headerFields | async"
-                                                value="{{ field.fieldId }}">
-                                                <div (click)="optionClicked($event, field)">
-                                                    <mat-checkbox prosClickStopPropagation
-                                                        (change)="toggleSelection(field)" [checked]="isSelected(field)"
-                                                        color="primary">
-                                                        {{ field.fieldDescri }}
-                                                    </mat-checkbox>
-                                                </div>
-                                            </mat-option>
+                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
+                                            <mat-optgroup label="System fileds">
+                                                <mat-option *ngFor="let field of systemFields
+                                                " value="{{ field.fieldId }}">
+                                                    <div (click)="optionClicked($event, field)">
+                                                        <mat-checkbox prosClickStopPropagation (change)="toggleSelection(field)" [checked]="isSelected(field)"
+                                                            color="primary">
+                                                            {{ field.fieldDescri }}
+                                                        </mat-checkbox>
+                                                    </div>
+                                                </mat-option>
+                                            </mat-optgroup>
+                                            <mat-optgroup label="Header fileds">
+                                                <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}">
+                                                    <div (click)="optionClicked($event, field)">
+                                                        <mat-checkbox prosClickStopPropagation (change)="toggleSelection(field)" [checked]="isSelected(field)"
+                                                            color="primary">
+                                                            {{ field.fieldDescri }}
+                                                        </mat-checkbox>
+                                                    </div>
+                                                </mat-option>
+                                            </mat-optgroup>
                                         </mat-autocomplete>
 
                                     </mat-form-field>

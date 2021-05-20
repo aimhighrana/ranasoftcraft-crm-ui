@@ -190,13 +190,13 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     spyOn(schemaDetailsService,'getMetadataFields').withArgs(obj).and.returnValue(of(res));
     component.getAllMetaDataFields(obj);
     expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(obj);
-    expect(component.headers.length).toEqual(3);
+    expect(component.headers.length).toEqual(7);
 
     component.data= {
       selectedColumns: ['NDC_TYPE']
     };
     component.getAllMetaDataFields(obj);
-    expect(component.headers.length).toEqual(4);
+    expect(component.headers.length).toEqual(8);
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
