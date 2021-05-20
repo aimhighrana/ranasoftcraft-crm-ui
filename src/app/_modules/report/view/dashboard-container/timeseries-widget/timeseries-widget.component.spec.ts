@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimeseriesWidgetComponent } from './timeseries-widget.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor } from '@modules/report/_models/widget';
+import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor, WidgetType, Criteria } from '@modules/report/_models/widget';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WidgetService } from '@services/widgets/widget.service';
@@ -140,40 +140,32 @@ describe('TimeseriesWidgetComponent', () => {
   }));
 
   it('legendclick(), emit after date change', async(() => {
-
     const item: ChartLegendLabelItem = { datasetIndex: 0 } as ChartLegendLabelItem;
-
     component.chartLegend = [{ code: 'MATL_TYPE', legendIndex: 0, text: 'Material Type' }];
-
-    let timeseriesData: TimeSeriesWidget;
-    let widgetTimeseries: WidgetTimeseries;
-
-    widgetTimeseries = {
-      widgetId: 123, fieldId: 'STATUS', seriesWith: SeriesWith.week, seriesFormat: 'dd.mm.yyyy', aggregationOperator: AggregationOperator.COUNT,
-      chartType: ChartType.LINE,
-      isEnableDatalabels: false,
-      isEnableLegend: false,
-      legendPosition: null,
-      datalabelsPosition: null,
-      xAxisLabel: '100',
-      yAxisLabel: '100',
-      scaleFrom: 0,
-      scaleTo: 1000,
-      stepSize: 100,
-      dataSetSize: 100,
-      startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null,
+    const widgetTimeseries = {
+      fieldId: 'STATUS',
+      groupWith: 'REQUESTOR_DATE',
+      distictWith: 'REGION',
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
-    }
+    } as WidgetTimeseries;
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
+    component.timeseriesData = {timeSeries: widgetTimeseries, isEnableGlobalFilter : false } as TimeSeriesWidget
 
-    component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
-    const filterWidget = new FilterWidget();
-    filterWidget.fieldId = 'STATUS';
     component.legendClick(item);
-    expect(component.legendClick).toBeTruthy();
+    expect(component.filterCriteria.length).toEqual(1);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    component.timeseriesData = {timeSeries: {fieldId:'CURRENTUSER'} as WidgetTimeseries, isEnableGlobalFilter : true } as TimeSeriesWidget
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.TIMESERIES, conditionFieldValue:'admin'} as Criteria];
+    component.legendClick(item);
+    expect(component.filterCriteria.length).toEqual(1);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    component.timeseriesData = {timeSeries: {fieldId:'CURRENTUSER'} as WidgetTimeseries, isEnableGlobalFilter : false } as TimeSeriesWidget
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.TIMESERIES, conditionFieldValue:'admin'} as Criteria];
+    component.legendClick(item);
+    expect(component.filterCriteria.length).toEqual(2);
   }));
 
   it('getRandomColor(), Random Colour', async(() => {

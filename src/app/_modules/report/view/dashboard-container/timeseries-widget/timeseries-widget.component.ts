@@ -5,7 +5,7 @@ import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { ButtonArr, ChartLegend, ChartType, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
+import { ButtonArr, ChartLegend, ChartType, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette, WidgetType } from '../../../_models/widget';
 import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -327,6 +327,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         critera.conditionFieldStartValue = startdate;
         critera.blockType = BlockType.COND;
         critera.conditionOperator = ConditionOperator.RANGE;
+        critera.widgetType = WidgetType.TIMESERIES;
         appliedFilters.push(critera);
       }
     } else {
@@ -338,6 +339,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       critera.conditionFieldStartValue = startdate;
       critera.blockType = BlockType.COND;
       critera.conditionOperator = ConditionOperator.RANGE;
+      critera.widgetType = WidgetType.TIMESERIES;
       appliedFilters.push(critera);
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -508,6 +510,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
     if (appliedFilters.length > 0) {
+      const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.TIMESERIES && this.timeseriesData.isEnableGlobalFilter);
+      if (res.length !== 0) {
+        res.forEach(val => {
+          val.conditionFieldValue = clickedLegend;
+        })
+      }
       const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
       if (cri.length === 0) {
         const critera1: Criteria = new Criteria();
@@ -516,6 +524,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.TIMESERIES;
         appliedFilters.push(critera1);
       }
     } else {
@@ -526,6 +535,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       critera1.conditionFieldValue = clickedLegend;
       critera1.blockType = BlockType.COND;
       critera1.conditionOperator = ConditionOperator.EQUAL;
+      critera1.widgetType = WidgetType.TIMESERIES;
       appliedFilters.push(critera1);
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -1010,6 +1020,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
         this.removeOldFilterCriteria(appliedFilters);
         if (appliedFilters.length > 0) {
+          const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.TIMESERIES && this.timeseriesData.isEnableGlobalFilter);
+          if (res.length !== 0) {
+            res.forEach(val => {
+              val.conditionFieldValue = axislabel.code;
+            })
+          }
           const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
           if (cri.length === 0) {
             const critera1: Criteria = new Criteria();
@@ -1018,6 +1034,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             critera1.conditionFieldValue = axislabel.code;
             critera1.blockType = BlockType.COND;
             critera1.conditionOperator = ConditionOperator.EQUAL;
+            critera1.widgetType = WidgetType.TIMESERIES;
             appliedFilters.push(critera1);
           }
         } else {
@@ -1028,6 +1045,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           critera1.conditionFieldValue = axislabel.code;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.TIMESERIES;
           appliedFilters.push(critera1);
         }
         appliedFilters.forEach(app => this.filterCriteria.push(app));
