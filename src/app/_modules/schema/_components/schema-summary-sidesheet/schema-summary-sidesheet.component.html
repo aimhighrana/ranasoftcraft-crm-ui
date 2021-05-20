@@ -113,8 +113,8 @@
                                     <div class="col col-x8">
                                         <div class="f-row slider-row">
                                         <lib-range-slider minValue="0" (valueChange)="updateBr(businessRule,$event)" [maxValue]="availableWeightage(businessRule.brWeightage)" class="lib-slider" thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="businessRule.brWeightage" color="primary"></lib-range-slider>
-                                        <!-- <span class="f-col-spacer-half"></span>
-                                        <div class="percent-count">{{businessRule.brWeightage}}%</div> -->
+                                        <span class="f-col-spacer-half"></span>
+                                        <div class="percent-count">{{businessRule.brWeightage}}%</div>
                                     </div>
                                     </div>
 
@@ -150,8 +150,8 @@
                                         <div class="col col-x8">
                                             <div class="f-row slider-row">
                                                 <lib-range-slider minValue="0" [maxValue]="availableWeightage(deps.brWeightage)" (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="deps.brWeightage" color="primary"></lib-range-slider>
-                                            <!-- <span class="f-col-spacer-half"></span>
-                                            <div class="percent-count">{{deps.brWeightage}}%</div> -->
+                                            <span class="f-col-spacer-half"></span>
+                                            <div class="percent-count">{{deps.brWeightage}}%</div>
                                         </div>
                                         </div>
     
