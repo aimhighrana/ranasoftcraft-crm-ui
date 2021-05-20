@@ -337,7 +337,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
       if (res) {
-        this.getData();
+        // this.getData();
       }
     });
 
