@@ -199,10 +199,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.orientation = this.barWidget.getValue().orientation === Orientation.VERTICAL ? 'bar' : 'horizontalBar';
     if (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
       this.barChartOptions.plugins.zoom.pan.enabled = false;
-      this.barChartOptions.plugins.zoom.zoom.mode = 'y';
+      this.barChartOptions.plugins.zoom.zoom.enabled = false;
     } else {
       this.barChartOptions.plugins.zoom.pan.enabled = true;
-      this.barChartOptions.plugins.zoom.zoom.mode = 'x';
+      this.barChartOptions.plugins.zoom.zoom.enabled = true;
     }
 
     // if showLegend flag will be true it show legend on Bar widget

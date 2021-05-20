@@ -84,7 +84,7 @@ describe('BarChartComponent', () => {
     component.getBarConfigurationData();
     expect('horizontalBar').toBe(component.orientation);
     expect(component.barChartOptions.plugins.zoom.pan.enabled).toBeFalsy();
-    expect(component.barChartOptions.plugins.zoom.zoom.mode).toEqual('y');
+    expect(component.barChartOptions.plugins.zoom.zoom.enabled).toBeFalsy();
   }));
 
   it('should have true value for showLegend flag then set legend position', async ( () => {
@@ -102,7 +102,7 @@ describe('BarChartComponent', () => {
     expect(component.barWidget.getValue().isEnableLegend).toBe(component.chart.chart.options.legend.display);
     expect(component.barWidget.getValue().legendPosition).toBe(component.chart.chart.options.legend.position);
     expect(component.barChartOptions.plugins.zoom.pan.enabled).toBeTruthy();
-    expect(component.barChartOptions.plugins.zoom.zoom.mode).toEqual('x');
+    expect(component.barChartOptions.plugins.zoom.zoom.enabled).toBeTruthy();
   }));
 
   it('should have true value for showCountOnStack flag then set align and anchor position', async ( () => {
