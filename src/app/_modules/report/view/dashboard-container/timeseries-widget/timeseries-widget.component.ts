@@ -10,7 +10,6 @@ import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import ChartDataLables from 'chartjs-plugin-datalabels';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
@@ -55,7 +54,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   widgetInf: BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
   timeseriesData: TimeSeriesWidget = {} as TimeSeriesWidget;
-  public lineChartPlugins = [zoomPlugin];
+  lineChartPlugins = [zoomPlugin];
   chartLegend: ChartLegend[] = [];
   lablels: string[] = [];
   formGroup: FormGroup;
@@ -138,11 +137,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        console.log('legend clicked..')
+        if(this.timeseriesData.timeSeries.chartType !== ChartType.BAR && this.timeseriesData.timeSeries.fieldId !== '') {
+          this.legendClick(legendItem);
+        }
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
-      this.stackClickFilter(event, activeElements);
+      console.log('No filter will be applied while we click on bar/line/dots/datalabels.');
+      // this.stackClickFilter(event, activeElements);
     }
   };
 
@@ -1040,27 +1042,27 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * function to set legend position and visibility
    */
   setLegendForChart(): void {
-    this.timeSeriesOption.legend = {
-      display: this.timeseriesData.timeSeries.isEnableLegend ? true : false,
-      position: this.timeseriesData.timeSeries.legendPosition,
-      onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        // call protype of stacked bar chart componenet
-        if(this.timeseriesData.timeSeries.chartType !== 'BAR'){
-          if(!(this.timeseriesData.timeSeries.groupWith !=='' && this.timeseriesData.timeSeries.fieldId !== '' && this.timeseriesData.timeSeries.distictWith !=='')){
-            this.legendClick(legendItem);
-          }
-        }
+    if (this.timeseriesData.timeSeries.isEnableLegend) {
+      this.timeSeriesOption.legend = {
+        ...this.timeSeriesOption.legend,
+        display: true,
+        position: this.timeseriesData.timeSeries.legendPosition || 'top',
+      };
+      if (this.chart) {
+        this.chart.options.legend = this.timeSeriesOption.legend;
+        this.chart.chart.options.legend = this.timeSeriesOption.legend;
       }
     }
 
-    if (this.timeseriesData.timeSeries && this.timeseriesData.timeSeries.isEnableDatalabels) {
-      this.timeSeriesOption.plugins = {
-        ChartDataLables,
-        datalabels: {
-          align: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
-          anchor: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
-          display: 'auto'
-        }
+    if (this.timeseriesData.timeSeries.isEnableDatalabels) {
+      this.timeSeriesOption.plugins.datalabels = {
+        align: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
+        anchor: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
+        display: 'auto'
+      };
+      if (this.chart) {
+        this.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
+        this.chart.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
       }
     }
     this.setChartProperties();

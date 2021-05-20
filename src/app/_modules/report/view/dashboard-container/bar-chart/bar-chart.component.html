@@ -24,8 +24,8 @@
  </div>
  <div class="row-spacer"></div>
  <mat-card-content>
-   <div [ngStyle]="{'width.px' : (widgetInfo.width * boxSize - 20)}" class="bar-height"> 
-     <div [ngStyle]="{'width.px' : (computedSize.width * boxSize - 20), 'position' : 'relative'}" class="bar-height">
+   <div [ngStyle]="{'width.px': (widgetInfo.width * boxSize - 35), 'height.px': orientation === 'bar' ? '100%' : (computedSize.height * boxSize), 'position' : 'relative'}" class="bar-height"> 
+     <div [ngStyle]="{'width' : orientation === 'bar' ? (computedSize.width * boxSize - 20) + 'px' : '100%', 'position' : 'relative'}" class="bar-height bar-width">
        <canvas class="bar-height" baseChart
          [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions" [chartType]="orientation">
        </canvas>
