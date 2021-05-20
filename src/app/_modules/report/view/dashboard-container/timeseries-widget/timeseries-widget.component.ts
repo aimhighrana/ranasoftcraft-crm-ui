@@ -10,7 +10,6 @@ import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import chartDataLables from 'chartjs-plugin-datalabels';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
@@ -55,7 +54,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   widgetInf: BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
   timeseriesData: TimeSeriesWidget = {} as TimeSeriesWidget;
-  public lineChartPlugins = [zoomPlugin, chartDataLables];
+  lineChartPlugins = [zoomPlugin];
   chartLegend: ChartLegend[] = [];
   lablels: string[] = [];
   formGroup: FormGroup;

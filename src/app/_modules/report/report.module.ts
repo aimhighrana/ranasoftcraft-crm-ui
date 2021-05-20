@@ -31,6 +31,10 @@ import { ReportDatatableColumnSettingsComponent } from './view/dashboard-contain
 import { HierarchyFilterComponent } from './view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 import { DuplicateReportComponent } from './view/duplicate-report/duplicate-report.component';
 
+import * as Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+Chart.plugins.register(ChartDataLabels);
+
 @NgModule({
   declarations: [
     DashboardComponent,
