@@ -149,10 +149,14 @@ div.root {
           }
 
           .mat-column-_select_columns,
-          .mat-column-_assigned_buckets,
-          .mat-column-_row_actions {
+          .mat-column-_assigned_buckets {
             min-width: 36px;
             max-width: 36px;
+            border-right: none;
+          }
+
+          .mat-column-_row_actions {
+            min-width: 36px;
             border-right: none;
           }
 
