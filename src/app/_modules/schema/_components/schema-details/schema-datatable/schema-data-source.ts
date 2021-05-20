@@ -193,7 +193,6 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                                     const cell: SchemaTableData = new SchemaTableData();
                                     cell.fieldId = robj;
                                     cell.fieldDesc = r[robj].ls ? r[robj].ls : 'Unknown';
-
                                     // only code is visiable
                                     // TODO on based on display criteria
                                     const dropVal = r[robj].vc ?  r[robj].vc.map(map => map.c).toString() : '';
