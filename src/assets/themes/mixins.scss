@@ -1075,13 +1075,13 @@
       }
 
       &.correction-cell {
-        background: $color-status-info-accent;
+        // background: $color-status-info-accent;
         border-bottom: 1px solid $color-status-info;
         color: $color-status-info;
       }
 
       &.error-cell {
-        background: $color-status-error-accent;
+        // background: $color-status-error-accent;
         border-bottom: 1px solid $color-status-error;
         color: $color-status-error;
       }
@@ -1185,6 +1185,12 @@
             display: none;
           }
         }
+      }
+    }
+
+    .mat-column-___header__collapsible {
+      .verticalsub-text {
+        border-right-color: $color-app-border;
       }
     }
 
