@@ -10,7 +10,7 @@ import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import ChartDataLables from 'chartjs-plugin-datalabels';
+import chartDataLables from 'chartjs-plugin-datalabels';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
@@ -31,7 +31,7 @@ const btnArray: ButtonArr[] = [
 })
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-  chartType: CType = 'line';
+  chartType: CType;
   responseData: any;
   displayCriteriaOptions = [
     {
@@ -55,7 +55,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   widgetInf: BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
   timeseriesData: TimeSeriesWidget = {} as TimeSeriesWidget;
-  public lineChartPlugins = [zoomPlugin];
+  public lineChartPlugins = [zoomPlugin, chartDataLables];
   chartLegend: ChartLegend[] = [];
   lablels: string[] = [];
   formGroup: FormGroup;
@@ -138,11 +138,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        console.log('legend clicked..')
+        if(this.timeseriesData.timeSeries.chartType !== ChartType.BAR && this.timeseriesData.timeSeries.fieldId !== '') {
+          this.legendClick(legendItem);
+        }
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
-      this.stackClickFilter(event, activeElements);
+      // this.stackClickFilter(event, activeElements);
     }
   };
 
@@ -1000,67 +1002,67 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * @param event canvas evnet ..
    * @param activeElements get active element ..
    */
-  stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
-    if (this.chart && activeElements.length > 0) {
-      const option = this.chart.chart.getElementAtEvent(event) as any;
-      if (option && option[0] && this.chartLegend[(option[0]._index)]) {
-        const axislabel = this.chartLegend[(option[0]._index)];
+  // stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
+  //   if (this.chart && activeElements.length > 0) {
+  //     const option = this.chart.chart.getElementAtEvent(event) as any;
+  //     if (option && option[0] && this.chartLegend[(option[0]._index)]) {
+  //       const axislabel = this.chartLegend[(option[0]._index)];
 
-        const fieldId = this.timeseriesData.timeSeries.fieldId;
-        let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
-        this.removeOldFilterCriteria(appliedFilters);
-        if (appliedFilters.length > 0) {
-          const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
-          if (cri.length === 0) {
-            const critera1: Criteria = new Criteria();
-            critera1.fieldId = fieldId;
-            critera1.conditionFieldId = fieldId;
-            critera1.conditionFieldValue = axislabel.code;
-            critera1.blockType = BlockType.COND;
-            critera1.conditionOperator = ConditionOperator.EQUAL;
-            appliedFilters.push(critera1);
-          }
-        } else {
-          appliedFilters = [];
-          const critera1: Criteria = new Criteria();
-          critera1.fieldId = fieldId;
-          critera1.conditionFieldId = fieldId
-          critera1.conditionFieldValue = axislabel.code;
-          critera1.blockType = BlockType.COND;
-          critera1.conditionOperator = ConditionOperator.EQUAL;
-          appliedFilters.push(critera1);
-        }
-        appliedFilters.forEach(app => this.filterCriteria.push(app));
-        this.applyFilters();
-      }
-    }
-  }
+  //       const fieldId = this.timeseriesData.timeSeries.fieldId;
+  //       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+  //       this.removeOldFilterCriteria(appliedFilters);
+  //       if (appliedFilters.length > 0) {
+  //         const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
+  //         if (cri.length === 0) {
+  //           const critera1: Criteria = new Criteria();
+  //           critera1.fieldId = fieldId;
+  //           critera1.conditionFieldId = fieldId;
+  //           critera1.conditionFieldValue = axislabel.code;
+  //           critera1.blockType = BlockType.COND;
+  //           critera1.conditionOperator = ConditionOperator.EQUAL;
+  //           appliedFilters.push(critera1);
+  //         }
+  //       } else {
+  //         appliedFilters = [];
+  //         const critera1: Criteria = new Criteria();
+  //         critera1.fieldId = fieldId;
+  //         critera1.conditionFieldId = fieldId
+  //         critera1.conditionFieldValue = axislabel.code;
+  //         critera1.blockType = BlockType.COND;
+  //         critera1.conditionOperator = ConditionOperator.EQUAL;
+  //         appliedFilters.push(critera1);
+  //       }
+  //       appliedFilters.forEach(app => this.filterCriteria.push(app));
+  //       this.applyFilters();
+  //     }
+  //   }
+  // }
 
   /**
    * function to set legend position and visibility
    */
   setLegendForChart(): void {
-    this.timeSeriesOption.legend = {
-      display: this.timeseriesData.timeSeries.isEnableLegend ? true : false,
-      position: this.timeseriesData.timeSeries.legendPosition,
-      onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        // call protype of stacked bar chart componenet
-        if(this.timeseriesData.timeSeries.chartType !== 'BAR'){
-          if(!(this.timeseriesData.timeSeries.groupWith !=='' && this.timeseriesData.timeSeries.fieldId !== '' && this.timeseriesData.timeSeries.distictWith !=='')){
-            this.legendClick(legendItem);
-          }
-        }
+    if (this.timeseriesData.timeSeries.isEnableLegend) {
+      this.timeSeriesOption.legend = {
+        ...this.timeSeriesOption.legend,
+        display: true,
+        position: this.timeseriesData.timeSeries.legendPosition || 'top',
+      };
+      if (this.chart) {
+        this.chart.options.legend = this.timeSeriesOption.legend;
+        this.chart.chart.options.legend = this.timeSeriesOption.legend;
       }
     }
 
-    if (this.timeseriesData.timeSeries && this.timeseriesData.timeSeries.isEnableDatalabels) {
-      this.timeSeriesOption.plugins = {
-        ChartDataLables,
-        datalabels: {
-          align: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
-          anchor: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
-          display: 'auto'
-        }
+    if (this.timeseriesData.timeSeries.isEnableDatalabels) {
+      this.timeSeriesOption.plugins.datalabels = {
+        align: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
+        anchor: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
+        display: 'auto'
+      };
+      if (this.chart) {
+        this.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
+        this.chart.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
       }
     }
     this.setChartProperties();
