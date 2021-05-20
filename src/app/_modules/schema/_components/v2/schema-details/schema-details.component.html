@@ -274,12 +274,13 @@
                                     </div>
                                 </td>
                             </ng-container>
-                            
+
                             <ng-container matColumnDef="OBJECTNUMBER" sticky>
                                 <th mat-header-cell *matHeaderCellDef>
                                     <!-- Add class on headercell "coll-visible" -->
                                     <div mat-sort-header>{{moduleInfo?.moduleDesc || 'Object'}} number</div>
                                 </th>
+                                
                                 <td mat-cell *matCellDef="let element">   
                                     <!-- add class in mat-cell "vertical-cell" -->
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
