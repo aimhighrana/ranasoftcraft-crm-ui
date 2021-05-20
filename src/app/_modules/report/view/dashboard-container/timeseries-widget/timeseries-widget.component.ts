@@ -30,7 +30,7 @@ const btnArray: ButtonArr[] = [
 })
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-  chartType: CType;
+  chartType: CType = 'line';
   responseData: any;
   displayCriteriaOptions = [
     {
@@ -143,6 +143,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
+      console.log('No filter will be applied while we click on bar/line/dots/datalabels.');
       // this.stackClickFilter(event, activeElements);
     }
   };
@@ -1001,41 +1002,41 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * @param event canvas evnet ..
    * @param activeElements get active element ..
    */
-  // stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
-  //   if (this.chart && activeElements.length > 0) {
-  //     const option = this.chart.chart.getElementAtEvent(event) as any;
-  //     if (option && option[0] && this.chartLegend[(option[0]._index)]) {
-  //       const axislabel = this.chartLegend[(option[0]._index)];
+  stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
+    if (this.chart && activeElements.length > 0) {
+      const option = this.chart.chart.getElementAtEvent(event) as any;
+      if (option && option[0] && this.chartLegend[(option[0]._index)]) {
+        const axislabel = this.chartLegend[(option[0]._index)];
 
-  //       const fieldId = this.timeseriesData.timeSeries.fieldId;
-  //       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
-  //       this.removeOldFilterCriteria(appliedFilters);
-  //       if (appliedFilters.length > 0) {
-  //         const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
-  //         if (cri.length === 0) {
-  //           const critera1: Criteria = new Criteria();
-  //           critera1.fieldId = fieldId;
-  //           critera1.conditionFieldId = fieldId;
-  //           critera1.conditionFieldValue = axislabel.code;
-  //           critera1.blockType = BlockType.COND;
-  //           critera1.conditionOperator = ConditionOperator.EQUAL;
-  //           appliedFilters.push(critera1);
-  //         }
-  //       } else {
-  //         appliedFilters = [];
-  //         const critera1: Criteria = new Criteria();
-  //         critera1.fieldId = fieldId;
-  //         critera1.conditionFieldId = fieldId
-  //         critera1.conditionFieldValue = axislabel.code;
-  //         critera1.blockType = BlockType.COND;
-  //         critera1.conditionOperator = ConditionOperator.EQUAL;
-  //         appliedFilters.push(critera1);
-  //       }
-  //       appliedFilters.forEach(app => this.filterCriteria.push(app));
-  //       this.applyFilters();
-  //     }
-  //   }
-  // }
+        const fieldId = this.timeseriesData.timeSeries.fieldId;
+        let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+        this.removeOldFilterCriteria(appliedFilters);
+        if (appliedFilters.length > 0) {
+          const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
+          if (cri.length === 0) {
+            const critera1: Criteria = new Criteria();
+            critera1.fieldId = fieldId;
+            critera1.conditionFieldId = fieldId;
+            critera1.conditionFieldValue = axislabel.code;
+            critera1.blockType = BlockType.COND;
+            critera1.conditionOperator = ConditionOperator.EQUAL;
+            appliedFilters.push(critera1);
+          }
+        } else {
+          appliedFilters = [];
+          const critera1: Criteria = new Criteria();
+          critera1.fieldId = fieldId;
+          critera1.conditionFieldId = fieldId
+          critera1.conditionFieldValue = axislabel.code;
+          critera1.blockType = BlockType.COND;
+          critera1.conditionOperator = ConditionOperator.EQUAL;
+          appliedFilters.push(critera1);
+        }
+        appliedFilters.forEach(app => this.filterCriteria.push(app));
+        this.applyFilters();
+      }
+    }
+  }
 
   /**
    * function to set legend position and visibility
