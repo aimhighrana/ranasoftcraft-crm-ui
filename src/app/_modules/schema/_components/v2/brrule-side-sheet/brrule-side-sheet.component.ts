@@ -1081,6 +1081,7 @@ export class BrruleSideSheetComponent implements OnInit {
         this.showValidationError('Please configure at least one condition.');
         return;
       }
+
       const blockHierarchy: UDRHierarchyModel[] = [];
       blocks.forEach(block => {
         const hie: UDRHierarchyModel = new UDRHierarchyModel();
