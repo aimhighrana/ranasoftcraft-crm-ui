@@ -39,7 +39,6 @@
                     <span class="f-spacer"></span>
                     <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
                     (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
- 
                     <ng-template #doneButton>
                         <lib-button class="br-sidesheet-btn" (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
                     </ng-template>
