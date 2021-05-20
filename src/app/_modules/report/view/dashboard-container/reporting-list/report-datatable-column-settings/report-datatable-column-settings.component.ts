@@ -61,7 +61,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   subscriptions: Subscription[] = [];
   allDisplayCriteria: DisplayCriteria;
 
-  /** system fields for Transactional module dataset*/
+  /** system fields for Transactional module dataset */
   systemFields = [
     {
       fieldId:'STATUS',

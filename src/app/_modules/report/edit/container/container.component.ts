@@ -136,7 +136,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   objectDesc: FormControl = new FormControl('');
 
-  /** system fields for Transactional module dataset*/
+  /** system fields for Transactional module dataset */
   systemFields = [
     {
       fieldId:'STATUS',
