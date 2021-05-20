@@ -187,7 +187,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                     if(hyvs.hasOwnProperty(req.nodeId)) {
                         const rows = hyvs[req.nodeId].rows ? hyvs[req.nodeId].rows : [];
                         for(const r of rows) {
-                            const _rrData = rowData;
+                            const _rrData = {...rowData};
                             for(const robj in r) {
                                 if(r.hasOwnProperty(robj)) {
                                     const cell: SchemaTableData = new SchemaTableData();
