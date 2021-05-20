@@ -136,6 +136,31 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   objectDesc: FormControl = new FormControl('');
 
+  /** system fields for Transactional module dataset*/
+  systemFields = [
+    {
+      fieldId:'STATUS',
+      fieldDescri:'Status',
+    },
+    {
+      fieldId:'USERMODIFIED',
+      fieldDescri:'User Modified',
+      picklist: '1',
+      dataType: 'AJAX',
+    },{
+      fieldId:'APPDATE',
+      fieldDescri:'Update Date',
+
+      picklist: '0',
+      dataType: 'DTMS',
+    },{
+      fieldId:'STAGE',
+      fieldDescri:'Creation Date',
+      picklist: '0',
+      dataType: 'DTMS',
+    }
+  ] as MetadataModel[];
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,

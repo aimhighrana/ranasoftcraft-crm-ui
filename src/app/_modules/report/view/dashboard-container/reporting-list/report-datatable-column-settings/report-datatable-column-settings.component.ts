@@ -61,6 +61,30 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   subscriptions: Subscription[] = [];
   allDisplayCriteria: DisplayCriteria;
 
+  /** system fields for Transactional module dataset*/
+  systemFields = [
+    {
+      fieldId:'STATUS',
+      fieldDescri:'Status',
+    } as MetadataModel,
+    {
+      fieldId:'USERMODIFIED',
+      fieldDescri:'User Modified',
+      picklist: '37',
+      dataType: 'AJAX',
+    }as MetadataModel,{
+      fieldId:'APPDATE',
+      fieldDescri:'Update Date',
+      picklist: '0',
+      dataType: 'DTMS',
+    }as MetadataModel,{
+      fieldId:'STAGE',
+      fieldDescri:'Creation Date',
+      picklist: '0',
+      dataType: 'DTMS',
+    }as MetadataModel
+  ];
+
   /**
    * Constructor of class
    */
@@ -129,14 +153,23 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
        * why...because with this we can restrict duplicate entries
        */
       this.fieldIdArray = this.headers.map(header => header.fieldId);
+
+      this.systemFields.forEach(system => {
+        const index = this.fieldIdArray.indexOf(system.fieldId);
+        if(index === -1) {
+          this.headers.push(system);
+        }
+        if(index !== -1) {
+          this.headers[index] = system;
+        }
+      })
+
       for (const metaData in data.headers) {
         if (data.headers[metaData]) {
           if (this.fieldIdArray.indexOf(data.headers[metaData].fieldId) === -1) {
             this.headers.push(data.headers[metaData])
           }
-
         }
-
       }
       const inarray = this.fieldIdArray.find(dt => dt === 'objectNumber')
       if (inarray === undefined) {
