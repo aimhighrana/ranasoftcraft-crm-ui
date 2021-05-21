@@ -1514,22 +1514,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
      this.runCompleted.emit($event);
   }
 
-  testFn() {
-    // update state of columns
-    this.manageStaticColumns();
-    this.calculateDisplayFields();
-    this.selection.clear();
-    const status = this.activeTab;
-    if (status === 'error' || status === 'success') {
-      this.getData(this.filterCriteria.getValue(), this.sortOrder);
-    } else {
-      this.getData();
-    }
-
-    if (this.userDetails) {
-      this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
-    }
-  }
   /**
    * get module info based on module id
    * @param id module id
