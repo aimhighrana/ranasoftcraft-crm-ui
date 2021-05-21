@@ -125,10 +125,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     filterCtrl.type = 'DROPDOWN';
     filterCtrl.values = [];
     filterCtrl.textValues = [];
+    filterCtrl.selectedValues = [];
+
     event.selectedValues.forEach((value) => {
       if(value.FIELDNAME === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
+        filterCtrl.selectedValues.push(value);
       }
     })
     // In case we are adding data-scope
@@ -141,11 +144,19 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       this.variantInfo.filterCriteria.forEach((filCtrl) => {
         if(filCtrl.fieldId === event.fldCtrl.fieldId) {
           flag = true;
-          filCtrl.values = [];
-          filCtrl.textValues = [];
+          filCtrl.values =  filterCtrl.values || [];
 
-          filCtrl.values.push(...filterCtrl.values);
-          filCtrl.textValues.push(...filterCtrl.textValues);
+          filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
+          filterCtrl.selectedValues.forEach(v => {
+            if(!filCtrl.selectedValues.some(value => value.CODE === v.CODE)) {
+              filCtrl.selectedValues.push(v);
+            }
+          });
+
+          filCtrl.textValues = [];
+          filCtrl.selectedValues.forEach(v => {
+              filCtrl.textValues.push(v.TEXT);
+          });
         }
       })
       if(flag === false){
@@ -161,8 +172,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   prepareTextToShow(ctrl: FilterCriteria) {
     if(ctrl.values.length > 1) {
       return ctrl.values.length;
-    }else {
-      return ctrl.textValues ? ctrl.textValues[0] : (ctrl.selectedValues[0]?.TEXT);
+    } else {
+      if(ctrl.textValues && ctrl.textValues.length) {
+        return ctrl.textValues[0] || ctrl.fieldId;
+      } else {
+        const selected = ctrl.selectedValues && ctrl.selectedValues.find(s => s.CODE === ctrl.values[0]);
+        return selected ? selected.TEXT : ctrl.fieldId;
+      }
     }
   }
 
@@ -173,7 +189,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     if (fldC && fldC.values) {
       const dropArray: DropDownValue[] = [];
       fldC.values.forEach(val => {
-        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
+        const dropDetails = fldC.selectedValues && fldC.selectedValues.find(v => v.CODE === val);
+        const drop: DropDownValue = dropDetails || { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
         dropArray.push(drop);
       });
       this.loadDropValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
@@ -220,6 +237,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       if(filterCtrl.fieldId === fieldId) {
         filterCtrl.values.length = 0;
         filterCtrl.textValues = [];
+        filterCtrl.selectedValues = selectedValues;
         selectedValues.forEach((value) => {
           filterCtrl.values.push(value.CODE);
           filterCtrl.textValues.push(value.TEXT ? value.TEXT : value.CODE);

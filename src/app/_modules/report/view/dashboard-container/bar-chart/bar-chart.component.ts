@@ -8,8 +8,6 @@ import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-
-
 @Component({
   selector: 'pros-bar-chart',
   templateUrl: './bar-chart.component.html',
@@ -56,6 +54,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
+          if (isNaN(+tooltipItem.value)) {
+            return '';
+          }
           return `${tooltipItem.value}`;
         }
       },
@@ -198,7 +199,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarConfigurationData(): void {
     // Bar orientation
-    this.orientation = this.barWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
+    this.orientation = this.barWidget.getValue().orientation === Orientation.VERTICAL ? 'bar' : 'horizontalBar';
+    if (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
+      this.barChartOptions.plugins.zoom.pan.enabled = false;
+      this.barChartOptions.plugins.zoom.zoom.enabled = false;
+    } else {
+      this.barChartOptions.plugins.zoom.pan.enabled = true;
+      this.barChartOptions.plugins.zoom.zoom.enabled = true;
+    }
 
     // if showLegend flag will be true it show legend on Bar widget
     if (this.barWidget.getValue().isEnableLegend) {
