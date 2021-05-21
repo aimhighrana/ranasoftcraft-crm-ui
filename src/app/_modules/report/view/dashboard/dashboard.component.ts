@@ -123,4 +123,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       height: '250px'
     });
   }
+
+  /**
+   * method to navigate on import log page
+   */
+  importLog() {
+    this.router.navigate([{ outlets: { sb: 'sb/report/import-log/' + this.reportId } }])
+  }
+
 }

@@ -7,7 +7,7 @@
 					{{reportName ? reportName: 'Untitled'}}
 				</lib-text-line>
 			</div>
-			
+
 			<div class="f-spacer"></div>
 			<lib-button-group>
 				<lib-button *ngIf="showClearFilterBtn" (mouseup)="clearFilters()" type="minor">Clear filter(s)
@@ -23,6 +23,8 @@
 							(click)="duplicateReport()">Duplicate</button>
 						<button mat-menu-item *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)"
 							(click)="delete()">Delete</button>
+						<button mat-menu-item *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)"
+							(click)="importLog()">Import Log</button>
 					</mat-menu>
 				</ng-template>
 			</lib-button-group>
