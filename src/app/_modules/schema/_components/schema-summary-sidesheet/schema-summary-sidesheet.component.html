@@ -4,10 +4,10 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">
+                <lib-text-line type="leading">
                     {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
                     {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
-                </div>
+                </lib-text-line>
 
                 <!-- <button mat-button [matMenuTriggerFor]="check">
                     <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
@@ -28,7 +28,7 @@
                   </mat-menu> -->
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before" icon="upload"> Upload data </lib-button>
+                <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before">Upload data</lib-button>
                 <span class="f-col-spacer-half"></span>
                 <lib-button (click)="saveCheckData()" type="major">Check</lib-button>
             </div>
@@ -62,7 +62,6 @@
                     <mat-label i18n="@@threshold">Threshold</mat-label>
                     <div class="f-row slider-row">
                     <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
-
                     <span class="f-col-spacer-half"></span>
                     <div>{{schemaThresholdControl.value}}%</div>
                     </div>
@@ -108,7 +107,7 @@
                                         <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
                                     </div>
                                     <div class="col col-x8">
-                                        <a class="f-row info-link">{{businessRule.brInfo}}</a>
+                                        <lib-text-line type="base" textColor="link">{{businessRule.brInfo}}</lib-text-line>
                                     </div>
 
                                     <div class="col col-x8">
@@ -145,7 +144,7 @@
                                             
                                         </div>
                                         <div class="col col-x8">
-                                            <a class="f-row info-link">{{deps.brInfo}}</a>
+                                            <lib-text-line type="base" textColor="link">{{deps.brInfo}}</lib-text-line>
                                         </div>
     
                                         <div class="col col-x8">
@@ -236,7 +235,7 @@
                                     <ng-template #invitedUserProfile>
                                         <mat-card-header>
                                             <div mat-card-avatar>
-                                                <mat-icon fontSet="mdo-icons">home-channel2</mat-icon>
+                                                <mat-icon fontSet="mdo-icons">user</mat-icon>
                                             </div>
                                         </mat-card-header>
                                     </ng-template>
@@ -259,11 +258,10 @@
                                     </div>
         
                                     <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
-                                        <lib-button type="minor" icon="caret-down"  iconPosition="before" *ngIf="subscriber.isAdmin" i18n="@@admin"> Admin </lib-button>
-                                        <lib-button type="minor" icon="caret-down"  iconPosition="before" *ngIf="subscriber.isReviewer" i18n="@@reviewer"> Reviewer </lib-button>
-                                        <lib-button type="minor" icon="caret-down"  iconPosition="before" *ngIf="subscriber.isViewer" i18n="@@viewer"> Viewer </lib-button>
-                                        <lib-button type="minor" icon="caret-down"  iconPosition="before" *ngIf="subscriber.isEditer" i18n="@@editor"> Editor </lib-button>
-                                        
+                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isAdmin" i18n="@@admin"> Admin </lib-button>
+                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isReviewer" i18n="@@reviewer"> Reviewer </lib-button>
+                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isViewer" i18n="@@viewer"> Viewer </lib-button>
+                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isEditer" i18n="@@editor"> Editor </lib-button>
                                     </div>
                                     <mat-menu #subscriberRole="matMenu" class="navigation-menu">
                                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>

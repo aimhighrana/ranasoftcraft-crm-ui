@@ -19,7 +19,7 @@ div.root {
   }
 
   .listing-container {
-    height: calc(100% - 56px - 35px - 8px * 3);
+    height: calc(100% - 56px - 35px - 8px * 2);
     overflow: hidden;
 
     .listset-navigation {
@@ -98,17 +98,13 @@ div.root {
       height: 100%;
       overflow: hidden;
 
-      .listset-text {
-        font-size: 1.2rem;
-        line-height: 48px;
-      }
-
       .datasource {
         overflow-x: auto;
-        height: calc(100% - 56px);
+        height: calc(100% - 16px);
+        display: inline-block;
 
         table.mat-table {
-          display: table;
+          border-collapse: separate;
 
           .mat-row,
           .mat-header-row {
@@ -120,32 +116,25 @@ div.root {
             min-width: 170px;
             max-width: 170px;
 
-            &.coll-visible {
-              overflow: visible;
-            }
-
             .collapse-icon {
               padding: 4px;
               border-radius: 50%;
               cursor: pointer;
               position: absolute;
               text-align: center;
-              width: 8px;
-              height: 8px;
-              font-size: 8px;
-              line-height: 8px;
-              right: 12px;
+              width: 12px;
+              height: 12px;
+              font-size: 10px;
+              line-height: 12px;
+              right: 6px;
+              bottom: -10px;
             }
           }
 
-          .verticalsub-text {
-            // padding-top: 32px;
-            text-orientation: mixed;
-            writing-mode: vertical-lr;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+          .mat-column-_row_actions {
+            min-width: 36px;
+            max-width: 200px;
+            border-right: none;
           }
 
           .mat-column-_select_columns,
@@ -161,8 +150,23 @@ div.root {
           }
 
           .mat-column-___header__collapsible {
-            min-width: 36px;
-            max-width: 36px;
+            min-width: 48px;
+            max-width: 48px;
+            padding: 0;
+            vertical-align: top;
+
+            .verticalsub-text {
+              text-orientation: mixed;
+              writing-mode: vertical-lr;
+              height: 100%;
+              border-right-width: 1px;
+              border-right-style: solid;
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              padding-top: 32px;
+            }
           }
 
           .mat-column-_score_weightage {
