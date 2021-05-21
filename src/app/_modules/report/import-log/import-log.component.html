@@ -10,8 +10,8 @@
   </div>
   <div class="f-col sidesheetcontent-listing" prosInfiniteScroll bufferPercentage="20"
   (scrollEnd)="getWarningList(true)">
-    <div class="f-col mdo-justify">
-      <table mat-table [dataSource]="dataSource" class="table-vertical" matSort >
+    <div class="f-col mdo-justify" [formGroup]="warningForm">
+      <table mat-table [dataSource]="dataSource" class="table-vertical" matSort formArrayName="statusArray">
         <ng-container matColumnDef="warning" sticky>
           <th mat-header-cell *matHeaderCellDef i18n="@@warning">Warning</th>
           <td mat-cell *matCellDef="let element" class="first-child">
@@ -24,16 +24,22 @@
             {{element.category}}
           </td>
         </ng-container>
-        <ng-container matColumnDef="status" sticky>
+        <ng-container matColumnDef="status" sticky >
           <th mat-header-cell *matHeaderCellDef i18n="@@status">Status</th>
-          <td mat-cell *matCellDef="let element; let i = index" [ngClass]="element.status == 'Open' ? 'open-status' : 'close-status'">
-            <mat-form-field class="field-divider">
-              <mat-select [(ngModel)]="element.status" (ngModelChange)="changeStatus(i)" class="status">
-                <mat-option *ngFor="let stat of status" value="{{ stat }}">
-                  {{ stat }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <td mat-cell *matCellDef="let element; let i = index" [ngClass]="element.status == 'Open' ? 'open-status' : 'close-status'" [formGroupName]="i">
+            <div class="f-col mdo-field">
+              <div class="mdo-field-input">
+                      <input matInput placeholder="Type to search"
+                      formControlName = "status"
+                      [matAutocomplete]="auto" />
+                  <!-- autocomplete -->
+                  <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete" (optionSelected)="changeStatus(i,$event.option.value)">
+                      <mat-option class="mdo-option" *ngFor="let stat of status" [value]="stat">
+                        {{stat}}
+                      </mat-option>
+                  </mat-autocomplete>
+              </div>
+          </div>
           </td>
         </ng-container>
         <ng-container matColumnDef="updated" sticky>

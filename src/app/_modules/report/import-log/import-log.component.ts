@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
-export interface ImportLogs {
+interface ImportLogs {
   warning: string;
   category: string;
   status: string;
@@ -18,22 +19,31 @@ export class ImportLogComponent implements OnInit {
   displayedColumns: string[] = ['warning', 'category', 'status', 'updated'];
 
   /**
-   * for the status of warning
+   * warning status
    */
-  status: string[] = ['Open','Closed'];
+  status: string[] = ['Open', 'Closed'];
+  warningForm: FormGroup;
 
-  dataSource : ImportLogs[] =  [
-    {warning: 'Customer Module', category: 'Missing Module', status: 'Open', updated: '12/12/20'},
-    {warning: 'BOM', category: 'Missing Module', status: 'Open', updated: '12/12/20'}
+  dataSource: ImportLogs[] = [
+    { warning: 'Customer Module', category: 'Missing Module', status: 'Open', updated: '12/12/20' },
+    { warning: 'BOM', category: 'Missing Module', status: 'Open', updated: '12/12/20' }
   ];
 
   constructor(
     private router: Router,
+    private formBuilder: FormBuilder
   ) { }
 
 
   ngOnInit(): void {
+    this.initializeForm();
     this.getWarningList();
+  }
+
+  initializeForm() {
+    this.warningForm = this.formBuilder.group({
+      statusArray: this.formBuilder.array([])
+    })
   }
 
   /**
@@ -45,21 +55,32 @@ export class ImportLogComponent implements OnInit {
 
 
   /**
-   * change the status of the warning
+   * change the warning status
    * @param index index of the row in table
    */
- changeStatus(index){
-   console.log(index, this.dataSource[index].status);
+  changeStatus(index, value) {
+    console.log(index, value);
+    this.dataSource[index].status = value;
   }
 
 
-/**
- * get warning list data
- * @param isLoadMore wants to load more data
- */
+  /**
+   * get warning list data
+   * @param isLoadMore wants to load more data
+   */
   getWarningList(isLoadMore?) {
     // if(isLoadMore) {
-      console.log('data source====',this.dataSource);
+    const formArray = this.frmArray;
+    this.dataSource.forEach(item => {
+      formArray.push(this.formBuilder.group({
+        status: item.status
+      }))
+    })
     // }
   }
+
+  get frmArray() {
+    return this.warningForm.get('statusArray') as FormArray;
+  }
+
 }

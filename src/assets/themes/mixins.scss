@@ -1982,6 +1982,15 @@
           background: $color-status-warning-accent;
           border-bottom: 1px solid $color-status-warning;
 
+          .mdo-field .mdo-field-input {
+            background: $color-status-warning-accent;
+            border: none;
+
+            input {
+              background: $color-status-warning-accent;
+            }
+          }
+
           &:hover {
             background: $color-status-warning-accent;
           }
@@ -1990,6 +1999,15 @@
         &.close-status {
           background: $color-status-info-accent;
           border-bottom: 1px solid $color-status-info;
+
+          .mdo-field .mdo-field-input {
+            background: $color-status-info-accent;
+            border: none;
+
+            input {
+              background: $color-status-info-accent;
+            }
+          }
 
           &:hover {
             background: $color-status-info-accent;
@@ -2000,10 +2018,6 @@
           font-weight: 400;
         }
 
-        .status .mat-select-arrow {
-          margin-top: 0 !important;
-        }
-
         &.text-end {
           text-align: right;
         }
@@ -2012,10 +2026,20 @@
       &.mat-row:hover .mat-cell.mat-table-sticky {
         &.open-status {
           background: $color-status-warning-accent;
+
+          .mdo-field .mdo-field-input {
+            background: $color-status-warning-accent;
+            border: none;
+          }
         }
 
         &.close-status {
           background: $color-status-info-accent;
+
+          .mdo-field .mdo-field-input {
+            background: $color-status-info-accent;
+            border: none;
+          }
         }
       }
     }
