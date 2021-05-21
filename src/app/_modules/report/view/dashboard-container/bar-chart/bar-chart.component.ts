@@ -54,7 +54,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
-          if (isNaN(parseInt(tooltipItem.value))) {
+          if (isNaN(parseInt(tooltipItem.value, 10))) {
             return '';
           }
           return `${tooltipItem.value}`;
