@@ -628,8 +628,10 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
               counter++;
             });
           const deleteSubscriber = forkJoin(forkObj).subscribe(res => {
-            if (res)
+            if (res) {
               this.getBusinessRuleList(this.schemaId);
+              this.getAllBusinessRulesList(this.moduleId, '', '');
+            }
           });
           // const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
           //   this.getBusinessRuleList(this.schemaId);
