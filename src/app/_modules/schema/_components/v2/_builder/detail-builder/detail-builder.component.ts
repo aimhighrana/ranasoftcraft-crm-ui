@@ -113,4 +113,8 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
 
   }
 
+  runCompleted() {
+    this.getSchemaDetails(this.moduleId, this.schemaId, this.variantId);
+  }
+
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
@@ -176,6 +176,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   selectFieldOptions: DropDownValue[] = [];
 
   /**
+   * Emit event to details builder component when schema running is completed
+   */
+  @Output() runCompleted = new EventEmitter();
+
+  /**
    * Hold info about current user
    */
   userDetails: Userdetails;
@@ -299,6 +304,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
       this.isInRunning = changes.isInRunning.currentValue;
+      this.isRefresh = true;
     }
 
     if (this.isRefresh && !this.isInRunning) {
@@ -366,7 +372,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   ngOnInit(): void {
-
     this.activatedRouter.queryParamMap.subscribe(ar=>{
       if(!this.isRefresh) {
         const nodeId = ar.get('node') || 'header';
@@ -1504,11 +1509,27 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  runCompleted($event) {
-    this.isInRunning = false;
-    this.getData();
+  onRunCompleted($event) {
+     this.isInRunning = false;
+     this.runCompleted.emit($event);
   }
 
+  testFn() {
+    // update state of columns
+    this.manageStaticColumns();
+    this.calculateDisplayFields();
+    this.selection.clear();
+    const status = this.activeTab;
+    if (status === 'error' || status === 'success') {
+      this.getData(this.filterCriteria.getValue(), this.sortOrder);
+    } else {
+      this.getData();
+    }
+
+    if (this.userDetails) {
+      this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
+    }
+  }
   /**
    * get module info based on module id
    * @param id module id
