@@ -2,7 +2,7 @@
     <div class="f-row-spacer-half"></div>
     <div class="f-row">
         <ng-template [ngIf]="schemaInfo">
-            <lib-text-line type="leading">{{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+            <lib-text-line type="leading">{{ moduleInfo?.moduleDesc || 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}</lib-text-line>
            
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
