@@ -17,10 +17,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-dialog\businessrulelibrary-dialog.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
-         <context-group purpose="location">
-         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
-         <context context-type="linenumber">22</context>
-       </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="weAreSorry" datatype="html">
         <source>WE ARE SORRY</source>
@@ -2354,8 +2354,7 @@
           <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
-       </trans-unit>
-         <trans-unit id="importLogs" datatype="html">
+      <trans-unit id="importLogs" datatype="html">
         <source>Import Logs</source>
         <target>Importar registros</target>
         <context-group purpose="location">
@@ -2371,7 +2370,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="status" datatype="html">
+      <trans-unit id="status" datatype="html">
         <source>Status</source>
         <target>Estado</target>
         <context-group purpose="location">
@@ -2379,7 +2378,7 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="updated" datatype="html">
+      <trans-unit id="updated" datatype="html">
         <source>Updated</source>
         <target>Actualizado</target>
         <context-group purpose="location">
