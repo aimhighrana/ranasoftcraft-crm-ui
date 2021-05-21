@@ -2,7 +2,7 @@
     <div class="f-row-spacer-half"></div>
     <div class="f-row">
         <ng-template [ngIf]="schemaInfo">
-            <lib-text-line type="leading">{{ moduleInfo?.moduleDesc : 'Module' }} /
+            <lib-text-line type="leading">{{ moduleInfo?.moduleDesc || 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}</lib-text-line>
            
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
@@ -277,7 +277,7 @@
                             <ng-container matColumnDef="OBJECTNUMBER" sticky>
                                 <th mat-header-cell *matHeaderCellDef>
                                     <!-- Add class on headercell "coll-visible" -->
-                                    <div mat-sort-header>{{moduleInfo?.moduleDesc || 'Object'}} number</div>
+                                    <div mat-sort-header>{{moduleInfo?.moduleDesc || 'Object number'}}</div>
                                 </th>
                                 <td class="schema-header-cell" mat-cell *matCellDef="let element">   
                                     <!-- add class in mat-cell "vertical-cell" -->
