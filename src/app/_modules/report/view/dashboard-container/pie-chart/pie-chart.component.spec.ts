@@ -56,12 +56,13 @@ describe('PieChartComponent', () => {
 
     // mock data
     const array = [{_datasetIndex:0}];
-    component.chartLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
-    component.filterCriteria = [];
-    const chartData = new PieChartWidget();
-    chartData.fieldId = 'MATL_TYPE';
-    component.pieWidget = new BehaviorSubject<PieChartWidget>(chartData);
-    component.filterCriteria = [];
+    component.chartLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
+    const barWidget: PieChartWidget = new PieChartWidget();
+    barWidget.fieldId = 'MATL_TYPE';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_TYPE';
+    component.pieWidget.next(barWidget);
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
 
     const eleRef = htmlnative.getElementsByTagName('canvas')[0];
     const baseChart = new BaseChartDirective(eleRef[0], null);
@@ -69,7 +70,25 @@ describe('PieChartComponent', () => {
     component.chart = baseChart;
     component.stackClickFilter(null, array);
     // after apply filter criteria then filtercriteria length should be 1
-    expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
+    expect(component.filterCriteria.length).toEqual(2, 'after apply filter criteria then filtercriteria length should be 1');
+
+    component.chartLegend = [{code:'REQUESTOR_DATE',legendIndex:0,text:'REQUESTOR DATE'}];
+    const barWidget1: PieChartWidget = new PieChartWidget();
+    barWidget1.fieldId = 'REQUESTOR_DATE';
+    barWidget1.metaData = {dataType:'DTMS'} as MetadataModel;
+    component.pieWidget.next(barWidget1);
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(3);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    const barWidget2: PieChartWidget = new PieChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    barWidget2.metaData = {dataType:'CHAR'} as MetadataModel;
+    component.pieWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.PIE_CHART, conditionFieldValue:'admin'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(1);
   }));
 
   it('getHeaderMetaData(), should call header metadata api', async(()=>{
@@ -172,6 +191,7 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
   component.filterCriteria = [];
   const chartData = new PieChartWidget();
   chartData.fieldId = 'MATL_TYPE';
+  chartData.metaData = {dataType: 'char'} as MetadataModel;
   component.pieWidget = new BehaviorSubject<PieChartWidget>(chartData);
   component.filterCriteria = [];
   component.legendClick(legendItem);
@@ -319,4 +339,10 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
     expect(component.ngOnChanges).toBeTruthy();
   }));
 
+  it('applyDateFilter()', async (() => {
+    const startDate = '1588204800000';
+    const fieldId = 'REQUESTOR_DATE';
+    const res = component.applyDateFilter(startDate, fieldId);
+    expect(res.conditionFieldEndValue).toEqual('1588291200000');
+  }));
 });

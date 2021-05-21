@@ -57,15 +57,13 @@ describe('StackedbarChartComponent', () => {
     expect(component.filterCriteria.length).toEqual(0);
 
     const array = [{_datasetIndex:0,_index:0}];
-    component.stackClickFilter(null, array);
-
-    component.stackbarLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
+    component.stackbarLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
     component.stachbarAxis = [{code: '10001',text: 'Mat 001 ',legendIndex:0}];
-    component.filterCriteria = [];
     const chartWidget = new StackBarChartWidget();
     chartWidget.fieldId = 'MATL_TYPE';
     chartWidget.groupById = 'MATL_GROUP';
     component.stackBarWidget = new BehaviorSubject<StackBarChartWidget>(chartWidget);
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria, {fieldId: '10001'} as Criteria];
 
     // mock stacked
     const eleRef = htmlnative.getElementsByTagName('canvas')[0];
@@ -74,7 +72,29 @@ describe('StackedbarChartComponent', () => {
     component.chart = baseChart;
     component.stackClickFilter(null, array);
     // after apply filter criteria then filtercriteria length should be 1
-    expect(component.filterCriteria.length).toEqual(2, 'after apply filter criteria then filtercriteria length should be 2');
+    expect(component.filterCriteria.length).toEqual(4, 'after apply filter criteria then filtercriteria length should be 2');
+
+    component.stackbarLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    component.stachbarAxis = [{code: 'no',text: 'No',legendIndex:0}];
+    const barWidget2: StackBarChartWidget = new StackBarChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    barWidget2.groupById = 'CLAIMED';
+    component.stackBarWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.STACKED_BAR_CHART, conditionFieldValue:'admin'} as Criteria, {fieldId: 'CLAIMED', widgetType: WidgetType.STACKED_BAR_CHART, conditionFieldValue:'yes'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(2);
+
+    component.stackbarLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    component.stachbarAxis = [{code: 'no',text: 'No',legendIndex:0}];
+    const barWidget3: StackBarChartWidget = new StackBarChartWidget();
+    barWidget3.fieldId = 'CURRENTUSER';
+    barWidget3.groupById = 'CLAIMED';
+    component.stackBarWidget.next(barWidget3);
+    component.filterCriteria = [];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(2);
   }));
 
 
@@ -378,25 +398,29 @@ describe('StackedbarChartComponent', () => {
 
   it('legendClick(), legend click ', async(()=>{
     const item: ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
-
     component.stackbarLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
-
     const stackBarWidget: StackBarChartWidget = new StackBarChartWidget();
     stackBarWidget.fieldId = 'MATL_TYPE';
+    stackBarWidget.blankValueAlias = 'MATL_TYPE';
     component.stackBarWidget.next(stackBarWidget);
-
     component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
 
     component.legendClick(item);
-
     expect(component.filterCriteria.length).toEqual(2);
 
     component.filterCriteria = [];
-
     component.legendClick(item);
-
     expect(component.filterCriteria.length).toEqual(1);
 
+    const legendItem1 : ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+    component.stackbarLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    const barWidget2: StackBarChartWidget = new StackBarChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    component.stackBarWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.STACKED_BAR_CHART, conditionFieldValue:'admin'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.legendClick(legendItem1);
+    expect(component.filterCriteria.length).toEqual(1);
   }));
 
   it('openColorPalette(), should open color palette dialog', async(()=>{

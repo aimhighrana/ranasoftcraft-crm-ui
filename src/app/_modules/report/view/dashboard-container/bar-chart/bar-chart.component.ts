@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition, WidgetType } from '../../../_models/widget';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -503,6 +503,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
       this.removeOldFilterCriteria(appliedFilters);
       if (appliedFilters.length > 0) {
+        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+        if(res.length !== 0) {
+          res.forEach(val=> {
+            val.conditionFieldValue = clickedLagend.code;
+          })
+        }
         const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLagend.code);
         if (cri.length === 0) {
           const critera1: Criteria = new Criteria();
@@ -511,6 +517,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           critera1.conditionFieldValue = drpCode;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.BAR_CHART;
           appliedFilters.push(critera1);
         }
       } else {
@@ -521,7 +528,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         critera1.conditionFieldValue = drpCode;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.BAR_CHART;
         appliedFilters.push(critera1);
+      }
+      if(this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS') {
+        appliedFilters.shift();
+        appliedFilters.push(this.applyDateFilter(drpCode, fieldId));
       }
       appliedFilters.forEach(app => this.filterCriteria.push(app));
       this.emitEvtFilterCriteria(this.filterCriteria);
@@ -561,7 +573,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     const fieldId = this.barWidget.getValue().fieldId;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
+
       if(appliedFilters.length >0) {
+        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+        if(res.length !== 0) {
+          res.forEach(val=> {
+            val.conditionFieldValue = clickedLegend;
+          })
+        }
         const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
         if(cri.length ===0) {
           const critera1: Criteria = new Criteria();
@@ -570,6 +589,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           critera1.conditionFieldValue = clickedLegend;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.BAR_CHART;
           appliedFilters.push(critera1);
         }
       } else {
@@ -580,7 +600,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.BAR_CHART;
         appliedFilters.push(critera1);
+      }
+      if(this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS') {
+        appliedFilters.shift();
+        appliedFilters.push(this.applyDateFilter(clickedLegend, fieldId));
       }
       appliedFilters.forEach(app => this.filterCriteria.push(app));
       this.emitEvtFilterCriteria(this.filterCriteria);
@@ -818,5 +843,19 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria)
+  }
+
+  applyDateFilter(strtdate: string, fieldId: string) : Criteria{
+    const strtDate = strtdate;
+    const endDate = String(Number(strtdate) + 24*60*60*1000);
+    const critera: Criteria = new Criteria();
+    critera.fieldId = fieldId;
+    critera.conditionFieldId = fieldId;
+    critera.conditionFieldEndValue = endDate;
+    critera.conditionFieldStartValue = strtDate;
+    critera.blockType = BlockType.COND;
+    critera.conditionOperator = ConditionOperator.RANGE;
+    critera.widgetType = WidgetType.BAR_CHART;
+    return critera;
   }
 }

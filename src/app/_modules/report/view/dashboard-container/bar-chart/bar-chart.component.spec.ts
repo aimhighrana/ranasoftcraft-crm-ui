@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget, Criteria, PositionType, AlignPosition, AnchorAlignPosition } from '../../../_models/widget';
-import { BehaviorSubject, of } from 'rxjs';
+import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget, Criteria, PositionType, AlignPosition, AnchorAlignPosition, WidgetType } from '../../../_models/widget';
+import { of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from '@services/widgets/widget.service';
@@ -54,12 +54,13 @@ describe('BarChartComponent', () => {
 
     // mock data
     const array = [{_datasetIndex:0}];
-    component.chartLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
-    component.filterCriteria = [];
-    const chartData = new BarChartWidget();
-    chartData.fieldId = 'MATL_TYPE';
-    component.barWidget = new BehaviorSubject<BarChartWidget>(chartData);
-    component.filterCriteria = [];
+    component.chartLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_TYPE';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_TYPE';
+    component.barWidget.next(barWidget);
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
 
     // mock chart
     const eleRef = htmlnative.getElementsByTagName('canvas')[0];
@@ -68,7 +69,25 @@ describe('BarChartComponent', () => {
     component.chart = baseChart;
     component.stackClickFilter(null, array);
     // after apply filter criteria then filtercriteria length should be 1
-    expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
+    expect(component.filterCriteria.length).toEqual(2, 'after apply filter criteria then filtercriteria length should be 1');
+
+    component.chartLegend = [{code:'REQUESTOR_DATE',legendIndex:0,text:'REQUESTOR DATE'}];
+    const barWidget1: BarChartWidget = new BarChartWidget();
+    barWidget1.fieldId = 'REQUESTOR_DATE';
+    barWidget1.metaData = {dataType:'DTMS'} as MetadataModel;
+    component.barWidget.next(barWidget1);
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(3);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    const barWidget2: BarChartWidget = new BarChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    barWidget2.metaData = {dataType:'CHAR'} as MetadataModel;
+    component.barWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.BAR_CHART, conditionFieldValue:'admin'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(1);
   }));
 
   it('should show bar orienation based on orienation value', async( () => {
@@ -354,24 +373,45 @@ describe('BarChartComponent', () => {
 
   it('legendClick(), legend click ', async(()=>{
     const item: ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
-
     component.chartLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
-
     const barWidget: BarChartWidget = new BarChartWidget();
     barWidget.fieldId = 'MATL_TYPE';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_TYPE';
     component.barWidget.next(barWidget);
-
     component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
-
     component.legendClick(item);
-
     expect(component.filterCriteria.length).toEqual(2);
 
     component.filterCriteria = [];
-
     component.legendClick(item);
-
     expect(component.filterCriteria.length).toEqual(1);
 
+    const legendItem : ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+    component.chartLegend = [{code:'REQUESTOR_DATE',legendIndex:0,text:'REQUESTOR DATE'}];
+    const barWidget1: BarChartWidget = new BarChartWidget();
+    barWidget1.fieldId = 'REQUESTOR_DATE';
+    barWidget1.metaData = {dataType:'DTMS'} as MetadataModel;
+    component.barWidget.next(barWidget1);
+    component.legendClick(legendItem);
+    expect(component.filterCriteria.length).toEqual(2);
+
+    const legendItem1 : ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    const barWidget2: BarChartWidget = new BarChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    barWidget2.metaData = {dataType:'CHAR'} as MetadataModel;
+    component.barWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.BAR_CHART, conditionFieldValue:'admin'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.legendClick(legendItem1);
+    expect(component.filterCriteria.length).toEqual(1);
+  }));
+
+  it('applyDateFilter()', async (() => {
+    const startDate = '1588204800000';
+    const fieldId = 'REQUESTOR_DATE';
+    const res = component.applyDateFilter(startDate, fieldId);
+    expect(res.conditionFieldEndValue).toEqual('1588291200000');
   }));
 });
