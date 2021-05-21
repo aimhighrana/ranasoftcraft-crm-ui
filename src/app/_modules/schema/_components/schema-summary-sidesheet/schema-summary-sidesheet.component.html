@@ -62,8 +62,8 @@
                     <mat-label i18n="@@threshold">Threshold</mat-label>
                     <div class="f-row slider-row">
                     <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
-                    <!-- <span class="f-col-spacer-half"></span>
-                    <div>{{schemaThresholdControl.value}}%</div> -->
+                    <span class="f-col-spacer-half"></span>
+                    <div>{{schemaThresholdControl.value}}%</div>
                     </div>
                 </div>  
                 <mat-accordion>
