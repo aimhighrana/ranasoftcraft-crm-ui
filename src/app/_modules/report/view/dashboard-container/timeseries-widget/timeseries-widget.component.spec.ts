@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimeseriesWidgetComponent } from './timeseries-widget.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor, WidgetType, Criteria, DisplayCriteria, Widget } from '@modules/report/_models/widget';
+import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor, WidgetType, Criteria, DisplayCriteria } from '@modules/report/_models/widget';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WidgetService } from '@services/widgets/widget.service';
@@ -14,7 +14,6 @@ import { MetadataModel } from '@models/schema/schemadetailstable';
 describe('TimeseriesWidgetComponent', () => {
   let component: TimeseriesWidgetComponent;
   let fixture: ComponentFixture<TimeseriesWidgetComponent>;
-  let widgetServicespy: WidgetService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,7 +30,6 @@ describe('TimeseriesWidgetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TimeseriesWidgetComponent);
     component = fixture.componentInstance;
-    widgetServicespy = fixture.debugElement.injector.get(WidgetService);
   });
 
   it('emitDateChangeValues(), emit after date change', async(() => {
@@ -317,13 +315,13 @@ describe('TimeseriesWidgetComponent', () => {
     dataObj = {x:'1-10-2005', y:2};
     component.dateAndCountFormat(dataObj, obj,dataArr);
 
-    expect(obj.Week).toEqual(dataObj.x+'\t');    
+    expect(obj.Week).toEqual(dataObj.x+'\t');
   }));
 
   it('dateAndCountFormat()', async(() => {
     let dataArr = {label:'2019'};
     const obj = {} as any;
-    let dataObj = {};
+    const dataObj = {};
     let widgetTimeseries = {seriesWith: SeriesWith.year} as WidgetTimeseries;
     component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
     component.dateAndCountFormat(dataObj, obj, dataArr);
