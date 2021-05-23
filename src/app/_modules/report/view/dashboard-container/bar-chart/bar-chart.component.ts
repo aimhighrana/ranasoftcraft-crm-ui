@@ -54,7 +54,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
-          if (isNaN(+tooltipItem.value)) {
+          if (isNaN(parseInt(tooltipItem.value, 10))) {
             return '';
           }
           return `${tooltipItem.value}`;
@@ -173,7 +173,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.subscriptions.push(getDisplayCriteria);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.barWidget.complete();
     this.barWidget.unsubscribe();
     this.subscriptions.forEach(sub => {
