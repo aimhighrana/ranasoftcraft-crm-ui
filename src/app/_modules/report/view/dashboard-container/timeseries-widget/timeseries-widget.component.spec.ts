@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimeseriesWidgetComponent } from './timeseries-widget.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor, WidgetType, Criteria } from '@modules/report/_models/widget';
+import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor, WidgetType, Criteria, DisplayCriteria } from '@modules/report/_models/widget';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WidgetService } from '@services/widgets/widget.service';
@@ -281,7 +281,7 @@ describe('TimeseriesWidgetComponent', () => {
 
   it('dateAndCountFormat()', async(() => {
     const dataArr = {label:'2019'};
-    const obj = {} as any;;
+    const obj = {} as any;
     let dataObj = {x:'2005', y:2};
     let widgetTimeseries = {seriesWith: SeriesWith.year} as WidgetTimeseries;
     component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
@@ -316,5 +316,67 @@ describe('TimeseriesWidgetComponent', () => {
     component.dateAndCountFormat(dataObj, obj,dataArr);
 
     expect(obj.Week).toEqual(dataObj.x+'\t');
+  }));
+
+  it('dateAndCountFormat()', async(() => {
+    let dataArr = {label:'2019'};
+    const obj = {} as any;
+    const dataObj = {};
+    let widgetTimeseries = {seriesWith: SeriesWith.year} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    component.dateAndCountFormat(dataObj, obj, dataArr);
+
+    expect(obj.Year).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.day} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'1-10-2005'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Day).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.month} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'November'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Month).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.quarter} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'Q-1'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Quater).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.week} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'Week-1'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Week).toEqual(dataArr.label+'\t');
+  }));
+
+  it('checkTextCode()', async(() => {
+    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    const arrBucket = {key: 'admin', text: 'Administrator'};
+    const arrBucket1 = {};
+    let res = component.checkTextCode(arrBucket);
+    let res1 = component.checkTextCode(arrBucket1);
+
+    expect(res).toEqual(arrBucket.key);
+    expect(res1).toEqual('');
+
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    res = component.checkTextCode(arrBucket);
+    res1 = component.checkTextCode(arrBucket1);
+
+    expect(res).toEqual(arrBucket.text);
+    expect(res1).toEqual('');
+
+    component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
+    res = component.checkTextCode(arrBucket);
+
+    expect(res).toEqual(`${arrBucket.key} -- ${arrBucket.text}`);
   }));
 });

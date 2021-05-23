@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
+import { Context } from 'chartjs-plugin-datalabels';
 
 
 const btnArray: ButtonArr[] = [
@@ -86,6 +87,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     plugins: {
       datalabels: {
         display: false,
+        formatter: ((value: any, context: Context)=> {
+          return value;
+        })
       },
       zoom: {
         pan: {
@@ -180,7 +184,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.clearFilterCriteria();
     }
 
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && !this.widgetInf.getValue().isEnableGlobalFilter) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue) {
       this.lablels = [];
       this.chartLegend = [];
       this.widgetInf.next(this.widgetInf.getValue());
@@ -440,7 +444,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           }]
         };
       } else {
-        this.chart.chart.options.scales = {
+        this.timeSeriesOption.scales = {
           xAxes: [{
             type: 'time',
             time: {
@@ -665,6 +669,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.chartLegend =  _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
     datasets =  _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
     }
+    console.log(datasets);
 
     return datasets;
   }
@@ -1076,7 +1081,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.timeSeriesOption.plugins.datalabels = {
         align: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
         anchor: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
-        display: 'auto'
+        display: 'auto',
+        formatter: ((value: any, context: Context)=> {
+          return value ? value.y ? value.y : value : value;
+        })
       };
       if (this.chart) {
         this.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
