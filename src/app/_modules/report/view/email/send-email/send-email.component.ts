@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../../../_services/user/userservice.service'
@@ -16,7 +16,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   templateUrl: './send-email.component.html',
   styleUrls: ['./send-email.component.scss']
 })
-export class SendEmailComponent implements OnInit {
+export class SendEmailComponent implements OnInit,OnDestroy {
 
   emailFormGrp: FormGroup;
   users: UserMdoModel[] = [];

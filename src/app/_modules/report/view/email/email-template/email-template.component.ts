@@ -10,7 +10,7 @@ import { EmailTemplate } from '../../../_models/email';
 })
 export class EmailTemplateComponent implements OnInit {
 
-  templates: EmailTemplate[] = [{ templateName: "No", subject: "", message: "" }, { templateName: "Template 1", subject: "Subject - Template 1", message: "Template 2" }]
+  templates: EmailTemplate[] = [{ templateName: 'No', subject: '', message: '' }, { templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }]
   selected: EmailTemplate = this.templates[0];
 
 

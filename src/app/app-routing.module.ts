@@ -4,7 +4,6 @@ import { PageNotFoundComponent } from './_modules/shared/_components/page-not-fo
 import { NewBusinessRulesComponent } from '@modules/schema/_components/new-business-rules/new-business-rules.component';
 import { SystemTrayComponent } from '@modules/home/_components/system-tray/system-tray.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { EmailTemplateComponent } from '@modules/report/view/email/email-template/email-template.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home/dash/welcome', pathMatch: 'full' },

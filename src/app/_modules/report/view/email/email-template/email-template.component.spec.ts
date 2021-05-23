@@ -40,7 +40,7 @@ describe('EmailTemplateComponent', () => {
   });
 
   it('onTemplateSelection(), should set template' , () => {
-    var templates: EmailTemplate[] =  [{ templateName: "Template 1", subject: "Subject - Template 1", message: "Template 2" }];
+    const templates: EmailTemplate[] =  [{ templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }];
     spyOn(router, 'navigate');
     spyOnProperty(reportService.selectedTemplate, 'value', 'get').and.returnValue(templates[0]);
     component.onTemplateSelection();
