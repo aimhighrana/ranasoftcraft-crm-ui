@@ -7,11 +7,14 @@ import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@mo
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { ObjectTypeResponse } from '@models/schema/schema';
+import { BehaviorSubject } from 'rxjs';
+import { EmailTemplate } from '../_models/email';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
+  selectedTemplate: BehaviorSubject<EmailTemplate> = new BehaviorSubject(null);
 
   constructor(
     private http: HttpClient,
@@ -90,5 +93,9 @@ export class ReportService {
 
   public getCustomDatasetFields(objectId: string): Observable<any> {
     return this.http.get<any>(this.endpointAnalyticService.getCustomDatasetFieldsUrl(objectId));
+  }
+
+  public shareReport(request: any,reportId:string): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.shareReport(reportId), request);
   }
 }

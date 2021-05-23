@@ -4,6 +4,7 @@ import { PageNotFoundComponent } from './_modules/shared/_components/page-not-fo
 import { NewBusinessRulesComponent } from '@modules/schema/_components/new-business-rules/new-business-rules.component';
 import { SystemTrayComponent } from '@modules/home/_components/system-tray/system-tray.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { EmailTemplateComponent } from '@modules/report/view/email/email-template/email-template.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home/dash/welcome', pathMatch: 'full' },
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'sb/add-business-rules', component: NewBusinessRulesComponent, outlet: 'sb' },
   { path: 'sb/system-tray', component: SystemTrayComponent, outlet: 'sb' },
   { path: 'sb/task', loadChildren: () => import('./_modules/taskinbox/taskinbox.module').then((m) => m.TaskinboxModule), outlet: 'sb' },
+  { path: 'outer/report', loadChildren: () => import('./_modules/report/report.module').then((m) => m.ReportModule), outlet: 'outer' },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent },
 ];
