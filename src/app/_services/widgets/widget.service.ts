@@ -142,8 +142,10 @@ export class WidgetService {
   /**
    * Call http to copy / duplicate a report
    */
-  public copyReport(reportId: string, reportName:string) : Observable<DuplicateReport> {
-    return this.http.post<DuplicateReport>(this.endpointAnalyticService.copyReport(reportId, reportName), {});
+  public copyReport(reportId: string, reportName: string) : Observable<DuplicateReport> {
+    return this.http.post<DuplicateReport>(this.endpointAnalyticService.copyReport(reportId), {
+      reportName
+    });
   }
 
   /**

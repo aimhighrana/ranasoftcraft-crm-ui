@@ -1,9 +1,7 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
-            {{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): <b
-                class="step-weight">{{toolbarHeaderText}}</b>
-        </div>
+        <lib-text-line type="leading">{{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): </lib-text-line>
+        <lib-text-line type="leading" weight="500">{{toolbarHeaderText}}</lib-text-line>
         <span class="f-spacer"></span>
         <lib-button type="plain" (click)="closeDialog()" iconFontType="light" icon="times"></lib-button>
     </div>
@@ -11,6 +9,7 @@
     <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
 
     <div class="row-spacer"></div>
+
     <lib-banner *ngIf="uploadError.status" status="error" [text]="uploadError.message"></lib-banner>
 
     <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
@@ -18,7 +17,7 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col upload-col" *ngIf="uploadLoader && !uploadError.status">
-                <mat-spinner color="primary" diameter="30"></mat-spinner>
+            <lib-spinner color="primary" diameter="30"></lib-spinner>
             </div>
 
             <div class="f-col upload-col" *ngIf="!uploadLoader">
@@ -69,11 +68,11 @@
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <lib-input i18n-label="@@module_name" label="Module name" [hasError]="stepSubmitted && requestForm.controls['objectDesc'].errors"
-            [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''"
+            [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : 'Module name is required'"
             [formControl]="formField('objectDesc')"></lib-input>
-                <mat-error i18n="@@module_name_required" *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
+                <!-- <mat-error i18n="@@module_name_required" *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
-                </mat-error>
+                </mat-error> -->
                 <div class="row-spacer"></div>
 
                 <div class="colunm-listing">
@@ -125,11 +124,11 @@
             <div class="f-col">
                 <lib-input [value]="requestForm.get('core_schema').value.discription" i18n-label="@@schema_name" [label]="'Schema name'"
                 (valueChange)="setschemaName($event)"
-                [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''"
+                [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : 'Schema name is required'"
                 [disabled]="isdisabled(requestForm.controls.schemaId.value)" [hasError]="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)"></lib-input>
-                <mat-error i18n="@@schema_name_required" *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
+                <!-- <mat-error i18n="@@schema_name_required" *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
                     Schema name is required
-                </mat-error>
+                </mat-error> -->
 
                 <div class="row-spacer"></div>
 
@@ -171,7 +170,7 @@
                         </div>
                     </div>
                     <div class="col col-x4"><strong i18n="@@enabled">Enabled</strong></div>
-                    <div class="col"></div>
+                    <div class="col col col-x4 text-end"></div>
                 </div>
 
                 <ng-container>
@@ -219,9 +218,7 @@
                                         <div class="percent-count">{{getWeightage(businessRule)}}%</div>
                                     </div>
                                     <ng-template #notConfigured>
-                                        <lib-chip-list>
-                                            <lib-chip disableRipple="true" type="error" i18n="@@not_configured">Not configured</lib-chip>
-                                        </lib-chip-list>
+                                        <lib-label i18n="@@not_configured" status="error" text="Not configured"></lib-label>
                                     </ng-template>
                                 </div>
 
@@ -246,7 +243,7 @@
                                         <!-- <div class="top-tiparrow"></div> -->
                                         <div class="f-col">
                                             <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
-                                            <lib-radio-group layout="vertical" [(value)]="businessRule.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
+                                            <lib-radio-group layout="vertical" [value]="getSelectedDependantStatus(businessRule.dependantStatus)" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                         </div>
                                     </mat-menu>
                                     <lib-button (click)="deleteBR(businessRule)" type="plain" icon="trash-alt"></lib-button>
@@ -305,7 +302,7 @@
                                                 <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
                                                     <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
-                                                    <lib-radio-group layout="vertical" [(value)]="deps.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
+                                                    <lib-radio-group layout="vertical" [value]="getSelectedDependantStatus(deps.dependantStatus)" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
                                                 </div>
                                             </mat-menu>
                                            
@@ -465,7 +462,7 @@
             
             <lib-button type="plain" *ngIf="headerTextIndex > 2" i18n="@@back" (click)="step('previous')"> Back </lib-button>
             <ng-container *ngIf="progressBar < 100">
-                <a i18n="@@choose_diff_file" *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" class="info-link">Choose a different file</a>
+                <lib-text-line i18n="@@choose_diff_file" *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" textColor="info">Choose a different file</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                
                 <lib-button type="major" i18n="@@next" (click)="step('next', true)" [disabled]="headerTextIndex === 1">Next</lib-button>

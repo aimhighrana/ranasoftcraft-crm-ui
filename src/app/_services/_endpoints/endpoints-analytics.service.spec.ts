@@ -129,8 +129,7 @@ describe('EndpointsAnalyticsService', () => {
   it('copyReport(), should copy a report', async(() => {
     const serviceobj = new EndpointsAnalyticsService();
     const reportId = '6547898676578';
-    const reportName = 'Copy of Test';
-    expect(serviceobj.copyReport(reportId, reportName)).toContain(`/report/copy?reportId=${reportId}&reportName=${encodeURI(reportName)}`);
+    expect(serviceobj.copyReport(reportId)).toContain(`/report/copy?reportId=${reportId}`);
   }));
 
   it('displayCriteria(), should get API string', async(() => {

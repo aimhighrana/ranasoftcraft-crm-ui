@@ -68,8 +68,8 @@ export class ReportService {
     return this.http.post<ReportDashboardPermission[]>(this.endpointService.saveUpdateReportCollaborator(), request);
   }
 
-  public saveUpdateportDownload(request: WidgetDownloadUser[],widgetId:string, userName :string): Observable<ReportDashboardPermission[]> {
-    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId,userName), request);
+  public saveUpdateportDownload(request: WidgetDownloadUser[],widgetId:string, userName :string, conditionList: any): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId,userName), request, {params: {conditionList}});
   }
 
   public deleteCollaborator(permissionId: string): Observable<boolean> {

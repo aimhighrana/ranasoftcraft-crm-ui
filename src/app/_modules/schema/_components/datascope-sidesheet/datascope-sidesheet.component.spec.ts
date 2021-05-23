@@ -119,7 +119,7 @@ describe('DatascopeSidesheetComponent', () => {
       fieldId: 'MATL_TYPE',
       values: ['USA_Region'],
       selectedValues: [{
-        CODE: 'xyz',
+        CODE: 'USA_Region',
         TEXT: 'Data scope from API',
         LANGU: 'English'
       }]

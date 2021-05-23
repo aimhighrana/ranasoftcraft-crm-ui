@@ -10,7 +10,7 @@
     <mat-menu #menu="matMenu" class="navigation-menu">
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
       <mat-menu #tcOptionMenu="matMenu">
-        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
     </mat-menu>
   </div>
@@ -40,7 +40,7 @@
           <div class="f-col">
             <mat-form-field appearance="outline">
               <input type="text" placeholder="Select" aria-label="Number"
-                value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
+                value="{{ selectedDropVals.length ? selectedDropVals[0].display : ''}}" matInput
                 [formControl]="filterFormControl" [matAutocomplete]="auto" (focus)="onfocus()">
               <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
               <mat-icon>close</mat-icon>

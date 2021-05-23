@@ -61,6 +61,7 @@ describe('WidgetService', () => {
 
     const req = httpTestingController.expectOne(`${testurl}`);
     expect(req.request.method).toEqual('POST');
+    expect(req.request.body.reportName).toEqual(reportName);
     req.flush(mockhttpData);
     httpTestingController.verify();
   }));

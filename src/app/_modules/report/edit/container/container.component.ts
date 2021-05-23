@@ -132,7 +132,34 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** store workflow path for workflow dataset */
   workflowPath: WorkflowPath[];
-  workflowPathOb: Observable<WorkflowPath[]> = of([])
+  workflowPathOb: Observable<WorkflowPath[]> = of([]);
+
+  objectDesc: FormControl = new FormControl('');
+
+  /** system fields for Transactional module dataset */
+  systemFields = [
+    {
+      fieldId:'STATUS',
+      fieldDescri:'Status',
+    },
+    {
+      fieldId:'USERMODIFIED',
+      fieldDescri:'User Modified',
+      picklist: '1',
+      dataType: 'AJAX',
+    },{
+      fieldId:'APPDATE',
+      fieldDescri:'Update Date',
+
+      picklist: '0',
+      dataType: 'DTMS',
+    },{
+      fieldId:'STAGE',
+      fieldDescri:'Creation Date',
+      picklist: '0',
+      dataType: 'DTMS',
+    }
+  ] as MetadataModel[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -204,7 +231,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isCustomdataSet: [false],
       pageDefaultSize: [''],
       isFieldDistinct: [false],
-      displayCriteria: [DisplayCriteria.TEXT]
+      displayCriteria: [DisplayCriteria.TEXT],
+      isEnableGlobalFilter: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -257,6 +285,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
         changedWidget.displayCriteria = latestVal.displayCriteria;
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
+        changedWidget.isEnableGlobalFilter = latestVal.isEnableGlobalFilter;
 
         // hold selected field control
         if (typeof latestVal.field !== 'string') {
@@ -525,7 +554,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
           objectType: data.objectType ? data.objectType: '',
-          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false
+          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
+          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
         });
 
         // set value to properties frm ctrl
@@ -562,20 +592,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
+      this.objectDesc.setValue('');
       // make while edit widget ..
       if (!data.isWorkflowdataSet && !data.isCustomdataSet && data.objectType) {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          setTimeout(() => {
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          }, 1000);
+          this.objectDesc.setValue(hasObj);
         }
       } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          setTimeout(() => {
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          }, 1000);
+          this.objectDesc.setValue(hasObj);
         }
       }
     }
@@ -858,7 +885,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
-    (document.getElementById('dataSets') as HTMLInputElement).value = '';
+    this.objectDesc.setValue('');
   }
 
   /**
@@ -973,7 +1000,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const movedX = event.movementX;
     const movedY = event.movementY;
 
-    console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
+    // console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
     // drop added widget
     const dropableWidget = new Widget();
@@ -1015,6 +1042,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.isSerieswithDisabled = false;
       this.preapreNewWidgetPosition(dropableWidget);
+      this.showStyle(dropableWidget);
     }
   }
 

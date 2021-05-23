@@ -142,8 +142,8 @@
                                         <mat-label>Data set</mat-label>
                                     </ng-template>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl"
-                                            (keyup)="searchDataSet($event.target.value)" id="dataSets">
+                                        <input matInput [formControl]="objectDesc" [matAutocomplete]="dataSetCtrl"
+                                            (keyup)="searchDataSet($event.target.value)">
                                         <mat-autocomplete #dataSetCtrl="matAutocomplete"
                                             [displayWith]="displayWithDataSet">
                                             <mat-optgroup label="Module">
@@ -402,18 +402,28 @@
                                     <mat-form-field appearance="outline">
                                         <input matInput [matAutocomplete]="chooseColumn"
                                             (keyup)="searchChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete"
-                                            [displayWith]="chooseColumnDisWith">
-                                            <mat-option *ngFor="let field of headerFields | async"
-                                                value="{{ field.fieldId }}">
-                                                <div (click)="optionClicked($event, field)">
-                                                    <mat-checkbox prosClickStopPropagation
-                                                        (change)="toggleSelection(field)" [checked]="isSelected(field)"
-                                                        color="primary">
-                                                        {{ field.fieldDescri }}
-                                                    </mat-checkbox>
-                                                </div>
-                                            </mat-option>
+                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
+                                            <mat-optgroup label="System fileds">
+                                                <mat-option *ngFor="let field of systemFields
+                                                " value="{{ field.fieldId }}">
+                                                    <div (click)="optionClicked($event, field)">
+                                                        <mat-checkbox prosClickStopPropagation (change)="toggleSelection(field)" [checked]="isSelected(field)"
+                                                            color="primary">
+                                                            {{ field.fieldDescri }}
+                                                        </mat-checkbox>
+                                                    </div>
+                                                </mat-option>
+                                            </mat-optgroup>
+                                            <mat-optgroup label="Header fileds">
+                                                <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}">
+                                                    <div (click)="optionClicked($event, field)">
+                                                        <mat-checkbox prosClickStopPropagation (change)="toggleSelection(field)" [checked]="isSelected(field)"
+                                                            color="primary">
+                                                            {{ field.fieldDescri }}
+                                                        </mat-checkbox>
+                                                    </div>
+                                                </mat-option>
+                                            </mat-optgroup>
                                         </mat-autocomplete>
 
                                     </mat-form-field>
@@ -506,6 +516,10 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </ng-template>
+                            </div>
+
+                            <div class="f-col">
+                                <mat-checkbox color="primary" formControlName="isEnableGlobalFilter">Global Filters not applicable</mat-checkbox>
                             </div>
 
                             <div class="f-col">
@@ -613,7 +627,7 @@
                                     </mat-form-field>
                                 </div>
                                 <ng-template
-                                    [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                    [ngIf]="selStyleWid">
                                     <div class="f-col">
                                         <div class="f-row">
                                             <div class="f-col">

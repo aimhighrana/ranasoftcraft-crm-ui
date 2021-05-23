@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -13,7 +14,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   let component: BusinessrulelibrarySidesheetComponent;
   let fixture: ComponentFixture<BusinessrulelibrarySidesheetComponent>;
   let schemaService: SchemaService;
-
+  let router: Router;
 
 
   beforeEach(async(() => {
@@ -34,6 +35,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     fixture = TestBed.createComponent(BusinessrulelibrarySidesheetComponent);
     component = fixture.componentInstance;
     schemaService = fixture.debugElement.injector.get(SchemaService);
+    router = fixture.debugElement.injector.get(Router);
     // fixture.detectChanges();
   });
 
@@ -168,6 +170,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     coreRequestInfo.moduleId = component.moduleId;
     coreRequestInfo.copiedFrom = coreInfo.brIdStr;
 
+    spyOn(component, 'closeDialogComponent');
     spyOn(schemaService, 'copyDuplicateRule').withArgs(coreRequest).and.returnValue(of());
     spyOn(schemaService, 'createBusinessRule').withArgs(coreRequestInfo).and.returnValue(of(null));
     component.saveSelection();
@@ -180,6 +183,16 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
 
   }));
 
+  it('closeDialogComponent()', async(() => {
+    spyOn(router, 'navigate');
+    component.closeDialogComponent();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { [`${component.outlet}`]: null } }], { queryParamsHandling: 'preserve'});
+  }));
 
+  it('onScrollEnd(), load more rules on scroll end', async(() => {
+    spyOn(component, 'getBusinessRulesList');
+    component.onScrollEnd();
+    expect(component.getBusinessRulesList).toHaveBeenCalledWith(component.moduleId, component.searchString, component.selectedRuleType, true);
+  }));
 
 });

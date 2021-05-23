@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
+import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette, DisplayCriteria, WidgetType } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 'chart.js';
@@ -42,6 +42,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   public pieChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
@@ -112,7 +113,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.lablels = [];
       this.chartLegend = [];
       this.pieWidget.next(this.pieWidget.getValue());
@@ -442,6 +443,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
     if (appliedFilters.length > 0) {
+      const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.PIE_CHART && this.widgetHeader.isEnableGlobalFilter);
+        if(res.length !== 0) {
+          res.forEach(val=> {
+            val.conditionFieldValue = clickedLegend;
+          });
+        }
       const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
       if (cri.length === 0) {
         const critera1: Criteria = new Criteria();
@@ -450,6 +457,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.PIE_CHART;
         appliedFilters.push(critera1);
       }
     } else {
@@ -460,7 +468,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       critera1.conditionFieldValue = clickedLegend;
       critera1.blockType = BlockType.COND;
       critera1.conditionOperator = ConditionOperator.EQUAL;
+      critera1.widgetType = WidgetType.PIE_CHART;
       appliedFilters.push(critera1);
+    }
+    if(this.pieWidget.getValue().metaData.dataType === 'DTMS' || this.pieWidget.getValue().metaData.dataType === 'DATS') {
+      appliedFilters.shift();
+      appliedFilters.push(this.applyDateFilter(clickedLegend, fieldId));
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
     this.emitEvtFilterCriteria(this.filterCriteria);
@@ -479,6 +492,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
       this.removeOldFilterCriteria(appliedFilters);
       if (appliedFilters.length > 0) {
+        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.PIE_CHART && this.widgetHeader.isEnableGlobalFilter);
+        if(res.length !== 0) {
+          res.forEach(val=> {
+            val.conditionFieldValue = clickedLagend.code;
+          })
+        }
         const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLagend.code);
         if (cri.length === 0) {
           const critera1: Criteria = new Criteria();
@@ -487,6 +506,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
           critera1.conditionFieldValue = drpCode;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.PIE_CHART;
           appliedFilters.push(critera1);
         }
       } else {
@@ -497,7 +517,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         critera1.conditionFieldValue = drpCode;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.PIE_CHART;
         appliedFilters.push(critera1);
+      }
+      if(this.pieWidget.getValue().metaData.dataType === 'DTMS' || this.pieWidget.getValue().metaData.dataType === 'DATS') {
+        appliedFilters.shift();
+        appliedFilters.push(this.applyDateFilter(drpCode, fieldId));
       }
       appliedFilters.forEach(app => this.filterCriteria.push(app));
       this.emitEvtFilterCriteria(this.filterCriteria);
@@ -635,5 +660,19 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria);
+  }
+
+  applyDateFilter(strtdate: string, fieldId: string) : Criteria{
+    const strtDate = strtdate;
+    const endDate = String(Number(strtdate) + 24*60*60*1000);
+    const critera: Criteria = new Criteria();
+    critera.fieldId = fieldId;
+    critera.conditionFieldId = fieldId;
+    critera.conditionFieldEndValue = endDate;
+    critera.conditionFieldStartValue = strtDate;
+    critera.blockType = BlockType.COND;
+    critera.conditionOperator = ConditionOperator.RANGE;
+    critera.widgetType = WidgetType.PIE_CHART;
+    return critera;
   }
 }

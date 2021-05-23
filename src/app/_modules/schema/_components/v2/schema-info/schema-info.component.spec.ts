@@ -158,7 +158,9 @@ describe('SchemaInfoComponent', () => {
       moduleId: '1005',
       isCopied: false,
       brWeightage: '19',
-      status: '1'
+      status: '1',
+      dependantStatus: 'SUCCESS',
+      order: 1
     } as CoreSchemaBrInfo;
 
     component.schemaId = '44514235';
@@ -176,6 +178,8 @@ describe('SchemaInfoComponent', () => {
     request.isCopied = br.isCopied;
     request.brWeightage = br.brWeightage;
     request.status = br.status;
+    request.dependantStatus = br.dependantStatus;
+    request.order = br.order;
 
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
@@ -193,7 +197,9 @@ describe('SchemaInfoComponent', () => {
       duplicacyField : [{fieldId:'Test'}],
       duplicacyMaster:[],
       brWeightage: '19',
-      status: '1'
+      status: '1',
+      dependantStatus: 'SUCCESS',
+      order: 1
     } as CoreSchemaBrInfo;
     brDupList.push(brDup);
 
@@ -209,6 +215,8 @@ describe('SchemaInfoComponent', () => {
     requestDup.isCopied = brDup.isCopied;
     requestDup.brWeightage = br.brWeightage;
     requestDup.status = br.status;
+    requestDup.dependantStatus = br.dependantStatus;
+    requestDup.order = br.order;
 
     const params = { objectId: component.moduleId, autoMerge: '', groupId: '' };
     const model = new DuplicateRuleModel();
@@ -245,6 +253,10 @@ describe('SchemaInfoComponent', () => {
     tabLabel = '';
     component.updateFragment(tabLabel);
     expect(component.selectedIndex).toEqual(0)
+
+    component.infoTabs = ['business-rules'];
+    component.updateFragmentByIndex(0);
+    expect(component.selectedIndex).toEqual(1)
   })
 
   it('editBr(), should open side sheet of business rules', async () => {
@@ -396,10 +408,10 @@ describe('SchemaInfoComponent', () => {
   it('getAllBusinessRulesList(), should get all business rules', async() => {
     spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValues(of([]), of([{brId: '1'}, {brId: '2'}] as CoreSchemaBrInfo[]));
     component.moduleId = '1004';
-    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    component.getAllBusinessRulesList(component.moduleId, '', '');
     expect(component.allBusinessRulesList.length).toEqual(0);
 
-    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    component.getAllBusinessRulesList(component.moduleId, '', '', true);
     expect(component.allBusinessRulesList.length).toEqual(2);
 
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalledTimes(2);
@@ -495,9 +507,17 @@ describe('SchemaInfoComponent', () => {
   it('getSchemaDetails(), should get schema details', async() => {
     component.schemaId = '12545';
     component.schemaSummaryForm=new FormGroup({schemaThreshold:new FormControl()});
-    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
+    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValues(of({} as SchemaListDetails), throwError({status: 404}))
+    component.getSchemaDetails(component.schemaId);
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+
+
+    // component.schemaId = '1005';
+    // spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValues(of([]), throwError({status: 404}));
+    // component.getSchemaVariants(component.schemaId, 'RUNFOR');
+    // component.getSchemaVariants(component.schemaId, 'RUNFOR');
+    // expect(schemaVariantService.getAllDataScopeList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
   })
 
   it('updateRole(), should update role of subscriber', async() => {
@@ -965,8 +985,18 @@ describe('SchemaInfoComponent', () => {
   });
 
   it('getModuleInfo(), should get module info', async(() => {
+    component.schemaDetails = new SchemaListDetails();
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([{moduleDesc: 'Test', moduleId: '1005'}]), throwError({message: 'api error'}));
+    component.getModuleInfo();
+    component.getModuleInfo();
+    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    component.schemaDetails = new SchemaListDetails();
     spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
     component.getModuleInfo();
-    expect(component.schemaDetails).toBeUndefined();
+    component.getModuleInfo();
+    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
   }));
 });

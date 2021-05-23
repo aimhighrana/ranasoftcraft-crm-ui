@@ -33,6 +33,10 @@ import { DuplicateReportComponent } from './view/duplicate-report/duplicate-repo
 import { SendEmailComponent } from './view/email/send-email/send-email.component';
 import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
 
+import * as Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+Chart.plugins.register(ChartDataLabels);
+
 @NgModule({
   declarations: [
     DashboardComponent,

@@ -193,24 +193,23 @@
               <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
                 <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                  <mat-option *ngFor="let child of group.childs" [value]="child">
-                    <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
-                      {{child | replaceUnderscorePipe}}
-                    </ng-container>
-                    <ng-container *ngIf="child === 'EQUAL'">
-                      {{'EQUALS'}}
-                    </ng-container>
-                    <ng-container *ngIf="child === 'FIELD2FIELD'">
-                      {{'FIELD TO FIELD'}}
-                    </ng-container>
-                  </mat-option>
+                  <ng-container *ngFor="let child of group.childs">
+                    <mat-option [value]="child">
+                      <ng-container *ngIf="child !== 'EQUAL'">
+                        {{child | replaceUnderscorePipe}}
+                      </ng-container>
+                      <ng-container *ngIf="child === 'EQUAL'">
+                        {{'EQUALS'}}
+                      </ng-container>
+                    </mat-option>
+                  </ng-container>
                 </mat-optgroup>
               </mat-select>
             </div>
 
             <!-- Comparison value -->
             <div class="col" *ngIf="udrBlock.operator !== 'RANGE' && udrBlock.operator !== 'EMPTY' && udrBlock.operator !== 'NOT_EMPTY'">
-              <lib-input label="‎" placeholder="Comparison value" [value]="udrBlock.comparisonValue"
+              <lib-input label="‎" [placeholder]="udrBlock.operator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="udrBlock.comparisonValue"
                 (valueChange)="setComparisonValue($event,i)"></lib-input>
             </div>
 
@@ -273,23 +272,22 @@
                     <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                        <mat-option *ngFor="let child of group.childs" [value]="child">
-                          <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
-                            {{child | replaceUnderscorePipe}}
-                          </ng-container>
-                          <ng-container *ngIf="child === 'EQUAL'">
-                            {{'EQUALS'}}
-                          </ng-container>
-                          <ng-container *ngIf="child === 'FIELD2FIELD'">
-                            {{'FIELD TO FIELD'}}
-                          </ng-container>
-                        </mat-option>
+                        <ng-container *ngFor="let child of group.childs">
+                          <mat-option [value]="child">
+                            <ng-container *ngIf="child !== 'EQUAL'">
+                              {{child | replaceUnderscorePipe}}
+                            </ng-container>
+                            <ng-container *ngIf="child === 'EQUAL'">
+                              {{'EQUALS'}}
+                            </ng-container>
+                          </mat-option>
+                        </ng-container>
                       </mat-optgroup>
                     </mat-select>
                   </div>
 
                   <div class="col" *ngIf="child.operator !== 'RANGE' && child.operator !== 'EMPTY' && child.operator !== 'NOT_EMPTY'">
-                    <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="child.comparisonValue"
+                    <lib-input label="‎" i18n-placeholder="@@comparison_value" [placeholder]="child.operator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="child.comparisonValue"
                       (valueChange)="setComparisonValueForChild($event,child,i)"></lib-input>
                   </div>
 

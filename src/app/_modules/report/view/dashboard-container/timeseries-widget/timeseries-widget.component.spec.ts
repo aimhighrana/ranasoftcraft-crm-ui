@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimeseriesWidgetComponent } from './timeseries-widget.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor } from '@modules/report/_models/widget';
+import { FilterWidget, SeriesWith, WidgetTimeseries, AggregationOperator, ChartType, TimeSeriesWidget, AssginedColor, WidgetType, Criteria, DisplayCriteria } from '@modules/report/_models/widget';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WidgetService } from '@services/widgets/widget.service';
@@ -58,7 +58,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -92,7 +92,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -127,7 +127,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.widgetId = 123;
 
@@ -140,40 +140,32 @@ describe('TimeseriesWidgetComponent', () => {
   }));
 
   it('legendclick(), emit after date change', async(() => {
-
     const item: ChartLegendLabelItem = { datasetIndex: 0 } as ChartLegendLabelItem;
-
     component.chartLegend = [{ code: 'MATL_TYPE', legendIndex: 0, text: 'Material Type' }];
-
-    let timeseriesData: TimeSeriesWidget;
-    let widgetTimeseries: WidgetTimeseries;
-
-    widgetTimeseries = {
-      widgetId: 123, fieldId: 'STATUS', seriesWith: SeriesWith.week, seriesFormat: 'dd.mm.yyyy', aggregationOperator: AggregationOperator.COUNT,
-      chartType: ChartType.LINE,
-      isEnableDatalabels: false,
-      isEnableLegend: false,
-      legendPosition: null,
-      datalabelsPosition: null,
-      xAxisLabel: '100',
-      yAxisLabel: '100',
-      scaleFrom: 0,
-      scaleTo: 1000,
-      stepSize: 100,
-      dataSetSize: 100,
-      startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null,
+    const widgetTimeseries = {
+      fieldId: 'STATUS',
+      groupWith: 'REQUESTOR_DATE',
+      distictWith: 'REGION',
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
-    }
+    } as WidgetTimeseries;
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    component.timeseriesData = {timeSeries: widgetTimeseries, isEnableGlobalFilter : false } as TimeSeriesWidget
 
-    component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
-    const filterWidget = new FilterWidget();
-    filterWidget.fieldId = 'STATUS';
     component.legendClick(item);
-    expect(component.legendClick).toBeTruthy();
+    expect(component.filterCriteria.length).toEqual(1);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    component.timeseriesData = {timeSeries: {fieldId:'CURRENTUSER'} as WidgetTimeseries, isEnableGlobalFilter : true } as TimeSeriesWidget
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.TIMESERIES, conditionFieldValue:'admin'} as Criteria];
+    component.legendClick(item);
+    expect(component.filterCriteria.length).toEqual(1);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    component.timeseriesData = {timeSeries: {fieldId:'CURRENTUSER'} as WidgetTimeseries, isEnableGlobalFilter : false } as TimeSeriesWidget
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.TIMESERIES, conditionFieldValue:'admin'} as Criteria];
+    component.legendClick(item);
+    expect(component.filterCriteria.length).toEqual(2);
   }));
 
   it('getRandomColor(), Random Colour', async(() => {
@@ -266,7 +258,7 @@ describe('TimeseriesWidgetComponent', () => {
       metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
-    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
+    timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries, isEnableGlobalFilter : false }
 
     component.timeseriesData = timeseriesData;
     component.filterCriteria = [];
@@ -279,14 +271,17 @@ describe('TimeseriesWidgetComponent', () => {
 
   it('codeTextValue()', async(() => {
     component.timeseriesData = {timeSeries : {metaData :{picklist:'1', fieldId:'MATL_GROUP'}}} as TimeSeriesWidget;
-    const innerBucket = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
+    let innerBucket: any = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
     const fieldid = 'MATL_GROUP';
     expect(component.codeTextValue(innerBucket,fieldid)).toEqual({c:'200010', t:'testing'});
+
+    innerBucket = {key:'200010'};
+    expect(component.codeTextValue(innerBucket,fieldid)).toEqual('200010');
   }));
 
   it('dateAndCountFormat()', async(() => {
     const dataArr = {label:'2019'};
-    const obj = {} as any;;
+    const obj = {} as any;
     let dataObj = {x:'2005', y:2};
     let widgetTimeseries = {seriesWith: SeriesWith.year} as WidgetTimeseries;
     component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
@@ -321,5 +316,67 @@ describe('TimeseriesWidgetComponent', () => {
     component.dateAndCountFormat(dataObj, obj,dataArr);
 
     expect(obj.Week).toEqual(dataObj.x+'\t');
+  }));
+
+  it('dateAndCountFormat()', async(() => {
+    let dataArr = {label:'2019'};
+    const obj = {} as any;
+    const dataObj = {};
+    let widgetTimeseries = {seriesWith: SeriesWith.year} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    component.dateAndCountFormat(dataObj, obj, dataArr);
+
+    expect(obj.Year).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.day} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'1-10-2005'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Day).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.month} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'November'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Month).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.quarter} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'Q-1'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Quater).toEqual(dataArr.label+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.week} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataArr = {label:'Week-1'};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Week).toEqual(dataArr.label+'\t');
+  }));
+
+  it('checkTextCode()', async(() => {
+    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    const arrBucket = {key: 'admin', text: 'Administrator'};
+    const arrBucket1 = {};
+    let res = component.checkTextCode(arrBucket);
+    let res1 = component.checkTextCode(arrBucket1);
+
+    expect(res).toEqual(arrBucket.key);
+    expect(res1).toEqual('');
+
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    res = component.checkTextCode(arrBucket);
+    res1 = component.checkTextCode(arrBucket1);
+
+    expect(res).toEqual(arrBucket.text);
+    expect(res1).toEqual('');
+
+    component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
+    res = component.checkTextCode(arrBucket);
+
+    expect(res).toEqual(`${arrBucket.key} -- ${arrBucket.text}`);
   }));
 });

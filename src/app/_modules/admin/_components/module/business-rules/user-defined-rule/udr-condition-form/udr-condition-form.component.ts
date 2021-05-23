@@ -209,7 +209,6 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     specialOpe.desc = 'Special Operators';
     specialOpe.childs = [];
     specialOpe.childs.push('REGEX');
-    specialOpe.childs.push('FIELD2FIELD');
     specialOpe.childs.push('LOCATION');
     return [genericOp,onlyNum,specialOpe];
   }

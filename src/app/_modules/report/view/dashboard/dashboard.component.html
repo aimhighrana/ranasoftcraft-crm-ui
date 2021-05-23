@@ -1,9 +1,13 @@
 <div class="root">
+	<div class="f-row-spacer-half"></div>
 	<ng-template [ngIf]="reportExist">
-		<div class="f-row breadcrum-toolbar">
-			<div class="display-heading-large">
-				{{reportName ? reportName: 'Untitled'}}
+		<div class="f-row">
+			<div class="breadcrum-toolbar">
+				<lib-text-line type="leading" [enableWrap]="true">
+					{{reportName ? reportName: 'Untitled'}}
+				</lib-text-line>
 			</div>
+			
 			<div class="f-spacer"></div>
 			<lib-button-group>
 				<lib-button *ngIf="showClearFilterBtn" (mouseup)="clearFilters()" type="minor">Clear filter(s)

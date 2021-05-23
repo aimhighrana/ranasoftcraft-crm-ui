@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
@@ -176,6 +176,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   selectFieldOptions: DropDownValue[] = [];
 
   /**
+   * Emit event to details builder component when schema running is completed
+   */
+  @Output() runCompleted = new EventEmitter();
+
+  /**
    * Hold info about current user
    */
   userDetails: Userdetails;
@@ -299,6 +304,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
       this.isInRunning = changes.isInRunning.currentValue;
+      this.isRefresh = true;
     }
 
     if (this.isRefresh && !this.isInRunning) {
@@ -337,7 +343,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
       if (res) {
-        this.getData();
+        // this.getData();
       }
     });
 
@@ -366,7 +372,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   ngOnInit(): void {
-
     this.activatedRouter.queryParamMap.subscribe(ar=>{
       if(!this.isRefresh) {
         const nodeId = ar.get('node') || 'header';
@@ -388,8 +393,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
      */
     this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
       if (result && !result.editActive) {
-        this.selectedFields = result.selectedFields ? result.selectedFields : [];
-        this.calculateDisplayFields();
+        this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
         if (result.tableActionsList && result.tableActionsList.length) {
           this.tableActionsList = result.tableActionsList
         }
@@ -1504,6 +1509,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  onRunCompleted($event) {
+     this.isInRunning = false;
+     this.runCompleted.emit($event);
+  }
+
   /**
    * get module info based on module id
    * @param id module id
@@ -1632,6 +1642,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           res.forEach(node => {
             if(node.fieldsList && node.fieldsList.length) {
               this.columns[node.nodeId] = [];
+              node.fieldsList = node.fieldsList.sort((a, b) => a.order - b.order);
               node.fieldsList.forEach(f => {
                 if(!allFields.find(fld => fld.fieldId === f.fieldId)) {
                   allFields.push(f);

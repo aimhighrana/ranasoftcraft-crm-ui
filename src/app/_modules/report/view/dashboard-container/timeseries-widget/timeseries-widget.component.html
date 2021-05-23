@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z0 widget" *ngIf="dataSet">
+<mat-card class="mat-elevation-z0 widget" *ngIf="dataSet && chartType">
   <div class="f-row breadcrum-toolbar">
     <div class="display-heading-large">
       {{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
@@ -10,7 +10,7 @@
       <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
       <mat-menu #tcOptionMenu="matMenu">
-        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
       <!-- <button mat-menu-item (click)="openColorPalette()">Color palette</button> -->
     </mat-menu>
@@ -47,13 +47,13 @@
     <ng-template [ngIf]="!isGroupByChart" [ngIfElse]="groupTimeSeries">
       <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize" baseChart [datasets]="dataSet"
         class="inner-flexcol-12" [labels]="dataSetlabel" [options]="timeSeriesOption" [plugins]="lineChartPlugins"
-        chartType="{{timeseriesData.timeSeries ? timeseriesData.timeSeries.chartType ? timeseriesData.timeSeries.chartType.toLowerCase() : 'line' :'line'}}">
+        [chartType]="chartType">
       </canvas>
     </ng-template>
     <ng-template #groupTimeSeries>
       <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize" baseChart [datasets]="dataSet"
         class="inner-flexcol-12" [labels]="dataSetlabel" [options]="timeSeriesOption" [plugins]="lineChartPlugins"
-        chartType="{{timeseriesData.timeSeries ? timeseriesData.timeSeries.chartType ? timeseriesData.timeSeries.chartType.toLowerCase() : 'line' : 'line'}}">
+        [chartType]="chartType">
       </canvas>
     </ng-template>
   </mat-card-content>

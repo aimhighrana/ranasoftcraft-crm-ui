@@ -93,7 +93,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.reportingListWidget.next(this.reportingListWidget.getValue());
     }
   }
@@ -260,7 +260,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                 }
               });
               let textvalue = valArray.toString();
-              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
+              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields === column) : null;
               textvalue = textvalue === 'null' ? '' : textvalue
               let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
               codeValue = codeValue === 'null' ? '' : codeValue;
@@ -317,7 +317,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   *
   */
  downloadCSV(): void {
-  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], {queryParamsHandling: 'preserve'})
+  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], { queryParams: { conditionList: `${JSON.stringify(this.filterCriteria)}` }, queryParamsHandling: 'merge' })
 }
 
   /**

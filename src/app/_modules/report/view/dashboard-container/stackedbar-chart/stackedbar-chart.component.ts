@@ -4,7 +4,7 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria, WidgetType } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -44,10 +44,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   arrayBuckets :any[];
   listxAxis2 :any[]=new Array();
   barChartLabels: Label[] = new Array();
-  barChartColors:Array<any> = [{backgroundColor: ['red', 'yellow', 'green', 'orange','pink']}];
   barChartData: any[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
   barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
@@ -103,7 +103,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
   }
   ngOnChanges(changes: SimpleChanges):void{
-    this.stackBarWidget.next(this.stackBarWidget.getValue());
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
+      this.stackBarWidget.next(this.stackBarWidget.getValue());
+    }
+
     if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }
@@ -317,6 +320,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
       if(appliedFilters.length >0) {
+        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+        if(res.length !== 0) {
+          res.forEach(val=> {
+            val.conditionFieldValue = clickedLegend;
+          })
+        }
         const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
         if(cri.length ===0) {
           const critera1: Criteria = new Criteria();
@@ -325,6 +334,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           critera1.conditionFieldValue = clickedLegend;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.STACKED_BAR_CHART;
           appliedFilters.push(critera1);
         }
       } else {
@@ -335,6 +345,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.STACKED_BAR_CHART;
         appliedFilters.push(critera1);
       }
       appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -524,6 +535,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   updateLabelsaxis2():void{
+    this.barChartData = [];
     this.listxAxis2.forEach(singleLis=>{
         const singleobj= {} as any;
         singleobj.data=this.dataObj[singleLis];
@@ -564,6 +576,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.removeOldFilterCriteria(appliedFilters);
           // for xaxis 1
           if(appliedFilters.length >0) {
+            const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+            if (res.length !== 0) {
+              res.forEach(val => {
+                val.conditionFieldValue = xvalCode1;
+              })
+            }
             const cri = appliedFilters.filter(fill => fill.conditionFieldValue === xvalCode1);
             if(cri.length ===0) {
               const critera1: Criteria = new Criteria();
@@ -572,6 +590,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
               critera1.conditionFieldValue = xvalCode1;
               critera1.blockType = BlockType.COND;
               critera1.conditionOperator = ConditionOperator.EQUAL;
+              critera1.widgetType = WidgetType.STACKED_BAR_CHART;
               appliedFilters.push(critera1);
             }
           } else {
@@ -582,6 +601,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             critera1.conditionFieldValue = xvalCode1;
             critera1.blockType = BlockType.COND;
             critera1.conditionOperator = ConditionOperator.EQUAL;
+            critera1.widgetType = WidgetType.STACKED_BAR_CHART;
             appliedFilters.push(critera1);
           }
           appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -590,6 +610,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           this.removeOldFilterCriteria(appliedFilters);
           // for xaxis2
           if(appliedFilters.length >0) {
+            const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+            if (res.length !== 0) {
+              res.forEach(val => {
+                val.conditionFieldValue = xvalCode2;
+              })
+            }
             const cri = appliedFilters.filter(fill => fill.conditionFieldValue === xvalCode2);
             if(cri.length ===0) {
               const critera1: Criteria = new Criteria();
@@ -598,6 +624,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
               critera1.conditionFieldValue = xvalCode2;
               critera1.blockType = BlockType.COND;
               critera1.conditionOperator = ConditionOperator.EQUAL;
+              critera1.widgetType = WidgetType.STACKED_BAR_CHART;
               appliedFilters.push(critera1);
             }
           } else {
@@ -608,6 +635,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             critera1.conditionFieldValue = xvalCode2;
             critera1.blockType = BlockType.COND;
             critera1.conditionOperator = ConditionOperator.EQUAL;
+            critera1.widgetType = WidgetType.STACKED_BAR_CHART;
             appliedFilters.push(critera1);
           }
           appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -756,7 +784,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }],
       }
     }
-    this.chart.chart.options.scales = this.barChartOptions.scales;
+    if (this.chart) {
+      this.chart.options.scales = this.barChartOptions.scales;
+      this.chart.chart.options.scales = this.barChartOptions.scales;
+    }
   }
 
   /**

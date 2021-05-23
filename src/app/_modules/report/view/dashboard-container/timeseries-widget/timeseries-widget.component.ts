@@ -5,14 +5,16 @@ import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { ButtonArr, ChartLegend, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
+import { ButtonArr, ChartLegend, ChartType, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette, WidgetType } from '../../../_models/widget';
 import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import ChartDataLables from 'chartjs-plugin-datalabels';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChartType as CType} from 'chart.js';
+import { Context } from 'chartjs-plugin-datalabels';
+
 
 const btnArray: ButtonArr[] = [
   { id: 0, value: 'millisecond', isActive: false },
@@ -29,6 +31,7 @@ const btnArray: ButtonArr[] = [
 })
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
+  chartType: CType = 'line';
   responseData: any;
   displayCriteriaOptions = [
     {
@@ -52,7 +55,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   widgetInf: BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
   timeseriesData: TimeSeriesWidget = {} as TimeSeriesWidget;
-  public lineChartPlugins = [zoomPlugin];
+  lineChartPlugins = [zoomPlugin];
   chartLegend: ChartLegend[] = [];
   lablels: string[] = [];
   formGroup: FormGroup;
@@ -84,6 +87,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     plugins: {
       datalabels: {
         display: false,
+        formatter: ((value: any, context: Context)=> {
+          return value;
+        })
       },
       zoom: {
         pan: {
@@ -135,11 +141,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        console.log('legend clicked..')
+        if(this.timeseriesData.timeSeries.chartType !== ChartType.BAR && this.timeseriesData.timeSeries.fieldId !== '') {
+          this.legendClick(legendItem);
+        }
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
-      this.stackClickFilter(event, activeElements);
+      console.log('No filter will be applied while we click on bar/line/dots/datalabels.');
+      // this.stackClickFilter(event, activeElements);
     }
   };
 
@@ -324,6 +333,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         critera.conditionFieldStartValue = startdate;
         critera.blockType = BlockType.COND;
         critera.conditionOperator = ConditionOperator.RANGE;
+        critera.widgetType = WidgetType.TIMESERIES;
         appliedFilters.push(critera);
       }
     } else {
@@ -335,6 +345,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       critera.conditionFieldStartValue = startdate;
       critera.blockType = BlockType.COND;
       critera.conditionOperator = ConditionOperator.RANGE;
+      critera.widgetType = WidgetType.TIMESERIES;
       appliedFilters.push(critera);
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -349,6 +360,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getTimeSeriesMetadata(): void {
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.timeseriesData = res;
+      this.chartType = this.timeseriesData.timeSeries.chartType === ChartType.LINE ? 'line' : 'bar';
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
         this.isGroupByChart = true;
@@ -369,28 +381,50 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     if (this.timeseriesData.timeSeries.scaleFrom !== null && this.timeseriesData.timeSeries.scaleFrom !== undefined
       && this.timeseriesData.timeSeries.scaleTo !== null && this.timeseriesData.timeSeries.scaleTo !== undefined
       && this.timeseriesData.timeSeries.stepSize !== null && this.timeseriesData.timeSeries.stepSize !== undefined) {
-      const ticks = { displamin: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
-      this.chart.chart.options.scales = {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: this.timeseriesData.timeSeries.seriesWith
-          },
-          scaleLabel: {
-            display: true,
-            labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
-          }, ticks
-        }],
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
-          }, ticks
-        }]
-      };
+      const ticks = { min: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+        this.timeSeriesOption.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : '',
+            },
+            ticks : {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ?  20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            },ticks
+          }]
+        };
+      } else {
+        this.timeSeriesOption.scales = {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: this.timeseriesData.timeSeries.seriesWith
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+            }, ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            }, ticks
+          }]
+        }
+      }
     } else {
-      if (this.timeseriesData.timeSeries.chartType === 'BAR') {
-        this.chart.chart.options.scales = {
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+        this.timeSeriesOption.scales = {
           xAxes: [{
             scaleLabel: {
               display: true,
@@ -408,9 +442,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
               padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 40 : 0
             }
           }]
-        }
+        };
       } else {
-        this.chart.chart.options.scales = {
+        this.timeSeriesOption.scales = {
           xAxes: [{
             type: 'time',
             time: {
@@ -434,6 +468,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           }]
         };
       }
+    }
+    if (this.chart) {
+      this.chart.options.scales = this.timeSeriesOption.scales;
+      this.chart.chart.options.scales = this.timeSeriesOption.scales;
     }
   }
 
@@ -478,6 +516,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
     if (appliedFilters.length > 0) {
+      const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.TIMESERIES && this.timeseriesData.isEnableGlobalFilter);
+      if (res.length !== 0) {
+        res.forEach(val => {
+          val.conditionFieldValue = clickedLegend;
+        })
+      }
       const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
       if (cri.length === 0) {
         const critera1: Criteria = new Criteria();
@@ -486,6 +530,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
+        critera1.widgetType = WidgetType.TIMESERIES;
         appliedFilters.push(critera1);
       }
     } else {
@@ -496,6 +541,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       critera1.conditionFieldValue = clickedLegend;
       critera1.blockType = BlockType.COND;
       critera1.conditionOperator = ConditionOperator.EQUAL;
+      critera1.widgetType = WidgetType.TIMESERIES;
       appliedFilters.push(critera1);
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -537,8 +583,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         this.transformForGroupBy(responseData, true);
       } else if (metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter) {
         this.tarnsformForShowInPercentage(responseData, metadata.timeSeries.showInPercentage);
-      }
-      else {
+      } else {
         if (this.timeseriesData.timeSeries.chartType === 'BAR') {
           this.dataSet = this.transformDataForComparison(responseData);
         } else {
@@ -624,6 +669,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.chartLegend =  _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
     datasets =  _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
     }
+    console.log(datasets);
 
     return datasets;
   }
@@ -712,7 +758,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
     this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
     this.setLegendForChart(); // calling it to set legend
-    console.log(finalOutput);
     return finalOutput;
   }
 
@@ -982,6 +1027,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
         this.removeOldFilterCriteria(appliedFilters);
         if (appliedFilters.length > 0) {
+          const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.TIMESERIES && this.timeseriesData.isEnableGlobalFilter);
+          if (res.length !== 0) {
+            res.forEach(val => {
+              val.conditionFieldValue = axislabel.code;
+            })
+          }
           const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
           if (cri.length === 0) {
             const critera1: Criteria = new Criteria();
@@ -990,6 +1041,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             critera1.conditionFieldValue = axislabel.code;
             critera1.blockType = BlockType.COND;
             critera1.conditionOperator = ConditionOperator.EQUAL;
+            critera1.widgetType = WidgetType.TIMESERIES;
             appliedFilters.push(critera1);
           }
         } else {
@@ -1000,6 +1052,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           critera1.conditionFieldValue = axislabel.code;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.TIMESERIES;
           appliedFilters.push(critera1);
         }
         appliedFilters.forEach(app => this.filterCriteria.push(app));
@@ -1012,27 +1065,30 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * function to set legend position and visibility
    */
   setLegendForChart(): void {
-    this.timeSeriesOption.legend = {
-      display: this.timeseriesData.timeSeries.isEnableLegend ? true : false,
-      position: this.timeseriesData.timeSeries.legendPosition,
-      onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        // call protype of stacked bar chart componenet
-        if(this.timeseriesData.timeSeries.chartType !== 'BAR'){
-          if(!(this.timeseriesData.timeSeries.groupWith !=='' && this.timeseriesData.timeSeries.fieldId !== '' && this.timeseriesData.timeSeries.distictWith !=='')){
-            this.legendClick(legendItem);
-          }
-        }
+    if (this.timeseriesData.timeSeries.isEnableLegend) {
+      this.timeSeriesOption.legend = {
+        ...this.timeSeriesOption.legend,
+        display: true,
+        position: this.timeseriesData.timeSeries.legendPosition || 'top',
+      };
+      if (this.chart) {
+        this.chart.options.legend = this.timeSeriesOption.legend;
+        this.chart.chart.options.legend = this.timeSeriesOption.legend;
       }
     }
 
-    if (this.timeseriesData.timeSeries && this.timeseriesData.timeSeries.isEnableDatalabels) {
-      this.timeSeriesOption.plugins = {
-        ChartDataLables,
-        datalabels: {
-          align: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
-          anchor: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
-          display: 'auto'
-        }
+    if (this.timeseriesData.timeSeries.isEnableDatalabels) {
+      this.timeSeriesOption.plugins.datalabels = {
+        align: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
+        anchor: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
+        display: 'auto',
+        formatter: ((value: any, context: Context)=> {
+          return value ? value.y ? value.y : value : value;
+        })
+      };
+      if (this.chart) {
+        this.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
+        this.chart.chart.options.plugins.datalabels = this.timeSeriesOption.plugins.datalabels;
       }
     }
     this.setChartProperties();
@@ -1062,10 +1118,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   codeTextValue(innerBucket: any, fieldId: string): any {
     let labelValue = '';
     const hits = innerBucket['top_hits#data_hits'] ? innerBucket['top_hits#data_hits'].hits.hits[0] : null;
-    const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+    const val = hits ? hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
       (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
       (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+        (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null : null;
     if (val) {
       if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN' || this.timeseriesData.timeSeries.metaData.picklist === '35') {
         labelValue = this.getFields(fieldId, val[0].c);

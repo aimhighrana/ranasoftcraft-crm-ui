@@ -193,6 +193,11 @@ export class BrruleSideSheetComponent implements OnInit {
   hasChild = null;
 
   /**
+   * Hold the metadata fields response ....
+   */
+  metataData: MetadataModeleResponse = null;
+
+  /**
    * transformation rule type list
    */
   transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
@@ -292,6 +297,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
         } else {
           this.getFieldsByModuleId();
+          this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
         }
       });
     });
@@ -852,6 +858,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (!this.moduleId) { return };
     this.schemaDetailsService.getMetadataFields(this.moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
+        this.metataData = metadataModeleResponse;
         const keys = Object.keys(metadataModeleResponse.headers);
         keys.forEach((key) => {
           this.fieldsList.push(metadataModeleResponse.headers[key])
@@ -1060,8 +1067,9 @@ export class BrruleSideSheetComponent implements OnInit {
         brWeightage: this.form.value.weightage,
         isCopied: false,
         copiedFrom: '',
-        dependantStatus: this.coreSchemaBrInfo.dependantStatus,
-        order: this.coreSchemaBrInfo.order
+        dependantStatus: this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL,
+        order: this.coreSchemaBrInfo.order || 0,
+        status: this.coreSchemaBrInfo.status || '1'
       } as CoreSchemaBrInfo;
 
       const blocks: UDRBlocksModel[] = [];
@@ -1118,6 +1126,11 @@ export class BrruleSideSheetComponent implements OnInit {
         transFormationSchema: this.mapTransformationData(response, brType),
       }
       const brObject = this.createBrObject(finalFormData);
+
+      brObject.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
+      brObject.order = this.coreSchemaBrInfo.order || 0;
+      brObject.status = this.coreSchemaBrInfo.status || '1';
+
       this.schemaService.createBusinessRule(brObject).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.close();
@@ -1139,7 +1152,9 @@ export class BrruleSideSheetComponent implements OnInit {
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
-      request.dependantStatus=this.coreSchemaBrInfo.dependantStatus? this.coreSchemaBrInfo.dependantStatus:RuleDependentOn.ALL;
+      request.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
+      request.order = this.coreSchemaBrInfo.order || 0;
+      request.status = this.coreSchemaBrInfo.status || '1';
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.close();
@@ -1438,7 +1453,10 @@ export class BrruleSideSheetComponent implements OnInit {
       brInfo: this.form.value.rule_name,
       message: this.form.value.error_message,
       schemaId: this.schemaId,
-      categoryId: this.coreSchemaBrInfo.categoryId
+      categoryId: this.coreSchemaBrInfo.categoryId,
+      dependantStatus: this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL,
+      order: this.coreSchemaBrInfo.order || 0,
+      status: this.coreSchemaBrInfo.status || '1'
     } as CoreSchemaBrInfo;
 
     if (!this.duplicateFormRef.valid) {

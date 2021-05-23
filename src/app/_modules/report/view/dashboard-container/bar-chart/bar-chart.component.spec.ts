@@ -3,15 +3,15 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget } from '../../../_models/widget';
-import { BehaviorSubject, of } from 'rxjs';
+import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget, Criteria, PositionType, AlignPosition, AnchorAlignPosition, WidgetType } from '../../../_models/widget';
+import { of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
-import { PositionType, AlignPosition, AnchorAlignPosition } from '../../../_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedModule } from '@modules/shared/shared.module';
+import { ChartLegendLabelItem } from 'chart.js';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
@@ -54,12 +54,13 @@ describe('BarChartComponent', () => {
 
     // mock data
     const array = [{_datasetIndex:0}];
-    component.chartLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
-    component.filterCriteria = [];
-    const chartData = new BarChartWidget();
-    chartData.fieldId = 'MATL_TYPE';
-    component.barWidget = new BehaviorSubject<BarChartWidget>(chartData);
-    component.filterCriteria = [];
+    component.chartLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_TYPE';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_TYPE';
+    component.barWidget.next(barWidget);
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
 
     // mock chart
     const eleRef = htmlnative.getElementsByTagName('canvas')[0];
@@ -68,7 +69,25 @@ describe('BarChartComponent', () => {
     component.chart = baseChart;
     component.stackClickFilter(null, array);
     // after apply filter criteria then filtercriteria length should be 1
-    expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
+    expect(component.filterCriteria.length).toEqual(2, 'after apply filter criteria then filtercriteria length should be 1');
+
+    component.chartLegend = [{code:'REQUESTOR_DATE',legendIndex:0,text:'REQUESTOR DATE'}];
+    const barWidget1: BarChartWidget = new BarChartWidget();
+    barWidget1.fieldId = 'REQUESTOR_DATE';
+    barWidget1.metaData = {dataType:'DTMS'} as MetadataModel;
+    component.barWidget.next(barWidget1);
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(3);
+
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    const barWidget2: BarChartWidget = new BarChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    barWidget2.metaData = {dataType:'CHAR'} as MetadataModel;
+    component.barWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.BAR_CHART, conditionFieldValue:'admin'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.stackClickFilter(null, array);
+    expect(component.filterCriteria.length).toEqual(1);
   }));
 
   it('should show bar orienation based on orienation value', async( () => {
@@ -83,10 +102,13 @@ describe('BarChartComponent', () => {
     component.chart = baseChart;
     component.getBarConfigurationData();
     expect('horizontalBar').toBe(component.orientation);
+    expect(component.barChartOptions.plugins.zoom.pan.enabled).toBeFalsy();
+    expect(component.barChartOptions.plugins.zoom.zoom.enabled).toBeFalsy();
   }));
 
   it('should have true value for showLegend flag then set legend position', async ( () => {
     const test = new BarChartWidget();
+    test.orientation = Orientation.VERTICAL;
     test.isEnableLegend = true;
     test.legendPosition = PositionType.TOP;
     component.barWidget.next(test);
@@ -98,6 +120,8 @@ describe('BarChartComponent', () => {
     component.getBarConfigurationData();
     expect(component.barWidget.getValue().isEnableLegend).toBe(component.chart.chart.options.legend.display);
     expect(component.barWidget.getValue().legendPosition).toBe(component.chart.chart.options.legend.position);
+    expect(component.barChartOptions.plugins.zoom.pan.enabled).toBeTruthy();
+    expect(component.barChartOptions.plugins.zoom.zoom.enabled).toBeTruthy();
   }));
 
   it('should have true value for showCountOnStack flag then set align and anchor position', async ( () => {
@@ -249,16 +273,44 @@ describe('BarChartComponent', () => {
 
     spyOn(service,'getWidgetData').withArgs('653267432',[]).and.returnValue(of(buckets));
 
-    const pieWidget: BarChartWidget = new BarChartWidget();
-    pieWidget.fieldId = 'MATL_GROUP';
-    pieWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
 
-    component.barWidget.next(pieWidget);
+    component.barWidget.next(barWidget);
 
     component.widgetInfo = new Widget();
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
+  }));
+
+  it('setBarChartData(), should get barChartData', async(()=>{
+    component.lablels = ['HERS -- Manufacturer Part', 'PMB -- PMB', 'ZMRO --  ZMRO-MRO Material'];
+    component.dataSet = ['1', '99', '433122'];
+    component.chartLegend = [
+      {text: 'Manufacturer Part', code: 'HERS', legendIndex: 0},
+      {text: 'PMB', code: 'PMB', legendIndex: 1},
+      {text: ' ZMRO-MRO Material', code: 'ZMRO', legendIndex: 2}
+    ];
+
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
+
+    component.barWidget.next(barWidget);
+
+    component.widgetInfo = new Widget();
+    component.setBarChartData();
+
+    expect(component.barChartData[0].label).toEqual(component.lablels[0]);
+    expect(component.barChartData[0].data).toEqual([1,null,null]);
+
+    expect(component.barChartData[1].label).toEqual(component.lablels[1]);
+    expect(component.barChartData[1].data).toEqual([null,99,null]);
+
+    expect(component.barChartData[2].label).toEqual(component.lablels[2]);
+    expect(component.barChartData[2].data).toEqual([null,null,433122]);
   }));
 
   it('openColorPalette(), should open color palette dialog', async(()=>{
@@ -267,7 +319,7 @@ describe('BarChartComponent', () => {
     component.widgetHeader = {desc: 'Bar Chart'} as WidgetHeader;
     component.barChartData = [
       {
-        fieldCode: 'HAWA',
+        // fieldCode: 'HAWA',
         backgroundColor: '#f1f1f1',
         label: 'Hawa material'
       }
@@ -303,4 +355,63 @@ describe('BarChartComponent', () => {
     expect(component.chartLegend.length).toEqual(2);
   }));
 
+  it('ngOnChanges(), while change rule type', async(()=>{
+    // mock data
+    const changes: import('@angular/core').SimpleChanges = {filterCriteria:{currentValue:true, previousValue:false,firstChange:null,isFirstChange:null}, boxSize:{currentValue:35, previousValue:26,firstChange:null,isFirstChange:null}};
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.boxSize).toEqual(35);
+
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.lablels.length).toEqual(0);
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
+  }));
+
+  it('legendClick(), legend click ', async(()=>{
+    const item: ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+    component.chartLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_TYPE';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_TYPE';
+    component.barWidget.next(barWidget);
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
+    component.legendClick(item);
+    expect(component.filterCriteria.length).toEqual(2);
+
+    component.filterCriteria = [];
+    component.legendClick(item);
+    expect(component.filterCriteria.length).toEqual(1);
+
+    const legendItem : ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+    component.chartLegend = [{code:'REQUESTOR_DATE',legendIndex:0,text:'REQUESTOR DATE'}];
+    const barWidget1: BarChartWidget = new BarChartWidget();
+    barWidget1.fieldId = 'REQUESTOR_DATE';
+    barWidget1.metaData = {dataType:'DTMS'} as MetadataModel;
+    component.barWidget.next(barWidget1);
+    component.legendClick(legendItem);
+    expect(component.filterCriteria.length).toEqual(2);
+
+    const legendItem1 : ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+    component.chartLegend = [{code:'GM',legendIndex:0,text:'GM'}];
+    const barWidget2: BarChartWidget = new BarChartWidget();
+    barWidget2.fieldId = 'CURRENTUSER';
+    barWidget2.metaData = {dataType:'CHAR'} as MetadataModel;
+    component.barWidget.next(barWidget2);
+    component.filterCriteria = [{fieldId: 'CURRENTUSER', widgetType: WidgetType.BAR_CHART, conditionFieldValue:'admin'} as Criteria];
+    component.widgetHeader = {isEnableGlobalFilter:true} as WidgetHeader;
+    component.legendClick(legendItem1);
+    expect(component.filterCriteria.length).toEqual(1);
+  }));
+
+  it('applyDateFilter()', async (() => {
+    const startDate = '1588204800000';
+    const fieldId = 'REQUESTOR_DATE';
+    const res = component.applyDateFilter(startDate, fieldId);
+    expect(res.conditionFieldEndValue).toEqual('1588291200000');
+  }));
 });

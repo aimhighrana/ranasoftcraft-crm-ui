@@ -126,10 +126,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue !== changes.hasFilterCriteria.previousValue && changes.hasFilterCriteria.currentValue ) {
       this.clearFilterCriteria();
+      this.filterFormControl.setValue('');
     }
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
-      if (this.filterWidget && this.filterWidget.value) {
+      if (this.filterWidget && this.filterWidget.value && !this.widgetHeader.isEnableGlobalFilter) {
         this.filteredOptions = of([]);
         this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '');
       }
@@ -766,18 +767,18 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   /**
    * Return the value of DisplayCriteria
    */
-  setDisplayCriteria(c: string, t: string): string {
+  setDisplayCriteria(code: string, text: string): string {
     switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
-        return c || '';
+        return code || '';
         case DisplayCriteria.TEXT:
-          return t || '';
+          return text || '';
         case DisplayCriteria.CODE_TEXT:
-          return `${c || ''} -- ${t || ''}`;
+          return `${code || ''} -- ${text || ''}`;
         default:
           break;
     }
-    return '';
+    return text ? text : code;
   }
 
   /**
