@@ -13,7 +13,7 @@
     <mat-menu #menu="matMenu" class="navigation-menu">
       <lib-filter-option (click)="downloadImage()">Image download (.png)</lib-filter-option>
       <lib-filter-option (click)="downloadCSV()">Data download (.csv)</lib-filter-option>
-      <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
+      <!-- <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button> -->
       <mat-menu #tcOptionMenu="matMenu">
         <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
