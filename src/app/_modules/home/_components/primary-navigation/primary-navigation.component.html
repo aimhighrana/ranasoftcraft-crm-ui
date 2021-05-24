@@ -65,13 +65,17 @@
 <mat-sidenav-content id="primaryContent" class="body-sidecontent">
     <mat-sidenav-container autosize>
         <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav
-            [ngStyle]="{'width.px': secondarySideBarOpened ? '260' : '16'}">
+            [ngStyle]="{'width.px': secondarySideBarOpened ? '260' : '16', 'cursor': grabCursor}">
             <!-- secondary side nav -->
             <pros-secondary-navbar [activatedPrimaryNav]="isNavSelected" [secondarySideBarOpened]="secondarySideBarOpened" (toggleEmitter)="toggleSecondarySideBar()"></pros-secondary-navbar>
         </mat-sidenav>
       <mat-sidenav-content id="secondaryContent" #secondaryContent
         [ngStyle]="{'marginLeft.px': secondarySideBarOpened ? '200' : '73'}">
+        <div #grabberElement class="resizable-grabber"
+            (mousedown)="resizableMousedown($event)"></div>
         <router-outlet></router-outlet>
       </mat-sidenav-content>
     </mat-sidenav-container>
 </mat-sidenav-content>
+
+<div *ngIf="grab" class="resizable-overlay" (window:mouseup)="resizableMouseup($event)" (mouseout)="resizableMouseup($event)" (window:mousemove)="resizableMousemove($event)"></div>

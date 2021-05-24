@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenavContent } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   isNavSelected = ''
 
   udSub: Subscription;
-  userDetails: Userdetails = new Userdetails();;
+  userDetails: Userdetails = new Userdetails();
 
 
   /**
@@ -35,9 +35,19 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('secondaryContent') secondaryContent: MatSidenavContent;
 
   /**
-   * flag to enable/disable resizeable
+   * grabber content viewchild
+   */
+  @ViewChild('grabberElement') grabberElement: ElementRef<HTMLElement>;
+
+  /**
+   * flag to enable/disable resizable
    */
   grab = false;
+
+  /**
+   * cursor when enable/disable resizable
+   */
+  grabCursor = 'default';
 
   /**
    * Subject for notify localstorage for mdo nav state  state ..
@@ -82,7 +92,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngAfterViewInit() {
-    this.enableResizeable();
   }
 
   ngOnDestroy() {
@@ -124,48 +133,39 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   }
 
   /**
-   * function to enable resizeable
+   * function to enable resizable
    */
-  enableResizeable() {
-    const sidebar = document.getElementById('secondarySidenav')
-    const content = this.secondaryContent.getElementRef().nativeElement;
-    const grabberElement = document.createElement('div');
-    grabberElement.style.height = '100%';
-    grabberElement.style.width = '5px';
-    grabberElement.style.backgroundColor = '#ffffff';
-    grabberElement.style.position = 'absolute';
-    grabberElement.style.cursor = 'col-resize';
-    grabberElement.style.resize = 'none';
-    grabberElement.style.overflow = 'auto';
-    grabberElement.addEventListener('mousedown', () => {
-      this.grab = true;
-      sidebar.style.cursor = 'col-resize';
-    });
-    grabberElement.addEventListener('mouseup', () => {
-      this.grab = false;
-      sidebar.style.cursor = 'default';
-    });
-    sidebar.addEventListener('mouseup', () => {
-      this.grab = false;
-      sidebar.style.cursor = 'default';
-      grabberElement.style.backgroundColor = '#fff';
-    });
-    document.addEventListener('mouseup', () => {
-      if (this.grab) {
-        this.grab = false;
-        sidebar.style.cursor = 'default';
+  resizableMousedown(evt: MouseEvent) {
+    this.grab = true;
+    this.grabCursor = 'col-resize';
+    document.body.style.cursor = this.grabCursor;
+    if ((document as any).selection) {
+      (document as any).selection.empty()
+    } else {
+      window.getSelection().removeAllRanges()
+    }
+  }
+
+  /**
+   * function to resize on resizable
+   */
+  resizableMousemove(evt: MouseEvent) {
+    if (this.grab) {
+      const newWidth = evt.clientX - 75 - (this.grabberElement.nativeElement.offsetWidth / 2);
+      const widthPercent = ((window.innerWidth - newWidth) / window.innerWidth * 100);
+      if (widthPercent > 70 && widthPercent < 94) {
+        document.getElementById('secondarySidenav').style.width = newWidth + 'px';
       }
-    })
-    document.addEventListener('mousemove', (e) => {
-      if (this.grab) {
-        const newWidth = e.clientX - 75 - (grabberElement.offsetWidth / 2);
-        const widthPercent = ((window.innerWidth - newWidth) / window.innerWidth * 100);
-        if (widthPercent > 70 && widthPercent < 94) {
-          sidebar.style.width = newWidth + 'px';
-        }
-      }
-    });
-    content.prepend(grabberElement);
+    }
+  }
+
+  /**
+   * function to disable resizable
+   */
+  resizableMouseup(evt: MouseEvent) {
+    this.grab = false;
+    this.grabCursor = 'default';
+    document.body.style.cursor = this.grabCursor;
   }
 
 

@@ -495,7 +495,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     }
     if (this.activatedPrimaryNav === 'report') {
       if (searchString) {
-        this.reportOb = of(this.reportList.filter(fil => fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1));
+        this.reportOb = of(this.reportList.filter(fil => fil.reportName ? fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1 : false));
       } else {
         this.reportOb = of(this.reportList);
       }
