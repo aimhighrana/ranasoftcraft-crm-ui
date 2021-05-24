@@ -610,6 +610,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   transformDataSets(data: any): any {
+    const fieldId = this.timeseriesData.timeSeries.fieldId;
     const finalOutput = new Object();
     const codetextObj = {};
     const cordKeys = ['x', 'y'];
@@ -627,7 +628,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
           if(textTermBucket){
             textTermBucket.forEach(bucket => {
-              label = bucket.key
+              const labelCode = label = this.codeTextValue(innerBucket, fieldId);
+              label = labelCode.t ? labelCode.t : labelCode.c ? labelCode.c : labelCode;
           })
           }
           codetextObj[label] = innerBucket.key;
@@ -893,6 +895,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   emitDateChangeValues() {
     if (this.startDateCtrl.value && this.endDateCtrl.value) {
+      if(this.startDateCtrl.value === this.endDateCtrl.value) {
+        this.endDateCtrl.setValue(String(Number(this.startDateCtrl.value) + 24*60*60*1000));
+      }
       const groupwith = this.timeseriesData.timeSeries.groupWith;
       let filterApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === groupwith);
       this.removeOldFilterCriteria(filterApplied);
