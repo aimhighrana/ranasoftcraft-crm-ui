@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { TransientService } from 'mdo-ui-library';
 import { Subscription } from 'rxjs';
@@ -18,6 +19,7 @@ export class DownloadExecutionDataComponent implements OnInit {
   downloadError = false;
 
   constructor(private schemaService: SchemaService,
+    private sharedService: SharedServiceService,
     private transientService: TransientService,
     private dialogRef: MatDialogRef<DownloadExecutionDataComponent>,
     @Inject(MAT_DIALOG_DATA) public data) { }
@@ -42,6 +44,7 @@ export class DownloadExecutionDataComponent implements OnInit {
         this.transientService.open('Download successfully started', null, {
           duration: 1000
         });
+        this.sharedService.getNotificationCount();
         this.close();
       },
       err => {
