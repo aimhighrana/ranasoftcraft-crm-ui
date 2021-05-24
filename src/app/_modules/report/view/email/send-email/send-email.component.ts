@@ -102,7 +102,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     }, error => console.error(`Error: ${error}`));
   }
 
-
+  /* Add selected user */
   add(event: MatChipInputEvent): void {
     if (!this.matAutocomplete.isOpen) {
       const input = event.input;
