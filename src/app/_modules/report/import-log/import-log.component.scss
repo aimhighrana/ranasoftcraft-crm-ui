@@ -1,0 +1,30 @@
+div.root {
+  user-select: none;
+  height: 100%;
+  overflow: hidden;
+  width: 800px;
+
+  .breadcrum-toolbar {
+    padding: 8px 16px;
+
+    .mdo-constrained-right {
+      width: 100%;
+      align-items: center;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+      }
+    }
+  }
+
+  .sidesheetcontent-listing {
+    height: calc(100% - 52px);
+    overflow: auto;
+
+    .mdo-justify {
+      margin: 0 66px;
+    }
+  }
+}

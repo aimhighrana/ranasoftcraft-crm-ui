@@ -7,6 +7,7 @@ import { ReportCollaboratorComponent } from './permissions/report-collaborator/r
 import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 import { ExportReportDatatableComponent } from './view/dashboard-container/reporting-list/export-report-datatable/export-report-datatable.component';
+import { ImportLogComponent } from './import-log/import-log.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'summary/:widgetId/:objectNumber/:layoutId', component: SummaryLayoutComponent },
   { path: 'column-settings/:widgetId', component: ReportDatatableColumnSettingsComponent },
   { path: 'download-widget/:widgetId', component: ExportReportDatatableComponent },
+  { path: 'import-log/:reportId', component: ImportLogComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
