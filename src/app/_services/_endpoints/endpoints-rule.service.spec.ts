@@ -17,7 +17,7 @@ describe('EndpointsRuleService', () => {
 
   it('getSchemaListByGroupIdUrl(), getSchemaListByGroupIdUrl', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.getSchemaListByGroupIdUrl()).toContain('/schema/schema-list');
+    expect(serObj.getSchemaListByGroupIdUrl()).toContain('/schema/schema-list-module');
   }));
 
 
