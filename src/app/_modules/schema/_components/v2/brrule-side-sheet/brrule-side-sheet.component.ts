@@ -194,17 +194,17 @@ export class BrruleSideSheetComponent implements OnInit {
    * has child
    */
   hasChild = null;
-  
+
   /**
    * Hold the metadata fields response ....
    */
   metataData: MetadataModeleResponse = null;
-  
+
   /**
    * transformation rule type list
    */
   transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
-  
+
   /**
    * function to format slider thumbs label.
    * @param percent percent
@@ -228,7 +228,7 @@ export class BrruleSideSheetComponent implements OnInit {
       allData: node.allData
     };
   }
-  
+
   /**
    * Class contructor
    * @param dialogRef refernce to matdialog
