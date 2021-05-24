@@ -369,6 +369,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
           <context context-type="linenumber">55</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="br_category_tooltip_msg" datatype="html">
         <source>Dimension of data quality to be measured</source>
@@ -2414,6 +2418,38 @@
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="importLogs" datatype="html">
+       <source>Import Logs</source>
+       <target>Protokolle importieren</target>
+       <context-group purpose="location">
+         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+         <context context-type="linenumber">7</context>
+       </context-group>
+     </trans-unit>
+     <trans-unit id="warning" datatype="html">
+       <source>Warning</source>
+       <target>Warnung</target>
+       <context-group purpose="location">
+         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+         <context context-type="linenumber">16</context>
+       </context-group>
+     </trans-unit>
+      <trans-unit id="status" datatype="html">
+       <source>Status</source>
+       <target>Status</target>
+       <context-group purpose="location">
+         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+         <context context-type="linenumber">28</context>
+       </context-group>
+     </trans-unit>
+      <trans-unit id="updated" datatype="html">
+       <source>Updated</source>
+       <target>Aktualisiert</target>
+       <context-group purpose="location">
+         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+         <context context-type="linenumber">40</context>
+       </context-group>
+     </trans-unit>
     </body>
   </file>
 </xliff>

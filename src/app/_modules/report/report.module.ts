@@ -32,6 +32,7 @@ import { HierarchyFilterComponent } from './view/dashboard-container/filter/hier
 import { DuplicateReportComponent } from './view/duplicate-report/duplicate-report.component';
 import { SendEmailComponent } from './view/email/send-email/send-email.component';
 import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
+import { ImportLogComponent } from './import-log/import-log.component';
 
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -67,7 +68,8 @@ Chart.plugins.register(ChartDataLabels);
     HierarchyFilterComponent,
     DuplicateReportComponent,
     SendEmailComponent,
-    EmailTemplateComponent
+    EmailTemplateComponent,
+    ImportLogComponent
   ],
   imports: [
     CommonModule,

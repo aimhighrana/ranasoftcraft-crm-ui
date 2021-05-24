@@ -44,7 +44,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.getCollaboratorPermission('', 0);
     this.getSelectedTemplate();
     this.filteredUsers = this.emailTo.valueChanges.pipe(
-      map((user: string | null) => user ? this._filter(user) : this.users.slice()));
+      map((user: string | null) => user ? this._filter(user) : this.users?.slice()));
   }
 
   close() {
@@ -158,9 +158,9 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   }
 
   private _filter(value: string): UserMdoModel[] {
-    const filterValue = value.toLowerCase();
+    const filterValue = value?.toLowerCase();
 
-    return this.users.filter(user => user.email.toLowerCase().indexOf(filterValue) === 0);
+    return this.users?.filter(user => user?.email?.toLowerCase().indexOf(filterValue) === 0);
   }
   //#endregion
 }

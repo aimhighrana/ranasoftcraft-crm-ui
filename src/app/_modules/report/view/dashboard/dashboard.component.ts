@@ -130,4 +130,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   openSendEmailSideSheet(){
      this.router.navigate([{ outlets: { sb: `sb/report/send-email`}}]);
   }
+
+  /**
+   * method to navigate on import log page
+   */
+  importLog() {
+    this.router.navigate([{ outlets: { sb: 'sb/report/import-log/' + this.reportId } }])
+  }
+
 }
