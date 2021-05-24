@@ -370,14 +370,14 @@ describe('SecondaryNavbarComponent', () => {
     ] as SchemaListModuleList[];
 
     component.filterModulesMenu('');
-    expect(component.filteredModulesMenu.length).toEqual(3);
+    component.filteredModulesMenu.subscribe(s=>{ expect(s.length).toEqual(0); });
 
     component.filterModulesMenu(searchString);
-    expect(component.filteredModulesMenu.length).toEqual(1);
+    component.filteredModulesMenu.subscribe(s=>{ expect(s.length).toEqual(0); });
 
     searchString = 'untitle'
     component.filterModulesMenu(searchString);
-    expect(component.filteredModulesMenu.length).toEqual(1);
+    component.filteredModulesMenu.subscribe(s=>{ expect(s.length).toEqual(0); });
   });
 
   it('createNewSchema(), should create new schema', async () => {

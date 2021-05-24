@@ -8,7 +8,7 @@ export class EndpointsAuthService {
 
   constructor() { }
 
-  apiUrl = environment.apiurl + '/auth';
+  apiUrl = environment.authUrl + '/auth';
 
   /**
    * Get uri for validate refresh jwt

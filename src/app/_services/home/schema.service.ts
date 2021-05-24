@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
@@ -331,5 +331,24 @@ export class SchemaService {
 
   public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[]): Observable<any> {
     return this.http.get<any>(this.endpointClassic.downloadExecutionDetailsByNodesUrl(schemaId, status, nodes));
+  }
+
+  /**
+   * Call http to get the datasets list
+   * @returns return the all available datasets list
+   */
+  public getAllDataSets() : Observable<ModuleInfo[]> {
+    return this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
+  }
+
+
+  /**
+   * Get all datasets and schemas ...
+   * @returns the module along with schema [0] for module and [1] for schemas
+   */
+  public getDatasetsAlongWithSchemas(): Observable<any> {
+    const datasetsHttp = this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
+    const schemaHttp = this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
+    return forkJoin({ datasetsHttp, schemaHttp});
   }
 }

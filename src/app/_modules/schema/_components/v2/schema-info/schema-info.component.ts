@@ -1080,7 +1080,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   updateSchemaInfo(schemaDescription: string, event?: any) {
     console.log(event);
-    if (schemaDescription !== this.schemaDetails.schemaDescription || event) {
+    if (this.schemaDetails && schemaDescription !== this.schemaDetails.schemaDescription || event) {
       const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
       schemaReq.moduleId = this.moduleId;
       schemaReq.schemaId = this.schemaId;
