@@ -10,9 +10,8 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { Userdetails } from '@models/userdetails';
 import { PermissionOn } from '../../../../../_models/collaborator'
 import { EmailTemplate } from '../../../_models/email';
-import { of } from 'rxjs';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-
+import { BehaviorSubject, of } from 'rxjs';
 
 describe('SendEmailComponent', () => {
   let component: SendEmailComponent;
@@ -47,11 +46,12 @@ describe('SendEmailComponent', () => {
   });
 
   it('ngOnInit(), test all prerequired stuff', async(()=>{
-
+    component.emailTo.setValue('test');
     spyOn(component, 'setEmailFormGroup');
     spyOn(component, 'getCollaboratorPermission');
     spyOn(component, 'getSelectedTemplate');
     component.ngOnInit();
+
     expect(component.setEmailFormGroup).toHaveBeenCalledTimes(1);
     expect(component.getCollaboratorPermission).toHaveBeenCalledTimes(1);
     expect(component.getCollaboratorPermission).toHaveBeenCalledTimes(1);
@@ -107,7 +107,9 @@ describe('SendEmailComponent', () => {
   });
 
   it('getCollaboratorPermission(), On click of getCollaboratorPermission it should return users' , () => {
-    spyOn(reportService,'getCollaboratorPermission').and.returnValue(of({} as PermissionOn));
+    const users: PermissionOn = {users:[{email: 'testemail@test.com', userId: '1234', userName: 'Test', fName:'', lName:'', fullName:''}],
+                                 roles:[], groups:[]}
+    spyOn(reportService,'getCollaboratorPermission').and.returnValue(of(users));
     component.getCollaboratorPermission('',0);
     expect(component.users).toBeDefined();
   });
@@ -120,9 +122,17 @@ describe('SendEmailComponent', () => {
 
   it('getSelectedTemplate(),should set template subject and message ',()=>{
     const templates: EmailTemplate[] =  [{ templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }];
-    spyOnProperty(reportService.selectedTemplate, 'value', 'get').and.returnValue(templates[0]);
+   reportService.selectedTemplate = new BehaviorSubject<EmailTemplate>(templates[0]);
     component.getSelectedTemplate();
     expect(component.emailFormGrp.controls.subject.valid).toBeTrue();
     expect(component.emailFormGrp.controls.message.valid).toBeTrue();
+
+  });
+
+  it('filterUsers(),should filter user ',()=>{
+    component.users = [{email: 'testemail@test.com', userId: '1234', userName: 'Test', fName:'', lName:'', fullName:''}];
+    component.emailTo.setValue('testemail@test.com');
+    component.filterUsers();
+    expect(component.filteredUsers).toBeTruthy();
   });
 });

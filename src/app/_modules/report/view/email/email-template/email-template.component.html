@@ -14,7 +14,7 @@
                          [matAutocomplete]="templateAuto"/>
                         <mat-icon matSuffix fontSet="mdo-icons">{{ getDropdownPos(templateAuto) }}</mat-icon>
                         <mat-autocomplete class="mdo-autocomplete" #templateAuto (optionSelected)="updateTemplate($event)">
-                            <mat-option class="mdo-option" *ngFor="let opt of filteredTenplates | async" [value]="opt.templateName">
+                            <mat-option class="mdo-option" *ngFor="let opt of filteredTemplates | async" [value]="opt.templateName">
                                 {{opt.templateName}}
                             </mat-option>
                         </mat-autocomplete>

@@ -57,4 +57,11 @@ describe('EmailTemplateComponent', () => {
     expect(returnedPosition).toEqual('chevron-up');
   });
 
+  it('setupFilteredList(), should filter templates based on name' , () => {
+    component.templates = [{ templateName: 'No', subject: '', message: '' }];
+    component.templateFormGrp.controls.templateName.setValue(component.templates[0].templateName);
+    component.setupFilteredList();
+    expect(component.filteredTemplates).toBeTruthy();
+  });
+
 });

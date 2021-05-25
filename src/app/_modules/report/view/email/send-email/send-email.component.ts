@@ -147,7 +147,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     return this.users?.filter(user => user?.email?.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  private filterUsers(){
+  public filterUsers(){
     this.filteredUsers = this.emailTo.valueChanges.pipe(
       map((user: string | null) => user ? this._filter(user) : this.users?.slice()));
   }

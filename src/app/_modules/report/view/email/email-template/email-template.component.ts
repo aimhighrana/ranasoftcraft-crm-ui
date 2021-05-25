@@ -4,7 +4,7 @@ import { ReportService } from '../../../_service/report.service'
 import { EmailTemplate } from '../../../_models/email';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { MatAutocomplete,MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
@@ -19,7 +19,7 @@ export class EmailTemplateComponent implements OnInit {
   /* Form group for the language settings */
   templateFormGrp: FormGroup;
   /*  holds the list of filtered options */
-  filteredTenplates: Observable<EmailTemplate[]>;
+  filteredTemplates: Observable<EmailTemplate[]>;
 
   constructor(private router: Router, private reportService: ReportService) { }
 
@@ -45,12 +45,9 @@ export class EmailTemplateComponent implements OnInit {
   }
 
   /* Set Filtered list */
-  private setupFilteredList() {
-    this.filteredTenplates = this.templateFormGrp.controls.templateName.valueChanges.pipe(
-      debounceTime(100),
-      startWith(''),
-      map((num: string | null) => num ? this.filter(num, this.templates) : (this.templates ? this.templates?.slice() : this.templates))
-    );
+  public setupFilteredList() {
+    this.filteredTemplates = this.templateFormGrp.controls.templateName.valueChanges.pipe(
+      map((template: string | null) => template ? this.filter(template, this.templates) : this.templates?.slice()));
   }
 
    /* Setup the form*/
