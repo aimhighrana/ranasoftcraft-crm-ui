@@ -16,12 +16,22 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   styleUrls: ['./send-email.component.scss']
 })
 export class SendEmailComponent implements OnInit,OnDestroy {
-
+  /* Email Form group */
   emailFormGrp: FormGroup;
+
+   /* Collection to hold users list */
   users: UserMdoModel[] = [];
+
+  /* Collection to hold email recipients list */
   emailRecipients: string[] = [];
+
+  /* Form control for recipients */
   emailTo = new FormControl('', { validators: [Validators.email, Validators.required] });
+
+  /* List to hold filtered users */
   filteredUsers: Observable<UserMdoModel[]>;
+
+  /* Separator codes */
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private router: Router,
