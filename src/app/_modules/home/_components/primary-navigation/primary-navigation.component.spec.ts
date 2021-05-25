@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HomeService } from '@services/home/home.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('PrimaryNavigationComponent', () => {
   let component: PrimaryNavigationComponent;
@@ -58,7 +59,8 @@ describe('PrimaryNavigationComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule,
-        SharedModule
+        SharedModule,
+        MdoUiLibraryModule
       ],
       providers: [
         {
