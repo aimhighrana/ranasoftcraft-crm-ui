@@ -534,7 +534,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            requiredKeys = ['rule_type', 'rule_name', 'error_message'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -757,6 +757,12 @@ export class NewBusinessRulesComponent implements OnInit {
                 children: block.children
             })
         });
+        if (this.currentSelectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+            if (!(blocks.length >=2 && blocks.every(x => x.blockType && x.conditionOperator && x.conditionFieldId))) {
+                this.showValidationError('Please select the condition(s) between the rules.');
+                return;
+            }
+        }
         const finalObject = {
             blocks: this.finalResponseBlocks,
             udrHierarchies: this.allhierarchies
