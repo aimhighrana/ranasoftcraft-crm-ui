@@ -32,7 +32,7 @@ export class EmailTemplateComponent implements OnInit {
     this.router.navigate([{ outlets: { sb: `sb/report/send-email`, outer: null } }]);
   }
 
-  /**
+  /*
    * @param el mat auto complete element
    * @returns icon name
    */
