@@ -1081,6 +1081,11 @@ export class BrruleSideSheetComponent implements OnInit {
       for (let i = 0; i < frm.length; i++) {
         blocks.push(frm.at(i).value as UDRBlocksModel)
       }
+      if (!(blocks.length >=2 && blocks.every(x => x.blockType && x.conditionOperator && x.conditionFieldId))) {
+        this.showValidationError('Please configure at least one condition.');
+        return;
+      }
+
       const blockHierarchy: UDRHierarchyModel[] = [];
       blocks.forEach(block => {
         const hie: UDRHierarchyModel = new UDRHierarchyModel();
