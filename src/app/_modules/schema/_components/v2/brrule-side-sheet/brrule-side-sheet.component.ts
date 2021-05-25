@@ -1001,7 +1001,7 @@ export class BrruleSideSheetComponent implements OnInit {
     }
     if (controlName === 'rule_type') {
       const categoryValidators = this.isDuplicateType ? [] : [Validators.required];
-      this.form.controls['categoryId'].setValidators(categoryValidators);
+      this.form.controls.categoryId.setValidators(categoryValidators);
     }
   }
 
