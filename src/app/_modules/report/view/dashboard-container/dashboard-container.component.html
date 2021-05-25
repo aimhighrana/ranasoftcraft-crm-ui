@@ -1,4 +1,4 @@
-<div class="root" (window:resize)="onResize($event)" #rootContainer cdkScrollable>
+<div class="root" #rootContainer cdkScrollable>
     <ng-template ngFor let-widget [ngForOf]="widgetList">
         <div [ngStyle]="{ 'width.px' : (widget.width * boxSize),
             'height.px': (widget.height * boxSize), 'top.px':(widget.positionY * boxSize) ,
@@ -30,8 +30,6 @@
                 
             <!-- HTML-EDiTOR WIDGET -->
             <pros-html-editor *ngIf ="widget.widgetType ==='HTML'" [widgetId] ="widget.widgetId" [reportId]="reportId" [height]="widget.height * boxSize"></pros-html-editor>
-
         </div>
     </ng-template> 
-    
 </div>
