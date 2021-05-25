@@ -47,7 +47,7 @@
           <mat-error i18n="@@weightage_missing_msg" *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
             Please enter weightage</mat-error>
         </div>
-        <div class="f-col mdo-field" *ngIf="!isUDR && !isDuplicateType">
+        <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType">
           <!-- label -->
           <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
           <!-- input container -->
