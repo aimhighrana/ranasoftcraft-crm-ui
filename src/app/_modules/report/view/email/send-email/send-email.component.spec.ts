@@ -1,19 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { SendEmailComponent } from './send-email.component';
-import { MatAutocompleteModule,MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { UserService } from '../../../../../_services/user/userservice.service';
 import { ReportService } from '../../../_service/report.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { Userdetails } from '@models/userdetails';
 import { PermissionOn } from '../../../../../_models/collaborator'
-import { MatChipInputEvent } from '@angular/material/chips';
 import { EmailTemplate } from '../../../_models/email';
 import { of } from 'rxjs';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
+
 
 describe('SendEmailComponent', () => {
   let component: SendEmailComponent;
@@ -26,13 +25,10 @@ describe('SendEmailComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SendEmailComponent],
       imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule,
         RouterTestingModule,
         HttpClientTestingModule,
-        BrowserAnimationsModule,
-        AppMaterialModuleForSpec]
+        AppMaterialModuleForSpec,
+        MdoUiLibraryModule]
     })
       .compileComponents();
       router = TestBed.inject(Router);
@@ -89,7 +85,6 @@ describe('SendEmailComponent', () => {
     component.selectUser(event);
     expect(component.emailRecipients.length).toEqual(1);
     expect(component.emailTo.value).toBeNull();
-    expect(component.userInput.nativeElement.value).toEqual('');
   });
 
   it('sendEmail(), On click of send email validate form and then send' , () => {
@@ -115,18 +110,6 @@ describe('SendEmailComponent', () => {
     spyOn(reportService,'getCollaboratorPermission').and.returnValue(of({} as PermissionOn));
     component.getCollaboratorPermission('',0);
     expect(component.users).toBeDefined();
-  });
-
-  it('add(), while search and enter then value should be set ',()=>{
-    const event = {input:{value:''}} as MatChipInputEvent;
-    // call actual method
-    component.add(event);
-    expect(component.add).toBeTruthy();
-
-    const event1 = {value:''} as MatChipInputEvent;
-    // call actual method
-    component.add(event1);
-    expect(component.add).toBeTruthy();
   });
 
   it('remove(),should remove user from recipients list ',()=>{

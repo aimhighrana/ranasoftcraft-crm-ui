@@ -5,15 +5,12 @@
             <div class="col-spacer"></div>
             <div class="f-col mdo-constrained-right">
                 <div class="f-row breadcrum-head">
-                    <div class="display-heading-large" i18n="@@send_via_email">
-                        Send via email
-                    </div>
+                    <lib-text-line type="leading" i18n="@@send_via_email">Send via email</lib-text-line>
                     <span class="f-col-spacer-half"></span>
                     <span class="f-spacer"></span>
                     <lib-button type="major" (click)="selectTemplate()" i18n="@@select_template">Select a template</lib-button>
                     <span class="f-col-spacer-half"></span>
                     <lib-button type="major" (click)="sendEmail()"  i18n="@@send">Send</lib-button>
-
                 </div>
             </div>
         </div>
@@ -27,8 +24,8 @@
                             <mat-chip-list #chipList aria-label="User selection">
                                 <mat-chip
                                     *ngFor="let user of emailRecipients"
-                                    [selectable]="selectable"
-                                    [removable]="removable"
+                                    [selectable]="'true'"
+                                    [removable]="'true'"
                                     (removed)="remove(user)">
                                     {{user}}
                                     <mat-icon matChipRemove>cancel</mat-icon>
@@ -36,13 +33,12 @@
                                 <input
                                 required
                                 placeholder="Search users..."
-                                #userInput
                                 [formControl]="emailTo"
                                 [matAutocomplete]="auto"
                                 [matChipInputFor]="chipList"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                [matChipInputAddOnBlur]="addOnBlur"
-                                (matChipInputTokenEnd)="add($event)">
+                                [matChipInputAddOnBlur]="'true'"
+                                (matChipInputTokenEnd)="$event.input.value = ''">
                             </mat-chip-list>
                             <mat-autocomplete #auto="matAutocomplete"
                             (optionSelected)="selectUser($event)">
@@ -52,8 +48,8 @@
                             </mat-autocomplete>
                         </mat-form-field>
                          <!-- Multiselect -->
-                        <mat-error *ngIf="emailTo.touched && emailTo.hasError('email')">Email is invalid</mat-error>
-                        <mat-error *ngIf="emailTo.touched && emailTo.hasError('required') && emailRecipients.length == 0">Email is required</mat-error>
+                        <mat-error i18n="@@email_invalid" *ngIf="emailTo.touched && emailTo.hasError('email')">Email is invalid</mat-error>
+                        <mat-error i18n="@@email_required" *ngIf="emailTo.touched && emailTo.hasError('required') && emailRecipients.length == 0">Email is required</mat-error>
                         <div mat-line><a class="info-link" (click)=addMyself()>Add myself</a></div>
                     </div>
                     <div class="f-col mdo-form-field">

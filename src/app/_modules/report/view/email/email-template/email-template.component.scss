@@ -6,24 +6,6 @@ div.root {
 
   .breadcrum-toolbar {
     padding: 8px 16px;
-
-    .mdo-constrained-right {
-      align-items: center;
-      width: 100%;
-      margin-right: 0;
-
-      .breadcrum-head {
-        align-items: center;
-        width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-      }
-    }
   }
 
   .sidesheetcontent-listing {
@@ -41,11 +23,6 @@ div.root {
 
       .mdo-form-field {
         margin: 8px 0;
-
-        mat-label {
-          font-weight: 500;
-          font-size: 0.8rem;
-        }
       }
     }
   }

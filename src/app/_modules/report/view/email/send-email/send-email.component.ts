@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../../../_services/user/userservice.service'
 import { Userdetails } from '@models/userdetails';
 import { UserMdoModel } from '@models/collaborator';
 import { ReportService } from '../../../_service/report.service'
-import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -23,34 +22,27 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   emailRecipients: string[] = [];
   emailTo = new FormControl('', { validators: [Validators.email, Validators.required] });
   filteredUsers: Observable<UserMdoModel[]>;
-  visible = true;
-  selectable = true;
-  removable = true;
-  addOnBlur = false;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-
-  @ViewChild('userInput') userInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
     private reportService: ReportService) {
-
   }
 
   ngOnInit(): void {
     this.setEmailFormGroup();
     this.getCollaboratorPermission('', 0);
     this.getSelectedTemplate();
-    this.filteredUsers = this.emailTo.valueChanges.pipe(
-      map((user: string | null) => user ? this._filter(user) : this.users?.slice()));
+    this.filterUsers();
   }
 
+  /* Close Slidesheet */
   close() {
     this.router.navigate([{ outlets: { sb: null } }]);
   }
 
+  /* Navigate to select template slidesheet */
   selectTemplate() {
     this.router.navigate([{ outlets: { outer: 'outer/report/email-template' } }]);
   }
@@ -64,8 +56,9 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     });
   }
 
+  /* Add the selected user */
   selectUser(event: MatAutocompleteSelectedEvent): void {
-    this.addRecipients(event.option.viewValue)
+    this.addRecipients(event.option.viewValue);
   }
 
   /* Call to api to send email */
@@ -102,25 +95,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     }, error => console.error(`Error: ${error}`));
   }
 
-  /* Add selected user */
-  add(event: MatChipInputEvent): void {
-    if (!this.matAutocomplete.isOpen) {
-      const input = event.input;
-      const value = event.value;
-
-      if ((value || '').trim() && !this.recipientExists(value)) {
-        this.emailRecipients.push(value.trim());
-      }
-
-      // Reset the input value
-      if (input) {
-        input.value = '';
-      }
-
-      this.emailTo.setValue(null);
-    }
-  }
-
+  /* Remove selected user */
   remove(user: string): void {
     const index = this.emailRecipients.indexOf(user);
 
@@ -129,6 +104,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     }
   }
 
+  /* Unsubscribe subscriptions */
   ngOnDestroy(){
     this.reportService.selectedTemplate.unsubscribe();
   }
@@ -152,8 +128,6 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     if (!this.recipientExists(value)) {
       this.emailRecipients.push(value);
     }
-
-    this.userInput.nativeElement.value = '';
     this.emailTo.setValue(null);
   }
 
@@ -161,6 +135,11 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     const filterValue = value?.toLowerCase();
 
     return this.users?.filter(user => user?.email?.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  private filterUsers(){
+    this.filteredUsers = this.emailTo.valueChanges.pipe(
+      map((user: string | null) => user ? this._filter(user) : this.users?.slice()));
   }
   //#endregion
 }
