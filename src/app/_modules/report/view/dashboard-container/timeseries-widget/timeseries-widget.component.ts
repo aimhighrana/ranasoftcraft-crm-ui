@@ -321,7 +321,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   emitpanAndClickevent(startdate: string, enddate: string): void {
     if(startdate === enddate) {
       startdate = String(moment().startOf('day').toDate().getTime());
-      enddate = String(Number(startdate) + 24*60*60*1000);
+      enddate = String(moment().endOf('day').toDate().getTime());;
     }
     const fieldId = this.timeseriesData.timeSeries.groupWith;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
