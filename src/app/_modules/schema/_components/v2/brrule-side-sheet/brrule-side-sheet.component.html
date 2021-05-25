@@ -49,7 +49,7 @@
                         Please enter Weightage</mat-error>
                 </div>
     
-                <div class="f-col mdo-field" *ngIf="!isUDR && !isDuplicateType">
+                <div class="f-col mdo-field" [class.has-error]="submitted && form.controls.categoryId.errors?.required" *ngIf="!isDuplicateType">
                     <!-- label -->
                     <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
                     <!-- input container -->
@@ -103,7 +103,7 @@
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
 
-                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
+                <div class="f-col mdo-form-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
                     <mat-label i18n="@@fields">Fields</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-chip-list #chipList>

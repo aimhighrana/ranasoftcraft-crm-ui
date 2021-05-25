@@ -2058,6 +2058,25 @@
       justify-content: flex-end;
     }
   }
+
+  .mdo-field.has-error, .mdo-form-field.has-error {
+
+    .mdo-field-label {
+      color: $color-status-error;
+    }
+
+    .mdo-field-input {
+      border: 1px solid $color-status-error;
+    }
+  }
+
+  mat-form-field.has-error {
+
+    .mat-form-field-outline {
+      opacity: 0.5;
+      color: $color-status-error;
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {

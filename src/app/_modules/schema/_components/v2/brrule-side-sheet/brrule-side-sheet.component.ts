@@ -999,6 +999,10 @@ export class BrruleSideSheetComponent implements OnInit {
       const code = this.preDefinedRegex.find(x => x.FUNC_TYPE === $event.option.value)?.FUNC_CODE;
       form.controls.regex.setValue(code);
     }
+    if (controlName === 'rule_type') {
+      const categoryValidators = this.isDuplicateType ? [] : [Validators.required];
+      this.form.controls['categoryId'].setValidators(categoryValidators);
+    }
   }
 
   /**
