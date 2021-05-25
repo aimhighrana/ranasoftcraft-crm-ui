@@ -610,7 +610,7 @@ export class BrruleSideSheetComponent implements OnInit {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      patchList = ['rule_type', 'rule_name', 'weightage', 'error_message'];
+      patchList = ['rule_type', 'categoryId', 'rule_name', 'weightage', 'error_message'];
     }
     if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
       dataToPatch.transformationRuleType = this.getTrRuleType(br.transFormationSchema);
@@ -1073,6 +1073,7 @@ export class BrruleSideSheetComponent implements OnInit {
         schemaId: this.schemaId,
         moduleId: this.moduleId,
         brWeightage: this.form.value.weightage,
+        categoryId: this.form.value.categoryId,
         isCopied: false,
         copiedFrom: '',
         dependantStatus: this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL,
