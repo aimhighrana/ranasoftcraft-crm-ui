@@ -2069,7 +2069,19 @@
       border: 1px solid $color-status-error;
     }
   }
-
+  .mat-select.udr-form-select {
+    padding: 7px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    &.ng-touched.ng-invalid {      
+      border: 1px solid  $color-status-error;
+      color:  $color-status-error;
+    }
+  }
+  .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
+  .udr-select-col.has-error {
+    border: 1px solid  $color-status-error;
+  }
   mat-form-field.has-error {
 
     .mat-form-field-outline {
