@@ -1,27 +1,25 @@
-<button i18n="@@check_data" mat-menu-item [matMenuTriggerFor]="check" prosClickStopPropagation [disableRipple]="true">
+<!-- <button i18n="@@check_data" mat-menu-item [matMenuTriggerFor]="check" prosClickStopPropagation [disableRipple]="true">
     Check data
-</button>
+</button> -->
 
 <!-- module-menu -->
-<mat-menu #check="matMenu" class="navigation-menu">
-    <div class="search-container">
-        <lib-search placeholder="Search modules" prosClickStopPropagation
-    (valueChange)="searchModule($event)"></lib-search>
-    </div>
-    <div class="menu-customdropdown">
-        <ng-container *ngFor="let module of filteredModulesList;let i=index; trackBy:moduleTrackBy">
-            <button mat-menu-item [focus]="false" [matMenuTriggerFor]="schemaMenu"
-                (mouseenter)="schemaList(module.moduleId);"
-                [disableRipple]="true">
-                {{ module.moduleDesc || 'UNTITLED'}}
-            </button>
-        </ng-container>
-    </div>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="emitSelection()" [disableRipple]="true">
-        <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> <span i18n="@@new_module">New module</span>...
-    </button>
-</mat-menu>
+<div class="search-container">
+    <lib-search placeholder="Search modules" prosClickStopPropagation
+(valueChange)="searchModule($event)"></lib-search>
+</div>
+<div class="menu-customdropdown">
+    <ng-container *ngFor="let module of filteredModulesList;let i=index; trackBy:moduleTrackBy">
+        <button mat-menu-item [focus]="false" [matMenuTriggerFor]="schemaMenu"
+            (mouseenter)="schemaList(module.moduleId);"
+            [disableRipple]="true">
+            {{ module.moduleDesc || 'UNTITLED'}}
+        </button>
+    </ng-container>
+</div>
+<mat-divider></mat-divider>
+<button mat-menu-item (click)="emitSelection()" [disableRipple]="true">
+    <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> <span i18n="@@new_module">New module</span>...
+</button>
 
 <!-- schema-menu -->
 <mat-menu #schemaMenu="matMenu" class="navigation-menu">
