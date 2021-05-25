@@ -7,7 +7,7 @@
             <!-- module-menu -->
             <mat-menu #check="matMenu" class="navigation-menu">
                 <lib-search class="field-mat-menu"  #moduleSearchInput [placeholder]="'Search modules'"
-                prosClickStopPropagation (value)="searchModule($event)"></lib-search>
+                prosClickStopPropagation (valueChange)="searchModule($event)"></lib-search>
 
                 <div class="menu-customdropdown">
                     <ng-container *ngFor="let module of filteredModulesList; let i=index; trackBy:moduleTrackBy">
@@ -25,8 +25,8 @@
 
             <!-- schema-menu -->
             <mat-menu #schemaMenu="matMenu" class="navigation-menu">
-                <pros-search-input class="field-mat-menu" [placeholder]="'Search schemas'" prosClickStopPropagation
-                    #searchInput (value)="searchSchema($event)"></pros-search-input>
+                <lib-search class="field-mat-menu" [placeholder]="'Search schemas'" prosClickStopPropagation
+                    #searchInput (valueChange)="searchSchema($event)"></lib-search>
 
                 <div class="menu-customdropdown">
                     <ng-container *ngFor="let schema of filteredSchemaList;let i=index; trackBy:schemaTrackBy">

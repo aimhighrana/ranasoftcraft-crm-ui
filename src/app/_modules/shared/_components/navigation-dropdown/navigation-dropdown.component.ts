@@ -1,6 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
+import { SchemaListModuleList } from '@models/schema/schemalist';
+import { SchemaService } from '@services/home/schema.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable, Subscriber, Subscription } from 'rxjs';
 import { SearchInputComponent } from '../search-input/search-input.component';
 
 @Component({
@@ -8,7 +10,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
   templateUrl: './navigation-dropdown.component.html',
   styleUrls: ['./navigation-dropdown.component.scss']
 })
-export class NavigationDropdownComponent implements OnInit, OnChanges {
+export class NavigationDropdownComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Reference to the search input component for schema
    */
@@ -49,13 +51,25 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
   isMatMenu2Open = false;
   prevItemTrigger;
 
+  subscriptios: Subscription[] = [];
+
+  /**
+   * all schemas
+   */
+  schemas: SchemaListModuleList[] = [];
+
   /**
    * constructor of class
    * @param schemaListService Instance the Schema List service class
    */
   constructor(
-    private schemaListService: SchemalistService
+    private schemaListService: SchemalistService,
+    private schemaService: SchemaService
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscriptios.forEach(s=> s.unsubscribe());
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes && changes.value && changes.value.previousValue !== changes.value.currentValue) {
@@ -74,12 +88,15 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
    * return all the modules with their schemas
    */
   getObjectTypes() {
-    this.schemaListService.getSchemaList().subscribe((modules: []) => {
-      if (modules && modules.length > 0) {
-        this.modulesList.push(...modules);
-        this.filteredModulesList = this.modulesList;
+    this.subscriptios.push(this.schemaService.getDatasetsAlongWithSchemas().subscribe(res=>{
+      if(res[0] !== undefined) {
+        this.modulesList = res[0];
+        this.filteredModulesList = res[0];
       }
-    });
+      if(res[1] !== undefined) {
+        this.schemas = res[1];
+      }
+    }, err=>{console.error(`Exception : ${err.message}`)}));
   }
 
   /**
@@ -88,14 +105,14 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
    */
   schemaList(objectId) {
     this.searchInput.clearSearch();
-    this.modulesList.forEach(module => {
-      if (module.moduleId === objectId) {
-        this.data.objectid = module.moduleId;
-        this.data.objectdesc = module.moduleDesc;
-        this.schemaLists = module.schemaLists;
-        this.filteredSchemaList = module.schemaLists;
-      }
-    })
+    const mm =  this.modulesList.find(f=> f.moduleId === objectId);
+    const schms = this.schemas.filter(f=> f.moduleId === objectId)[0];
+    if(mm) {
+      this.data.objectid = mm.moduleId;
+      this.data.objectdesc = mm.moduleDesc;
+      this.schemaLists = schms ? schms.schemaLists : [];
+      this.filteredSchemaList = schms ? schms.schemaLists : [];
+    }
   }
 
   /**

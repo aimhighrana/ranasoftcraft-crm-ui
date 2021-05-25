@@ -203,7 +203,7 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
       this.getExecutionTrendData(this.schemaId, this.variantId);
     }
 
-    if(changes.unit && changes.unit.previousValue !== changes.unit.currentValue) {
+    if(changes.unit && changes.unit.previousValue !== changes.unit.currentValue && this.chart) {
       this.unit = changes.unit.currentValue;
       this.chart.chart.options = this.chartOptions;
       this.chart.chart.update();

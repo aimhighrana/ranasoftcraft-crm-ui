@@ -11,7 +11,7 @@
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
           <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
           <div class="menu-customdropdown search-module-dropdown">
-            <lib-button class="lib-button" *ngFor="let module of filteredModulesMenu;"
+            <lib-button class="lib-button" *ngFor="let module of filteredModulesMenu | async;"
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
             </lib-button>
           </div>

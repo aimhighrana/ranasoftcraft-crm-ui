@@ -3,20 +3,21 @@ import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testi
 import { NavigationDropdownComponent } from './navigation-dropdown.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SchemaListModuleList } from '@models/schema/schemalist';
 import { of } from 'rxjs';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { SimpleChanges } from '@angular/core';
+import { SchemaService } from '@services/home/schema.service';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('NavigationDropdownComponent', () => {
   let component: NavigationDropdownComponent;
   let fixture: ComponentFixture<NavigationDropdownComponent>;
-  let schemaListServiceSpy: SchemalistService;
+  let schemaServiceSpy: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NavigationDropdownComponent, SearchInputComponent ],
-      imports: [AppMaterialModuleForSpec],
+      imports: [AppMaterialModuleForSpec, MdoUiLibraryModule],
       providers:[ SchemalistService]
     })
     .compileComponents();
@@ -25,7 +26,7 @@ describe('NavigationDropdownComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigationDropdownComponent);
     component = fixture.componentInstance;
-    schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
+    schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
   });
 
   it('should create', () => {
@@ -51,9 +52,9 @@ describe('NavigationDropdownComponent', () => {
   }));
 
   it('getObjectTypes(), should return all the modules with their schemas', async(() => {
-    spyOn(schemaListServiceSpy,'getSchemaList').and.returnValue(of({} as SchemaListModuleList[]));
+    spyOn(schemaServiceSpy,'getDatasetsAlongWithSchemas').and.returnValue(of([[],[]]));
     component.getObjectTypes();
-    expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalled();
+    expect(schemaServiceSpy.getDatasetsAlongWithSchemas).toHaveBeenCalled();
   }));
 
   it('searchModule() with args searchTerm, should call searchFilter', fakeAsync(() => {
