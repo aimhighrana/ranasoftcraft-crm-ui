@@ -532,7 +532,6 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.createBrObject({}, null).udrDto.udrHierarchies.length).toEqual(0);
     expect(component.createBrObject({}, null).udrDto.blocks.length).toEqual(0);
     expect(component.createBrObject({blocks: [], object: ['']}, null).udrDto.blocks.length).toEqual(1);
-    
   });
 
   it('should mapTransformationData', () => {

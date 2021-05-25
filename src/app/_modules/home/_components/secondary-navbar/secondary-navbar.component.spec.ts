@@ -282,7 +282,7 @@ describe('SecondaryNavbarComponent', () => {
         schemaId: '1005',
         schemaDescription: ''
       }
-    ] as SchemaListModuleList["schemaLists"];
+    ] as SchemaListModuleList['schemaLists'];
 
     searchString = 'untitled';
     filteredSchemas = component.searchForSchema(module, searchString);
