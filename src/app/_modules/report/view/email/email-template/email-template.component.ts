@@ -33,7 +33,6 @@ export class EmailTemplateComponent implements OnInit {
   }
 
   /**
-   *
    * @param el mat auto complete element
    * @returns icon name
    */
