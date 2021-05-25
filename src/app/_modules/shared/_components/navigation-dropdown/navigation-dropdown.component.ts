@@ -89,12 +89,12 @@ export class NavigationDropdownComponent implements OnInit, OnChanges, OnDestroy
    */
   getObjectTypes() {
     this.subscriptios.push(this.schemaService.getDatasetsAlongWithSchemas().subscribe(res=>{
-      if(res[0] !== undefined) {
-        this.modulesList = res[0];
-        this.filteredModulesList = res[0];
+      if(res.datasetsHttp !== undefined) {
+        this.modulesList = res.datasetsHttp;
+        this.filteredModulesList = res.datasetsHttp;
       }
-      if(res[1] !== undefined) {
-        this.schemas = res[1];
+      if(res.schemaHttp !== undefined) {
+        this.schemas = res.schemaHttp;
       }
     }, err=>{console.error(`Exception : ${err.message}`)}));
   }
