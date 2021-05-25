@@ -470,7 +470,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.nodeId = params.get('node') || 'header';
       this.nodeType = params.get('node-level') || 'HEADER';
       this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
-      this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      setTimeout(() => {
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      }, 300);
   }
 
   /**
