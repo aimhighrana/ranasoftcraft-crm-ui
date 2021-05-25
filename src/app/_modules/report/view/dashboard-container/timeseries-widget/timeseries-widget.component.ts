@@ -628,7 +628,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
           if(textTermBucket){
             textTermBucket.forEach(bucket => {
-              const labelCode = label = this.codeTextValue(innerBucket, fieldId);
+              const labelCode = label = this.codeTextValue(textTermBucket[0], fieldId);
               label = labelCode.t ? labelCode.t : labelCode.c ? labelCode.c : labelCode;
           })
           }
