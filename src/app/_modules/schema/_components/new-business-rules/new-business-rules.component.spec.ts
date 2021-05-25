@@ -12,6 +12,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { SharedModule } from '@modules/shared/shared.module';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('NewBusinessRulesComponent', () => {
     let component: NewBusinessRulesComponent;
@@ -21,7 +22,7 @@ describe('NewBusinessRulesComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [NewBusinessRulesComponent],
-            imports: [AppMaterialModuleForSpec, SharedModule],
+            imports: [AppMaterialModuleForSpec, SharedModule, MdoUiLibraryModule],
             providers: [
                 HttpClientTestingModule,
                 SchemaDetailsService,
