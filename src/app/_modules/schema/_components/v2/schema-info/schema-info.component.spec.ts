@@ -634,11 +634,12 @@ describe('SchemaInfoComponent', () => {
 
     const sliderEvent = new MatSliderChange();
     sliderEvent.value = 25;
-    component.updateBr(br, sliderEvent);
+    component.updateBr(br, sliderEvent, 'slider');
 
     const checkboxEvent = new MatCheckboxChange();
     checkboxEvent.checked = true;
-    component.updateBr(br, checkboxEvent);
+    component.updateBr(br, checkboxEvent, 'checkbox');
+
 
     checkboxEvent.checked = false;
     component.updateBr(br, checkboxEvent);
