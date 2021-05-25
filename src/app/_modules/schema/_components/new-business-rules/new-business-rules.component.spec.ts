@@ -805,6 +805,7 @@ describe('NewBusinessRulesComponent', () => {
         result = component.displayRuleFn(BusinessRuleType.BR_CUSTOM_SCRIPT);
         expect(result).toEqual('test');
     });
+
     it('displayCategoryFn(), should display category name', async()=> {
         let result = component.displayCategoryFn('');
         expect(result).toEqual('');
