@@ -51,10 +51,19 @@ describe('DashboardContainerComponent', () => {
 
   }));
 
-  it('onResize(), on resize ', async(()=>{
-    component.onResize(null);
-    const event = {target:{innerWidth:2000}};
-    component.onResize(event);
+  it('ngAfterViewInit() should call resize', async(()=>{
+    spyOn(component, 'resize');
+    fixture.detectChanges();
+    component.resize();
+    expect(component.resize).toHaveBeenCalled()
+  }));
+
+  it('resize(), on resize ', async(()=>{
+    component.resize();
+    expect(component.rootContainer).toBeUndefined();
+    fixture.detectChanges();
+    component.rootContainer.nativeElement.style.width = '2000px';
+    component.resize();
     expect(component.screenWidth).toEqual(2000);
   }));
 
