@@ -76,7 +76,7 @@
                             <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'IN_PROGRESS'" class="success-status">
                                 <mat-spinner diameter="14"></mat-spinner>&nbsp;Running
                             </mat-chip>
-                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'" class="unselected">
+                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'" class="unselected job-date">
                                 <mat-icon fontSet="mdo-icons" class="time-icon">clock</mat-icon>&nbsp;{{
                                 job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
                             </mat-chip>
