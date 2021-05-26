@@ -13,6 +13,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 
 describe('NewBusinessRulesComponent', () => {
     let component: NewBusinessRulesComponent;
@@ -805,6 +806,8 @@ describe('NewBusinessRulesComponent', () => {
         } as BusinessRules];
         result = component.displayRuleFn(BusinessRuleType.BR_CUSTOM_SCRIPT);
         expect(result).toEqual('test');
+        result = component.displayRuleFn('Test1');
+        expect(result).toBeUndefined();
     });
 
     it('displayCategoryFn(), should display category name', async()=> {
@@ -816,5 +819,20 @@ describe('NewBusinessRulesComponent', () => {
         } as CategoryInfo];
         result = component.displayCategoryFn('Test');
         expect(result).toEqual('test');
+        result = component.displayCategoryFn('Test1');
+        expect(result).toBeUndefined();
+    });
+
+    it('displayRegexFn(), should display regex name', async()=> {
+        let result = component.displayRegexFn('');
+        expect(result).toEqual('');
+        component.preDefinedRegex = [{
+            FUNC_NAME: 'test',
+            FUNC_TYPE: 'Test'
+        } as Regex];
+        result = component.displayRegexFn('Test');
+        expect(result).toEqual('test');
+        result = component.displayRegexFn('Test1');
+        expect(result).toBeUndefined();
     });
 });
