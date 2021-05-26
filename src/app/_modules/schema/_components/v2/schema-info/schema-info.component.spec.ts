@@ -1000,4 +1000,17 @@ describe('SchemaInfoComponent', () => {
     component.getModuleInfo();
     expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
   }));
+
+  it('getCurrentBrStatusObj(), should get current br status info', async(() => {
+   component.depRuleList = [{
+     key: 'all',
+     value: 'ALL'
+   }, {
+     key: 'success',
+     value: 'SUCCESS'
+   }];
+   expect(component.getCurrentBrStatusObj('').key).toEqual('all');
+   expect(component.getCurrentBrStatusObj('All').key).toEqual('all');
+   expect(component.getCurrentBrStatusObj('success').key).toEqual('success');
+  }));
 });

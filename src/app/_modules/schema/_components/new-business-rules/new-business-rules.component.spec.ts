@@ -835,4 +835,10 @@ describe('NewBusinessRulesComponent', () => {
         result = component.displayRegexFn('Test1');
         expect(result).toBeUndefined();
     });
+
+    it('updateTransformationRuleType(), should update transformation rule type', async()=> {
+        component.initializeForm();
+        component.updateTransformationRuleType({value:'test'});
+        expect(component.form.value.transformationRuleType).toEqual('');
+    });
 });
