@@ -799,6 +799,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  isFieldEditable(fldid) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    return (field && field.isEditable) ? true : false;
+  }
+
   /**
    * After value change on & also call service for do correction
    * @param fldid fieldid that have blur triggered

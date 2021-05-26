@@ -111,6 +111,10 @@ div.root {
             border: none;
           }
 
+          .editable-cell {
+            background-color: white;
+          }
+
           .mat-header-cell,
           .mat-cell {
             min-width: 170px;
