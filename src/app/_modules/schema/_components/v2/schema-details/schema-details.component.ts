@@ -727,6 +727,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
+      this.dataSource.setDocValue([]);
       this.getData();
     }
 
@@ -736,7 +737,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   /**
-   * Oen choose column side sheet ..
+   * Oen choose column side sheet..
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
@@ -795,6 +796,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.addDynamicInput(fldid, row, rIndex, containerRef);
 
     }
+  }
+
+  isFieldEditable(fldid) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    return (field && field.isEditable) ? true : false;
   }
 
   /**
