@@ -1096,11 +1096,14 @@ export class BrruleSideSheetComponent implements OnInit {
         if (!value.conditionFieldId) {
           row.controls.conditionFieldId?.markAsTouched();
         }
+        (row.controls.childs as any).controls.forEach((childRow) => {
+          childRow.markAllAsTouched();
+        });
       }
       if (!this.form.valid) {
         return;
       }
-      if (!(blocks.length >=2 && blocks.every(x => x.blockType && x.conditionOperator && x.conditionFieldId))) {
+      if (!(blocks.length && blocks.every(x => x.blockType && x.blockType !== BlockType.COND && x.blockDesc && x.conditionOperator && x.conditionFieldId && x.childs.every(y => y.blockDesc && y.conditionOperator && y.conditionFieldId)))) {
         this.showValidationError('Please select the condition(s) between the rules.');
         return;
       }
