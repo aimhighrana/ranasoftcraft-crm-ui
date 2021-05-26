@@ -1,11 +1,9 @@
 <mat-card class="mat-elevation-z0 widget">
-    <div class="f-row breadcrum-toolbar">
-      <div class="display-heading-large">
-        {{widgetHeader.widgetName}}
-      </div>
+    <div class="f-row">
+       <lib-text-line type="leading">{{widgetHeader.widgetName}}</lib-text-line>
     </div>
     <div class="row-spacer"></div>
     <mat-card-content>
-        <div class="count">{{count}}</div>
+        <lib-text-line type="leading" class="count">{{count}}</lib-text-line>
     </mat-card-content>
 </mat-card>

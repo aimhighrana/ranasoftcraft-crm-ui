@@ -4,7 +4,7 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Generate download link</div>
+                <lib-text-line type="leading">Generate download link</lib-text-line>
                 <span class="f-spacer"></span>
                 <lib-button type="major"  *ngIf="selectedUsers.length > 0" (click)="saveReportDownloadUserList()">Confirm</lib-button>
             </div>
@@ -13,25 +13,30 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify" [formGroup]="addwidgetSubsFrmGrp">
             <div class="f-col">
-                <mat-form-field appearance="outline">
-                    <input type="text" #loosefoucs (focus)="getCollaboratorPermission('', 0)"
-                        placeholder="Type Prospecta email or name to generate a download link" aria-label="Number"
-                        matInput formControlName="addUsersFilter" [matAutocomplete]="addUsersFilterAuto">
-                    <mat-autocomplete #addUsersFilterAuto="matAutocomplete" [displayWith]="displayWith"
-                        (optionSelected)="onSelectUser($event)">
-                        <mat-option *ngFor="let data of collaborators" [value]="data">
-                            {{data.description}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
+                 <div class="f-col mdo-field">
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                        <input matInput #loosefoucs placeholder="Type Prospecta email or name to generate a download link"
+                            #optionsInput (focus)="getCollaboratorPermission('', 0)" formControlName="addUsersFilter"
+                            [matAutocomplete]="addUsersFilterAuto" />
+                        <!-- autocomplete -->
+                        <mat-autocomplete class="mdo-autocomplete" #addUsersFilterAuto="matAutocomplete"
+                            [displayWith]="displayWith" (optionSelected)="onSelectUser($event)">
+                            <mat-option class="mdo-option" *ngFor="let data of collaborators" [value]="data">
+                                {{data.description}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </div>
+                </div>
+
                 <mat-card  *ngIf="selectedEmail" class="f-row mat-elevation-z0 message-alert">
                     <span>Selected user email ({{selectedEmail}}) is not valid</span>
                 </mat-card>
 
                 <div class="f-row">
-                    <a class="info-link" (click)="addMyselfInSelectedList()">Add myself</a>
+                    <lib-text-line type="xsmall" (click)="addMyselfInSelectedList()" textColor="link">Add myself</lib-text-line>
                     <div class="col-spacer"></div>
-                    <a class="info-link">Added subscribers ({{selectedUsers.length}})</a>
+                    <lib-text-line type="xsmall" textColor="link">Added subscribers ({{selectedUsers.length}})</lib-text-line>
                 </div>
             </div>
             <div class="row-spacer"></div>
@@ -42,7 +47,7 @@
                             <mat-card-header>
                                 <div mat-card-avatar>{{(selcoll.description)[0]}}</div>
                             </mat-card-header>
-                            <div mat-line>{{selcoll.description}}</div>
+                            <lib-text-line type="base">{{selcoll.description}}</lib-text-line>
                             <span class="f-spacer"></span>
                             <lib-button (click)="remove(selcoll)" type="plain" icon="trash-alt"></lib-button>
                         </div>

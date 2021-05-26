@@ -4,7 +4,7 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Configure view</div>
+                <lib-text-line type="leading">Configure view</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button type="major" (click)="submitSetting()">Save</lib-button>
@@ -16,10 +16,8 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="checkedall">
-                <mat-checkbox color="primary" [(ngModel)]="allCheckboxSelected"
-                    [indeterminate]="allIndeterminate" (change)="selectAllCheckboxes()"> <span
-                        class="checkboxlabel">All</span>
-                </mat-checkbox>
+                <lib-checkbox label="All" [checked]="allCheckboxSelected" [indeterminate]="allIndeterminate"
+                    (valueChange)="selectAllCheckboxes()"></lib-checkbox>
                 <!-- <mat-form-field appearance="outline">
                     <mat-select [(ngModel)]="allDisplayCriteria" (ngModelChange)="changeAllDisplayCriteria()">
                         <mat-option value="TEXT" i18n="@@text">Text</mat-option>
@@ -34,9 +32,8 @@
                     <div class="f-row colunm-box">
                         <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
                         <div class="col-spacer"></div>
-                        <mat-checkbox color="primary" (change)="selectionChange(header)" [checked]="isChecked(header)">
-                            {{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}
-                        </mat-checkbox>
+                        <lib-checkbox label="{{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}" (valueChange)="selectionChange(header)" [checked]="isChecked(header)">
+                        </lib-checkbox>
                         <!-- <mat-form-field appearance="outline" *ngIf="header.picklist == '1' || header.picklist == '30' || header.picklist == '37'">
                             <mat-select [(ngModel)]="header.displayCriteria" (ngModelChange)="manageAllDisplayCriteria()">
                                 <mat-option value="TEXT" i18n="@@text">Text</mat-option>

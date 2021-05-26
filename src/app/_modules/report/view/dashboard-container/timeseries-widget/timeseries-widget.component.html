@@ -1,8 +1,7 @@
 <mat-card class="mat-elevation-z0 widget" *ngIf="dataSet && chartType">
-  <div class="f-row breadcrum-toolbar">
-    <div class="display-heading-large">
-      {{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
-    </div>
+  <div class="f-row">
+    <lib-text-line type="leading">{{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
+    </lib-text-line>
     <span class="f-spacer"></span>
     <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
     <mat-menu #menu="matMenu" class="navigation-menu">
@@ -10,7 +9,8 @@
       <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
       <!-- <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button> -->
       <mat-menu #tcOptionMenu="matMenu">
-        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions"
+          (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
       <!-- <button mat-menu-item (click)="openColorPalette()">Color palette</button> -->
     </mat-menu>
@@ -22,12 +22,12 @@
 
         <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' "
           (click)="updateForm('date',dateType)">{{ dateType.value === 'millisecond' ? 'Today' : dateType.value}}
-          <ng-template [ngIf] = "dateType.value !== 'millisecond'">
+          <ng-template [ngIf]="dateType.value !== 'millisecond'">
             {{ timeseriesData.timeSeries ? timeseriesData.timeSeries.seriesWith : ''}}s
           </ng-template>
-        </button>   
-      <div>
-          <mat-form-field appearance="outline">
+        </button>
+        <div>
+          <!-- <mat-form-field appearance="outline">
             <mat-date-range-input [rangePicker]="picker">
               <input matStartDate placeholder="Start date" [formControl]="startDateCtrl">
               <input matEndDate placeholder="End date" [formControl]="endDateCtrl">
@@ -37,7 +37,12 @@
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-date-range-picker #picker></mat-date-range-picker>
             </div>
-          </mat-form-field>
+          </mat-form-field> -->
+
+          <lib-date-range-picker label="Start date"
+            *ngIf="styleCtrlGrp && styleCtrlGrp.get('dateSelectionType').value === 'CUSTOM'"
+            formControlName="startDate">
+          </lib-date-range-picker>
         </div>
 
       </div>

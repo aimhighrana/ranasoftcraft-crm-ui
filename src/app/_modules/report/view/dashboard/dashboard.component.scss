@@ -4,9 +4,9 @@ div.root {
   height: 100%;
   overflow: hidden;
 
-  .breadcrum-toolbar {
-    min-width: 0;
-    flex: 10;
+  .f-row {
+    align-items: center;
+    padding-top: 8px;
   }
 
   pros-null-state {

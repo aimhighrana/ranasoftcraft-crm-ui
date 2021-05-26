@@ -1,13 +1,7 @@
 <div class="root">
-	<div class="f-row-spacer-half"></div>
 	<ng-template [ngIf]="reportExist">
 		<div class="f-row">
-			<div class="breadcrum-toolbar">
-				<lib-text-line type="leading" [enableWrap]="true">
-					{{reportName ? reportName: 'Untitled'}}
-				</lib-text-line>
-			</div>
-
+			<lib-text-line type="leading">{{reportName ? reportName: 'Untitled'}}</lib-text-line>
 			<div class="f-spacer"></div>
 			<lib-button-group>
 				<lib-button *ngIf="showClearFilterBtn" (mouseup)="clearFilters()" type="minor">Clear filter(s)
@@ -19,11 +13,10 @@
 					<mat-menu #moremenu="matMenu" class="navigation-menu">
 						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
 							(click)="editReport()">Edit</button>
-						<!-- <button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
-							(click)="duplicateReport()">Duplicate</button> -->
+						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
+							(click)="duplicateReport()">Duplicate</button>
 						<button mat-menu-item *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)"
 							(click)="delete()">Delete</button>
-						<!-- <button mat-menu-item (click)="importLog()">Import Log</button> -->
 					</mat-menu>
 				</ng-template>
 			</lib-button-group>

@@ -1,8 +1,6 @@
 <mat-card class="mat-elevation-z0 widget">
-    <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
-            {{ widgetHeader.widgetName }}
-        </div>
+    <div class="f-row">
+        <lib-text-line type="leading">{{ widgetHeader.widgetName }}</lib-text-line>
         <div class="f-spacer"></div>
         <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
         <mat-menu #menu="matMenu" class="navigation-menu">
@@ -59,5 +57,6 @@
         </div>
         <mat-paginator [pageSize]="pageSize" [length]="resultsLength" [pageSizeOptions]="pageSizeOption" (page)="getServerData($event)">
         </mat-paginator>
+        <!-- <lib-pagination class="mat-paginator" [pageSize]="pageSize" [totalCount]="3200" (page)="getServerData($event)"></lib-pagination> -->
     </mat-card-content>
 </mat-card>

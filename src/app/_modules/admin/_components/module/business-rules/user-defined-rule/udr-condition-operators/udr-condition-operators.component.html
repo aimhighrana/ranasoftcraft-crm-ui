@@ -1,4 +1,4 @@
-<mat-label>Operator</mat-label>
+<!-- <mat-label>Operator</mat-label>
 <mat-form-field appearance="outline">
     <input placeholder="Operator" aria-label="Number" matInput [formControl]="operator"
         [matAutocomplete]="auto1">
@@ -9,4 +9,23 @@
             </mat-option>
         </mat-optgroup>
     </mat-autocomplete>
-</mat-form-field>
+</mat-form-field> -->
+
+<div class="f-col mdo-field">
+    <mat-label class="mdo-field-label">Operator</mat-label>
+    <!-- input container -->
+    <div class="mdo-field-input">
+        <input matInput #optionsInput placeholder="Operator" [formControl]="operator"
+        [matAutocomplete]="auto1"/>
+        <!-- autocomplete -->
+        <mat-autocomplete class="mdo-autocomplete" 
+        #auto1="matAutocomplete" (optionSelected)="operatorSelectionChng($event)">
+            <mat-optgroup *ngFor="let object of conditionalOperatorsOb | async" [label]="object.desc">
+                <mat-option class="mdo-option" *ngFor="let operator of object.childs" [value]="operator"
+                    matTooltip="{{operator}}" matTooltipPosition="right">
+                    {{ operator }}
+                </mat-option>
+            </mat-optgroup>
+        </mat-autocomplete>
+    </div>
+</div>

@@ -1,10 +1,8 @@
 <mat-card id="{{ widget.widgetId }}" class="mat-elevation-z1 widget"
    [ngStyle]="{'width.px': (widget.width * boxSize) , 'height.px': (widget.height * boxSize),'left.px': (widget.x * boxSize), 'top.px':(widget.y * boxSize)  }"
    (click)="emitStyleEvent()" cdkDrag>
-   <div class="f-row breadcrum-toolbar">
-      <div class="display-heading-large">
-         {{ widget.widgetTitle ? widget.widgetTitle : 'Untitled' }}
-      </div>
+   <div class="f-row">
+      <lib-text-line type="leading">{{ widget.widgetTitle ? widget.widgetTitle : 'Untitled' }}</lib-text-line>
       <div class="f-spacer"></div>
       <lib-button (click)="emitDeleteEvent()" *ngIf="showDelete" type="plain" icon="trash-alt"></lib-button>
    </div>

@@ -4,22 +4,8 @@ div.root {
   height: 100%;
   overflow: hidden;
 
-  .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 36px;
-    }
-
-    button.mat-flat-button {
-      margin-left: 1px;
-      min-width: 80px;
-    }
+  .col-heading {
+    padding: 0 8px;
   }
 
   .report-builder {
@@ -38,16 +24,6 @@ div.root {
         border-right-width: 1px;
         border-right-style: solid;
         height: 100%;
-      }
-
-      .col-heading {
-        font-weight: 500;
-        padding: 8px;
-        line-height: 16px;
-      }
-
-      .subtext {
-        padding: 0 8px;
       }
 
       .builder-board {
@@ -110,18 +86,6 @@ div.root {
               mat-divider.mat-divider {
                 height: 40px;
               }
-            }
-          }
-
-          mat-checkbox {
-            margin-bottom: 12px;
-          }
-
-          .def-algin {
-            align-items: center;
-
-            .value-set {
-              margin-top: 6px;
             }
           }
 
