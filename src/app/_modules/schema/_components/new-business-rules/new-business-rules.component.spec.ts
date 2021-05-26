@@ -817,7 +817,7 @@ describe('NewBusinessRulesComponent', () => {
         result = component.displayCategoryFn('Test');
         expect(result).toEqual('test');
     });
-    it('should get businessRuleTypes Filtered', () => {
+    it('businessRuleTypesFiltered should get businessRuleTypes Filtered', async () => {
         component.businessRuleTypes = [{
           ruleDesc: 'test',
           ruleId: 'test',

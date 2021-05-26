@@ -607,7 +607,7 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.lookupData).toEqual(lookupData);
   });
 
-  it('should get businessRuleTypes Filtered', () => {
+  it('businessRuleTypesFiltered should get businessRuleTypes Filtered', async () => {
     component.businessRuleTypes = [{
       ruleDesc: 'test',
       ruleId: 'test',
