@@ -52,10 +52,10 @@ const workFlowModeleResponse2 = {static: statics2};
     {fieldId:'MATL_TYPE', fieldDescri:'Material Type'} as MetadataModel
   ]
   const dynamicFields = [
-    {fieldId:'material_Desc', fieldDescri:'material desc'} as MetadataModel,
+    {fieldId:'material_Desc', fieldDescri:'material desc'} as MetadataModel, {fieldId:'loc_date', fieldDescri:'location date', dataType:'DTMS'} as MetadataModel
   ]
-
   const workFlowModeleResponse3 = {static: staticFields, dynamic: dynamicFields};
+
 
   it(`transformFieldRes(), in TIMESERIES widget`, async(()=>{
     // call actual method
@@ -121,6 +121,18 @@ const workFlowModeleResponse2 = {static: statics2};
     // call with unknown fields
     actualRes =  component.returnSelectedFldCtrl('TEST0001');
     expect(actualRes).toBe(undefined,`When call with uknown field  should equals undefined !`);
+
+    component.controlFor = 'GroupWith';
+    component.widgetType = 'TIMESERIES';
+    let res = component.transformFieldRes(workFlowModeleResponse3);
+
+    expect(res.length).toEqual(2, 'length should be equlas to 1 ');
+
+    component.controlFor = 'Field';
+    component.widgetType = 'TIMESERIES';
+    res = component.transformFieldRes(workFlowModeleResponse3);
+
+    expect(res.length).toEqual(2, 'length should be equlas to 1 ');
   }));
 
 
