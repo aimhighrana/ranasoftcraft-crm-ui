@@ -180,7 +180,7 @@
                         <ng-container [formGroupName]="i">
                             <div class="f-row defined-row" [id]="item.value.id">
                                 <!-- rule type -->
-                                <div class="col select-col udr-select-col" *ngIf="i > 0">
+                                <div class="col select-col udr-select-col" *ngIf="i > 0" [class.has-error]="submitted && (!item.value.blockType || item.value.blockType=='COND')">
                                     <mat-select mat-stroked-button formControlName="blockType">
                                         <mat-option value="AND">
                                             AND
