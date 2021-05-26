@@ -179,7 +179,7 @@
             </div>
 
             <!-- field name -->
-            <div class="col">
+            <div class="col udr-select-col" [class.has-error]="submitted && !udrBlock.fieldId">
               <mat-select [(ngModel)]="udrBlock.fieldId" i18n-placeholder="@@select_field" placeholder="Select Field">
                 <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                   {{fieldItem.fieldDescri}}
@@ -188,7 +188,7 @@
             </div>
 
             <!-- operators -->
-            <div class="col">
+            <div class="col udr-select-col" [class.has-error]="submitted && !udrBlock.operator">
               <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
               <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
@@ -251,7 +251,7 @@
               <ul class="sub-defined">
                 <div class="f-row defined-row">
 
-                  <div class="col select-col">
+                  <div class="col select-col udr-select-col" [class.has-error]="submitted && !child.blockTypeText">
                     <mat-select [(ngModel)]="child.blockTypeText">
                       <mat-option *ngFor="let condition of initialConditions" [value]="condition"
                         [disabled]="condition === 'When'">
@@ -260,7 +260,7 @@
                     </mat-select>
                   </div>
 
-                  <div class="col">
+                  <div class="col udr-select-col" [class.has-error]="submitted && !child.fieldId">
                     <mat-select [(ngModel)]="child.fieldId" placeholder="Select Field">
                       <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                         {{fieldItem.fieldDescri}}
@@ -268,8 +268,8 @@
                     </mat-select>
                   </div>
 
-                  <div class="col">
-                    <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
+                  <div class="col udr-select-col" [class.has-error]="submitted && !child.fieldId">
+                    <mat-select [(ngModel)]="child.fieldId" mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                         <ng-container *ngFor="let child of group.childs">

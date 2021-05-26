@@ -119,6 +119,11 @@ div.root {
               display: flex;
               z-index: 1;
             }
+
+            &.udr-select-col {              
+              padding: 8px;
+              box-sizing: border-box;
+            }
           }
 
           &.add-col {
