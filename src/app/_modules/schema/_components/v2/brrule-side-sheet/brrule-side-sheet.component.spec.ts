@@ -607,6 +607,20 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.lookupData).toEqual(lookupData);
   });
 
+  it('should get businessRuleTypes Filtered', () => {
+    component.businessRuleTypes = [{
+      ruleDesc: 'test',
+      ruleId: 'test',
+      ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT
+    }];
+    component.searchRuleTypeStr = '';
+    expect(component.businessRuleTypesFiltered.length).toEqual(1);
+    component.searchRuleTypeStr = 'test';
+    expect(component.businessRuleTypesFiltered.length).toEqual(1);
+    component.searchRuleTypeStr = 'test1';
+    expect(component.businessRuleTypesFiltered.length).toEqual(0);
+  });
+
   it('should displayFn', () => {
     expect(component.displayFn(null)).toBeFalsy();
     expect(component.displayFn({fieldDescri: 'region'})).toEqual('region');
