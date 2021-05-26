@@ -794,7 +794,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
     return this.formBuilder.group({
       blockDesc: new FormControl(udr ? udr.blockDesc : 'And', [Validators.required]),
-      blockType: new FormControl(udr ? udr.blockType : BlockType.COND, [Validators.required]),
+      blockType: new FormControl(udr ? udr.blockType : BlockType.AND, [Validators.required]),
       conditionFieldEndValue: new FormControl(udr ? udr.conditionFieldEndValue : ''),
       conditionFieldId: new FormControl(udr ? udr.conditionFieldId : '', [Validators.required]),
       conditionFieldStartValue: new FormControl(udr ? udr.conditionFieldStartValue : ''),
