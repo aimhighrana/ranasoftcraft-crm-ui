@@ -727,7 +727,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
-      const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
       this.dataSource.setDocValue([]);
       this.getData();
     }
