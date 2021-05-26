@@ -23,10 +23,10 @@
           <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
           <!-- input container -->
           <div class="mdo-field-input">
-            <input matInput formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type" [matAutocomplete]="ruleTypeAuto" />
+            <input matInput [(ngModel)]="searchRuleTypeStr" formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type" [matAutocomplete]="ruleTypeAuto" />
             <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)"
               #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
-              <ng-container *ngFor="let rule of businessRuleTypes">
+              <ng-container *ngFor="let rule of businessRuleTypesFiltered">
                 <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
                   {{rule.ruleDesc}}
                 </mat-option>

@@ -817,4 +817,17 @@ describe('NewBusinessRulesComponent', () => {
         result = component.displayCategoryFn('Test');
         expect(result).toEqual('test');
     });
+    it('businessRuleTypesFiltered should get businessRuleTypes Filtered', async () => {
+        component.businessRuleTypes = [{
+          ruleDesc: 'test',
+          ruleId: 'test',
+          ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT
+        }];
+        component.searchRuleTypeStr = '';
+        expect(component.businessRuleTypesFiltered.length).toEqual(1);
+        component.searchRuleTypeStr = 'test';
+        expect(component.businessRuleTypesFiltered.length).toEqual(1);
+        component.searchRuleTypeStr = 'test1';
+        expect(component.businessRuleTypesFiltered.length).toEqual(0);
+    });
 });
