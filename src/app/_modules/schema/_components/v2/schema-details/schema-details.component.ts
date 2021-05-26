@@ -737,7 +737,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   /**
-   * Oen choose column side sheet ..
+   * Oen choose column side sheet..
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
