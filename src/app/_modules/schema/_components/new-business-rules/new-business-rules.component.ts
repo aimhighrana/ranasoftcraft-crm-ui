@@ -758,7 +758,7 @@ export class NewBusinessRulesComponent implements OnInit {
             })
         });
         if (this.currentSelectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            if (!(blocks.length >=2 && blocks.every(x => x.blockType && x.conditionOperator && x.conditionFieldId))) {
+            if (!(blocks.length && blocks.every(x => x.blockType && x.conditionOperator && x.conditionFieldId))) {
                 this.showValidationError('Please select the condition(s) between the rules.');
                 return;
             }
