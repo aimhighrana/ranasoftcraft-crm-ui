@@ -267,6 +267,7 @@
                       </mat-option>
                     </mat-select>
                   </div>
+
                   <div class="col udr-select-col" [class.has-error]="submitted && !child.operator">
                     <mat-select [(ngModel)]="child.operator" mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
