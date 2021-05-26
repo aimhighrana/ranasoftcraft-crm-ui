@@ -14,7 +14,6 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { DisplayCriteria } from '@modules/report/_models/widget';
 
-
 describe('ReportDatatableColumnSettingsComponent', () => {
   let component: ReportDatatableColumnSettingsComponent;
   let fixture: ComponentFixture<ReportDatatableColumnSettingsComponent>;
@@ -146,6 +145,15 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
     expect(component.data.objectType).toEqual('numberoflogin');
+
+  }));
+
+  it('ngOnInit(), preloadaed function', async(() => {
+    const response = { objectType: 'numberoflogin,test', selectedColumns: ['fname'], isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false};
+    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    component.ngOnInit();
+    expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
+    expect(component.data.objectType).toEqual('numberoflogin,test');
   }));
 
   it('getWorkFlowFields(), get Workflow Fields of widget', async(() => {
