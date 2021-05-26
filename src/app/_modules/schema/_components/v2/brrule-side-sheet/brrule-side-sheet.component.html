@@ -288,6 +288,7 @@
                                                     <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(chldNode.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
                                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
+
                                                 <div class="col">
                                                     <mat-select class="udr-form-select" mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select operator">
                                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
