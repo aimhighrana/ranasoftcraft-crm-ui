@@ -217,7 +217,15 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
     const allFieldsChildDyn: Metadata[] = [];
     if(response.dynamic && this.widgetType === 'TIMESERIES'){
       response.dynamic.forEach(fields => {
-        if(fields.dataType === 'DATS' || fields.dataType === 'DTMS') {
+        if((this.controlFor === 'GroupWith' ) && fields.dataType === 'DATS' || fields.dataType === 'DTMS') {
+          allFieldsChildDyn.push({
+            fieldId: fields.fieldId,
+            fieldDescri: fields.fieldDescri,
+            isGroup: false,
+            fldCtrl: fields,
+            childs: []
+          })
+        } else if(this.controlFor === 'Field') {
           allFieldsChildDyn.push({
             fieldId: fields.fieldId,
             fieldDescri: fields.fieldDescri,
