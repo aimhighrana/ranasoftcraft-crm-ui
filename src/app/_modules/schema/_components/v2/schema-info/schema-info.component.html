@@ -19,6 +19,7 @@
             <button mat-menu-item (click)="deleteSchema()" i18n="@@delete" [disableRipple]="true"> Delete </button>
         </mat-menu>
     </div>
+
     <div class="row-spacer"></div>
     <lib-tab-group class="schema-info-tabs" disableRipple="true" animationDuration="0ms" (selectedIndexChange)="updateFragmentByIndex($event)"
         [selectedIndex]="selectedIndex">
