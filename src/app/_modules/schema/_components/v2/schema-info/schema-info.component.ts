@@ -1078,7 +1078,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaDescription: updated schema description.
    * @param event: event of mat slider(for schema threshold).
    */
-  updateSchemaInfo(schemaDescription: string, event?: any) {
+  updateSchemaInfo(schemaDescription: string, event?: any, field = 'description') {
     console.log(event);
     if (this.schemaDetails && schemaDescription !== this.schemaDetails.schemaDescription || event) {
       const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
@@ -1090,7 +1090,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.toasterService.open('Schema description updated successfully.', 'ok', {
+        this.toasterService.open(`Schema ${field} updated successfully.`, 'ok', {
           duration: 2000
         })
         this.getSchemaDetails(this.schemaId);
@@ -1114,7 +1114,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       this.schemaThresholdChanged
         .pipe(debounceTime(1000), distinctUntilChanged())
         .subscribe(threshold => {
-          this.updateSchemaInfo(this.schemaDetails.schemaDescription, {value: threshold});
+          this.updateSchemaInfo(this.schemaDetails.schemaDescription, {value: threshold}, 'threshold');
         });
     }
     this.schemaThresholdChanged.next($event);
