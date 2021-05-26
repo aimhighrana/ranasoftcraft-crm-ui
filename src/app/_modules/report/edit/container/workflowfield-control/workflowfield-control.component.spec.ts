@@ -123,11 +123,13 @@ const workFlowModeleResponse2 = {static: statics2};
     expect(actualRes).toBe(undefined,`When call with uknown field  should equals undefined !`);
 
     component.controlFor = 'GroupWith';
+    component.widgetType = 'TIMESERIES';
     let res = component.transformFieldRes(workFlowModeleResponse3);
 
     expect(res.length).toEqual(2, 'length should be equlas to 1 ');
 
     component.controlFor = 'Field';
+    component.widgetType = 'TIMESERIES';
     res = component.transformFieldRes(workFlowModeleResponse3);
 
     expect(res.length).toEqual(2, 'length should be equlas to 1 ');
