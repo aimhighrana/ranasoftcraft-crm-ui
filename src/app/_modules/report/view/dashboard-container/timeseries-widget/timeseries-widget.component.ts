@@ -207,12 +207,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     });
     this.subscriptions.push(endDateCtrl);
 
+    /*
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
+    */
 
     this.getTimeSeriesMetadata();
     const widgeInf = this.widgetInf.subscribe(metadata => {
@@ -319,6 +321,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   emitpanAndClickevent(startdate: string, enddate: string): void {
+    if(startdate === enddate) {
+      startdate = String(moment().startOf('day').toDate().getTime());
+      enddate = String(moment().endOf('day').toDate().getTime());;
+    }
     const fieldId = this.timeseriesData.timeSeries.groupWith;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
@@ -405,7 +411,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           xAxes: [{
             type: 'time',
             time: {
-              unit: this.timeseriesData.timeSeries.seriesWith
+              unit: this.timeseriesData.timeSeries.seriesWith,
+              unitStepSize: 1
             },
             scaleLabel: {
               display: true,
@@ -448,7 +455,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           xAxes: [{
             type: 'time',
             time: {
-              unit: this.timeseriesData.timeSeries.seriesWith
+              unit: this.timeseriesData.timeSeries.seriesWith,
+              unitStepSize: 1
             },
             scaleLabel: {
               display: true,
@@ -606,6 +614,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   transformDataSets(data: any): any {
+    const fieldId = this.timeseriesData.timeSeries.fieldId;
     const finalOutput = new Object();
     const codetextObj = {};
     const cordKeys = ['x', 'y'];
@@ -623,7 +632,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
           if(textTermBucket){
             textTermBucket.forEach(bucket => {
-              label = bucket.key
+              const labelCode = label = this.codeTextValue(textTermBucket[0], fieldId);
+              label = labelCode.t ? labelCode.t : labelCode.c ? labelCode.c : labelCode;
           })
           }
           codetextObj[label] = innerBucket.key;
@@ -889,6 +899,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   emitDateChangeValues() {
     if (this.startDateCtrl.value && this.endDateCtrl.value) {
+      if(this.startDateCtrl.value === this.endDateCtrl.value) {
+        this.endDateCtrl.setValue(String(Number(this.startDateCtrl.value) + 24*60*60*1000));
+      }
       const groupwith = this.timeseriesData.timeSeries.groupWith;
       let filterApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === groupwith);
       this.removeOldFilterCriteria(filterApplied);

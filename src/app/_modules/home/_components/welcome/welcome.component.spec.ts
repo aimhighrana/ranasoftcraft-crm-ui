@@ -2,7 +2,6 @@ import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testi
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
-import { SchemaListModuleList } from '@models/schema/schemalist';
 import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
 import { SchemaService } from '@services/home/schema.service';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,7 +16,6 @@ import { WelcomeComponent } from './welcome.component';
 describe('WelcomeComponent', () => {
   let component: WelcomeComponent;
   let fixture: ComponentFixture<WelcomeComponent>;
-  let schemaListServiceSpy: SchemalistService;
   let schemaServiceSpy: SchemaService;
   let router: Router;
   const mockDialogRef = {
@@ -48,7 +46,6 @@ describe('WelcomeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WelcomeComponent);
     component = fixture.componentInstance;
-    schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
   });
 
@@ -67,14 +64,11 @@ describe('WelcomeComponent', () => {
 
   it('getObjectTypes(), should return all the modules with their schemas', async(() => {
 
-    const response = [{moduleId: '1005'}] as SchemaListModuleList[];
-    spyOn(schemaListServiceSpy, 'getSchemaList').and.returnValues(of([]), of(response));
+    spyOn(schemaServiceSpy, 'getDatasetsAlongWithSchemas').and.returnValues(of({datasetsHttp:[], schemaHttp:[]}));
     component.getObjectTypes();
     expect(component.modulesList).toEqual([]);
-
-    component.getObjectTypes();
-    expect(component.modulesList).toEqual(response);
-    expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalledTimes(2);
+    expect(component.schemas).toEqual([]);
+    expect(schemaServiceSpy.getDatasetsAlongWithSchemas).toHaveBeenCalledTimes(1);
   }));
 
   it('searchModule() with args searchTerm, should filter modules', fakeAsync(() => {

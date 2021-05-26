@@ -13,7 +13,7 @@ export class EndpointsRuleService {
 
 
   public getSchemaListByGroupIdUrl() {
-    return this.classicOrigin + '/schema/schema-list';
+    return this.classicOrigin + '/schema/schema-list-module';
   }
 
   public downloadExecutionDetailsUrl(schemaId: string, status: string): string {
@@ -642,5 +642,13 @@ export class EndpointsRuleService {
 
   public getUploadProgressUrl(schemaId: string, runId: string): string {
     return `${this.origin}/schema/uploadStatus?schemaId=${schemaId}&runId=${runId}`;
+  }
+
+  /**
+   * Get the all available datasets by plantcode ...
+   * @returns the endpoint uri
+   */
+  public getAllDataSets(): string {
+    return `${this.classicOrigin}/schema/getAllModuleInfo`;
   }
 }

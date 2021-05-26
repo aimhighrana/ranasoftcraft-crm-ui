@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HomeService } from '@services/home/home.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('PrimaryNavigationComponent', () => {
   let component: PrimaryNavigationComponent;
@@ -58,7 +59,8 @@ describe('PrimaryNavigationComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule,
-        SharedModule
+        SharedModule,
+        MdoUiLibraryModule
       ],
       providers: [
         {
@@ -189,14 +191,17 @@ describe('PrimaryNavigationComponent', () => {
     expect(document.getElementById('secondaryContent').style.marginLeft='200px').toBeTruthy();
   });
 
-  it('should call enableResizeable()', async () => {
-    expect(document.getElementById('secondarySidenav')).toBeTruthy();
-    expect(document.createElement('div').style.height = '100%').toBeTruthy();
-    expect(document.createElement('div').style.width = '5px').toBeTruthy();
-    expect(document.createElement('div').style.backgroundColor = '#ffffff').toBeTruthy();
-    expect(document.createElement('div').style.position = 'absolute').toBeTruthy();
-    expect(document.createElement('div').style.resize = 'horizontal').toBeTruthy();
-    expect(document.createElement('div').style.overflow = 'auto').toBeTruthy();
+  it('should enable and disable grab prop', async () => {
+    expect(component.grab).toBeFalsy();
+    expect(component.grabCursor).toEqual('default');
+
+    component.resizableMousedown({} as any);
+    expect(component.grab).toBeTruthy();
+    expect(component.grabCursor).toEqual('col-resize');
+
+    component.resizableMouseup({} as any);
+    expect(component.grab).toBeFalsy();
+    expect(component.grabCursor).toEqual('default');
   });
 
 });

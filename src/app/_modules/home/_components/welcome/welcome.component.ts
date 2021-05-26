@@ -7,6 +7,7 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Observable, Subscriber, Subscription } from 'rxjs';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UploadDatasetComponent } from '@modules/schema/_components/upload-dataset/upload-dataset.component';
+import { SchemaListModuleList } from '@models/schema/schemalist';
 
 @Component({
   selector: 'pros-welcome',
@@ -61,6 +62,11 @@ export class WelcomeComponent implements OnInit , OnDestroy {
    loader: boolean;
 
    /**
+    * all schemas
+    */
+   schemas: SchemaListModuleList[] = [];
+
+   /**
     * constructor of class
     * @param matDialog Instance of MatDialog
     * @param schemaListService Instance the Schema List service class
@@ -93,14 +99,16 @@ export class WelcomeComponent implements OnInit , OnDestroy {
     */
    getObjectTypes() {
      this.loader = true;
-     const schemaListSub = this.schemaListService.getSchemaList().subscribe((modules: []) => {
-       this.loader = false;
-       if (modules && modules.length > 0) {
-         this.modulesList.push(...modules);
-         this.filteredModulesList = this.modulesList;
-       }
-     });
-     this.subscriptions.push(schemaListSub);
+     const sub = this.schemaService.getDatasetsAlongWithSchemas().subscribe(res=>{
+      if(res.datasetsHttp !== undefined) {
+        this.modulesList = res.datasetsHttp;
+        this.filteredModulesList = res.datasetsHttp;
+      }
+      if(res.schemaHttp !== undefined) {
+        this.schemas = res.schemaHttp;
+      }
+    }, err=>{console.error(`Exception : ${err.message}`)});
+    this.subscriptions.push(sub);
    }
 
    /**
@@ -125,14 +133,14 @@ export class WelcomeComponent implements OnInit , OnDestroy {
     */
    schemaList(objectId) {
      this.searchInput.clearSearch();
-     this.modulesList.forEach(module => {
-       if (module && module.moduleId === objectId) {
-         this.data.objectid = module.moduleId;
-         this.data.objectdesc = module.moduleDesc;
-         this.schemaLists = module.schemaLists;
-         this.filteredSchemaList = module.schemaLists;
-       }
-     })
+     const mm =  this.modulesList.find(f=> f.moduleId === objectId);
+     const schms = this.schemas.filter(f=> f.moduleId === objectId)[0];
+     if(mm) {
+      this.data.objectid = mm.moduleId;
+      this.data.objectdesc = mm.moduleDesc;
+      this.schemaLists = schms ? schms.schemaLists : [];
+      this.filteredSchemaList = schms ? schms.schemaLists : [];
+     }
    }
 
    /**
