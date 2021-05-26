@@ -24,10 +24,10 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true,
       thresholds: {
-        statements: 75.16,
-        branches: 57.65,
-        functions: 71.10,
-        lines: 75.53
+        statements: 75.41,
+        branches: 57.92,
+        functions: 71.38,
+        lines: 75.77
       }
     },
     failOnEmptyTestSuite: true,
