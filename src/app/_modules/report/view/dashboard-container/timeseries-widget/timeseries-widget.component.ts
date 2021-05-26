@@ -31,7 +31,7 @@ const btnArray: ButtonArr[] = [
 })
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-  chartType: CType = 'line';
+  chartType: CType;
   responseData: any;
   displayCriteriaOptions = [
     {
