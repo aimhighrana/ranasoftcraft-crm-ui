@@ -310,6 +310,7 @@ describe('SchemaInfoComponent', () => {
         ]
       } as AddFilterOutput
     }
+
     const result = component.prepareTextToShow(ctrl);
     expect(result).toEqual('Unknown');
 
