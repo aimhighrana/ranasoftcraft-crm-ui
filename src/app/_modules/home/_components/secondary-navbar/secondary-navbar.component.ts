@@ -758,7 +758,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       this.filteredModulesMenu = of(res);
     }, err=>{console.error(`Exception : ${err.message}`)}));
   }
-  
+
   /**
    * Open dialog for import a report
    */

@@ -506,7 +506,7 @@ describe('SecondaryNavbarComponent', () => {
       expect(component.taskList).toEqual(nodeCount);
     });
   }));
-  
+
   it('importReport(), open dialog', () => {
     component.importReport();
     expect(dialogSpy).toHaveBeenCalled();

@@ -2388,7 +2388,7 @@
       </trans-unit>
       <trans-unit id="upload_file" datatype="html">
         <source>Upload a file</source>
-       target>Télécharger un fichier</target>
+        <target>Télécharger un fichier</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">11</context>

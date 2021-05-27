@@ -2380,7 +2380,7 @@
       </trans-unit>
        <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
-	<target>Báo cáo nhập</target>
+	      <target>Báo cáo nhập</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">3</context>
@@ -2468,7 +2468,7 @@
       </trans-unit>
       <trans-unit id="missing_module" datatype="html">
         <source>Missing module</source>
-        <target> Thiếu mô-đun <target>
+        <target> Thiếu mô-đun </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">41</context>
