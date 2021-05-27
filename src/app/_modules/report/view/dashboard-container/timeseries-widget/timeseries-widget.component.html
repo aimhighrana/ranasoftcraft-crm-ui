@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z0 widget" *ngIf="dataSet && chartType">
   <div class="f-row">
-    <lib-text-line type="leading">{{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
+    <lib-text-line type="base">{{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
     </lib-text-line>
     <span class="f-spacer"></span>
     <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
