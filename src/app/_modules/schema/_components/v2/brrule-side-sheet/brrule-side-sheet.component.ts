@@ -370,6 +370,7 @@ export class BrruleSideSheetComponent implements OnInit {
         startWith(''),
         map(keyword => {
           if (keyword) {
+            keyword = keyword.toLowerCase();
             const filterData = [];
             this.allGridAndHirarchyData.forEach(item => {
               if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
