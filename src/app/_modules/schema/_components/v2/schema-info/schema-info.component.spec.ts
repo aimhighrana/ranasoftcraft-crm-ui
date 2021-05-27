@@ -313,13 +313,14 @@ describe('SchemaInfoComponent', () => {
     const result = component.prepareTextToShow(ctrl);
     expect(result).toEqual('Unknown');
 
-    ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
+    ctrl.textValues = ['first value'];
     expect(component.prepareTextToShow(ctrl)).toEqual('first value');
 
     ctrl.filterCtrl.selectedValues.push({ CODE: 'DEF', FIELDNAME: 'MaterialType'} as DropDownValue);
     expect(component.prepareTextToShow(ctrl)).toEqual('2');
 
     ctrl.filterCtrl.selectedValues = [];
+    ctrl.textValues = [];
     expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
 
 
