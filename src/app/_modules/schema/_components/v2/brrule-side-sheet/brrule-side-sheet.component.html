@@ -24,10 +24,10 @@
                     <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
+                            <input matInput [(ngModel)]="searchRuleTypeStr" formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
                             [matAutocomplete]="ruleTypeAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
-                            <ng-container *ngFor="let rule of businessRuleTypes">
+                            <ng-container *ngFor="let rule of businessRuleTypesFiltered">
                                 <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
                                     {{rule.ruleDesc}}
                                 </mat-option>
@@ -288,6 +288,7 @@
                                                     <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(chldNode.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
                                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
+
                                                 <div class="col">
                                                     <mat-select class="udr-form-select" mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select operator">
                                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">

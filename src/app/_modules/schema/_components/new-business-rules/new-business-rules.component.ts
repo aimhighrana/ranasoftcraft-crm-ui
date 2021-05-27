@@ -199,6 +199,11 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     /**
+     * Hold search string for business rule type ....
+     */
+    searchRuleTypeStr = '';
+
+    /**
      * Class contructor
      * @param snackBar refernce to matSnackbar
      * @param dialogRef refernce to matdialog
@@ -790,6 +795,11 @@ export class NewBusinessRulesComponent implements OnInit {
 
     get isTransformationRule() {
         return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION;
+    }
+
+    get businessRuleTypesFiltered() {
+        const searchStr = this.searchRuleTypeStr?.toLowerCase();
+        return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
     }
 
     /**

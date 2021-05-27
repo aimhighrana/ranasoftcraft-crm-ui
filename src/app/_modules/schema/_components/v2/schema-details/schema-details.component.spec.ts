@@ -1327,4 +1327,19 @@ describe('SchemaDetailsComponent', () => {
 
   }));
 
+  it('isFieldEditable(), check if field is editable', async(() => {
+    component.selectedFields = [];
+    expect(component.isFieldEditable('1')).toBeFalse();
+
+    component.selectedFields = [
+      {
+        fieldId: '1',
+        order: 0,
+        editable: true,
+        isEditable: true
+      }
+    ];
+    expect(component.isFieldEditable('1')).toBeTrue();
+  }));
+
 });

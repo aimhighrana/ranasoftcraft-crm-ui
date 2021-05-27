@@ -186,7 +186,10 @@ export class BrruleSideSheetComponent implements OnInit {
    * data source
    */
   dataSource = null;
-
+  /**
+   * Hold search string for business rule type ....
+   */
+  searchRuleTypeStr = '';
   /**
    * has child
    */
@@ -267,6 +270,10 @@ export class BrruleSideSheetComponent implements OnInit {
       return this.transRuleTypeList.find(ruleType => this.form.controls.transformationRuleType.value === ruleType.value);
     }
     return '';
+  }
+  get businessRuleTypesFiltered() {
+    const searchStr = this.searchRuleTypeStr?.toLowerCase();
+    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
   }
   /**
    * Angular hook
