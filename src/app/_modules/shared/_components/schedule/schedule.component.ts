@@ -112,7 +112,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.schedulerId = params.scheduleId;
     })
     this.createForm();
-    if(this.schedulerId) {
+    if(this.schedulerId && this.schedulerId !== "new") {
       this.getScheduleInfo(this.schemaId);
     } else {
       this.selectedStartDate = new Date();
@@ -171,7 +171,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       repeatValue: new FormControl(2, [Validators.required]),
       weeklyOn: new FormControl(null),
       monthOn: new FormControl(null),
-      startOn: this.schedulerId ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
+      startOn: (this.schedulerId && this.schedulerId !== "new") ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
       end: new FormControl(null, [Validators.required]),
       occurrenceVal: new FormControl(2),
       endOn: new FormControl(moment().utc().valueOf().toString())
