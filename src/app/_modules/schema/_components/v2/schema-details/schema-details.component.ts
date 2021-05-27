@@ -940,7 +940,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    *
    * @param type type of request is inline or submit all
-   * @param row if request  type is inline then submit single rec ..
+   * @param row if request  type is inline then submit single rec..
    */
   approveRecords(type: string, row?: any) {
     const id: string[] = [];
