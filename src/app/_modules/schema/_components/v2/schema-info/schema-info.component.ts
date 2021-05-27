@@ -695,8 +695,19 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = event.fldCtrl.fieldId;
+    filterCtrl.fldCtrl = event.fldCtrl;
     filterCtrl.type = 'DROPDOWN';
-    filterCtrl.values = event.selectedValues.map(val => val.CODE);
+    filterCtrl.values = [];
+    filterCtrl.textValues = [];
+    filterCtrl.selectedValues = [];
+
+    event.selectedValues.forEach((value) => {
+      if(value.FIELDNAME === filterCtrl.fieldId) {
+        filterCtrl.values.push(value.CODE);
+        filterCtrl.textValues.push(value.TEXT);
+        filterCtrl.selectedValues.push(value);
+      }
+    })
 
     exitingFilterCtrl.push(filterCtrl);
 
@@ -706,9 +717,22 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           this.updateSubscriberInfo(sNo, exitingFilterCtrl)
           return;
         }
-        subscriber.filterCriteria.forEach((res) => {
-          if (event.fldCtrl.fieldId === res.fieldId) {
-            res.values.push(...filterCtrl.values);
+        subscriber.filterCriteria.forEach((filCtrl) => {
+          if (event.fldCtrl.fieldId === filCtrl.fieldId) {
+
+            filCtrl.values =  filterCtrl.values || [];
+
+            filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
+            filterCtrl.selectedValues.forEach(v => {
+              if(!filCtrl.selectedValues.some(value => value.CODE === v.CODE)) {
+                filCtrl.selectedValues.push(v);
+              }
+            });
+
+            filCtrl.textValues = [];
+            filCtrl.selectedValues.forEach(v => {
+              filCtrl.textValues.push(v.TEXT);
+            });
 
             const updateSubscriber: SchemaDashboardPermission = subscriber;
 
@@ -736,8 +760,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
     if (selCtrl && selCtrl.length > 1) {
       return String(selCtrl.length);
+    } else {
+      if(ctrl.textValues && ctrl.textValues.length) {
+        return ctrl.textValues[0] || 'Unknown';
+      } else {
+        const selected = ctrl.selectedValues && ctrl.selectedValues.find(s => s.CODE === ctrl.values[0]);
+        return selected ? selected.TEXT : 'Unknown';
+      }
     }
-    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT : selCtrl[0].CODE) : 'Unknown');
   }
 
 
@@ -749,7 +779,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     if (fldC) {
       const dropArray: DropDownValue[] = [];
       fldC.values.forEach(val => {
-        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
+        const dropDetails = fldC.selectedValues && fldC.selectedValues.find(v => v.CODE === val);
+        const drop: DropDownValue = dropDetails || { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
         dropArray.push(drop);
       });
       this.loadDopValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
@@ -866,10 +897,15 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           subscriber.sno = sNo.toString();
           delete subscriber.userMdoModel;
 
-          subscriber.filterCriteria.forEach((res) => {
-            if (res.fieldId === selectedValues[0].FIELDNAME) {
-              res.values = [];
-              res.values = selectedValues.map((value) => value.CODE)
+          subscriber.filterCriteria.forEach((filterCtrl) => {
+            if (filterCtrl.fieldId === selectedValues[0].FIELDNAME) {
+              filterCtrl.values.length = 0;
+              filterCtrl.textValues = [];
+              filterCtrl.selectedValues = selectedValues;
+              selectedValues.forEach((value) => {
+                filterCtrl.values.push(value.CODE);
+                filterCtrl.textValues.push(value.TEXT ? value.TEXT : value.CODE);
+              })
             }
           })
           this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {

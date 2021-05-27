@@ -311,7 +311,7 @@ describe('SchemaInfoComponent', () => {
       } as AddFilterOutput
     }
     const result = component.prepareTextToShow(ctrl);
-    expect(result).toEqual('ABC');
+    expect(result).toEqual('Unknown');
 
     ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
     expect(component.prepareTextToShow(ctrl)).toEqual('first value');
