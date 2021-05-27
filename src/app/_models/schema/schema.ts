@@ -1,6 +1,6 @@
 import { SchemaDashboardPermission } from '@models/collaborator';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { FilterCriteria, MetadataModel } from './schemadetailstable';
+import { FilterCriteria, MetadataModel, SchemaTableViewFldMap } from './schemadetailstable';
 
 export interface Schema {
      schemaId: string;
@@ -188,4 +188,9 @@ export interface CheckDataBrs{
 
 export interface CheckDataSubscriber {
      collaboratorId: number;
+}
+
+export interface SchemaTableViewDto {
+     selectedFields: SchemaTableViewFldMap[];
+     unselectedFields: MetadataModel[];
 }

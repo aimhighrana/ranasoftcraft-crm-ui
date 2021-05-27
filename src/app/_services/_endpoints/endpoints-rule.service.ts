@@ -616,7 +616,7 @@ export class EndpointsRuleService {
   }
 
   public getCrossMappingUrl(plantCode: string): string {
-    return this.origin + `/schema/actions/getCrossMapping?plantCode=${plantCode}`;
+    return this.classicOrigin + `/schema/actions/getCrossMapping?plantCode=${plantCode}`;
   }
 
 
@@ -650,5 +650,13 @@ export class EndpointsRuleService {
    */
   public getAllDataSets(): string {
     return `${this.classicOrigin}/schema/getAllModuleInfo`;
+  }
+
+  /**
+   * URI defined for get all fields based on nodeid 
+   * @returns will return the url for get all fields based on nodeid 
+   */
+  public getallFieldsbynodeId(): string {
+    return  `${this.classicOrigin}/schema/getallFieldsbynodeId`;
   }
 }

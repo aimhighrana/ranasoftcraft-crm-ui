@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
+import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse, SchemaTableViewDto } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
-import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { SchemaExecutionNodeType, SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
@@ -350,5 +350,18 @@ export class SchemaService {
     const datasetsHttp = this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
     const schemaHttp = this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
     return forkJoin({ datasetsHttp, schemaHttp});
+  }
+
+  /**
+   * call http and get all selected or unselected fields based on the parameters 
+   * @returns the Observable of SchemaTableViewDto 
+   */
+  public getallFieldsbynodeId(nodeType: SchemaExecutionNodeType, nodeIds: string, schemaId: string, variantId: string,
+    fetchCount: any, searchString: string, selected: any): Observable<SchemaTableViewDto> {
+      
+    fetchCount = fetchCount? fetchCount : 0;
+    searchString = searchString? searchString : '';
+    selected = selected? selected : false;
+    return this.http.get<SchemaTableViewDto>(this.endpointService.getallFieldsbynodeId(), { params: { nodeType, nodeIds, schemaId , variantId, fetchCount,searchString, selected   } });
   }
 }

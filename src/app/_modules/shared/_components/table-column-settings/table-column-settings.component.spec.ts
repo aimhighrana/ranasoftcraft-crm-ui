@@ -2,7 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableColumnSettingsComponent } from './table-column-settings.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { CrossMappingRule, DetailView, MetadataModel, SchemaTableAction, SchemaTableViewRequest, TableActionViewType } from 'src/app/_models/schema/schemadetailstable';
+import { CrossMappingRule, DetailView, MetadataModel, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, TableActionViewType } from 'src/app/_models/schema/schemadetailstable';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
@@ -15,7 +15,7 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Userdetails } from '@models/userdetails';
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 
-describe('TableColumnSettingsComponent', () => {
+fdescribe('TableColumnSettingsComponent', () => {
   let component: TableColumnSettingsComponent;
   let fixture: ComponentFixture<TableColumnSettingsComponent>;
   let schemaDetailsService: SchemaDetailsService;
@@ -76,24 +76,6 @@ describe('TableColumnSettingsComponent', () => {
   }));
 
 
-  it('manageStateOfCheckBox(), manage state of columns ', async(()=>{
-
-    component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
-
-    component.header = [{fieldId:'MATL_TYPE'} as MetadataModel];
-    component.manageStateOfCheckBox();
-    expect(component.allChecked).toEqual(true);
-
-    component.header = [{fieldId:'MATL_TYPE'}, {fieldId: 'region'} ] as MetadataModel[];
-    component.manageStateOfCheckBox();
-    expect(component.allChecked).toEqual(false);
-
-    component.data.selectedFields = [];
-    component.manageStateOfCheckBox();
-    expect(component.allChecked).toEqual(false);
-
-  }));
-
   it('isChecked(), is checked ', async(()=>{
     component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
     const res = component.isChecked({fieldId:'MATL_TYPE'} as MetadataModel);
@@ -101,26 +83,11 @@ describe('TableColumnSettingsComponent', () => {
     expect(component.isChecked({fieldId: 'region'} as MetadataModel)).toBeFalsy();
   }));
 
-  it('selectAll(), select all ', async(()=>{
-    component.data = {};
-    component.allChecked = true;
-    component.selectAll();
-    expect(component.allChecked).toEqual(true);
-
-    component.headerArray = ['matl_grp'];
-    component.selectAll();
-    expect(component.data.selectedFields.length).toEqual(1);
-
-
-    component.allChecked = false;
-    component.selectAll();
-    expect(component.allChecked).toEqual(false);
-  }));
-
+  
   it('submitColumn(), submit selected columns ', async(()=>{
-    component.header = [{
+    component.fields = [{
       fieldId:'MATL_TYPE'
-    } as MetadataModel];
+    } as SchemaTableViewFldMap];
 
     const selFld = [{fieldId : 'MATL_TYPE', order: 0, editable: true,isEditable:true}];
     component.data  = {selectedFields:selFld, schemaId:'72356742', variantId:'67242'};
@@ -224,9 +191,7 @@ describe('TableColumnSettingsComponent', () => {
   it('should update on init component', () => {
 
     spyOn(component, 'getSchemaDetails');
-    spyOn(component, 'headerDetails');
-    spyOn(component, 'manageStateOfCheckBox');
-
+    
     spyOn(userService, 'getUserDetails').and.returnValue(of(new Userdetails()))
 
 
@@ -239,51 +204,7 @@ describe('TableColumnSettingsComponent', () => {
 
   });
 
-  it('should set headers details', () => {
-
-    component.headerDetails();
-    expect(component.header.length).toEqual(0);
-
-    component.data = {schemaId: 'schema1', selectedFields: [], fields: {headers: {region: {fieldId: 'region'}}}};
-    component.headerDetails();
-    expect(component.header.length).toEqual(1);
-
-    component.data.selectedFields = [{fieldId: 'region'}, {fieldId: 'mtl_grp'}];
-    component.headerDetails();
-    expect(component.header.length).toEqual(1);
-
-    component.data.selectedFields = [{fieldId: 'mtl_grp'}];
-    component.headerDetails();
-    expect(component.header.length).toEqual(1);
-
-  });
-
-  it('should search for header field', () => {
-
-    component.header = [{fieldId: 'region', fieldDescri: 'region'}] as MetadataModel[];
-    component.searchFld('priority');
-    expect(component.suggestedFlds.length).toEqual(0);
-
-    component.searchFld('re');
-    expect(component.suggestedFlds.length).toEqual(0);
-
-  });
-
-  it('should update on field selection change', () => {
-
-    spyOn(component, 'manageStateOfCheckBox');
-    component.data = {selectedFields: [{fieldId: 'region'}]};
-
-    component.selectionChange({fieldId: 'region'} as MetadataModel);
-    expect(component.data.selectedFields.length).toEqual(0);
-
-    component.selectionChange({fieldId: 'region'} as MetadataModel);
-    expect(component.data.selectedFields.length).toEqual(1);
-
-    expect(component.manageStateOfCheckBox).toHaveBeenCalledTimes(2);
-
-  })
-
+  
   it('should update on field editable change', () => {
 
     component.data = {selectedFields: [{fieldId: 'region', editable: true}]};

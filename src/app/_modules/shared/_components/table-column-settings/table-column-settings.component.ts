@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, CrossMappingRule, DetailView, STANDARD_TABLE_ACTIONS } from 'src/app/_models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
@@ -10,8 +10,10 @@ import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { take } from 'rxjs/operators';
+import { debounce, debounceTime, distinctUntilChanged, filter, take } from 'rxjs/operators';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { SchemaService } from '@services/home/schema.service';
+import { SchemaExecutionNodeType } from '@models/schema/schema-execution';
 
 
 @Component({
@@ -20,39 +22,12 @@ import { GlobaldialogService } from '@services/globaldialog.service';
   styleUrls: ['./table-column-settings.component.scss']
 })
 export class TableColumnSettingsComponent implements OnInit{
+
   getMdmr: MetadataModeleResponse[];
   headerFieldObs: Observable<MetadataModel[]> = of([]);
-  header : MetadataModel[] = [];
-  hierarchy : MetadataModel[] = [];
-  grid : MetadataModel[] = [];
-  globalFormControl: FormControl = new FormControl('');
-
-  hierarchyList = {} as any;
-  gridList = {} as any;
-  heText = {} as any;
-  val: any = {} as any;
-  markedFields: string[] = [];
-  dynamicSearchVal = '';
-  matchCount = 0;
-  index = 0;
+  
   data = null;
-  allChecked = false;
-  allIndeterminate = false;
-  hierarchyChecked = false;
-  hierarchyIndeterminate = false;
-  gridChecked = false;
-  gridIndeterminate = false;
-  headerArray = [];
-  gridArray = [];
-  hierarchyArray = [];
   editEnabledList = [];
-
-  /**
-   * Hold fields of all suggested fields
-   */
-  suggestedFlds: string[] = [];
-
-  @ViewChild('scrollableContainer', {read: ElementRef}) scrollable : ElementRef<any>;
 
   userDetails = new Userdetails();
 
@@ -80,20 +55,36 @@ export class TableColumnSettingsComponent implements OnInit{
 
   crossMappingRules: CrossMappingRule[]= [];
 
-  /**
-   * hold initial selected fields
-   */
-  initialSelectedFields: SchemaTableViewFldMap[] = [];
-
-  /**
-   * hold initial configured actions
-   */
-  initialActionsList: SchemaTableAction[] = [];
-
+  
   /**
    * hold initial action text while edit starts
    */
   previousActionText = '';
+
+  /**
+   * Get all selected or non-selected fields based on selected nodeid ... 
+   */
+  fields: SchemaTableViewFldMap[] = [];
+
+  /**
+   * fields obserable to help the render data ... 
+   */
+  fieldsObs: Observable<SchemaTableViewFldMap[]> = of([]);
+
+  /**
+   * Search input subject .. will help to make http with debounce time 
+   */
+  serachFieldsSub: BehaviorSubject<string> = new BehaviorSubject(null);
+
+  /**
+   * Scoll cout ... 
+   */
+  ftchCnt = 0 ;
+
+  /**
+   * Hold all selected fields before save call 
+   */
+  beforeSaveState: SchemaTableViewFldMap[] = [];
 
   constructor(
     private sharedService: SharedServiceService,
@@ -101,7 +92,8 @@ export class TableColumnSettingsComponent implements OnInit{
     private schemaDetailsService: SchemaDetailsService,
     private userService: UserService,
     private schemaListService: SchemalistService,
-    private glocalDialogService: GlobaldialogService
+    private glocalDialogService: GlobaldialogService,
+    private schemaService: SchemaService
   ){}
 
   ngOnInit() {
@@ -112,10 +104,7 @@ export class TableColumnSettingsComponent implements OnInit{
         if (data.editActive) {
           this.data = JSON.parse(JSON.stringify(data));
           this.getSchemaDetails();
-          this.initialSelectedFields = data.selectedFields;
-          this.initialActionsList = data.tableActionsList;
-          this.headerDetails();
-          this.manageStateOfCheckBox();
+          this.getFields('');
         }
       } else {
         this.close();
@@ -126,36 +115,53 @@ export class TableColumnSettingsComponent implements OnInit{
       this.userDetails = res;
     }, error => console.error(`Error : ${error.message}`));
 
+    this.serachFieldsSub.pipe(filter(res=> res !== null), debounceTime(200), distinctUntilChanged()).subscribe(res=>{
+      this.ftchCnt = 0;
+      this.getFields(res);
+    });
+    
   }
 
-  // header
-  public headerDetails() {
-    this.header = [];
-    const fields = this.data.allNodeFields ? this.data.allNodeFields :  (this.data.fields ? this.data.fields.headers: {});
-    if(this.data && this.data.selectedFields && this.data.selectedFields.length > 0){
-      for(const field of this.data.selectedFields) {
-        if(fields[field.fieldId]) {
-          this.header.push(fields[field.fieldId]);
+  /**
+   * Get all the fields based on nodeId and nodeType 
+   * @param srchStr the search string ...
+   * @param frmScroll the flag to identify the call from scroll or normal call .... 
+   */
+  getFields(srchStr: string, frmScroll?: boolean) {
+    const sub = this.schemaService.getallFieldsbynodeId(this.data.activeNode ? this.data.activeNode.nodeType : SchemaExecutionNodeType.HEADER, 
+      this.data.activeNode ? this.data.activeNode.nodeId : 'header', this.data.schemaId, this.data.variantId, this.ftchCnt,srchStr,false).subscribe(res=>{
+        
+        const flds: SchemaTableViewFldMap[] = [];
+        res.selectedFields = res.selectedFields? res.selectedFields : [];
+        res.unselectedFields = res.unselectedFields? res.unselectedFields : [];
+        res.selectedFields.forEach(f=> f.isSelected = true);
+        flds.push(...res.selectedFields);
+
+        res.unselectedFields.forEach((f, index)=>{
+          const fld: SchemaTableViewFldMap = new SchemaTableViewFldMap();
+          fld.isEditable = false; fld.fieldId = f.fieldId; fld.editable = false;
+          fld.metadataCreateModel = f; fld.order = flds.length -1;
+          flds.push(fld);
+        });
+        
+        if(frmScroll) {
+          this.fields.push(...flds);
+          this.fieldsObs = of(this.fields);
+        } else {
+          this.fieldsObs = of(flds);
+          this.fields = flds;
         }
-      }
-    }
-    if(this.data && fields && this.data.selectedFields){
-      for(const hekey in fields){
-        if(this.data.selectedFields.length > 0){
-          if(this.data.selectedFields.findIndex( f => f.fieldId === hekey) === -1)
-          {
-            this.header.push(fields[hekey]);
+        
+        // keep updated selectd node ... 
+        this.fields.filter(f=> f.isSelected === true).forEach(f=>{
+          if(this.beforeSaveState.findIndex(idx=> idx.fieldId === f.fieldId) === -1) {
+            this.beforeSaveState.push(f);
           }
-        }
-        else {
-          this.header.push(fields[hekey]);
-        }
-      }
-    }
-
-    this.headerFieldObs = of(this.header);
-    this.headerArray = this.header.map(he=> he.fieldId);
+        });
+      }, err=> console.error(`Exception : ${err.message}`));
+      
   }
+
 
   close()
   {
@@ -171,47 +177,20 @@ export class TableColumnSettingsComponent implements OnInit{
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log(response);
-      // this.sharedService.setChooseColumnData(this.data);
-      this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.initialActionsList, editActive: false});
+      this.sharedService.setChooseColumnData({...this.data, editActive: false});
       this.close();
     }, error => {
       console.error('Exception while persist table view');
     });
   }
 
-  /**
-   * Manage select all checkbox state
-   */
-  manageStateOfCheckBox() {
-    if(this.header.length === this.data.selectedFields.length) {
-      this.allChecked = true;
-      this.allIndeterminate = false;
-    } else if(this.data.selectedFields.length !== 0){
-      this.allIndeterminate = true;
-      this.allChecked = false;
-    }
-  }
-
-
+  
   /**
    * Search field by value change
    * @param value changed input value
    */
   searchFld(value: string) {
-    if(value) {
-      this.headerFieldObs = of(this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
-      // this.suggestedFlds = sugg.map(map => map.fieldId);
-      // if (this.suggestedFlds.length && this.scrollable){
-      //   const item = document.getElementById(this.suggestedFlds[0]);
-      //   this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
-      // }
-    } else {
-      this.headerFieldObs = of(this.header);
-      this.suggestedFlds = [];
-      if(this.scrollable) {
-        this.scrollable.nativeElement.scrollTo(0, 0);
-      }
-    }
+    this.serachFieldsSub.next(value);
   }
 
   /**
@@ -219,17 +198,21 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld changeable checkbox
    */
   selectionChange(fld: MetadataModel) {
-    const selIndex =  this.data.selectedFields.findIndex(f => f.fieldId === fld.fieldId);
+    const selIndex =  this.beforeSaveState.findIndex(f => f.fieldId === fld.fieldId);
     if(selIndex !==-1) {
-      this.data.selectedFields.splice(selIndex, 1)
+      this.beforeSaveState[selIndex].isSelected = this.beforeSaveState[selIndex].isSelected  ? false : true;
+      this.beforeSaveState[selIndex].isEditable = !this.beforeSaveState[selIndex].isSelected  ? false : this.beforeSaveState[selIndex].isEditable;
+
+      this.fields[selIndex].isSelected = this.fields[selIndex].isSelected  ? false : true;
+      this.fields[selIndex].isEditable = !this.fields[selIndex].isSelected  ? false : this.fields[selIndex].isEditable;
+      this.fieldsObs = of(this.fields);
     } else {
       const fieldView = new SchemaTableViewFldMap();
-      fieldView.fieldId = fld.fieldId;
+      fieldView.fieldId = fld.fieldId; fieldView.isSelected = true;
       fieldView.isEditable = false;
-      this.data.selectedFields.push(fieldView);
+      fieldView.nodeId = fld.nodeId; fieldView.nodeType = fld.nodeType;
+      this.beforeSaveState.push(fieldView);
     }
-    // this.submitColumn();
-    this.manageStateOfCheckBox();
   }
 
   /**
@@ -237,28 +220,8 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld field for checking is selected or not
    */
   isChecked(fld: MetadataModel): boolean {
-    const selCheck = this.data.selectedFields.findIndex(f => (f.fieldId ? f.fieldId : f) === fld.fieldId);
-    return selCheck !==-1 ? true : false;
-  }
-
-  /**
-   * State of select all checkbox ..
-   */
-  selectAll() {
-    this.data.selectedFields = [];
-    if(this.allChecked) {
-      this.allChecked  = true;
-      this.allIndeterminate = false;
-      this.data.selectedFields = this.headerArray.map(header => {
-        const fieldView = new SchemaTableViewFldMap();
-        fieldView.fieldId = header;
-        fieldView.isEditable = false;
-        return fieldView;
-      });
-    } else {
-      this.allChecked = false;
-      this.allIndeterminate = false;
-    }
+    const selCheck = this.beforeSaveState.find(f => fld.fieldId === f.fieldId && f.isSelected === true);
+    return selCheck ? true : false;
   }
 
   /**
@@ -277,33 +240,28 @@ export class TableColumnSettingsComponent implements OnInit{
   submitColumn() {
     const orderFld: SchemaTableViewFldMap[] = [];
     // const hdlFld = this.header.map(map=> map.fieldId);
-    let choosenField ;
-    let order = 0;
-    this.header.forEach(h=>{
-      choosenField = this.data.selectedFields.find(field =>field.fieldId === h.fieldId);
-      if( choosenField ) {
-        choosenField.order = order;
-        choosenField.isEditable = choosenField.isEditable;
-        choosenField.nodeId = h.nodeId;
-        choosenField.nodeType = h.nodeType;
-        orderFld.push(choosenField);
-        order++;
-      }
+    let choosenField: SchemaTableViewFldMap ;
+    this.beforeSaveState.filter(field =>field.isSelected === true).forEach(h=>{
+      choosenField = new SchemaTableViewFldMap();
+      choosenField.order = this.fields.findIndex(f=> f.fieldId === h.fieldId);
+      choosenField.isEditable = h.isEditable;
+      choosenField.nodeId = h.nodeId ? h.nodeId : (this.data && this.data.activeNode ? this.data.activeNode.nodeId : null);
+      choosenField.nodeType = h.nodeType ? h.nodeType : (this.data && this.data.activeNode ? this.data.activeNode.nodeType : null);;
+      choosenField.fieldId = h.fieldId;
+      orderFld.push(choosenField);
     });
-    this.data.selectedFields = orderFld;
     this.persistenceTableView(orderFld);
   }
 
   editableChange(fld: MetadataModel){
-    const field = this.data.selectedFields.find(f => f.fieldId === fld.fieldId);
-    if (field){
-      field.isEditable = !field.isEditable;
+    const fieldIdx = this.beforeSaveState.findIndex(f => f.fieldId === fld.fieldId);
+    if (fieldIdx !== -1){
+      this.beforeSaveState[fieldIdx].isEditable = this.beforeSaveState[fieldIdx].isEditable ? false : true;
     }
-    // this.submitColumn();
   }
 
   isEditEnabled(fld : MetadataModel){
-    return this.data.selectedFields.findIndex(field => (field.fieldId === fld.fieldId) && field.isEditable ) !== -1;
+    return this.beforeSaveState.findIndex(field => (field.fieldId === fld.fieldId) && field.isEditable ) !== -1;
   }
 
   /**
@@ -365,18 +323,18 @@ export class TableColumnSettingsComponent implements OnInit{
     this.actionsList[rowIndex][attributeKey] = attributeValue;
   }
 
-  // /**
-  //  * create update a schema action
-  //  * @param action to be updated
-  //  * @param rowIndex inside the actions list
-  //  */
-  // createUpdateAction(action: SchemaTableAction, rowIndex?: number) {
-  //   this.schemaDetailsService.createUpdateSchemaAction(action).subscribe(resp => {
-  //     console.log(resp);
-  //     rowIndex !== undefined ? this.actionsList[rowIndex] = resp : this.actionsList.splice(0, 0, resp);
-  //     this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: this.actionsList, editActive: false});
-  //   })
-  // }
+  /**
+   * create update a schema action
+   * @param action to be updated
+   * @param rowIndex inside the actions list
+   */
+  createUpdateAction(action: SchemaTableAction, rowIndex?: number) {
+    this.schemaDetailsService.createUpdateSchemaAction(action).subscribe(resp => {
+      console.log(resp);
+      rowIndex !== undefined ? this.actionsList[rowIndex] = resp : this.actionsList.splice(0, 0, resp);
+      this.sharedService.setChooseColumnData({tableActionsList: this.actionsList, editActive: false});
+    })
+  }
 
   /**
    * add a new custom action
@@ -484,7 +442,7 @@ export class TableColumnSettingsComponent implements OnInit{
     this.actionsList.forEach((action, index) => action.actionOrder = index);
     this.schemaDetailsService.createUpdateSchemaActionsList(this.actionsList).subscribe(actions => {
       console.log(actions);
-      this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: actions, editActive: false});
+      this.sharedService.setChooseColumnData({tableActionsList: actions, editActive: false});
       this.close();
     }, error => {
       console.log('something went wrong!')
@@ -502,6 +460,23 @@ export class TableColumnSettingsComponent implements OnInit{
     } else if (activeTab === 1) {
       this.saveTableActionsConfig();
     }
+  }
+
+  /**
+   * keep scrolling to get more data 
+   */
+  keepScrolling() {
+    this.ftchCnt++;
+    this.getFields(this.serachFieldsSub.getValue() ? this.serachFieldsSub.getValue() : '', true);
+  }
+
+  /**
+   * Check the field id can't be null 
+   * @param obj current object ... 
+   * @returns check field exits or not 
+   */
+  fldTrackBy(obj: SchemaTableViewFldMap): string {
+    return obj.fieldId ? obj.fieldId : null;
   }
 
 }

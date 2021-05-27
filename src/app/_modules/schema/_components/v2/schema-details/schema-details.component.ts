@@ -740,7 +740,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
-      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode) };
+      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode)};
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
