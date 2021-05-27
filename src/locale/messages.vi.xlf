@@ -2378,6 +2378,102 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
+       <trans-unit id="import_report" datatype="html">
+        <source>Import Report</source>
+	<target>Báo cáo nhập</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_file" datatype="html">
+        <source>Upload a file</source>
+        <target>Tải lên tệp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_mdoreport" datatype="html">
+          <source>Upload a .mdopage report file</source>
+        <target>Tải lên tệp báo cáo .mdopage</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+            <context context-type="linenumber">11</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="replace_existing" datatype="html">
+        <source>Replace existing</source>
+        <target>Thay thế hiện có</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report" datatype="html">
+        <source>Duplicate report</source>
+        <target>Báo cáo trùng lặp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_report" datatype="html">
+        <source>Add report</source>
+        <target>Thêm báo cáo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="import" datatype="html">
+        <source>Import</source>
+        <target>Nhập</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="description" datatype="html">
+          <source>Description</source>
+        <target>Mô tả</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+            <context context-type="linenumber">19</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="import_date" datatype="html">
+        <source>Import date</source>
+        <target>Ngày nhập</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category" datatype="html">
+        <source>Category</source>
+        <target>Danh mục</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report_name" datatype="html">
+        <source> Duplicate report name</source>
+        <target> Tên báo cáo trùng lặp </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="missing_module" datatype="html">
+        <source>Missing module</source>
+        <target> Thiếu mô-đun <target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
