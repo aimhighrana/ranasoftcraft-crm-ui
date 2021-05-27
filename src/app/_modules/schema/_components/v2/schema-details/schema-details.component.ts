@@ -961,6 +961,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
       if (res === true) {
+        this.dataSource.setDocValue([]);
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
