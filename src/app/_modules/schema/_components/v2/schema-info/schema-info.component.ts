@@ -691,7 +691,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   makeFilterControl(event: AddFilterOutput, sNo: number) {
-    const exitingFilterCtrl = [];
+    const exitingFilterCtrl: FilterCriteria[] = [];
 
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = event.fldCtrl.fieldId;
@@ -717,10 +717,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           this.updateSubscriberInfo(sNo, exitingFilterCtrl)
           return;
         }
-        subscriber.filterCriteria.forEach((filCtrl) => {
-          if (event.fldCtrl.fieldId === filCtrl.fieldId) {
+        const filCtrl = subscriber.filterCriteria.find(fc => fc.fieldId === event.fldCtrl.fieldId);
+          if (filCtrl) {
 
             filCtrl.values =  filterCtrl.values || [];
+            filCtrl.fldCtrl = filterCtrl.fldCtrl;
 
             filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
             filterCtrl.selectedValues.forEach(v => {
@@ -746,9 +747,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           } else {
             this.updateSubscriberInfo(sNo, exitingFilterCtrl)
           }
-        })
-      }
-    })
+        }
+      })
   }
 
 
@@ -757,9 +757,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param ctrl Filter criteria
    */
   prepareTextToShow(ctrl: FilterCriteria): string {
-    const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
-    if (selCtrl && selCtrl.length > 1) {
-      return String(selCtrl.length);
+    if (ctrl.values && ctrl.values.length > 1) {
+      return String(ctrl.values.length);
     } else {
       if(ctrl.textValues && ctrl.textValues.length) {
         return ctrl.textValues[0] || 'Unknown';
@@ -854,7 +853,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaId schema id
    * @param exitingFilterCtrl array of filter criteria
    */
-  updateSubscriberInfo(sNo: number, exitingFilterCtrl) {
+  updateSubscriberInfo(sNo: number, exitingFilterCtrl: FilterCriteria[]) {
     /**
      * Filter data according to sNo.
      */
@@ -865,6 +864,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
          */
         data.schemaId = this.schemaId;
         data.sno = data.sno.toString();
+
         /**
          * Delete not required fields for UPDATE api
          */
