@@ -14,8 +14,11 @@ import { UserService } from '@services/user/userservice.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Userdetails } from '@models/userdetails';
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { SchemaService } from '@services/home/schema.service';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { SchemaExecutionNodeType } from '@models/schema/schema-execution';
 
-fdescribe('TableColumnSettingsComponent', () => {
+describe('TableColumnSettingsComponent', () => {
   let component: TableColumnSettingsComponent;
   let fixture: ComponentFixture<TableColumnSettingsComponent>;
   let schemaDetailsService: SchemaDetailsService;
@@ -23,6 +26,7 @@ fdescribe('TableColumnSettingsComponent', () => {
   let userService: UserService;
   let sharedService: SharedServiceService;
   let schemalistService: SchemalistService;
+  let schemaService: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,6 +37,7 @@ fdescribe('TableColumnSettingsComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule,
+        MdoUiLibraryModule
       ],
       providers: [SchemaDetailsService]
     })
@@ -47,6 +52,7 @@ fdescribe('TableColumnSettingsComponent', () => {
     userService = fixture.debugElement.injector.get(UserService);
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
     schemalistService = fixture.debugElement.injector.get(SchemalistService);
+    schemaService = fixture.debugElement.injector.get(SchemaService);
 
     component.userDetails.userName = 'admin';
     component.schemaInfo = new SchemaListDetails();
@@ -77,36 +83,24 @@ fdescribe('TableColumnSettingsComponent', () => {
 
 
   it('isChecked(), is checked ', async(()=>{
-    component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
+    component.beforeSaveState = [{fieldId: 'MATL_TYPE', order: 0, editable: true,isEditable: true, isSelected: true}];
     const res = component.isChecked({fieldId:'MATL_TYPE'} as MetadataModel);
     expect(res).toEqual(true);
     expect(component.isChecked({fieldId: 'region'} as MetadataModel)).toBeFalsy();
   }));
 
-  
+
   it('submitColumn(), submit selected columns ', async(()=>{
     component.fields = [{
       fieldId:'MATL_TYPE'
     } as SchemaTableViewFldMap];
 
-    const selFld = [{fieldId : 'MATL_TYPE', order: 0, editable: true,isEditable:true}];
-    component.data  = {selectedFields:selFld, schemaId:'72356742', variantId:'67242'};
+    component.beforeSaveState  = [{fieldId : 'MATL_TYPE', order: 0, editable: true,isEditable:true, isSelected: true}];
 
-
-    // mock data
-    const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
-    schemaTableViewRequest.schemaId = component.data.schemaId;
-    schemaTableViewRequest.variantId = component.data.variantId;
-    schemaTableViewRequest.schemaTableViewMapping = selFld;
-
-    spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of({}));
-    // spyOn(router, 'navigate');
-
-
+    spyOn(component,'persistenceTableView');
     component.submitColumn();
 
-    expect(schemaDetailsService.updateSchemaTableView).toHaveBeenCalledWith(schemaTableViewRequest);
-    // expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
+    expect(component.submitColumn).toBeTruthy();
 
   }));
 
@@ -191,7 +185,7 @@ fdescribe('TableColumnSettingsComponent', () => {
   it('should update on init component', () => {
 
     spyOn(component, 'getSchemaDetails');
-    
+
     spyOn(userService, 'getUserDetails').and.returnValue(of(new Userdetails()))
 
 
@@ -204,7 +198,7 @@ fdescribe('TableColumnSettingsComponent', () => {
 
   });
 
-  
+
   it('should update on field editable change', () => {
 
     component.data = {selectedFields: [{fieldId: 'region', editable: true}]};
@@ -345,16 +339,54 @@ fdescribe('TableColumnSettingsComponent', () => {
 
   it(`selectionChange(), should update checkbox state ... `, async(()=>{
     // mock data
-    component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
+    component.fields = [{fieldId: 'MATL_TYPE', order: 0, editable: true,isEditable: true}];
+    component.beforeSaveState = [{fieldId: 'MATL_TYPE', order: 0, editable: true,isEditable: true}];
 
     component.selectionChange({fieldId:'MATL_TYPE'} as MetadataModel);
 
-    expect(component.data.selectedFields.length).toEqual(0, 'After splice the length should be 0');
+    expect(component.beforeSaveState[0].isSelected).toEqual(true);
+    expect(component.beforeSaveState[0].isEditable).toEqual(true);
 
     component.selectionChange({fieldId:'MATL_GRP'} as MetadataModel);
 
-    expect(component.data.selectedFields.length).toEqual(1, 'After push the length should be 1');
+    expect(component.beforeSaveState.length).toEqual(2, 'After push the length should be 2');
 
+  }));
+
+  it(`getFields(), get fields based on nodeid and nodetype`, async(()=>{
+    // mock data
+    component.data.activeNode = { nodeId: 'header', nodeType: 'HEADER'};
+    component.data.schemaId = '3242323423';
+    component.data.variantId = '0';
+
+    spyOn(schemaService,'getallFieldsbynodeId').withArgs(component.data && component.data.activeNode ? component.data.activeNode.nodeType : SchemaExecutionNodeType.HEADER,
+      component.data && component.data.activeNode ? component.data.activeNode.nodeId : 'header', component.data.schemaId, component.data.variantId, component.ftchCnt,'',false).and
+      .returnValue(of({selectedFields:[{
+        editable:true,
+        fieldId: 'MATL_TYPE',
+        isEditable: true,
+        order:0,
+        isSelected:true
+      }], unselectedFields:[{
+        fieldId: 'MATL_GRP'
+      } as MetadataModel]}));
+
+    component.getFields('', false);
+    expect(schemaService.getallFieldsbynodeId).toHaveBeenCalled();
+
+  }));
+
+  it('keepScrolling(), get more fields based on scroll', async(()=>{
+    spyOn(component,'getFields');
+
+    component.keepScrolling();
+    expect(component.ftchCnt).toEqual(1);
+    expect(component.getFields).toHaveBeenCalled();
+  }));
+
+  it('fldTrackBy(), track the fields ', async(()=>{
+    expect(component.fldTrackBy({fieldId:'MATL_TYPE'} as SchemaTableViewFldMap)).toEqual('MATL_TYPE');
+    expect(component.fldTrackBy({} as SchemaTableViewFldMap)).toBeNull();
   }));
 
 });

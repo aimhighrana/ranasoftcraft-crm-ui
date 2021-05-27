@@ -653,8 +653,8 @@ export class EndpointsRuleService {
   }
 
   /**
-   * URI defined for get all fields based on nodeid 
-   * @returns will return the url for get all fields based on nodeid 
+   * URI defined for get all fields based on nodeid
+   * @returns will return the url for get all fields based on nodeid
    */
   public getallFieldsbynodeId(): string {
     return  `${this.classicOrigin}/schema/getallFieldsbynodeId`;

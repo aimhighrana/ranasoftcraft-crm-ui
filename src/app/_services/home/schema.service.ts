@@ -353,12 +353,12 @@ export class SchemaService {
   }
 
   /**
-   * call http and get all selected or unselected fields based on the parameters 
-   * @returns the Observable of SchemaTableViewDto 
+   * call http and get all selected or unselected fields based on the parameters
+   * @returns the Observable of SchemaTableViewDto
    */
   public getallFieldsbynodeId(nodeType: SchemaExecutionNodeType, nodeIds: string, schemaId: string, variantId: string,
     fetchCount: any, searchString: string, selected: any): Observable<SchemaTableViewDto> {
-      
+
     fetchCount = fetchCount? fetchCount : 0;
     searchString = searchString? searchString : '';
     selected = selected? selected : false;

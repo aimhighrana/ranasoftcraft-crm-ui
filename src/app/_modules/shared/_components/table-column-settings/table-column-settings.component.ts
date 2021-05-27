@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, CrossMappingRule, DetailView, STANDARD_TABLE_ACTIONS } from 'src/app/_models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { debounce, debounceTime, distinctUntilChanged, filter, take } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, take } from 'rxjs/operators';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaExecutionNodeType } from '@models/schema/schema-execution';
@@ -21,11 +21,11 @@ import { SchemaExecutionNodeType } from '@models/schema/schema-execution';
   templateUrl: './table-column-settings.component.html',
   styleUrls: ['./table-column-settings.component.scss']
 })
-export class TableColumnSettingsComponent implements OnInit{
+export class TableColumnSettingsComponent implements OnInit, OnDestroy{
 
   getMdmr: MetadataModeleResponse[];
   headerFieldObs: Observable<MetadataModel[]> = of([]);
-  
+
   data = null;
   editEnabledList = [];
 
@@ -55,36 +55,38 @@ export class TableColumnSettingsComponent implements OnInit{
 
   crossMappingRules: CrossMappingRule[]= [];
 
-  
+
   /**
    * hold initial action text while edit starts
    */
   previousActionText = '';
 
   /**
-   * Get all selected or non-selected fields based on selected nodeid ... 
+   * Get all selected or non-selected fields based on selected nodeid ...
    */
   fields: SchemaTableViewFldMap[] = [];
 
   /**
-   * fields obserable to help the render data ... 
+   * fields obserable to help the render data ...
    */
   fieldsObs: Observable<SchemaTableViewFldMap[]> = of([]);
 
   /**
-   * Search input subject .. will help to make http with debounce time 
+   * Search input subject .. will help to make http with debounce time
    */
   serachFieldsSub: BehaviorSubject<string> = new BehaviorSubject(null);
 
   /**
-   * Scoll cout ... 
+   * Scoll cout ...
    */
   ftchCnt = 0 ;
 
   /**
-   * Hold all selected fields before save call 
+   * Hold all selected fields before save call
    */
   beforeSaveState: SchemaTableViewFldMap[] = [];
+
+  subscriptions: Subscription[] = [];
 
   constructor(
     private sharedService: SharedServiceService,
@@ -95,6 +97,12 @@ export class TableColumnSettingsComponent implements OnInit{
     private glocalDialogService: GlobaldialogService,
     private schemaService: SchemaService
   ){}
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(f=> f.unsubscribe());
+    this.serachFieldsSub.complete();
+    this.serachFieldsSub.unsubscribe();
+  }
 
   ngOnInit() {
 
@@ -119,18 +127,18 @@ export class TableColumnSettingsComponent implements OnInit{
       this.ftchCnt = 0;
       this.getFields(res);
     });
-    
+
   }
 
   /**
-   * Get all the fields based on nodeId and nodeType 
+   * Get all the fields based on nodeId and nodeType
    * @param srchStr the search string ...
-   * @param frmScroll the flag to identify the call from scroll or normal call .... 
+   * @param frmScroll the flag to identify the call from scroll or normal call ....
    */
   getFields(srchStr: string, frmScroll?: boolean) {
-    const sub = this.schemaService.getallFieldsbynodeId(this.data.activeNode ? this.data.activeNode.nodeType : SchemaExecutionNodeType.HEADER, 
-      this.data.activeNode ? this.data.activeNode.nodeId : 'header', this.data.schemaId, this.data.variantId, this.ftchCnt,srchStr,false).subscribe(res=>{
-        
+    const sub = this.schemaService.getallFieldsbynodeId(this.data && this.data.activeNode ? this.data.activeNode.nodeType : SchemaExecutionNodeType.HEADER,
+      this.data && this.data.activeNode ? this.data.activeNode.nodeId : 'header', this.data.schemaId, this.data.variantId, this.ftchCnt,srchStr,false).subscribe(res=>{
+
         const flds: SchemaTableViewFldMap[] = [];
         res.selectedFields = res.selectedFields? res.selectedFields : [];
         res.unselectedFields = res.unselectedFields? res.unselectedFields : [];
@@ -143,7 +151,7 @@ export class TableColumnSettingsComponent implements OnInit{
           fld.metadataCreateModel = f; fld.order = flds.length -1;
           flds.push(fld);
         });
-        
+
         if(frmScroll) {
           this.fields.push(...flds);
           this.fieldsObs = of(this.fields);
@@ -151,15 +159,15 @@ export class TableColumnSettingsComponent implements OnInit{
           this.fieldsObs = of(flds);
           this.fields = flds;
         }
-        
-        // keep updated selectd node ... 
+
+        // keep updated selectd node ...
         this.fields.filter(f=> f.isSelected === true).forEach(f=>{
           if(this.beforeSaveState.findIndex(idx=> idx.fieldId === f.fieldId) === -1) {
             this.beforeSaveState.push(f);
           }
         });
       }, err=> console.error(`Exception : ${err.message}`));
-      
+      this.subscriptions.push(sub);
   }
 
 
@@ -184,7 +192,7 @@ export class TableColumnSettingsComponent implements OnInit{
     });
   }
 
-  
+
   /**
    * Search field by value change
    * @param value changed input value
@@ -463,7 +471,7 @@ export class TableColumnSettingsComponent implements OnInit{
   }
 
   /**
-   * keep scrolling to get more data 
+   * keep scrolling to get more data
    */
   keepScrolling() {
     this.ftchCnt++;
@@ -471,9 +479,9 @@ export class TableColumnSettingsComponent implements OnInit{
   }
 
   /**
-   * Check the field id can't be null 
-   * @param obj current object ... 
-   * @returns check field exits or not 
+   * Check the field id can't be null
+   * @param obj current object ...
+   * @returns check field exits or not
    */
   fldTrackBy(obj: SchemaTableViewFldMap): string {
     return obj.fieldId ? obj.fieldId : null;
