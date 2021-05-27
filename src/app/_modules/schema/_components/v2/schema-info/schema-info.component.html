@@ -330,11 +330,11 @@
                                     <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                         [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                         <label>
-                                            {{ ctrl.filterCtrl && ctrl.filterCtrl.fldCtrl ? ctrl.filterCtrl.fldCtrl.fieldDesc || ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                            {{ ctrl && ctrl.fldCtrl ? ctrl.fldCtrl.fieldDesc || ctrl.fldCtrl.fieldDescri : 'Unknown' }}
                                             :
                                         </label>
                                         <ng-template
-                                            [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
+                                            [ngIf]="ctrl.selectedValues && ctrl.selectedValues.length >= 1">
                                             <span class="info">
                                                 {{ prepareTextToShow(ctrl) }}
                                             </span>
@@ -363,6 +363,7 @@
                             <mat-menu #addfiltermenu="matMenu">
                                 <pros-add-filter-menu [moduleId]="moduleId"
                                     (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
+                                    [alreadySelectedValues]="subscriber.filterCriteria"
                                     [reInilize]="reInilize">
                                 </pros-add-filter-menu>
                             </mat-menu>

@@ -297,30 +297,37 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('prepateTextToShow(), should prepare text to show over mat-chips', async () => {
-    const ctrl: FilterCriteria = {
-      fieldId: 'MaterialType',
-      values: ['123', '456'],
-      type: 'DROPDOWN',
-      filterCtrl: {
-        selectedValues: [
-          {
-            CODE: 'ABC',
-            FIELDNAME: 'MaterialType'
-          } as DropDownValue
-        ]
-      } as AddFilterOutput
-    }
-    const result = component.prepareTextToShow(ctrl);
-    expect(result).toEqual('ABC');
+    let ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA Region', 'Asia Region']
+    } as FilterCriteria;
+    let result =  component.prepareTextToShow(ctrl);
+    expect(result).toEqual('2');
 
-    ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
-    expect(component.prepareTextToShow(ctrl)).toEqual('first value');
+    ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA_Region'],
+      textValues: ['USA data scope'],
+      selectedValues: [{
+        CODE: 'xyz',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
+    } as FilterCriteria;
+    result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('USA data scope');
 
-    ctrl.filterCtrl.selectedValues.push({ CODE: 'DEF', FIELDNAME: 'MaterialType'} as DropDownValue);
-    expect(component.prepareTextToShow(ctrl)).toEqual('2');
-
-    ctrl.filterCtrl.selectedValues = [];
-    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
+    ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA_Region'],
+      selectedValues: [{
+        CODE: 'USA_Region',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
+    } as FilterCriteria;
+    result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('Data scope from API');
 
 
   })
