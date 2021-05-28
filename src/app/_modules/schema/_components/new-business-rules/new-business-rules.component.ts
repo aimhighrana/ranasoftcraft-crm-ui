@@ -204,8 +204,8 @@ export class NewBusinessRulesComponent implements OnInit {
     searchRuleTypeStr = '';
 
     /**
-    * Hold search string for regex functions ....
-    */
+     * Hold search string for regex functions ....
+     */
     searchRegexFunctionStr = '';
 
     /**
