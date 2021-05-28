@@ -6,12 +6,12 @@
             <div class="f-col mdo-constrained-right">
                 <div class="f-row breadcrum-head">
                     <lib-text-line type="leading" i18n="@@send_via_email">Send via email</lib-text-line>
-                    <span class="f-col-spacer-half"></span>
                     <span class="f-spacer"></span>
-                    <lib-button type="major" (click)="selectTemplate()" i18n="@@select_template">Select a template</lib-button>
-                    <span class="f-col-spacer-half"></span>
-                    <lib-button type="major" (click)="sendEmail()"  i18n="@@send">Send</lib-button>
-                </div>
+                    <lib-button-group>
+                        <lib-button type="major" (click)="selectTemplate()" i18n="@@select_template">Select a template</lib-button>
+                        <lib-button type="major" (click)="sendEmail()" i18n="@@send">Save</lib-button>
+                    </lib-button-group>
+               </div>
             </div>
         </div>
         <div class="f-col sidesheetcontent-listing">
