@@ -940,7 +940,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    *
    * @param type type of request is inline or submit all
-   * @param row if request  type is inline then submit single rec ..
+   * @param row if request  type is inline then submit single rec..
    */
   approveRecords(type: string, row?: any) {
     const id: string[] = [];
@@ -961,6 +961,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
       if (res === true) {
+        this.dataSource.setDocValue([]);
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
