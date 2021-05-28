@@ -841,9 +841,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         }
 
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          if (row[fldid]) {
+          if(this.activeTab === 'review') {
+            row[fldid].oldData = value;
+          } else if (row[fldid])  {
             row[fldid].fieldData = value;
           }
+
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
@@ -1190,7 +1193,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     // binding dynamic component inputs/outputs
     componentRef.instance.fieldId = fldid;
     componentRef.instance.inputType = this.getFieldInputType(fldid);
-    componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
+    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] ? row[fldid].oldData : '');
+    // componentRef.instance.value =  row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
   }
