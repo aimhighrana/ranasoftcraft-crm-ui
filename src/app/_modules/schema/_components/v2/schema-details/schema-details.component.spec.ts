@@ -1257,7 +1257,10 @@ describe('SchemaDetailsComponent', () => {
     spyOn(router, 'navigate');
 
     // mock data
-    const node: SchemaExecutionTree = {nodeId: 'header', nodeType: 'HEADER'} as SchemaExecutionTree;
+    component.activeNode.nodeId = 'header1';
+    const node: SchemaExecutionTree = {nodeId: 'header1', nodeType: 'HEADER'} as SchemaExecutionTree;
+    component.loadNodeData(node);
+    node.nodeId = 'header';
     component.loadNodeData(node);
     expect(router.navigate).toHaveBeenCalledWith([], {
       relativeTo: component.activatedRouter,
@@ -1294,6 +1297,8 @@ describe('SchemaDetailsComponent', () => {
 
 
     // for close state ....
+
+    component.doColumnsCollapsible(null, '', 'MAT_TYPE');
 
     component.displayedFields.next(['selected','OBJECTNUMBER','MAT_TYPE', 'MAT_GRP']);
     component.doColumnsCollapsible(null, 'close', 'MAT_TYPE');
@@ -1340,6 +1345,15 @@ describe('SchemaDetailsComponent', () => {
       }
     ];
     expect(component.isFieldEditable('1')).toBeTrue();
+  }));
+
+  it('onRunCompleted()', async(() => {
+    component.onRunCompleted(true);
+    expect(component.isInRunning).toBeFalse();
+  }));
+
+  it('opnDialogSaveVariant()', async(() => {
+    expect(component.opnDialogSaveVariant()).toBeUndefined();
   }));
 
 });
