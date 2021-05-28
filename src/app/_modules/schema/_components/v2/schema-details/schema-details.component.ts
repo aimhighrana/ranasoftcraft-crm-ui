@@ -841,7 +841,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         }
 
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          row[fldid].fieldData = value;
+          if (row[fldid]) {
+            row[fldid].fieldData = value;
+          }
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
@@ -999,6 +1001,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       if(res && res.acknowledge) {
         this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
+            this.dataSource.setDocValue([]);
             this.getData();
             this.selection.clear();
         }
