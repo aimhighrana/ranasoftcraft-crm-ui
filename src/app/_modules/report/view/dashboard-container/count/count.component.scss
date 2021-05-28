@@ -3,19 +3,8 @@ mat-card.widget {
   padding: 8px;
   height: 100%;
 
-  .f-row {
-    align-items: center;
-  }
-
   mat-card-content {
     height: calc(100% - 36px - 16px);
     overflow: auto;
-
-    .count {
-      font-size: 24px;
-      word-break: break-word;
-      font-weight: 600;
-      line-height: 24px;
-    }
   }
 }

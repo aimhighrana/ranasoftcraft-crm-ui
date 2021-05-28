@@ -14,7 +14,7 @@
         <div class="f-col">
             <mat-card class="mat-elevation-z4 reportlisting" *ngFor="let report of reportListOb | async">
                 <mat-toolbar-row>
-                    <lib-text-line class="mat-h3" type="leading">{{ report.reportName ? report.reportName : 'Untitled' }}</lib-text-line>
+                    <lib-text-line type="leading">{{ report.reportName ? report.reportName : 'Untitled' }}</lib-text-line>
                     <span class="f-spacer"></span>
                     <button [disabled]="report.permission && !report.permission.isViewable" mat-icon-button matTooltip="Dashboard" [routerLink]="['/home', 'report', 'dashboard', report.reportId]">
                         <mat-icon>dashboard</mat-icon>

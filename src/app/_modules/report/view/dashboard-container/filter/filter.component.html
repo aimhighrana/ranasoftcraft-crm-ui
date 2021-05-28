@@ -1,9 +1,10 @@
 <mat-card class="mat-elevation-z0 widget">
-  <div class="f-row">
+  <div class="f-row filter-row">
     <lib-text-line type="base"> {{ widgetHeader.desc }}</lib-text-line>
     <div class="f-spacer"></div>
     <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
-    <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
+    <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain"
+      iconFontType="light" icon="times"></lib-button>
     <mat-menu #menu="matMenu" class="navigation-menu">
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
       <mat-menu #tcOptionMenu="matMenu" class="mat-elevation-z0 tooltip-fields-menu">
@@ -23,7 +24,7 @@
           <div class="f-col">
             <mat-form-field appearance="outline" class="direction-chip">
               <lib-chip-list #chipList aria-label="Select">
-                <lib-chip  *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
+                <lib-chip *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
                   (removed)="remove(option)">
                   {{ option.TEXT }}
                 </lib-chip>
@@ -40,7 +41,7 @@
               <input type="text" placeholder="Select" aria-label="Number"
                 value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
                 [formControl]="filterFormControl" [matAutocomplete]="auto" (focus)="onfocus()">
-               <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
+              <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
                 <mat-icon>close</mat-icon>
               </button>  -->
             </mat-form-field>
@@ -52,9 +53,10 @@
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.TEXT }}"
             matTooltipPosition="right">
             <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
-             
-              <lib-checkbox prosClickStopPropagation label=" {{ option.TEXT }}" (valueChange)="toggleSelection(option)" [checked]="isSelected(option)">
-               </lib-checkbox>
+
+              <lib-checkbox prosClickStopPropagation label=" {{ option.TEXT }}" (valueChange)="toggleSelection(option)"
+                [checked]="isSelected(option)">
+              </lib-checkbox>
             </ng-template>
             <ng-template #singleSelection>
               {{ option.TEXT }}
@@ -68,12 +70,22 @@
         <div class="f-row horizontal-row">
           <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
             <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <button mat-stroked-button color="primary" prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+              <!-- <button mat-stroked-button color="primary" prosClickStopPropagation
+                (click)="optionClicked($event, option)"></button> -->
+              <lib-chip-list>
+                <lib-chip (click)="optionClicked($event, option)">
+                  {{ option.TEXT }}
+                </lib-chip>
+              </lib-chip-list>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
-                }}</button>
+              <!-- <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
+                }}</button> -->
+              <lib-chip-list>
+                <lib-chip (click)="optionClicked($event, option)">
+                  {{ option.TEXT }}
+                </lib-chip>
+              </lib-chip-list>
             </ng-template>
           </ng-template>
         </div>
@@ -84,12 +96,22 @@
         <div class="f-col vertical-row">
           <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
             <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <button mat-stroked-button color="primary" prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+              <!-- <button mat-stroked-button color="primary" prosClickStopPropagation
+                (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button> -->
+              <lib-chip-list>
+                <lib-chip class="button" (click)="optionClicked($event, option)">
+                  {{ option.TEXT ? option.TEXT : option.CODE }}
+                </lib-chip>
+              </lib-chip-list>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
-                ? option.TEXT : option.CODE }}</button>
+              <!-- <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
+                ? option.TEXT : option.CODE }}</button> -->
+              <lib-chip-list>
+                <lib-chip class="button" (click)="optionClicked($event, option)">
+                  {{ option.TEXT ? option.TEXT : option.CODE }}
+                </lib-chip>
+              </lib-chip-list>
             </ng-template>
           </ng-template>
         </div>
@@ -142,7 +164,7 @@
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
             </div>
-          </mat-form-field>  
+          </mat-form-field>
         </div>
         <!-- <div class="f-col">
         <button mat-raised-button (click)="picker2.open(); picker1.open(); setPositionOfDatePicker()">Open</button>
