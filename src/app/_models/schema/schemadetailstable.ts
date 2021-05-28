@@ -154,6 +154,8 @@ export class SchemaTableViewFldMap {
     isEditable: boolean;
     nodeId?: string;
     nodeType?: string;
+    metadataCreateModel?: MetadataModel;
+    isSelected?: boolean;
 }
 export class SchemaExecutionDetails {
     schemaId: string;
