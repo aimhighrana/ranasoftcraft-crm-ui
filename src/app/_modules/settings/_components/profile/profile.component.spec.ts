@@ -154,4 +154,29 @@ describe('ProfileComponent', () => {
     component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
     expect(component.langFormErrMsg).toEqual('');
   }));
+
+  it('updateLanguageSettings()', async(() => {
+    component.createLanguageSettingsForm();
+    spyOn(component, 'makeLangSettingsUpdateCall');
+
+    component.languagesList = ['Eng'];
+    component.updateLanguageSettings('language');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.dateFormatList = ['dd/mm/yyyy'];
+    component.updateLanguageSettings('dateFormat');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.numberFormatList = ['0'];
+    component.updateLanguageSettings('numberFormat');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.timeZoneList = ['IST'];
+    component.updateLanguageSettings('timeZone');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.timeFormatList = ['00:00'];
+    component.updateLanguageSettings('timeFormat');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+  }));
 });
