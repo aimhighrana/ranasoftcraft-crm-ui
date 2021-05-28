@@ -1,24 +1,4 @@
-div.root {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-  padding: 12px 0;
-
-  mat-dialog-content {
-    margin: 0;
-    padding: 0;
-
-    .duplicate-content {
-      margin-top: 15px;
-    }
-  }
-
-  mat-dialog-actions {
-    margin-top: auto;
-    margin-bottom: 0;
-  }
-
+div.modal-wrapper {
   .upload-col {
     align-items: center;
     position: relative;
@@ -29,5 +9,9 @@ div.root {
       height: 240px;
       opacity: 0;
     }
+  }
+
+  table.mat-table {
+    width: 100%;
   }
 }
