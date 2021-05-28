@@ -12,7 +12,8 @@
         </div>
     </div>
 
-    <div class="f-col sidesheetcontent-listing">
+    <div class="f-col sidesheetcontent-listing" prosInfiniteScroll bufferPercentage="10"
+        (scrollEnd)="keepScrolling()">
         <div class="f-col mdo-justify">
             <div *ngIf="isActionConfigAllowed" class="f-col">
                 <ng-container *ngTemplateOutlet="SideSheetTabs;context:{$implicit: true}"></ng-container>
@@ -42,9 +43,9 @@
                         <span class="f-col-spacer-half"></span>
                         <div class="col"><strong i18n="@@editable"> Editable </strong></div>
                     </div>
-                    <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)"
+                    <div cdkDropList [cdkDropListData]="fields" (cdkDropListDropped)="drop($event)"
                         #scrollableContainer>
-                        <div *ngFor="let fld of headerFieldObs | async" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
+                        <div *ngFor="let fld of fieldsObs | async; trackBy: fldTrackBy" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                             <div class="f-row colunm-box">
                                 <div class="col">
                                     <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
@@ -52,17 +53,7 @@
                                 </div>
 
                                 <div class="col col-x4">
-                                    <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1"
-                                        [ngIfElse]="notSuggested">
-                                        <span style="background-color: #FFFF00">{{ fld.fieldDescri ?
-                                            fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled')
-                                            }} </span>
-                                    </ng-template>
-
-                                    <ng-template #notSuggested>
-                                        <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ?
-                                            fld.fieldDesc : 'Untitled') }} </span>
-                                    </ng-template>
+                                    <span>{{ fld.metadataCreateModel ? fld.metadataCreateModel.fieldDescri : 'Untitled' }} </span>
                                 </div>
 
                                 <div class="f-spacer"></div>
