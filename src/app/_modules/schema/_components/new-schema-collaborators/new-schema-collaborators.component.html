@@ -1,21 +1,21 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="closeDialogComponent()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="closeDialogComponent()" iconFontType="light" icon="times"></lib-button>
+
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Add subscribers</div>
+                <div class="display-heading-large" i18n="@@add_subscribers">Add subscribers</div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
-                <button mat-flat-button [disabled]="true" (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
+                <!-- <lib-button (click)="openSubscriberInviteDialog()" iconPosition="before" type="minor" icon="user-plus" i18n="@@invite_people_to_team"> Invite people to your team </lib-button> -->
                 <span class="f-col-spacer-half"></span>
-                <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
+                <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-                <pros-search-input (value)="getCollaborators($event, 0)" placeholder="Search subscribers"></pros-search-input>
+                <!-- <pros-search-input (value)="getCollaborators($event, 0)" placeholder="Search subscribers"></pros-search-input> -->
+                <lib-search (valueChange)="getCollaborators($event, 0)" i18n-placeholder="@@search_subscribers" placeholder="Search subscribers" ></lib-search>
                 <span class="col-spacer"></span>
                 <!-- <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip">
@@ -30,13 +30,13 @@
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let subscriber of filteredSubscribers">
                     <div class="mat-line">
-                        <mat-card-header>
-                            <div mat-card-avatar>{{shortName(subscriber.fName, subscriber.lName) | uppercase}}</div>
+                        <mat-card-header class="row-reverse">
+                            <lib-avatar [initials]="shortName(subscriber.fName, subscriber.lName) | uppercase"></lib-avatar>
                             <mat-card-title mat-line>{{subscriber.fullName}} </mat-card-title>
                         </mat-card-header>
                     </div>
                     <span class="f-spacer"></span>
-                    <button mat-flat-button color="accent" (click)="addOrDeleteCollaborator(subscriber)">
+                   <!-- <button mat-flat-button color="accent" (click)="addOrDeleteCollaborator(subscriber)">
                         <ng-container *ngIf="subscriber.selected;else addBtn">
                             <mat-icon fontSet="mdo-icons">
                                 check-mark
@@ -45,7 +45,12 @@
                         <ng-template #addBtn>
                             Add
                         </ng-template>
-                    </button>
+                    </button>  -->
+                    <lib-button (click)="addOrDeleteCollaborator(subscriber)" *ngIf="subscriber.selected;else addBtn" type="minor" icon="check"></lib-button>
+                    <ng-template #addBtn>
+                        <lib-button i118n="@@add" (click)="addOrDeleteCollaborator(subscriber)" type="minor"> Add </lib-button>
+                    </ng-template>
+
                 </mat-list-item>
             </mat-list>
         </div>

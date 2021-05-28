@@ -5,21 +5,8 @@ div.root {
   overflow: hidden;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 40px;
-    }
-
-    button.mat-flat-button {
-      margin-right: 1px;
-      min-width: 80px;
-    }
+    min-width: 0;
+    flex: 10;
   }
 
   pros-null-state {

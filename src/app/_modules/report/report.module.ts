@@ -29,6 +29,12 @@ import { WorkflowfieldControlComponent } from './edit/container/workflowfield-co
 import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/workflow-dataset.component';
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 import { HierarchyFilterComponent } from './view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
+import { DuplicateReportComponent } from './view/duplicate-report/duplicate-report.component';
+import { ImportLogComponent } from './import-log/import-log.component';
+
+import * as Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+Chart.plugins.register(ChartDataLabels);
 
 @NgModule({
   declarations: [
@@ -57,7 +63,9 @@ import { HierarchyFilterComponent } from './view/dashboard-container/filter/hier
     WorkflowfieldControlComponent,
     WorkflowDatasetComponent,
     ReportDatatableColumnSettingsComponent,
-    HierarchyFilterComponent
+    HierarchyFilterComponent,
+    DuplicateReportComponent,
+    ImportLogComponent
   ],
   imports: [
     CommonModule,

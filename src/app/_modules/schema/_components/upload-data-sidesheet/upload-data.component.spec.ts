@@ -210,6 +210,9 @@ describe('UploadDataComponent', () => {
 
     component.schemaId = '276822';
     component.runid = '87264528';
+    component.dataTableCtrl = new FormGroup({
+      dataTableFldCtrl: new FormControl('')
+    });
 
     spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of('123456743'));
 
@@ -302,11 +305,13 @@ describe('UploadDataComponent', () => {
     } as SchemaListModuleList;
     component.moduleId = '129876';
 
+    spyOn(component, 'getMetadataFields');
     spyOn(schemaService, 'getSchemaInfoByModuleId').withArgs(component.moduleId).and.returnValue(of(mockRes));
 
     component.getSchemaList();
     expect(schemaService.getSchemaInfoByModuleId).toHaveBeenCalledWith(component.moduleId);
     expect(component.moduleInfo).toEqual(mockRes);
+    expect(component.getMetadataFields).toHaveBeenCalled();
   });
 
   it('getSchemaList(), should get schema list from service', async() => {

@@ -1,4 +1,5 @@
 import { DropDownValue, UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { DisplayCriteria } from '@modules/report/_models/widget';
 import { AddFilterOutput } from './schema';
 
 
@@ -98,6 +99,9 @@ export class RequestForSchemaDetailsWithBr {
     filterCriterias: FilterCriteria[];
     sort: {};
     isLoadMore: boolean;
+    nodeId?: string;
+    nodeType?: string;
+
 }
 
 export class FilterCriteria {
@@ -147,6 +151,9 @@ export class SchemaTableViewFldMap {
     fieldId: string;
     order: number;
     editable: boolean;
+    isEditable: boolean;
+    nodeId?: string;
+    nodeType?: string;
 }
 export class SchemaExecutionDetails {
     schemaId: string;
@@ -282,6 +289,10 @@ export interface MetadataModel {
     isCompleteness: string;
     criteriaDisplay: string;
     isShoppingCartRefField: boolean;
+    displayCriteria?: DisplayCriteria;
+    sno?: DisplayCriteria;
+    nodeId?: string;
+    nodeType?: string;
 }
 export class Heirarchy {
     objnr: number;

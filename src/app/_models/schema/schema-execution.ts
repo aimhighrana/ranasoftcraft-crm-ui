@@ -15,3 +15,17 @@ export interface SchemaExecutionProgressResponse {
     totalRules: number;
     completedRules: number;
 }
+
+export class SchemaExecutionTree {
+    nodeId: string;
+    nodeDesc: string;
+    nodeType: SchemaExecutionNodeType;
+    childs: SchemaExecutionTree[];
+    docCount: number
+}
+
+export enum SchemaExecutionNodeType {
+    HEADER = 'HEADER',
+    HEIRARCHY = 'HEIRARCHY',
+    GRID = 'GRID'
+}

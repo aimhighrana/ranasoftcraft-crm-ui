@@ -30,58 +30,65 @@ div.root {
   .sidesheetcontent-listing {
     height: 100%;
 
-    mat-list-item.mat-list-item {
-      height: auto;
+    .lib-tab {
+      height: 100%;
 
-      .job-line {
-        font-size: 0.9rem;
-        padding-left: 8px;
-      }
+      mat-list-item.mat-list-item {
+        height: auto;
 
-      .time-icon {
-        font-size: 12px;
-        height: 10px;
-      }
-
-      .notification-listing {
-        width: 100%;
-        padding: 8px;
-
-        .mat-line {
-          font-size: 0.8rem;
-          margin: 0;
-          font-weight: 600;
+        .job-line {
+          font-size: 0.9rem;
+          padding-left: 8px;
         }
 
-        .notify-row {
-          align-items: center;
+        .job-date {
+          height: auto;
+        }
 
-          .notify-message-row {
-            align-items: baseline;
-            flex: 20;
+        .time-icon {
+          font-size: 12px;
+        }
 
-            .mat-expand-icon {
-              font-size: 8px;
-              height: 8px;
-              width: 8px;
-              cursor: pointer;
+        .notification-listing {
+          width: 100%;
+          padding: 8px;
+
+          .mat-line {
+            font-size: 0.8rem;
+            margin: 0;
+            font-weight: 600;
+          }
+
+          .notify-row {
+            align-items: center;
+
+            .notify-message-row {
+              align-items: baseline;
+              flex: 20;
+
+              .mat-expand-icon {
+                font-size: 8px;
+                height: 8px;
+                width: 8px;
+                cursor: pointer;
+              }
             }
           }
-        }
 
-        .notify-content {
-          font-size: 0.7rem;
-          line-height: 14px;
-          margin-bottom: 0;
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          word-break: break-all;
+          .notify-content {
+            font-size: 0.7rem;
+            line-height: 14px;
+            margin-bottom: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
 
-          &.expand-content {
-            -webkit-line-clamp: inherit;
+            &.expand-content {
+              -webkit-line-clamp: inherit;
+            }
           }
         }
       }

@@ -157,13 +157,14 @@ describe('ReportService', () => {
     const request = [{email:'abc@getMaxListeners.com', description: '', userName:'admin'} as WidgetDownloadUser]
     const widgetId = '654367';
     const username = 'Admin';
+    const conditionList = [];
     // mocking url
     // console.log(analyticsServiceSpy.saveReportDownload);
     analyticsServiceSpy.saveReportDownload.withArgs(widgetId, username).and.returnValue(testurl);
     // mock data
     const mockhttpData = {} as any;
     // actual call
-    service.saveUpdateportDownload(request,widgetId,username).subscribe(actualData => {
+    service.saveUpdateportDownload(request,widgetId,username, conditionList).subscribe(actualData => {
       expect(actualData).toEqual(mockhttpData);
     });
     // mocking http

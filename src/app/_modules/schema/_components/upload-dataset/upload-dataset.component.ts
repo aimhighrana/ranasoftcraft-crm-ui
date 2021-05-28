@@ -6,7 +6,6 @@ import { ObjectTypeResponse, ObjectType, DataSource, ValidationError, AddFilterO
 import { MetadataModeleResponse, MetadataModel, FilterCriteria, NewBrDialogResponse, LookupFields } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
 import { Userdetails } from '@models/userdetails';
@@ -18,14 +17,15 @@ import { CoreSchemaBrInfo, TransformationModel, DropDownValue, UDRBlocksModel, B
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { values, pick } from 'lodash';
-import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialog/businessrulelibrary-dialog.component';
 import { PermissionOn, UserMdoModel, SchemaDashboardPermission, ROLES, RuleDependentOn } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { Utilities } from '@models/schema/utilities';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 import { LoadDropValueReq, PermissionType } from '@models/schema/schemalist';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
+import { TransientService } from 'mdo-ui-library';
 
 type UploadedDataType = any[][];
 
@@ -306,7 +306,28 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Hold the final step after submissiion
    */
   stepSubmitted = false;
+  dependantStatusList = [
+    {
+      key: 'ALL',
+      value: 'ALL'
+    },
+    {
+      key: 'SUCCESS',
+      value: 'SUCCESS'
+    },
+    {
+      key: 'ERROR',
+      value: 'FAILURE'
+    }
+  ];
 
+  runningScheduleList = [{
+    key: 'dontRunSchema',
+    value: 'Do not run the schema now'
+  }, {
+    key: 'runSchemaOnce',
+    value: 'Run the schema once now'
+  }]
   /**
    * Track the click event
    * in order to detect outside cick
@@ -319,13 +340,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.editableFieldIds = [];
     }
   }
-
+get selectedRunningSchedule () {
+  return this.runningScheduleList.find(x => this.requestForm.value.runTime === x.value);
+}
   /**
    * Constructor of class
    * @param _formBuilder form builder object
    * @param schemaService schema service object
    * @param schemaDetailsService  service details service object
-   * @param snackBar snackbar object
+   * @param transientService transientService object
    * @param userService user service
    * @param dialogRef dailog ref object
    * @param moduleInfo the current selected module
@@ -333,7 +356,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   constructor(
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar,
+    private transientService: TransientService,
     private userService: UserService,
     public dialogRef: MatDialogRef<UploadDatasetComponent>,
     private globaldialogService: GlobaldialogService,
@@ -629,7 +652,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.stepSubmitted = true;
     // this.uploadError.status = false;
 
-    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid){
+    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid && where === 'next'){
       this.showValidationError('Please fix error below to continue.');
       this.requestForm.controls.objectDesc.markAsTouched();
     }
@@ -884,7 +907,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   toggleBrStatus(event, Br) {
     this.requestForm.controls.coreSchemaBr.value.map((br) => {
       if (br.fields === Br.fields) {
-        br.status = event.checked ? '1' : '0';
+        br.status = event ? '1' : '0';
       }
     });
   }
@@ -1137,6 +1160,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+   rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
+  /**
    * function to set the value of scheduling
    * @param runId the value of scheduling
    */
@@ -1216,7 +1247,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       const receivedData: UserMdoModel = response;
       const index = this.subscribersList.findIndex(sub => sub.userName === receivedData.userName);
       if (index > -1) {
-        this.snackBar.open('Subscriber already selected', 'Okay', {
+        this.transientService.open('Subscriber already selected', 'Okay', {
           duration: 3000
         });
         return;
@@ -1328,7 +1359,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
     const formObject = this.removeTempId(this.requestForm.value);
-    const runNow = formObject.runTime;
+    const runNow = Boolean(this.runningScheduleList.find(x => x.value === formObject.runTime)?.key === 'runSchemaOnce');
     delete formObject.objectId;
     delete formObject.file;
     delete formObject.fileSerialNo;
@@ -1342,12 +1373,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
-      this.snackBar.open('Schema created successfully', 'Okay', {
+      this.transientService.open('Schema created successfully', 'Okay', {
         duration: 5000
       });
       this.dialogRef.close();
     }, (err) => {
-      this.snackBar.open('Schema cannot be created', 'Okay', {
+      this.transientService.open('Schema cannot be created', 'Okay', {
         duration: 5000
       });
     })
@@ -1591,7 +1622,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           this.selectedBusinessRules.push(updatedObj);
         });
       } else {
-        this.snackBar.open('This rule is already added', 'okay', {
+        this.transientService.open('This rule is already added', 'okay', {
           duration: 2000
         });
         return;
@@ -1637,7 +1668,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         }
       }, () => {
         this.subscriberLoader = false;
-        this.snackBar.open('Error getting subscribers', 'okay', {
+        this.transientService.open('Error getting subscribers', 'okay', {
           duration: 1000
         })
       });
@@ -1861,7 +1892,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.addChildatSameRoot(tobeChild,index)
     }
        const idxforChild=this.selectedBusinessRules[index-1].dep_rules.indexOf(tobeChild);
-    this.selectedBusinessRules[index-1].dep_rules[idxforChild].dependantStatus=event.value;
+    this.selectedBusinessRules[index-1].dep_rules[idxforChild].dependantStatus=this.getSelectedDependantStatus(event.value)?.key;
     this.selectedBusinessRules.splice(index,1)
     }
   }
@@ -1881,7 +1912,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     } else {
       idx = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
     }
-    this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=event.value;
+    this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=this.getSelectedDependantStatus(event.value)?.key;
     if(event.value===RuleDependentOn.ALL)
    { const childIdx=this.selectedBusinessRules[idx].dep_rules[index]
    console.log(childIdx)
@@ -1890,4 +1921,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    this.selectedBusinessRules[idx].dep_rules.splice(index,1);
    }
    }
+  getSelectedDependantStatus(value: string) {
+    return this.dependantStatusList.find(x => x.key === value || x.value === value) || this.dependantStatusList[0];
+  }
 }

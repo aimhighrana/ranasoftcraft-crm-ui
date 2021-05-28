@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
-import * as moment from 'moment';
+import { Userdetails } from '@models/userdetails';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -76,6 +76,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * To hold subscriptions of component
    */
   subscription: Subscription[] = [];
+  returndata: any;
+  userDetails: Userdetails;
 
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
@@ -91,7 +93,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.reportingListWidget.next(this.reportingListWidget.getValue());
     }
   }
@@ -127,23 +129,24 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   public getUserDetails() {
     const sub =  this.userService.getUserDetails().subscribe(user => {
+      this.userDetails = user;
       this.plantCode = user.plantCode;
       this.roleId = user.currentRoleId;
       switch (user.dateformat) {
         case 'MM.dd.yy':
-          this.dateFormat = 'MMM-dd-yy, h:mm:ss a';
+          this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
           break;
 
         case 'dd.MM.yy':
-          this.dateFormat = 'dd-MMM-yy, h:mm:ss a';
+          this.dateFormat = 'dd.MM.yyyy, h:mm:ss a';
           break;
 
         case 'dd M, yy':
-          this.dateFormat = 'dd MMM, yy, h:mm:ss a';
+          this.dateFormat = 'dd MMM, yyyy, h:mm:ss a';
           break;
 
         case 'MM d, yy':
-          this.dateFormat = 'MMM d, yy, h:mm:ss a';
+          this.dateFormat = 'MMMM d, yyyy, h:mm:ss a';
           break;
 
         default:
@@ -163,6 +166,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.widgetHeader = returnData;
       this.widgetHeader.displayCriteria = returnData.displayCriteria ? returnData.displayCriteria : DisplayCriteria.CODE;
       this.pageSize=returnData.pageDefaultSize || 100;
+      if(returnData.pageDefaultSize) {
+        this.pageSizeOption = [returnData.pageDefaultSize,100,200,300,400];
+      } else {
+        this.pageSizeOption = [100,200,300,400];
+      }
     }, (error)=> {
       console.log('Something went wrong while getting header meta data', error.message)
     });
@@ -186,8 +194,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         });
         const sortedFields = this.sortDisplayedColumns(fieldsArray)
         this.displayedColumnsId = [...this.displayedColumnsId, ...sortedFields.map(elm => elm.fields)]
-        this.reportingListWidget.next(returnData);
         this.tableColumnMetaData = returnData;
+        this.reportingListWidget.next(returnData);
       }
     }, (error)=> {
       console.log('Something went wrong while getting table meta data', error.message)
@@ -204,107 +212,91 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
 
 
-  public getListdata(pageSize, pageIndex, widgetId: number, criteria: Criteria[], soringMap): void {
+   public getListdata(pageSize, pageIndex, widgetId: number, criteria: Criteria[], soringMap): void {
     this.widgetService.getListdata(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).subscribe(returndata => {
-      this.listData = new Array();
-      this.resultsLength = returndata.count;
-      if (returndata.data) {
-        returndata = returndata.data;
+      this.returndata = returndata;
+      this.updateTable(this.returndata);
+    });
+  }
+
+  private updateTable(returndata) {
+    this.listData = new Array();
+    this.resultsLength = returndata.count;
+    if (returndata.data) {
+      returndata = returndata.data;
+    }
+    returndata.hits.hits.forEach(element => {
+      const source = element.sourceAsMap;
+      let objectNumber = source.id ? source.id : source.staticFields && source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc ? source.staticFields.OBJECT_NUMBER.vc[0].c : element.id;
+
+    if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined){
+        objectNumber = source.staticFields.OBJECTID  && source.staticFields.OBJECTID .vc !== undefined ?source.staticFields.OBJECTID .vc[0].c:objectNumber;
       }
-      returndata.hits.hits.forEach(element => {
-        const source = element.sourceAsMap;
-        let objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element.id;
+      const obj = { objectNumber };
+      const status = source?source.stat:'';
+      if(status !=='' && status !== undefined && this.displayedColumnsId.indexOf('stat')>-1){
+       const colststus = 'stat';
+        obj[colststus]=status;
+      }
 
-      if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined){
-          objectNumber = source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc !== undefined ?source.staticFields.OBJECT_NUMBER.vc[0].c:objectNumber;
-        }
-        const obj = { objectNumber };
-        const status = source?source.stat:'';
-        if(status !=='' && status !== undefined && this.displayedColumnsId.indexOf('stat')>-1){
-         const colststus = 'stat';
-          obj[colststus]=status;
-        }
-
-        const hdvs = source.hdvs !== undefined ? source.hdvs : (source.staticFields !== undefined ? source.staticFields : source);
-        if (source.staticFields !== undefined) {
-          Object.assign(hdvs, source.staticFields);
-        }
-        this.displayedColumnsId.forEach(column => {
-          if (column === 'action' || column === 'objectNumber' || column === 'stat') {
-            if(column === 'objectNumber') {
-              obj[column]=objectNumber;
-            }
-          } else {
-            if (hdvs[column]) {
-              // check for dropdown , multiselect , userselection and objectRefrence
-              const val = hdvs[column].vc ? hdvs[column].vc : null;
-              if (val) {
-                const valArray = [];
-                val.forEach(v => {
-                  if (v.t) {
-                    valArray.push(v.t);
-                  }
-                });
-                let textvalue = valArray.toString();
-                textvalue = textvalue === 'null' ? '' : textvalue
-                let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
-                codeValue = codeValue === 'null' ? '' : codeValue;
-                if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
-                  switch(column) {
-
-                    case 'TIME_TAKEN' :
-                      const days = moment.duration(Number(codeValue), 'milliseconds').days();
-                      const hours = moment.duration(Number(codeValue), 'milliseconds').hours();
-                      const minutes = moment.duration(Number(codeValue), 'milliseconds').minutes();
-                      const seconds = moment.duration(Number(codeValue), 'milliseconds').seconds();
-                      const timeString = `${days >0 ? days + ' d ': ''}${hours >0 ? hours + ' h ': ''}${minutes >0 ? minutes + ' m ': ''}${seconds >0 ? seconds + ' s': ''}`;
-                      textvalue = timeString ? timeString : '0 s';
-                      break;
-
-                    case 'FORWARDENABLED':
-                    case 'OVERDUE':
-                      if(codeValue === '1' || codeValue === 'y') {
-                        textvalue = 'Yes';
-                      }
-                      if(codeValue === '0' || codeValue === 'n') {
-                        textvalue = 'No';
-                      }
-                      break;
-
-                    default:
-                      break;
-                  }
+      const hdvs = source.hdvs !== undefined ? source.hdvs : (source.staticFields !== undefined ? source.staticFields : source);
+      if (source.staticFields !== undefined) {
+        Object.assign(hdvs, source.staticFields);
+      }
+      this.displayedColumnsId.forEach(column => {
+        if (column === 'action' || column === 'objectNumber' || column === 'stat') {
+          if(column === 'objectNumber') {
+            obj[column]=objectNumber;
+          }
+        } else {
+          if (hdvs[column]) {
+            // check for dropdown , multiselect , userselection and objectRefrence
+            const val = hdvs[column].vc ? hdvs[column].vc : null;
+            if (val) {
+              const valArray = [];
+              val.forEach(v => {
+                if (v.t) {
+                  valArray.push(v.t);
                 }
-                switch(this.widgetHeader.displayCriteria) {
-                  case DisplayCriteria.CODE :
-                    obj[column] = `${codeValue}`;
-                    break;
-                  case DisplayCriteria.TEXT :
+              });
+              let textvalue = valArray.toString();
+              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields === column) : null;
+              textvalue = textvalue === 'null' ? '' : textvalue
+              let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+              codeValue = codeValue === 'null' ? '' : codeValue;
+              if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN' || reportingWidget.fldMetaData.picklist === '35') {
+                textvalue = this.getFields(column, codeValue);
+                codeValue = textvalue;
+              }
+              const displayCriteria = reportingWidget && reportingWidget.displayCriteria ? reportingWidget.displayCriteria : this.widgetHeader.displayCriteria;
+              switch(displayCriteria) {
+                case DisplayCriteria.CODE :
+                  obj[column] = `${codeValue}`;
+                  break;
+                case DisplayCriteria.TEXT :
+                  obj[column] = `${textvalue ? textvalue : codeValue}`;
+                  break;
+                case DisplayCriteria.CODE_TEXT :
+                  if(this.isDropdownType(column)) {
+                    obj[column] = `${(textvalue ? codeValue + ' -- ' + textvalue : codeValue ? codeValue  + ' -- ' + codeValue : '')}`;
+                  } else {
                     obj[column] = `${textvalue ? textvalue : codeValue}`;
-                    break;
-                  case DisplayCriteria.CODE_TEXT :
-                    if(this.isDropdownType(column)) {
-                      obj[column] = `${(textvalue ? codeValue + ' -- ' + textvalue : codeValue ? codeValue  + ' -- ' + codeValue : '')}`;
-                    } else {
-                      obj[column] = `${textvalue ? textvalue : codeValue}`;
-                    }
-                    break;
+                  }
+                  break;
 
-                  default:
-                    break;
-                }
+                default:
+                  break;
               }
             }
           }
-        });
-        this.listData.push(obj);
+        }
       });
-      this.dataSource = new MatTableDataSource<any>(this.listData);
-      this.dataSource.sort = this.sort;
-      //  this.widgetService.count.subscribe(count=>{
-      //   this.resultsLength = count;
-      // })
+      this.listData.push(obj);
     });
+    this.dataSource = new MatTableDataSource<any>(this.listData);
+    this.dataSource.sort = this.sort;
+    console.log(this.dataSource);
+    console.log(this.listData);
   }
 
   getServerData(event): PageEvent {
@@ -327,7 +319,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   *
   */
  downloadCSV(): void {
-  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], {queryParamsHandling: 'preserve'})
+  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], { queryParams: { conditionList: `${JSON.stringify(this.filterCriteria)}` }, queryParamsHandling: 'merge' })
 }
 
   /**
@@ -382,11 +374,18 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const sortedColumns=this.sortDisplayedColumns(this.tableColumnMetaData)
     const data = {
       objectType: this.widgetHeader.objectType,
-      selectedColumns: sortedColumns.map(columnMetaData => columnMetaData.fldMetaData),
+      selectedColumns: sortedColumns.map(columnMetaData => {
+        columnMetaData.fldMetaData.sno = columnMetaData.sno;
+        columnMetaData.fldMetaData.displayCriteria = columnMetaData.displayCriteria ? columnMetaData.displayCriteria : this.widgetHeader.displayCriteria;
+        return columnMetaData.fldMetaData
+      }),
       isWorkflowdataSet: this.widgetHeader.isWorkflowdataSet,
       isCustomdataSet: this.widgetHeader.isCustomdataSet,
       widgetId: this.widgetId,
-      isRefresh: false,
+      widgetType: this.widgetInfo.widgetType,
+      displayCriteria: this.widgetHeader.displayCriteria,
+      userDetails: this.userDetails,
+      isRefresh: false
     }
     this.sharedService.setReportDataTableSetting(data);
     this.router.navigate(['', { outlets: { sb: `sb/report/column-settings/${this.widgetId}` } }])

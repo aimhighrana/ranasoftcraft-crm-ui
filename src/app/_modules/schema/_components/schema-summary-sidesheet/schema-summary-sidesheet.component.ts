@@ -1,9 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { FormControl, Validators } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
 import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
@@ -18,6 +16,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { TransientService } from 'mdo-ui-library';
 import { forkJoin, Subscription } from 'rxjs';
 
 
@@ -103,17 +102,17 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * formcontrol for schema Name to be passed to child component
    */
-  schemaName: FormControl;
+  schemaName: FormControl = new FormControl('', Validators.required);
 
   /**
    * formcontrol for data scope
    */
-  dataScopeControl: FormControl;
+  dataScopeControl: FormControl = new FormControl('0');
 
   /**
    * formcontrol for schema threshold
    */
-  schemaThresholdControl: FormControl;
+  schemaThresholdControl: FormControl = new FormControl(0);
 
   /**
    * To hold updated schema name
@@ -137,6 +136,22 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   subscriptions: Subscription[] = [];
 
+  depRuleList = [{ value: 'ALL', key: 'ALL' }, { value: 'SUCCESS', key: 'SUCCESS' }, { value: 'FAILURE', key: 'ERROR' }];
+
+  submitted = false;
+
+  /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+  rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
+  getCurrentBrStatusObj(status) {
+    return this.depRuleList.find(depRule => depRule.key === status) || this.depRuleList[0];
+  }
+
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
@@ -146,7 +161,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     private schemaListService: SchemalistService,
     private schemaExecutionService: SchemaExecutionService,
     private schemaVariantService: SchemaVariantService,
-    private matSnackBar: MatSnackBar,
+    private toasterService: TransientService,
     private globalDialogService: GlobaldialogService
   ) { }
 
@@ -154,11 +169,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * ANGULAR HOOK
    */
   ngOnInit(): void {
-    this.getRouteParams();
-    this.schemaName= new FormControl('');
-    this.dataScopeControl = new FormControl('0');
 
-    this.schemaThresholdControl = new FormControl(this.schemaDetails.schemaThreshold);
+    this.getRouteParams();
 
     const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
@@ -193,7 +205,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.activateRoute.queryParams.subscribe((params) => {
       console.log(params);
-      this.isFromCheckData = params.name ? false : true;
+      this.isFromCheckData = Boolean(params.isCheckData === 'true');
       this.moduleDesc = params.name;
     })
 
@@ -202,10 +214,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
 
-      // this.isNewSchema = this.schemaId === 'new' ? true : false;
+      if(this.schemaId && this.schemaId !== 'new') {
+        this.getSchemaVariants(this.schemaId, 'RUNFOR');
+        this.getSchemaDetails(this.schemaId);
+      } else {
+        this.getModuleInfo();
+      }
 
-      this.getSchemaVariants(this.schemaId, 'RUNFOR');
-      this.getSchemaDetails(this.schemaId);
     });
   }
 
@@ -217,6 +232,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
+      this.getModuleInfo();
       this.schemaName.setValue(this.schemaDetails.schemaDescription);
       this.schemaThresholdControl.setValue(this.schemaDetails.schemaThreshold);
       if (this.schemaDetails.runId && this.isFromCheckData) {
@@ -228,6 +244,18 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     }, (error) => console.error('Error : {}', error.message));
   }
 
+  public getModuleInfo() {
+    const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      const module = moduleData[0];
+      if (module) {
+        this.schemaDetails.moduleDescription = module.moduleDesc;
+        this.schemaDetails.moduleId = module.moduleId;
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+    this.subscriptions.push(moduleInfoByModuleId);
+  }
 
   /**
    * Function to get dataScope/variants of schema
@@ -296,13 +324,26 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param br updateable business rules...
    * @param event value of chnaged
    */
-  updateBr(br: CoreSchemaBrInfo, event?: any) {
-    const businessRule: CoreSchemaBrInfo = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
+  updateBr(br: CoreSchemaBrInfo, event?: any, eventName?: string, child?: boolean) {
+    let businessRule: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    if (child) {
+      this.businessRuleData.filter((rule) => {
+        if (rule.dep_rules.length) {
+          rule.dep_rules.filter((depRule) => {
+            if (depRule.brIdStr === br.brIdStr) {
+              businessRule = depRule;
+            }
+          });
+        }
+      });
+    } else {
+      businessRule = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
+    }
     if (event instanceof MatSliderChange) {
       businessRule.brWeightage = String((event as MatSliderChange).value);
     }
-    else if (event instanceof MatCheckboxChange) {
-      businessRule.status = (event as MatCheckboxChange).checked ? '1' : '0';
+    else if (eventName === 'checkbox') {
+      businessRule.status = event ? '1' : '0';
     }
   }
 
@@ -378,6 +419,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
       this.schemaDetails.isInRunning = true;
+      this.sharedService.setSchemaRunNotif(true);
     }, (error) => {
       console.log('Something went wrong while running schema', error.message);
     });
@@ -597,7 +639,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
       console.log(checkExistence,this.businessRuleData)
       if(checkExistence) {
-        this.matSnackBar.open('Business rule already added.', 'ok', {
+        this.toasterService.open('Business rule already added.', 'ok', {
           duration: 2000,
         });
         return;
@@ -619,7 +661,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     const checkExistence = this.subscriberData.filter((sub) => sub.userid === subscriberInfo.userName)[0];
     if(checkExistence) {
-      this.matSnackBar.open('Subscriber already added.', 'ok', {
+      this.toasterService.open('Subscriber already added.', 'ok', {
         duration: 2000
       });
       return;
@@ -669,6 +711,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to save check data
    */
   saveCheckData() {
+    this.submitted = true;
+    if(!this.schemaName.valid) {
+      return;
+    }
     this.updatedSchemaName=this.schemaName.value;
     if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
         this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
@@ -765,7 +811,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           console.log(result);
           this.runSchema();
           this.close();
-          this.matSnackBar.open('This action has been confirmed..', 'Okay', {
+          this.toasterService.open('Schema run triggered successfully..', 'Okay', {
             duration: 2000
           })
         }, (error) => {
@@ -805,6 +851,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+    console.log('Update dep rule', br, event);
     const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
     console.log(index,br,event)
     if(event.value!==RuleDependentOn.ALL)
@@ -820,7 +867,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.addChildatSameRoot(tobeChild,index)
     }
     const idxforChild=this.businessRuleData[index-1].dep_rules.indexOf(tobeChild);
-    this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.value;
+    this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.key || event.value;
     this.businessRuleData.splice(index,1)
     }
   }

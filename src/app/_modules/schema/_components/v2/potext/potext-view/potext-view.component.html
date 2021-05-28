@@ -6,7 +6,7 @@
             {{ (!variantId || variantId === '0') ? 'Entire dataset' : 'Unknown' }}
         </div>
         <button mat-button [matMenuTriggerFor]="check">
-            <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+            <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
         </button>
         <mat-menu #check="matMenu" class="navigation-menu">
             <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
@@ -21,13 +21,13 @@
         <div class="f-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> Check data
             </button>
             <button mat-fab color="accent" (click)="openExecutionTrendSideSheet()">
                 <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
             </button>
             <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
-                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
             </button>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
@@ -99,7 +99,7 @@
                         <!-- Add filter control -->
                         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                             (click)="reInilize = !reInilize">
-                            <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                            <mat-icon fontSet="mdo-icons-light">filter</mat-icon>
                         </mat-chip>
                         <!-- Add filter control MatMenu -->
                         <mat-menu #addfiltermenu="matMenu">
@@ -112,7 +112,7 @@
                         </mat-menu>
                         <!-- More control -->
                         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
-                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                            <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                         </mat-chip>
                         <!-- More control MatMenu -->
                         <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
@@ -187,7 +187,7 @@
                                             <!-- Secondary actions -->
                                             <button mat-fab color="accent" *ngIf="secondaryActions.length"
                                                 [matMenuTriggerFor]="secondaryActionsMenu">
-                                                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                                             </button>
                                             <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                                 <ng-container *ngFor="let sAction of secondaryActions">

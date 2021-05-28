@@ -153,6 +153,11 @@ export class NewBusinessRulesComponent implements OnInit {
     tempRuleId: string;
 
     /**
+     * transformation rule type list
+     */
+    transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
+
+    /**
      * Transformation Data model
      */
     transformationData: TransformationFormData;
@@ -192,6 +197,11 @@ export class NewBusinessRulesComponent implements OnInit {
         status: false,
         message: ''
     }
+
+    /**
+     * Hold search string for business rule type ....
+     */
+    searchRuleTypeStr = '';
 
     /**
      * Class contructor
@@ -322,6 +332,8 @@ export class NewBusinessRulesComponent implements OnInit {
 
         // Initializing autocomplete
         this.initiateAutocomplete();
+
+        this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
     }
 
     /**
@@ -527,7 +539,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            requiredKeys = ['rule_type', 'rule_name', 'error_message'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -750,6 +762,13 @@ export class NewBusinessRulesComponent implements OnInit {
                 children: block.children
             })
         });
+        if (this.currentSelectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+            if (!(blocks.length && blocks.every(x => x.blockType && x.blockDesc && x.conditionOperator && x.conditionFieldId
+                && x.children.every(y => y.blockTypeText && y.operator && y.fieldId)))) {
+                this.showValidationError('Please select the condition(s) between the rules.');
+                return;
+            }
+        }
         const finalObject = {
             blocks: this.finalResponseBlocks,
             udrHierarchies: this.allhierarchies
@@ -776,6 +795,11 @@ export class NewBusinessRulesComponent implements OnInit {
 
     get isTransformationRule() {
         return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION;
+    }
+
+    get businessRuleTypesFiltered() {
+        const searchStr = this.searchRuleTypeStr?.toLowerCase();
+        return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
     }
 
     /**
@@ -1042,6 +1066,39 @@ export class NewBusinessRulesComponent implements OnInit {
           this.validationError.status = false;
         }, 3000)
       }
+  /**
+   * function to set form values from mat auto complete
+   */
+   selectSingle(form: FormGroup, controlName: string, $event) {
+    form.controls[controlName].setValue($event.option.value);
+  }
+  /**
+   * function to display rule desc in mat auto complete
+   */
+   displayRuleFn(value?: string) {
+    return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
+  }
 
+  /**
+   * function to display category name in mat auto complete
+   */
+   displayCategoryFn(value?: string) {
+    return value ? this.categoryList.find(category => category.categoryId === value)?.categoryDesc : '';
+  }
+  /**
+   * function to UPDATE Transformation rule type when lib radio is clicked
+   */
+   updateTransformationRuleType($event) {
+    if (this.form?.controls) {
+      this.form.controls.transformationRuleType.setValue($event.value);
+    }
+  }
+
+  /**
+   * function to display Regex name in mat auto complete
+   */
+   displayRegexFn(value?: string) {
+    return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
+  }
 }
 

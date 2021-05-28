@@ -149,7 +149,7 @@ describe('BrruleSideSheetComponent', () => {
   }));
 
   it(`createBrObject(), should create business rule object`, async(() => {
-    const formData = {
+    let formData: any = {
       rule_type: 'test',
       rule_name: 'test',
       error_message: 'test',
@@ -161,10 +161,41 @@ describe('BrruleSideSheetComponent', () => {
       categoryId: 'test',
     };
 
-    const brObject = component.createBrObject(formData, formData.udrTreeData);
+    let brObject = component.createBrObject(formData, formData.udrTreeData);
     expect(brObject).not.toBeUndefined();
     expect(brObject).not.toBeNull();
     expect(brObject.brType).toEqual('test');
+
+    formData = {
+      sno: 1,
+      refid: 1,
+      message: 'test',
+      script: 'test',
+      brInfo: 'test',
+      status: 1,
+      brExpose: 1,
+      brType: 'test',
+      rule_type: 'test',
+      rule_name: 'test',
+      error_message: 'test',
+      standard_function: 'test',
+      regex: 'test',
+      fields: [],
+      udrTreeData: { udrHierarchies: [], blocks: [] },
+      weightage: 10,
+      brIdStr: 'test',
+      percentage: 1,
+      plantCode: '1',
+      tableName:'test',
+      transformation: 1,
+      categoryId: 'test',
+      isCopied: true
+    };
+    brObject = component.createBrObject(formData, formData.udrTreeData);
+    expect(brObject).not.toBeUndefined();
+    expect(brObject).not.toBeNull();
+    expect(brObject.brType).toEqual('test');
+    expect(brObject.isCopied).toBeTruthy();
   }));
 
   it(`initUDRForm(), should create UDR form object`, async(() => {
@@ -195,6 +226,26 @@ describe('BrruleSideSheetComponent', () => {
    expect(field).toBeDefined();
   }));
 
+  it(`To UPDATE Transformation rule type when lib radio is clicked `, async(() => {
+    component.buildCommonDataForm()
+    component.updateTransformationRuleType({value: true})
+   const field=component.formField('transformationRuleType');
+   expect(field).toBeTruthy();
+   component.form.controls.transformationRuleType.setValue(false);
+   component.updateTransformationRuleType({value: true});
+   const field2=component.formField('transformationRuleType');
+   delete component.form.controls;
+   expect(field2.value).toBeFalsy();
+
+  }));
+
+  it(`To set form value in a form `, async(() => {
+    component.buildCommonDataForm()
+    component.getFormValue(true,'transformationRuleType')
+   const field=component.formField('transformationRuleType');
+   expect(field).toBeTruthy();
+  }));
+
   it('mapBlocksAndHierarchy(), with args businessRule, should map blocks and hierarchy in one order', async () => {
     const businessRule: CoreSchemaBrInfo = { sno: 947765775309516180, brId: '545422479309516179', brType: 'BR_CUSTOM_SCRIPT', refId: 0, fields: '', regex: '', order: 1, message: 'err', script: '', brInfo: 'udr one go multiple test', brExpose: 0, status: '1', categoryId: null, standardFunction: '', brWeightage: '45', totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', apiKey: '', schemaId: null, categoryInfo: null, duplicacyMaster: null, duplicacyField: null, isCopied: false, moduleId: '732014592', copiedFrom: null, transFormationSchema: null, udrDto: { brInfo: null, udrHierarchies: [{ id: '448834874309516678', udrId: '545422479309516179', parentId: null, leftIndex: null, rightIndex: null, blockRefId: '372820754419' }, { id: '504096405309516678', udrId: '545422479309516179', parentId: null, leftIndex: null, rightIndex: null, blockRefId: '707680282204' }, { id: '534252568309516678', udrId: '545422479309516179', parentId: null, leftIndex: null, rightIndex: null, blockRefId: '367460036999' }, { id: '679620974309516677', udrId: '545422479309516179', parentId: null, leftIndex: null, rightIndex: null, blockRefId: '567151211941' }, { id: '836170888309516678', udrId: '545422479309516179', parentId: '372820754419', leftIndex: 1, rightIndex: null, blockRefId: '239387910216' }, { id: '368069354309516678', udrId: '545422479309516179', parentId: '707680282204', leftIndex: 1, rightIndex: null, blockRefId: '205296607505' }, { id: '578055595309516678', udrId: '545422479309516179', parentId: '707680282204', leftIndex: 1, rightIndex: null, blockRefId: '258780319717' }], blocks: [{ id: '372820754419', udrid: '545422479309516179', conditionFieldId: 'bpkretpy520', conditionValueFieldId: null, conditionFieldValue: 'Google', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'EQUAL', blockDesc: 'And', objectType: '732014592' }, { id: '707680282204', udrid: '545422479309516179', conditionFieldId: 'bpkretpy520', conditionValueFieldId: null, conditionFieldValue: 'Ads', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'EQUAL', blockDesc: 'And', objectType: '732014592' }, { id: '367460036999', udrid: '545422479309516179', conditionFieldId: 'uodciufm1604', conditionValueFieldId: null, conditionFieldValue: 'Electronics', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'EQUAL', blockDesc: 'And', objectType: '732014592' }, { id: '567151211941', udrid: '545422479309516179', conditionFieldId: 'dkgpjhkj6733', conditionValueFieldId: null, conditionFieldValue: 'India', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'EQUAL', blockDesc: 'When', objectType: '732014592' }, { id: '239387910216', udrid: '545422479309516179', conditionFieldId: 'bwrugbda946', conditionValueFieldId: null, conditionFieldValue: 'India', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'EQUAL', blockDesc: 'And', objectType: '732014592'}, { id: '205296607505', udrid: '545422479309516179', conditionFieldId: 'uodciufm1604', conditionValueFieldId: null, conditionFieldValue: 'item one', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'EQUAL', blockDesc: 'And', objectType: '732014592' }, { id: '258780319717', udrid: '545422479309516179', conditionFieldId: 'tnuywxci15', conditionValueFieldId: null, conditionFieldValue: 'Odr_', conditionFieldStartValue: '', conditionFieldEndValue: '', blockType: BlockType.AND, conditionOperator: 'STARTS_WITH', blockDesc: 'And', objectType: '732014592' }], objectType: null }, brIdStr: '545422479309516179', percentage: 0.0 };
     const {blockHierarchy, blocks} = component.mapBlocksAndHierarchy(businessRule);
@@ -203,6 +254,12 @@ describe('BrruleSideSheetComponent', () => {
     expect(blocks.length).toEqual(7);
     expect(blockHierarchy[0].blockRefId).toEqual(blocks[0].id);
     expect(blocks[0].blockDesc).toEqual('When');
+    delete businessRule.udrDto.blocks;
+    delete businessRule.udrDto.udrHierarchies;
+    const result = component.mapBlocksAndHierarchy(businessRule);
+    expect(result.blockHierarchy.length).toEqual(0);
+    expect(result.blocks.length).toEqual(0);
+
   });
 
   it('showValidationError(), should hide validation message', fakeAsync(() => {
@@ -230,6 +287,17 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.selectedTransformationType).toEqual('REGEX');
   }))
 
+  it('should get selectedTransRuleTypeRadio', async(() => {
+    component.buildCommonDataForm();
+    let selectedType: any = component.selectedTransRuleTypeRadio;
+    expect(selectedType).toEqual(undefined);
+    component.form.controls.transformationRuleType.setValue('REGEX', {emitEvent: false});
+    selectedType = component.selectedTransRuleTypeRadio;
+    expect(selectedType?.value).toEqual('REGEX');
+    delete component.form;
+    expect(component.selectedTransRuleTypeRadio).toEqual('');
+  }))
+
   it('should init component', async(() => {
     spyOn(component, 'getCategories');
     spyOn(component, 'getFieldsByModuleId');
@@ -254,6 +322,23 @@ describe('BrruleSideSheetComponent', () => {
     component.initiateAutocomplete();
     expect(filteredFields.length).toEqual(0);
   })
+
+  it('initiateAutocomplete(), should init autocomplete', async(() => {
+    component.ngOnInit();
+    component.form.controls.fields.setValue('email');
+    component.allGridAndHirarchyData = [
+      {
+        name: 'Test',
+        parent: 'Test',
+        children: []
+      }
+    ];
+    component.fieldsList = [];
+    component.initiateAutocomplete();
+    component.filteredModules.subscribe((res: any) => {
+      expect(res.length).toEqual(0);
+    });
+  }));
 
   it('should apply validators by rule type', async(() => {
       component.buildCommonDataForm();
@@ -384,6 +469,9 @@ describe('BrruleSideSheetComponent', () => {
     brInfo.udrDto = {blocks: [{blockDesc: 'When', blockType: BlockType.COND}] as UDRBlocksModel[], udrHierarchies: []} as UdrModel;
     const result = component.mapBlocksAndHierarchy(brInfo);
     expect(result.blocks.length).toEqual(1);
+    delete brInfo.udrDto.blocks;
+    delete brInfo.udrDto.udrHierarchies;
+    expect(result.blocks.length).toEqual(1);
   })
 
   it('should editUdr', () => {
@@ -434,6 +522,16 @@ describe('BrruleSideSheetComponent', () => {
 
   it('sould createBrObject', () => {
     expect(component.createBrObject({brId: '1'}).brId).toEqual('1');
+    expect(component.createBrObject({refId: 1, refid: 1}).refId).toEqual(1);
+    expect(component.createBrObject({standardFunction: 'Test'}).standardFunction).toEqual('Test');
+    expect(component.createBrObject({brWeightage: 'Test'}).brWeightage).toEqual('Test');
+    expect(component.createBrObject({qryScript: 'Test'}).qryScript).toEqual('Test');
+    expect(component.createBrObject({dependantStatus: 'Test'}).dependantStatus).toEqual('Test');
+    expect(component.createBrObject({udrHierarchies: ['']}).udrDto.udrHierarchies.length).toEqual(1);
+    expect(component.createBrObject({}).brId).toEqual('');
+    expect(component.createBrObject({}, null).udrDto.udrHierarchies.length).toEqual(0);
+    expect(component.createBrObject({}, null).udrDto.blocks.length).toEqual(0);
+    expect(component.createBrObject({blocks: [], object: ['']}, null).udrDto.blocks.length).toEqual(1);
   });
 
   it('should mapTransformationData', () => {
@@ -507,6 +605,20 @@ describe('BrruleSideSheetComponent', () => {
     const lookupData =  [{fieldId: 'fld'}] as LookupFields[];
     component.setLookupData(lookupData);
     expect(component.lookupData).toEqual(lookupData);
+  });
+
+  it('businessRuleTypesFiltered should get businessRuleTypes Filtered', async () => {
+    component.businessRuleTypes = [{
+      ruleDesc: 'test',
+      ruleId: 'test',
+      ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT
+    }];
+    component.searchRuleTypeStr = '';
+    expect(component.businessRuleTypesFiltered.length).toEqual(1);
+    component.searchRuleTypeStr = 'test';
+    expect(component.businessRuleTypesFiltered.length).toEqual(1);
+    component.searchRuleTypeStr = 'test1';
+    expect(component.businessRuleTypesFiltered.length).toEqual(0);
   });
 
   it('should displayFn', () => {

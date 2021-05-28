@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType } from '../../../_models/widget';
+import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType, DisplayCriteria } from '../../../_models/widget';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
@@ -12,6 +12,7 @@ import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SimpleChanges } from '@angular/core';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
@@ -110,6 +111,7 @@ describe('FilterComponent', () => {
 
   it('fieldDisplayFn(), should return field desc', async(()=>{
     expect(component.fieldDisplayFn({TEXT:'Matl Desc'})).toEqual('Matl Desc');
+    expect(component.fieldDisplayFn('')).toEqual('');
   }));
 
   it('returnSelectedDropValues(), should return selected drop values', async(()=>{
@@ -196,13 +198,21 @@ describe('FilterComponent', () => {
   }));
 
   it(`ngOnChanges(), should call reset when reset filter`, async(()=>{
+    component.filterFormControl.setValue('test');
+    const filterWidget = new FilterWidget();
+    filterWidget.fieldId = 'ZMRO';
+    filterWidget.metaData = {dataType: 'NUMC', picklist:'0'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
+    component.filterCriteria = [];
+    component.filterResponse = new FilterResponse();
     // mock data
-    const chnages:import('@angular/core').SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    const chnages: SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
 
     // call actual method
     component.ngOnChanges(chnages);
 
     expect(component.enableClearIcon).toEqual(false, 'When reset successfully then enableClearIcon should be false');
+    expect(component.filterFormControl.value).toEqual('');
   }));
 
   it('updateObjRefDescription(), update description of objRef in filter', async(()=>{
@@ -214,21 +224,21 @@ describe('FilterComponent', () => {
   }));
 
   it('getFieldsMetadaDesc(), should return the dropdown value of the field', async(() => {
-    const buckets = [{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{FORWARDENABLED:{vc:[{c: '1'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
-    component.values = [{CODE: '1', FIELDNAME: 'FORWARDENABLED', TEXT: '1'} as DropDownValues]
-    component.getFieldsMetadaDesc(buckets, 'FORWARDENABLED');
-    expect(component.values.length).toEqual(1);
-    expect(component.values[0].TEXT).toEqual('Yes');
-
-    const buckets1 = [{doc_count:2,key:{FILTER:'212255'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{TIME_TAKEN:{vc:[{c: '212255'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'610026'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{TIME_TAKEN:{vc:[{c: '610026'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
-    component.values = [{CODE: '212255', FIELDNAME: 'TIME_TAKEN', TEXT: '212255'} as DropDownValues, {CODE: '610026', FIELDNAME: 'TIME_TAKEN', TEXT: '610026'} as DropDownValues]
-    component.getFieldsMetadaDesc(buckets1, 'TIME_TAKEN');
+    const buckets = [{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c: '200010'}]}}}}]}}},{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c: '200010',t:'testing'}]}}}}]}}}, {doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{}}}}]}}}];
+    component.values = [{CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: '200010'} as DropDownValues, {CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: 'testing'} as DropDownValues]
+    const filterWidget= new FilterWidget()
+     filterWidget.metaData={fieldId:'MATL_GROUP',picklist:'1'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
+    component.getFieldsMetadaDesc(buckets, 'MATL_GROUP');
     expect(component.values.length).toEqual(2);
-    expect(component.values[0].TEXT).toEqual('3 m 32 s');
-    expect(component.values[1].TEXT).toEqual('10 m 10 s');
+    expect(component.values[0].TEXT).toEqual('200010');
+    expect(component.values[1].TEXT).toEqual('testing');
 
-    const buckets2 = [{doc_count:2,key:{FILTER:'n'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'n'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'y'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'y'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
-    component.values = [{CODE: 'n', FIELDNAME: 'TIME_TAKEN', TEXT: 'n'} as DropDownValues, {CODE: 'y', FIELDNAME: 'OVERDUE', TEXT: 'y'} as DropDownValues]
+    const buckets2 = [{doc_count:2,key:{FILTER:'n'},'top_hits#items':{hits:{hits:[{_source:{staticFields: {OVERDUE: {vc: [{c: 'n'}]}}}}]}}}, {doc_count:2,key:{FILTER:'y'},'top_hits#items':{hits:{hits:[{_source:{staticFields: {OVERDUE: {vc: [{c: 'y'}]}}}}]}}}];
+    component.values = [{CODE: 'n', FIELDNAME: 'OVERDUE', TEXT: 'n'} as DropDownValues, {CODE: 'y', FIELDNAME: 'OVERDUE', TEXT: 'y'} as DropDownValues]
+    const filterWidget1= new FilterWidget()
+     filterWidget1.metaData={fieldId:'OVERDUE',picklist:'1'} as MetadataModel;
+    component.filterWidget.next(filterWidget1);
     component.getFieldsMetadaDesc(buckets2, 'OVERDUE');
     expect(component.values.length).toEqual(2);
     expect(component.values[0].TEXT).toEqual('No');
@@ -311,4 +321,60 @@ describe('FilterComponent', () => {
 
    expect(component.filterCriteria.length).toEqual(1);
   }));
+
+  it('setDisplayCriteria(), should return string from DisplayCriteria', async(()=> {
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    const test = { t: 'test', c: '1234'};
+    let res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('test');
+
+    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('1234');
+
+    component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
+    res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('1234 -- test');
+
+    component.displayCriteriaOption.key = undefined;
+    res = component.setDisplayCriteria(test.c, test.t);
+    expect(res).toEqual('test');
+
+    res = component.setDisplayCriteria(test.c, '');
+    expect(res).toEqual('1234');
+  }));
+
+  it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {
+    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.widgetId = 12345;
+    component.widgetInfo = new Widget();
+    component.widgetInfo.widgetType = WidgetType.FILTER;
+    component.widgetInfo.widgetId = component.widgetId.toString();
+    spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption.key).and.returnValue(of({}));
+    component.saveDisplayCriteria();
+    expect(widgetService.saveDisplayCriteria).toHaveBeenCalledWith('12345', WidgetType.FILTER, DisplayCriteria.TEXT);
+  }));
+
+  it('setSelectedQuickDateFilter', async(()=> {
+    const code = 'TODAY';
+    component.setSelectedQuickDateFilter(code);
+    expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
+
+    const code1 = 'DAY_7';
+    component.setSelectedQuickDateFilter(code1);
+    expect(component.dateFilterQuickSelect[1].isSelected).toEqual(true);
+
+    const code2 = 'DAY_10';
+    component.setSelectedQuickDateFilter(code2);
+    expect(component.dateFilterQuickSelect[2].isSelected).toEqual(true);
+
+    const code3 = 'DAY_20';
+    component.setSelectedQuickDateFilter(code3);
+    expect(component.dateFilterQuickSelect[3].isSelected).toEqual(true);
+
+    const code4 = 'DAY_30';
+    component.setSelectedQuickDateFilter(code4);
+    expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
+  }))
+
 });

@@ -178,7 +178,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const grabberElement = document.createElement('div');
     grabberElement.style.height = '100%';
-    grabberElement.style.width = '2px';
+    grabberElement.style.width = '5px';
     grabberElement.style.backgroundColor = '#ffffff';
     grabberElement.style.position = 'absolute';
     grabberElement.style.cursor = 'col-resize';

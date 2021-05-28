@@ -203,7 +203,6 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
         this.tarnsformMetada(fld);
       }
     });
-    this.getFldMetadata();
 
     this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
       node => node.level, node => node.expandable);
@@ -338,7 +337,8 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     }
     else {
       if (this.alreadySelectedValues && this.alreadySelectedValues.length > 0) {
-        this.dropValuesCode = this.alreadySelectedValues.filter((selectedValue) => selectedValue.fieldId === fld.fieldId)[0].values;
+        const sel = this.alreadySelectedValues.filter((selectedValue) => selectedValue.fieldId === fld.fieldId);
+        this.dropValuesCode = sel && sel.length ? sel[0].values : [];
       }
     }
   }

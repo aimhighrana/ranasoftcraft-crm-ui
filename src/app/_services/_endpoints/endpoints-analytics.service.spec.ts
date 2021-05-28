@@ -1,4 +1,5 @@
 import { async, inject, TestBed } from '@angular/core/testing';
+import { WidgetType } from '@modules/report/_models/widget';
 
 import { EndpointsAnalyticsService } from './endpoints-analytics.service';
 
@@ -123,5 +124,18 @@ describe('EndpointsAnalyticsService', () => {
     const widgetId = '6547898676578';
     const userName = 'harshit'
     expect(serviceobj.saveReportDownload(widgetId, userName)).toContain(`/widget/startdoDownloadFile/${widgetId}?userName=${userName}`);
+  }));
+
+  it('copyReport(), should copy a report', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const reportId = '6547898676578';
+    expect(serviceobj.copyReport(reportId)).toContain(`/report/copy?reportId=${reportId}`);
+  }));
+
+  it('displayCriteria(), should get API string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const widgetId = '12345';
+    const widgetType = WidgetType.BAR_CHART;
+    expect(serviceobj.displayCriteria(widgetId, widgetType)).toContain(`/report/widget/display-criteria?widgetId=${widgetId}&widgetType=${widgetType}`);
   }));
 });

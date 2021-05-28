@@ -6,6 +6,9 @@ import { SchemaService } from '@services/home/schema.service';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'pros-businessrulelibrary-sidesheet',
@@ -41,7 +44,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   /**
    * selected business rule type
    */
-  selectedRuleType: BusinessRules;
+  selectedRuleType = '';
 
   /**
    * To hold the outlet name.
@@ -73,6 +76,13 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   alreadySelectedBrs: CoreSchemaBrInfo[] = [];
 
+  brSearchSubject: Subject<string> = new Subject();
+
+  /**
+   * search string
+   */
+  searchString = '';
+
   constructor(
     private schemaService: SchemaService,
     private router: Router,
@@ -92,7 +102,15 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
       this.moduleId = params.moduleId;
     })
     this.getBusinessRulesBySchemaId(this.schemaId);
-    this.getBusinessRulesList(this.moduleId, '', '', String(this.fetchCount));
+    this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType);
+
+    this.brSearchSubject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(searchTxt => {
+      this.searchString = searchTxt || '';
+      this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType);
+    })
   }
 
 
@@ -103,7 +121,6 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   getBusinessRulesBySchemaId(schemaId: string) {
     this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((response) => {
       this.schemaBusinessRulesList = response;
-      // this.selectedBusinessRule = [...this.schemaBusinessRulesList]
       this.alreadySelectedBrs = [...this.schemaBusinessRulesList];
     }, (error) => {
       console.log('Something went wrong while getting schema Brs', error.message);
@@ -114,6 +131,17 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * function to select a business rule from the list.
    */
   selectBusinessRule(rule: CoreSchemaBrInfo, action: string) {
+    const findBR = (list: Array<CoreSchemaBrInfo>) => list.find(br => br.brId === rule.brId);
+    const deletedBR = findBR(this.BusinessRulesToBeDelete);
+    if(deletedBR) {
+      this.BusinessRulesToBeDelete.splice(this.BusinessRulesToBeDelete.indexOf(deletedBR), 1);
+      return;
+    }
+    const existingBR = findBR(this.alreadySelectedBrs);
+    if (existingBR) {
+      this.BusinessRulesToBeDelete.push(existingBR);
+      return;
+    }
     if (action === this.constants.ADD) {
       this.selectedBusinessRule.push(rule);
     } else {
@@ -137,7 +165,8 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   isSelected(rule: CoreSchemaBrInfo): boolean {
     const selected = this.selectedBusinessRule.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
     const alreadySelected = this.alreadySelectedBrs.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
-    return (selected.length > 0 || alreadySelected.length > 0);
+    const deletedBRs = this.BusinessRulesToBeDelete.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
+    return (selected.length > 0 || alreadySelected.length > 0 && !deletedBRs.length);
   }
 
   /**
@@ -145,16 +174,23 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * @param moduleId moduleId
    * @param searchString string to be searched
    * @param brType type of busiess rule
-   * @param fetchCount count of batch to be fetched
+   * @param loadMore load more
    */
-  getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
-    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
-      this.businessRulesList = rules;
-      if(this.fetchCount === 0) {
-        this.filteredBusinessRulesList = rules;
-      }
-      else {
-        this.filteredBusinessRulesList = [...this.filteredBusinessRulesList, ...rules];
+  getBusinessRulesList(moduleId: string, searchString: string, brType: string, loadMore?: boolean) {
+    if(loadMore) {
+      this.fetchCount++;
+    } else {
+      this.fetchCount = 0;
+    }
+    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, `${this.fetchCount}`).subscribe((rules: CoreSchemaBrInfo[]) => {
+      if(loadMore) {
+        if(rules && rules.length) {
+          this.businessRulesList = [...this.businessRulesList, ...rules];
+        } else {
+          this.fetchCount--;
+        }
+      } else {
+        this.businessRulesList = rules || [];
       }
     });
   }
@@ -163,7 +199,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * function to close the dialog
    */
   closeDialogComponent() {
-    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }])
+    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }], { queryParamsHandling: 'preserve'})
   }
 
   /**
@@ -171,7 +207,12 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   saveSelection() {
     if (this.outlet === 'sb') {
+      let count = 0;
       console.log('test  ' + this.selectedBusinessRule);
+      const forkObj= {};
+      this.BusinessRulesToBeDelete.forEach((businessRule) => {
+        forkObj[count++] = this.schemaService.deleteBr(businessRule.brIdStr);
+      });
       this.selectedBusinessRule.forEach(businessRule => {
         const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
@@ -185,26 +226,16 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
         request.moduleId = this.moduleId;
         request.copiedFrom = businessRule.brIdStr;
 
-        if(businessRule.brType === 'BR_DUPLICATE_CHECK')
-    {
-       this.schemaService.copyDuplicateRule(request).subscribe((response) => {
-        console.log(response);
-      }, (error) => {
-        console.log('Error while adding business rule', error.message);
-      })
-    }
-    else
-    {
-      this.schemaService.createBusinessRule(request).subscribe((response) => {
-        console.log(response);
-      }, (error) => {
-        console.log('Error while adding business rule', error.message);
-      })
-
-
-       }
-    });
-      this.sharedService.setAfterBrSave(true);
+        if(businessRule.brType === 'BR_DUPLICATE_CHECK') {
+          forkObj[count++] = this.schemaService.copyDuplicateRule(request);
+        } else {
+          forkObj[count++] = this.schemaService.createBusinessRule(request);
+        }
+      });
+      forkJoin(forkObj).subscribe(() => {
+        this.sharedService.setAfterBrSave(true);
+        this.closeDialogComponent();
+      });
     }
     else {
       this.selectedBusinessRule.forEach((businessRule) => {
@@ -220,17 +251,11 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   /**
    * select a business rule type
    */
-  selectCurrentRuleType(ruleType: BusinessRules) {
-    this.selectedRuleType = ruleType;
-    this.filterRuleByType(ruleType);
-  }
-
-  /**
-   * filter business rules by rule type
-   */
-  filterRuleByType(selectedRuleType: BusinessRules) {
-    const existingRules = this.businessRulesList;
-    this.filteredBusinessRulesList = existingRules.filter((rule) => rule.brType === selectedRuleType.ruleType);
+  selectCurrentRuleType(ruleType: string) {
+    if(ruleType !== this.selectedRuleType) {
+      this.selectedRuleType = ruleType;
+      this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType);
+    }
   }
 
   /**
@@ -241,19 +266,10 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   }
 
   /**
-   * Function to update fetchCount on scroll
-   * @param event: scroll event object
+   * load more rules on scroll end
    */
-  onScroll(event) {
-    const viewPortHeight = event.target.offsetHeight; // height of the complete viewport
-    const scrollFromTop = event.target.scrollTop;     // height till user has scrolled
-    const sideSheetHeight = event.target.scrollHeight; // complete scrollable height of the side sheet document
-
-    const limit = sideSheetHeight - scrollFromTop;
-    if (limit === viewPortHeight) {
-      this.fetchCount++;
-      this.getBusinessRulesList(this.moduleId, '', '', String(this.fetchCount))
-    }
+  onScrollEnd() {
+    this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType, true);
   }
 
 }

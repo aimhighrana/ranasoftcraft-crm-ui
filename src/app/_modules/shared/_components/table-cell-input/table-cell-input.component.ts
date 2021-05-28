@@ -79,7 +79,7 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
   }
 
   submitSingleSelectValue(event) {
-    const selectedOption = this.selectFieldOptions.find(option => option.TEXT.toLocaleLowerCase() === event.target.value.toLowerCase());
+    const selectedOption = this.selectFieldOptions.find(option => option.CODE.toLocaleLowerCase() === event.target.value.toLowerCase());
     const selectedValue = selectedOption ? selectedOption.CODE : this.value;
     this.emitInputBlur(selectedValue);
   }

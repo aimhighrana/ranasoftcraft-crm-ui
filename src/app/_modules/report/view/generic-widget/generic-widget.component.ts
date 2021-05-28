@@ -4,6 +4,7 @@ import {WidgetColorPalette, ReportDashboardPermission, Widget } from '../../_mod
 import { MatDialog } from '@angular/material/dialog';
 import { WidgetColorPaletteComponent } from '@modules/report/edit/widget-color-palette/widget-color-palette.component';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
   selector: 'pros-generic-widget',
@@ -73,6 +74,40 @@ export abstract class GenericWidgetComponent {
         this.afterColorDefined.next(result);
       });
     }
+  }
+
+  getFields(fieldId, codeValue): string {
+    let finalValue = '';
+    switch(fieldId) {
+      case 'TIME_TAKEN' :
+        const days = moment.duration(Number(codeValue), 'milliseconds').days();
+        const hours = moment.duration(Number(codeValue), 'milliseconds').hours();
+        const minutes = moment.duration(Number(codeValue), 'milliseconds').minutes();
+        const seconds = moment.duration(Number(codeValue), 'milliseconds').seconds();
+        const timeString = `${days >0 ? days + ' d ': ''}${hours >0 ? hours + ' h ': ''}${minutes >0 ? minutes + ' m ': ''}${seconds >0 ? seconds + ' s': ''}`;
+        finalValue = timeString ? timeString : '0 s';
+        break;
+
+      case 'FORWARDENABLED':
+      case 'OVERDUE':
+        if(codeValue === '1' || codeValue === 'y') {
+          finalValue = 'Yes';
+        }
+        if(codeValue === '0' || codeValue === 'n') {
+          finalValue = 'No';
+        }
+        break;
+
+      default:
+        if(codeValue === 'off') {
+          finalValue = 'False'
+        }
+        if(codeValue === 'on') {
+          finalValue = 'True'
+        }
+        break;
+    }
+    return finalValue;
   }
 
 }

@@ -157,6 +157,10 @@ describe('SchemaInfoComponent', () => {
       message: 'Test should passed..',
       moduleId: '1005',
       isCopied: false,
+      brWeightage: '19',
+      status: '1',
+      dependantStatus: 'SUCCESS',
+      order: 1
     } as CoreSchemaBrInfo;
 
     component.schemaId = '44514235';
@@ -172,6 +176,10 @@ describe('SchemaInfoComponent', () => {
     request.message = br.message;
     request.moduleId = component.moduleId;
     request.isCopied = br.isCopied;
+    request.brWeightage = br.brWeightage;
+    request.status = br.status;
+    request.dependantStatus = br.dependantStatus;
+    request.order = br.order;
 
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
@@ -187,7 +195,11 @@ describe('SchemaInfoComponent', () => {
       moduleId: '1005',
       isCopied: false,
       duplicacyField : [{fieldId:'Test'}],
-      duplicacyMaster:[]
+      duplicacyMaster:[],
+      brWeightage: '19',
+      status: '1',
+      dependantStatus: 'SUCCESS',
+      order: 1
     } as CoreSchemaBrInfo;
     brDupList.push(brDup);
 
@@ -201,6 +213,10 @@ describe('SchemaInfoComponent', () => {
     requestDup.message = brDup.message;
     requestDup.moduleId = component.moduleId;
     requestDup.isCopied = brDup.isCopied;
+    requestDup.brWeightage = br.brWeightage;
+    requestDup.status = br.status;
+    requestDup.dependantStatus = br.dependantStatus;
+    requestDup.order = br.order;
 
     const params = { objectId: component.moduleId, autoMerge: '', groupId: '' };
     const model = new DuplicateRuleModel();
@@ -237,6 +253,10 @@ describe('SchemaInfoComponent', () => {
     tabLabel = '';
     component.updateFragment(tabLabel);
     expect(component.selectedIndex).toEqual(0)
+
+    component.infoTabs = ['business-rules'];
+    component.updateFragmentByIndex(0);
+    expect(component.selectedIndex).toEqual(1)
   })
 
   it('editBr(), should open side sheet of business rules', async () => {
@@ -266,7 +286,7 @@ describe('SchemaInfoComponent', () => {
 
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }], {queryParams: {isCheckData: true}})
   })
 
   it('editSubscriberInfo(), should open edit subscriber sidesheet', async () => {
@@ -277,30 +297,37 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('prepateTextToShow(), should prepare text to show over mat-chips', async () => {
-    const ctrl: FilterCriteria = {
-      fieldId: 'MaterialType',
-      values: ['123', '456'],
-      type: 'DROPDOWN',
-      filterCtrl: {
-        selectedValues: [
-          {
-            CODE: 'ABC',
-            FIELDNAME: 'MaterialType'
-          } as DropDownValue
-        ]
-      } as AddFilterOutput
-    }
-    const result = component.prepareTextToShow(ctrl);
-    expect(result).toEqual('ABC');
+    let ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA Region', 'Asia Region']
+    } as FilterCriteria;
+    let result =  component.prepareTextToShow(ctrl);
+    expect(result).toEqual('2');
 
-    ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
-    expect(component.prepareTextToShow(ctrl)).toEqual('first value');
+    ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA_Region'],
+      textValues: ['USA data scope'],
+      selectedValues: [{
+        CODE: 'xyz',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
+    } as FilterCriteria;
+    result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('USA data scope');
 
-    ctrl.filterCtrl.selectedValues.push({ CODE: 'DEF', FIELDNAME: 'MaterialType'} as DropDownValue);
-    expect(component.prepareTextToShow(ctrl)).toEqual('2');
-
-    ctrl.filterCtrl.selectedValues = [];
-    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
+    ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA_Region'],
+      selectedValues: [{
+        CODE: 'USA_Region',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
+    } as FilterCriteria;
+    result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('Data scope from API');
 
 
   })
@@ -388,10 +415,10 @@ describe('SchemaInfoComponent', () => {
   it('getAllBusinessRulesList(), should get all business rules', async() => {
     spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValues(of([]), of([{brId: '1'}, {brId: '2'}] as CoreSchemaBrInfo[]));
     component.moduleId = '1004';
-    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    component.getAllBusinessRulesList(component.moduleId, '', '');
     expect(component.allBusinessRulesList.length).toEqual(0);
 
-    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    component.getAllBusinessRulesList(component.moduleId, '', '', true);
     expect(component.allBusinessRulesList.length).toEqual(2);
 
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalledTimes(2);
@@ -487,9 +514,17 @@ describe('SchemaInfoComponent', () => {
   it('getSchemaDetails(), should get schema details', async() => {
     component.schemaId = '12545';
     component.schemaSummaryForm=new FormGroup({schemaThreshold:new FormControl()});
-    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
+    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValues(of({} as SchemaListDetails), throwError({status: 404}))
+    component.getSchemaDetails(component.schemaId);
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+
+
+    // component.schemaId = '1005';
+    // spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValues(of([]), throwError({status: 404}));
+    // component.getSchemaVariants(component.schemaId, 'RUNFOR');
+    // component.getSchemaVariants(component.schemaId, 'RUNFOR');
+    // expect(schemaVariantService.getAllDataScopeList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
   })
 
   it('updateRole(), should update role of subscriber', async() => {
@@ -606,11 +641,12 @@ describe('SchemaInfoComponent', () => {
 
     const sliderEvent = new MatSliderChange();
     sliderEvent.value = 25;
-    component.updateBr(br, sliderEvent);
+    component.updateBr(br, sliderEvent, 'slider');
 
     const checkboxEvent = new MatCheckboxChange();
     checkboxEvent.checked = true;
-    component.updateBr(br, checkboxEvent);
+    component.updateBr(br, checkboxEvent, 'checkbox');
+
 
     checkboxEvent.checked = false;
     component.updateBr(br, checkboxEvent);
@@ -623,19 +659,38 @@ describe('SchemaInfoComponent', () => {
 
    });
 
-   it('should updateBrOrder', () => {
+  //  it('should updateBrOrder', () => {
 
-    spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true));
-    spyOn(component, 'getBusinessRuleList');
+  //   spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true));
+  //   spyOn(component, 'getBusinessRuleList');
 
-    const br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
-    component.updateBrOrder(null, 2);
-    component.updateBrOrder(br, 2);
-    component.updateBrOrder(br, 2);
+  //   let br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
+  //   component.updateBrOrder(null, 2);
+  //   component.updateBrOrder(br, 2);
+  //   component.updateBrOrder(br, 2);
+  //   expect(component.getBusinessRuleList).toHaveBeenCalled();
+  //   br = {brIdStr: '123', brWeightage: '20', status: 'test'} as CoreSchemaBrInfo;
+  //   component.updateBrOrder(br, 2);
+  //   expect(component.getBusinessRuleList).toHaveBeenCalled();
 
-    expect(component.getBusinessRuleList).toHaveBeenCalled();
+  //  });
 
+   it('should get current br status', () => {
+    let status = component.getCurrentBrStatus('');
+    expect(status).toEqual('ALL');
+     status = component.getCurrentBrStatus('TEST');
+    expect(status).toEqual('TEST');
    });
+
+  //  it('should get Business Rules', () => {
+  //   component.businessRuleData = [{
+  //     dep_rules: [{}, {}]
+  //   }, {
+  //     dep_rules: [{}, {}, {}]
+  //   }] as Array<CoreSchemaBrInfo>;
+  //   const length = component.getBusinessRulesLength;
+  //   expect(length).toEqual(7);
+  //  });
 
    it('should open deleteBr confirm', () => {
     component.businessRuleData = [
@@ -936,4 +991,33 @@ describe('SchemaInfoComponent', () => {
     component.updateDepRuleForChild(br, 0, event);
     expect(component.businessRuleData.length).toEqual(3);
   });
+
+  it('getModuleInfo(), should get module info', async(() => {
+    component.schemaDetails = new SchemaListDetails();
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([{moduleDesc: 'Test', moduleId: '1005'}]), throwError({message: 'api error'}));
+    component.getModuleInfo();
+    component.getModuleInfo();
+    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    component.schemaDetails = new SchemaListDetails();
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.getModuleInfo();
+    component.getModuleInfo();
+    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
+  }));
+
+  it('getCurrentBrStatusObj(), should get current br status info', async(() => {
+   component.depRuleList = [{
+     key: 'all',
+     value: 'ALL'
+   }, {
+     key: 'success',
+     value: 'SUCCESS'
+   }];
+   expect(component.getCurrentBrStatusObj('').key).toEqual('all');
+   expect(component.getCurrentBrStatusObj('All').key).toEqual('all');
+   expect(component.getCurrentBrStatusObj('success').key).toEqual('success');
+  }));
 });

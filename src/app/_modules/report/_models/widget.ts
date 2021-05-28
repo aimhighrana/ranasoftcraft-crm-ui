@@ -13,6 +13,7 @@ export class Widget {
     aggregrationOp: string;
     filterType: string;
     isMultiSelect: boolean;
+    orderWith: OrderWith;
     groupById: string;
     widgetTableFields: WidgetTableModel[];
     htmlText: string;
@@ -34,6 +35,7 @@ export class Widget {
     pageDefaultSize:number;
     isFieldDistinct: boolean;
     displayCriteria: DisplayCriteria;
+    isEnableGlobalFilter: boolean;
 }
 
 export interface DateFilterCtrl {
@@ -54,6 +56,7 @@ export enum DateSelectionType {
 export enum WidgetType {
     FILTER = 'FILTER',
     BAR_CHART = 'BAR_CHART',
+    PIE_CHART = 'PIE_CHART',
     STACKED_BAR_CHART = 'STACKED_BAR_CHART',
     COUNT = 'COUNT',
     TABLE_LIST = 'TABLE_LIST',
@@ -147,6 +150,7 @@ export interface DropDownValues {
     TEXT: string;
     langu: string;
     CODE: string;
+    display: string
 }
 
 export enum AggregationOperator {
@@ -256,6 +260,7 @@ export class ReportingWidget{
     fieldDesc:string;
     sno:number;
     fldMetaData: MetadataModel;
+    displayCriteria: DisplayCriteria;
 }
 
 export class WidgetHeader {
@@ -270,6 +275,7 @@ export class WidgetHeader {
     pageDefaultSize: number;
     isCustomdataSet: boolean;
     displayCriteria: DisplayCriteria;
+    isEnableGlobalFilter: boolean;
 }
 
 export interface ChartLegend{
@@ -293,6 +299,7 @@ export interface TimeSeriesWidget {
     indexName: string;
     desc: string;
     timeSeries: WidgetTimeseries;
+    isEnableGlobalFilter: boolean;
 }
 export interface WidgetTimeseries {
     widgetId: number;
@@ -317,6 +324,7 @@ export interface WidgetTimeseries {
     showInPercentage : boolean;
     bucketFilter: string;
     startDate: string;
+    metaData: MetadataModel;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',
@@ -382,7 +390,11 @@ export enum LegendPosition {
 
 export enum OrderWith {
     ASC = 'asc',
-    DESC = 'desc'
+    DESC = 'desc',
+    ROW_ASC = 'ROW_ASC',
+    ROW_DESC = 'ROW_DESC',
+    COL_ASC = 'COL_ASC',
+    COL_DESC = 'COL_DESC'
 }
 
 export class ChartProperties {
@@ -577,4 +589,11 @@ export enum DisplayCriteria {
     CODE = 'CODE',
     TEXT = 'TEXT',
     CODE_TEXT = 'CODE_TEXT'
+}
+
+export interface DuplicateReport {
+    acknowledged: boolean;
+    errorMsg: string;
+    reportId: string;
+    reportName: string;
 }

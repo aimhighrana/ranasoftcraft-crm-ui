@@ -4,27 +4,22 @@
             {{ widgetHeader.widgetName }}
         </div>
         <div class="f-spacer"></div>
-        <button mat-button [matMenuTriggerFor]="menu">
-            <mat-icon fontSet="mdo-icons">more1</mat-icon>
-        </button>
+        <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
         <mat-menu #menu="matMenu" class="navigation-menu">
             <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
         </mat-menu>
     </div>
+    
     <mat-card-content>
         <div class="root-table">
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortTable($event)">
                 <ng-container matColumnDef="action" stickyEnd>
                     <!-- <th mat-header-cell *matHeaderCellDef></th> -->
                     <th mat-header-cell *matHeaderCellDef>
-                        <button mat-button (click)="openTableColumnSideSheet()">
-                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                        </button>
+                        <lib-button (click)="openTableColumnSideSheet()" type="plain" icon="cog"></lib-button>
                     </th>
                     <td mat-cell *matCellDef="let element">
-                        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="actiontable" (click)="getAlllayouts(element)">
-                            <mat-icon fontSet="mdo-icons">more1</mat-icon>
-                        </button>
+                        <lib-button rounded="true" icon="ellipsis-h" [matMenuTriggerFor]="actiontable" (click)="getAlllayouts(element)"></lib-button>
                         <mat-menu #actiontable="matMenu" class="navigation-menu">
                             <ng-container *ngIf="layouts &&  layouts.length > 1;else singleLayout">
                                 <button mat-menu-item *ngFor="let layout of layouts"
@@ -50,7 +45,7 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{columnDescs[column]}}</th>
                     <td mat-cell *matCellDef="let element"> 
                         <ng-template [ngIf]="isDateType(column)" [ngIfElse]="normalText">
-                            {{ element[column] ? (getDateTypeValue(element[column]) | date : dateFormat ): '' }} 
+                            {{ element[column] ? (getDateTypeValue(element[column]) | dateFormatPipe:dateFormat ): '' }} 
                         </ng-template>
                         <ng-template #normalText>
                             {{element[column]}}

@@ -7,6 +7,7 @@ import { MonthOn, SchemaScheduler, SchemaSchedulerEnd,
 import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'pros-schedule-dialog',
@@ -32,14 +33,19 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   /**
    * Looping variable for intervals
    */
-  repeatInterval = Object.keys(SchemaSchedulerRepeat);
+  repeatInterval = Object.keys(SchemaSchedulerRepeat).map((x) => {
+    return {
+      label: this.titlecasePipe.transform(x),
+      value: x
+    }
+  });
   /**
    * Looping variable for weekdays
    */
   weekDays = Object.keys(WeekOn).map(item => {
     return {
-      value: WeekOn[item],
-      text: item
+      value: this.titlecasePipe.transform(WeekOn[item]),
+      key: item
     }
   })
   /**
@@ -47,14 +53,19 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: item,
-      text: MonthOn[item],
+      value: this.titlecasePipe.transform(MonthOn[item]),
+      key: item
     }
   });
   /**
    * Looping variable for end
    */
-  schedulerEndOptions = Object.keys(SchemaSchedulerEnd);
+  schedulerEndOptions = Object.keys(SchemaSchedulerEnd).map((x) => {
+    return {
+      label: x,
+      value: x
+    }
+  });
 
   today = new Date();
 
@@ -72,6 +83,7 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<ScheduleDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private schemaService: SchemaService,
+    private titlecasePipe: TitleCasePipe
   ) { }
 
   ngOnInit(): void {
@@ -167,6 +179,8 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   submit() {
     this.formSubmitted = true;
     const schedule: SchemaScheduler = {...this.form.value};
+    schedule.weeklyOn = this.form.value.weeklyOn ? this.form.value.weeklyOn.key : null;
+    schedule.monthOn = this.form.value.monthOn ? this.form.value.monthOn.key : null;
     this.dialogRef.close(schedule)
   }
 
@@ -223,8 +237,10 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     this.form.get('isEnable').setValue(response.isEnable);
     this.form.get('schemaSchedulerRepeat').setValue(response.schemaSchedulerRepeat);
     this.form.get('repeatValue').setValue(response.repeatValue);
-    this.form.get('weeklyOn').setValue(response.weeklyOn);
-    this.form.get('monthOn').setValue(response.monthOn);
+    const weeklyOn = this.weekDays.find((x) => x.key === response.weeklyOn);
+    this.form.get('weeklyOn').setValue(weeklyOn);
+    const monthlyOn = this.repeatBys.find((x) => x.key === response.monthOn);
+    this.form.get('monthOn').setValue(monthlyOn);
     this.form.get('startOn').setValue(response.startOn);
     this.form.get('end').setValue(response.end);
     this.form.get('occurrenceVal').setValue(response.occurrenceVal);

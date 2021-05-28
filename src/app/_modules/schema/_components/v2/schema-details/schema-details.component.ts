@@ -1,13 +1,12 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab } from '@models/schema/schemalist';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab, ModuleInfo } from '@models/schema/schemalist';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -22,7 +21,10 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
-import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
+import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 
 @Component({
   selector: 'pros-schema-details',
@@ -62,7 +64,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    * Store info about user selected field and order
    */
-  selectedFieldsOb: BehaviorSubject<SchemaTableViewFldMap[]> = new BehaviorSubject(null);
+  selectedFieldsOb: Subject<boolean> = new Subject();
   /**
    * Hold meta data map , fieldId as key and metadamodel as value
    */
@@ -174,6 +176,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   selectFieldOptions: DropDownValue[] = [];
 
   /**
+   * Emit event to details builder component when schema running is completed
+   */
+  @Output() runCompleted = new EventEmitter();
+
+  /**
    * Hold info about current user
    */
   userDetails: Userdetails;
@@ -190,8 +197,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban' }
   ] as SchemaTableAction[];
 
   /**
@@ -212,20 +219,59 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   subscribers: Subscription[] = [];
 
+  activeNode: SchemaExecutionTree = new SchemaExecutionTree();
+
+  // holds execution tree details of schema...
+  executionTreeHierarchy: SchemaExecutionTree;
+
+  /**
+   * holds file upload progress screen show/hide status
+   */
+  isFileUploading: boolean;
+
+  /**
+   * holds module info
+   */
+  moduleInfo: ModuleInfo;
+
+  /**
+   * All selected columns , header , hierrachy or grid as a key and string [] as a columns
+   */
+  columns: any = {};
+
+  /**
+   * Selected node id ....
+   */
+  nodeId = 'header';
+
+  /**
+   * Selected node type ...
+   */
+  nodeType = 'HEADER';
+
+  /**
+   * flag to enable/disable resizeable
+   */
+   grab = false;
+
+   isRefresh = false;
+
+   executionTreeObs: Subject<SchemaExecutionTree> = new Subject();
+
   constructor(
-    private activatedRouter: ActivatedRoute,
+    public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
     private router: Router,
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
     private endpointservice: EndpointsClassicService,
-    private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private userService: UserService,
     private schemaDetailsService: SchemaDetailsService,
+    private transientService: TransientService
   ) { }
 
   ngOnDestroy(): void {
@@ -237,28 +283,31 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   ngOnChanges(changes: SimpleChanges): void {
     // check if any things is change then refresh again
-    let isRefresh = false;
+    this.isRefresh = false;
 
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
-      isRefresh = true;
+      this.isRefresh = true;
+      this.getModuleInfo(this.moduleId);
+      this.metadata.next(null);
     }
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
-      isRefresh = true;
+      this.isRefresh = true;
     }
 
     if (changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue;
-      isRefresh = true;
+      this.isRefresh = true;
     }
 
     if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
       this.isInRunning = changes.isInRunning.currentValue;
+      this.isRefresh = true;
     }
 
-    if (isRefresh && !this.isInRunning) {
+    if (this.isRefresh && !this.isInRunning) {
       this.activeTab='error';
       this.getDataScope();
       this.getFldMetadata();
@@ -268,19 +317,33 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.variantId = '0';
       }
+      this.executionTreeObs = new Subject();
+      if (this.userDetails && this.userDetails.userName) {
+        this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
+      } else {
+        this.executionTreeHierarchy = new SchemaExecutionTree();
+      }
+
+      combineLatest([this.metadata, this.executionTreeObs]).pipe(
+        filter(res => !!res[0] && !!res[1]),
+        take(1)
+      )
+      .subscribe(res => {
+          const params = this.activatedRouter.snapshot.queryParamMap;
+          const nodeId = params.get('node') || 'header';
+          const treeArray = this.getExectionArray(this.executionTreeHierarchy);
+          this.activeNode = treeArray.find(n => n.nodeId === nodeId);
+          this.selectedNodeChange(params);
+      });
     }
 
-    /**
-     * Get all user selected fields based on default view ..
-     */
-    this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
-      this.selectedFieldsOb.next(res ? res : [])
-    }, error => console.error(`Error : ${error}`));
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
       if (res) {
-        this.getData();
+        // this.getData();
       }
     });
 
@@ -309,6 +372,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   ngOnInit(): void {
+    this.activatedRouter.queryParamMap.subscribe(ar=>{
+      if(!this.isRefresh) {
+        const nodeId = ar.get('node') || 'header';
+        if(nodeId !== this.nodeId) {
+        this.selectedNodeChange(ar);
+        }
+      }
+      this.isRefresh = false;
+    });
+
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
         this.getDataScope(res); // Get Data scope..
@@ -316,21 +389,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     })
 
     /**
-     * Get onload data ..
-     */
-    this.dataSource.brMetadata.subscribe(res => {
-      if (res) {
-        this.getData();
-      }
-    });
-
-    /**
      * After choose columns get updated columns ..
      */
     this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
       if (result && !result.editActive) {
-        this.selectedFields = result.selectedFields ? result.selectedFields : [];
-        this.calculateDisplayFields();
+        this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
         if (result.tableActionsList && result.tableActionsList.length) {
           this.tableActionsList = result.tableActionsList
         }
@@ -341,37 +405,21 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
      * Combine obserable for metadata and selected field by user
      * And calcute display field and order
      */
-    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
-      if (res[0]) {
-        const selcteFlds = res[1] ? res[1] : [];
-        if(!selcteFlds.length) {
-          const orderFld: SchemaTableViewFldMap[] = [];
-          Object.keys(res[0].headers).forEach((header, index)=>{
-            if(index <= 9) {
-              const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-              choosenField.order = index;
-              choosenField.fieldId = header;
-              orderFld.push(choosenField);
-            }
-          });
+    this.selectedFieldsOb.subscribe(updateTableView => {
+        if(updateTableView) {
           const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
           schemaTableViewRequest.schemaId = this.schemaId;
           schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
-          schemaTableViewRequest.schemaTableViewMapping = orderFld;
+          schemaTableViewRequest.schemaTableViewMapping = this.selectedFields;
           const sub =  this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
             console.log(response);
           }, error => {
             console.error('Exception while persist table view');
           });
           this.subscribers.push(sub);
-
-          this.selectedFields = orderFld;
-        } else {
-          this.selectedFields = res[1] ? res[1] : [];
         }
         this.calculateDisplayFields();
-      }
-    });
+      });
 
     /**
      * After filter applied should call for get data
@@ -393,9 +441,20 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    this.userService.getUserDetails().subscribe(res=>{
+    const userDataSub = this.userService.getUserDetails().subscribe(res=>{
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
+
+    const userDataForSchemaTree = this.userService.getUserDetails().pipe(
+      filter(details => !!details && !!details.userName),
+      distinctUntilChanged(),
+      take(1)
+      ).subscribe(res=>{
+        this.getSchemaExecutionTree(res.plantCode, res.userName);
+    }, err=> console.log(`Error ${err}`));
+
+    this.subscribers.push(userDataForSchemaTree);
+    this.subscribers.push(userDataSub);
 
     /**
      * inline search changes
@@ -407,8 +466,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   }
 
+  selectedNodeChange(params: ParamMap) {
+      this.nodeId = params.get('node') || 'header';
+      this.nodeType = params.get('node-level') || 'HEADER';
+      this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
+      setTimeout(() => {
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      }, 300);
+  }
+
   /**
-   * Get schema info ..
+   * Get schema info..
    */
   getSchemaDetails() {
    const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
@@ -432,6 +500,20 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   /**
+   * Call service to get schema execution tree
+   */
+  getSchemaExecutionTree(plantCode, userName) {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
+      this.executionTreeHierarchy = res;
+      this.executionTreeObs.next(res);
+      }, error => {
+      this.executionTreeHierarchy = new SchemaExecutionTree();
+      console.error(error);
+    });
+    this.subscribers.push(sub);
+  }
+
+  /**
    * Get schema variant details ..
    */
   getVariantDetails() {
@@ -444,19 +526,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           finalFiletr.push(inline);
         }
         res.filterCriteria.forEach(fil => {
-          const filter: FilterCriteria = new FilterCriteria();
-          filter.fieldId = fil.fieldId;
-          filter.type = fil.type;
-          filter.values = fil.values;
+          const fltr: FilterCriteria = new FilterCriteria();
+          fltr.fieldId = fil.fieldId;
+          fltr.type = fil.type;
+          fltr.values = fil.values;
 
           const dropVal: DropDownValue[] = [];
-          filter.values.forEach(val => {
+          fltr.values.forEach(val => {
             const dd: DropDownValue = { CODE: val, FIELDNAME: fil.fieldId } as DropDownValue;
             dropVal.push(dd);
           });
 
-          filter.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
-          finalFiletr.push(filter);
+          fltr.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
+          finalFiletr.push(fltr);
         });
 
         this.filterCriteria.next(finalFiletr);
@@ -487,29 +569,118 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    *
    */
   calculateDisplayFields(): void {
-    const allMDF = this.metadata.getValue();
+
+    const metaFld = this.getAllNodeFields(this.activeNode);
+
     const fields = [];
     const select = [];
     const metadataLst: any = {};
     this.startColumns.forEach(col => fields.push(col));
-    for (const headerField in allMDF.headers) {
-      if (allMDF.headers.hasOwnProperty(headerField)) {
-        // if selectedFields is blank then load all fields
-        // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
-        //   select.push(headerField);
-        // }
-        // else
+    for (const headerField in metaFld) {
+      if (metaFld.hasOwnProperty(headerField)) {
         const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
         if (fields.indexOf(headerField) < 0 && (index !== -1)) {
           select[index] = headerField;
         }
-        metadataLst[headerField] = allMDF.headers[headerField];
+        metadataLst[headerField] = metaFld[headerField];
       }
     }
-    // TODO for hierarchy and grid logic ..
+
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
     this.displayedFields.next(fields);
+    console.log(this.displayedFields.getValue());
+  }
+
+  getAllNodeFields(node: SchemaExecutionTree) {
+
+    if(!node || !node.nodeId) {
+      return this.metadata.getValue() ? this.metadata.getValue().headers: {};
+    }
+    let fields = {};
+    const parentNode = this.getParentNode(node.nodeId);
+    if(parentNode) {
+      if (node.nodeType === SchemaExecutionNodeType.HEADER) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      } else if (node.nodeType === SchemaExecutionNodeType.HEIRARCHY) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().hierarchyFields[node.nodeId] || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      } else if (node.nodeType === SchemaExecutionNodeType.GRID) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().gridFields[node.nodeId] || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      }
+    } else {
+      if (node.nodeType === SchemaExecutionNodeType.HEADER) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
+      } else if (node.nodeType === SchemaExecutionNodeType.HEIRARCHY) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().hierarchyFields[node.nodeId] || {} : {};
+      } else if (node.nodeType === SchemaExecutionNodeType.GRID) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().gridFields[node.nodeId] || {} : {};
+      }
+      Object.keys(fields).forEach(f => {
+        fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+      });
+    }
+
+    return fields;
+  }
+
+  getParentNode(nodeId) {
+    const executionTreeArray = this.getExectionArray(this.executionTreeHierarchy) || [];
+    const node = executionTreeArray.find(n => (n.nodeId === nodeId));
+    if(node && node.parentNodeId) {
+      return executionTreeArray.find(n => n.nodeId === node.parentNodeId);
+    }
+    return null;
+  }
+
+  /**
+   * Map schema execution tree to an array
+   * @param node root node
+   * @param parentNodeId parent id
+   * @returns execution array
+   */
+  getExectionArray(node: SchemaExecutionTree, parentNodeId?: string) {
+    let executionTreeArray = [];
+    const index = executionTreeArray.findIndex(n => n.nodeId === node.nodeId) ;
+    if(index !== -1){
+      executionTreeArray[index] = {...node, parentNodeId} ;
+    } else {
+      executionTreeArray.push({...node, parentNodeId});
+    }
+
+    if(node && node.childs && node.childs.length) {
+      node.childs.forEach(child => {
+        executionTreeArray =  executionTreeArray.concat(this.getExectionArray(child, node.nodeId));
+      })
+    }
+
+    return executionTreeArray;
+  }
+
+  getNodeParentsHierarchy(childNode: SchemaExecutionTree) {
+    if(!childNode || !childNode.nodeId) {
+      return ['header'];
+    }
+    const parentNode = this.getParentNode(childNode.nodeId);
+    if(parentNode) {
+      return [childNode.nodeId].concat(this.getNodeParentsHierarchy(parentNode));
+    } else {
+      return ['header'];
+    }
   }
 
 
@@ -527,6 +698,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.requestStatus = this.activeTab;
     request.filterCriterias = filterCriteria;
     request.sort = sort;
+    request.nodeId = this.nodeId ? this.nodeId : '';
+    request.nodeType = this.nodeType ? this.nodeType :'';
     request.isLoadMore = isLoadMore ? isLoadMore : false;
     this.dataSource.getTableData(request);
   }
@@ -543,7 +716,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       return false;
     }
     this.activeTab = status;
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status: this.activeTab } });
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], {
+      queryParams: { status: this.activeTab }, queryParamsHandling: 'merge'
+    });
 
     // update state of columns
     this.manageStaticColumns();
@@ -552,16 +727,21 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
+      this.dataSource.setDocValue([]);
       this.getData();
+    }
+
+    if (this.userDetails) {
+      this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     }
   }
 
   /**
-   * Oen choose column side sheet ..
+   * Oen choose column side sheet..
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
-      editActive: true };
+      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode) };
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
@@ -570,12 +750,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Method for download error or execution logs
    */
   downloadExecutionDetails() {
-    const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
-    downloadLink.setAttribute('target', '_blank');
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    const data = {
+      moduleId: this.moduleId,
+      schemaId: this.schemaId,
+      runId: this.schemaInfo.runId,
+      requestStatus: this.activeTab,
+      executionTreeHierarchy: this.executionTreeHierarchy && this.executionTreeHierarchy.nodeId ? this.executionTreeHierarchy: null
+    }
 
+    this.matDialog.open(DownloadExecutionDataComponent, {
+      width: '600px',
+      data
+    });
   }
 
   /**
@@ -587,8 +773,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId) {
+      return;
+    }
+
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && !field.editable) {
+    if (field && !field.isEditable) {
       console.log('Edit is disabled for this field ! ', fldid);
       return;
     }
@@ -606,6 +796,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.addDynamicInput(fldid, row, rIndex, containerRef);
 
     }
+  }
+
+  isFieldEditable(fldid) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    return (field && field.isEditable) ? true : false;
   }
 
   /**
@@ -634,13 +829,24 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
         const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        if(this.nodeType === 'GRID') {
+          request.gridId = this.nodeId;
+        } else if(this.nodeType === 'HEIRARCHY') {
+          request.heirerchyId = this.nodeId;
+        }
+
+        // get the rowsno ...
+        if(this.nodeType === 'GRID' || this.nodeType === 'HEIRARCHY') {
+          request.rowSno = row.objnr ? row.objnr.fieldData : '';
+        }
+
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
           row[fldid].fieldData = value;
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
         }, error => {
-          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+          this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
         this.subscribers.push(sub);
@@ -754,12 +960,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
-      if (res.acknowledge) {
+      if (res === true) {
         this.getData();
         this.selection.clear();
+        this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
       }
     }, error => {
-      this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+      this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
       console.error(`Error :: ${error.message}`);
     });
     this.subscribers.push(sub);
@@ -789,12 +996,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
       if(res && res.acknowledge) {
+        this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.getData();
             this.selection.clear();
         }
     }, error=>{
-        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        this.transientService.open(`Error :: ${error}`, 'Close',{duration:2000});
         console.error(`Error :: ${error.message}`);
     });
     this.subscribers.push(sub);
@@ -932,17 +1140,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   getFieldInputType(fieldId) {
 
-    if (this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
+    if (this.metadataFldLst[fieldId] && this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
       return this.FIELD_TYPE.NUMBER;
     }
-    if (this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
+    if (this.metadataFldLst[fieldId] && this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
       return this.FIELD_TYPE.DATE;
     }
-    if ((this.metadataFldLst[fieldId].isCheckList === 'false')
+    if (this.metadataFldLst[fieldId] && (this.metadataFldLst[fieldId].isCheckList === 'false')
       && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
       return this.FIELD_TYPE.SINGLE_SELECT;
     }
-    if ((this.metadataFldLst[fieldId].isCheckList === 'true')
+    if (this.metadataFldLst[fieldId] && (this.metadataFldLst[fieldId].isCheckList === 'true')
       && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
       return this.FIELD_TYPE.MULTI_SELECT;
     }
@@ -1121,12 +1329,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             this.statics.correctedCnt = r.count ? r.count : 0;
           }
         }, error => {
-          this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+          this.transientService.open(`Something went wrong `, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
         this.subscribers.push(doCorrectionRequest);
       } else {
-        this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+        this.transientService.open(`Something went wrong `, 'Close', { duration: 2000 });
       }
     }, error => { console.error(`Exception while generating coss module .. ${error.message}`) });
     this.subscribers.push(sub);
@@ -1138,6 +1346,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   uploadCorrectedData() {
     this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: this.schemaId, runid: this.schemaInfo.runId}});
   }
+
+  /**
+   * Opens files in local system for uploading csv
+   */
+  uploadCorrectedDataCsv() {
+    if (document.getElementById('uploadFileCtrl')) {
+      document.getElementById('uploadFileCtrl').click();
+    }
+
+    return true;
+  }
+
   /**
    * function to toggle the icon
    * and emit the toggle event
@@ -1154,29 +1374,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  @HostListener('window:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent){
-    this.mousePosition = { x: event.clientX, y: event.clientY };
-    if (this.status === SchemaNavGrab.RESIZE) {
-      this.resize();
-      this.navscroll.nativeElement.style.cursor = 'col-resize';
-    }
-    else {
-      this.navscroll.nativeElement.style.cursor = 'default';
-    }
-  }
-
   public setNavDivPositions() {
     const { left, top } = this.navscroll.nativeElement.getBoundingClientRect();
     this.boxPosition = { left, top };
-  }
-
-  public resize() {
-    const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
-    this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
-      Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
-        this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
-        this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
   }
 
   public setStatus(event: MouseEvent, status: number) {
@@ -1185,7 +1385,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     else this.setNavDivPositions();
     this.status = status;
   }
+
   public enableResize(){
+    const sidebar = document.getElementById('navscroll')
     const grabberElement = document.createElement('div');
     grabberElement.style.height = '100%';
     grabberElement.style.width = '2px';
@@ -1195,7 +1397,332 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     grabberElement.style.resize = 'horizontal';
     grabberElement.style.overflow = 'auto';
     grabberElement.style.right = '0%';
-    this.navscroll.nativeElement.appendChild(grabberElement);
+
+    grabberElement.addEventListener('mousedown', () => {
+      this.grab = true;
+      sidebar.style.cursor = 'col-resize';
+    });
+
+    grabberElement.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+    });
+
+    sidebar.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+      grabberElement.style.backgroundColor = '#fff';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (this.grab) {
+        this.grab = false;
+        sidebar.style.cursor = 'default';
+      }
+    })
+
+    document.addEventListener('mousemove', (e) => {
+      if (this.grab) {
+        this.mousePosition = { x: e.clientX, y: e.clientY };
+      if (this.status === SchemaNavGrab.RESIZE) {
+        this.navscroll.nativeElement.style.cursor = 'col-resize';
+      } else {
+        this.navscroll.nativeElement.style.cursor = 'default';
+      }
+
+      const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
+      this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
+        Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
+          this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
+          this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
+        }
+    });
+
+    this.navscroll.nativeElement.prepend(grabberElement);
 
   }
+
+  /**
+   * uploads csv file
+   * @param evt file event
+   */
+  fileChange(evt: Event) {
+    const validResponse = this.checkForValidFile(evt);
+    if (validResponse.file) {
+      const activeNodeId = this.activeNode.nodeId || 'header';
+      const activeNodeType = this.activeNode.nodeType || 'HEADER';
+      const moduleDesc = this.moduleInfo.moduleDesc ? `${this.moduleInfo.moduleDesc} Number` : '';
+      this.schemaDetailService.uploadCsvFileData(validResponse.file, this.schemaId, activeNodeId, activeNodeType, '', moduleDesc)
+        .subscribe(res => {
+          if (res) {
+            this.isFileUploading = true;
+          }
+      }, error => {
+        console.log(`Error:: ${error.message}`);
+      });
+    } else {
+      const errMsg = validResponse.errMsg || 'Unable to upload file';
+      this.transientService.open(`Error :: ${errMsg}`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${errMsg}`);
+    }
+  }
+
+  /**
+   * Validates for valid csv file and file size limit
+   * @param evt file event
+   * @returns returns file or error message
+   */
+  checkForValidFile(evt: Event) {
+    const res = {
+      errMsg: '',
+      file: null
+    };
+    if (evt !== undefined) {
+      const target: DataTransfer = (evt.target) as unknown as DataTransfer;
+      if (target.files.length !== 1) {
+        res.errMsg = 'Cannot use multiple files';
+      }
+      // check file type
+      let type = '';
+      try {
+        type = target.files[0].name.split('.')[1];
+      } catch (ex) {
+        console.error(ex)
+      }
+      if (type === 'xlsx' || type === 'xls' || type === 'csv') {
+        // check size of file
+        const size = target.files[0].size;
+
+        const sizeKb = Math.round((size / 1024));
+        if (sizeKb > (10 * 1024)) {
+          res.errMsg = `File size too large , upload less then 10 MB`;
+        }
+        res.file = target.files[0];
+      } else {
+        res.errMsg = `Unsupported file format, allowed file formats are .xlsx, .xls and .csv`;
+      }
+    }
+
+    return res;
+  }
+
+  /**
+   * Closes file upload progress screen along with a toast message
+   * @param msg output message from upload progress screen
+   */
+  fileUploaded(msg) {
+    this.isFileUploading = false;
+    if (msg) {
+      this.transientService.open(msg, 'Okay', { duration: 2000 });
+    }
+  }
+
+  onRunCompleted($event) {
+     this.isInRunning = false;
+     this.runCompleted.emit($event);
+  }
+
+  /**
+   * get module info based on module id
+   * @param id module id
+   */
+  getModuleInfo(id) {
+    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+      if (res && res.length) {
+        this.moduleInfo = res[0];
+      }
+    }, error => {
+      console.log(`Error:: ${error.message}`)
+    });
+  }
+
+  /**
+   * Navigate the detail page based on node clicked ....
+   * @param node selected / clicked node details
+   */
+   loadNodeData(node: SchemaExecutionTree) {
+
+    if(node.nodeId === this.activeNode.nodeId) {
+      console.log('Already active');
+      return;
+    }
+    this.activeNode = node;
+    console.log(node);
+    this.router.navigate([], {
+      relativeTo: this.activatedRouter,
+      queryParams: {
+        node: node.nodeId,
+        'node-level': node.nodeType
+      },
+      queryParamsHandling: 'merge',
+      skipLocationChange: false
+    });
+  }
+  /**
+   * Enable collapsiable icon ...
+   * @param col column ...
+   * @returns will return true  or false
+   */
+  enableIcon(col: string): boolean {
+    let found = false;
+    if(this.columns.header && (this.columns.header.indexOf(col) === this.columns.header.length-1)) {
+      found = true;
+    }
+    return found && (this.nodeId !== 'header');
+  }
+  /**
+   * Manage column collapsiable or expandable ..
+   * @param evt events
+   * @param state state will be open || close based on that manage columns
+   * @param fld operation on this field...
+   */
+  doColumnsCollapsible(evt, state: string, fld: string) {
+    if(state === 'open') {
+
+      switch(fld) {
+        case '___header__collapsible':
+          const __header_coll_indx = this.displayedFields.getValue().indexOf('___header__collapsible');
+          const array = this.displayedFields.getValue().splice(0,__header_coll_indx);
+          array.push(...this.columns.header);
+          if(this.nodeId !== 'header') {
+            array.push(...this.columns[this.nodeId]);
+          }
+          this.displayedFields.next(array);
+          break;
+
+        case '___grid__collapsible':
+          const __grid_coll_indx = this.displayedFields.getValue().indexOf('___grid__collapsible');
+          const grid_array = this.displayedFields.getValue().splice(0,__grid_coll_indx);
+          grid_array.push(...this.columns[this.nodeId]);
+          this.displayedFields.next(grid_array);
+          break;
+
+        case '___hierarchy__collapsible':
+          const __hie_coll_indx = this.displayedFields.getValue().indexOf('___hierarchy__collapsible');
+          const hie_array = this.displayedFields.getValue().splice(0,__hie_coll_indx);
+          hie_array.push(...this.columns[this.nodeId]);
+          this.displayedFields.next(hie_array);
+          break;
+
+      }
+
+    } else if(state === 'close') {
+      const objNrIdx = this.displayedFields.getValue().indexOf('OBJECTNUMBER');
+      const array = this.displayedFields.getValue().splice(0,objNrIdx+1);
+      let keyFor = null;
+      for(const cl in this.columns) {
+        if(this.columns[cl].indexOf(fld) !== -1) {
+          keyFor = cl;
+          break;
+        }
+      }
+      if(keyFor === 'header') {
+        array.push('___header__collapsible');
+        console.log(this.columns[this.nodeId]);
+        if(this.nodeId !== 'header') {
+          array.push(...this.columns[this.nodeId]);
+        }
+      } else if(keyFor !== null && this.nodeType === 'GRID') {
+        array.push(...this.columns.header);
+        array.push('___grid__collapsible');
+      } else if(keyFor !== null && this.nodeType === 'HEIRARCHY') {
+        array.push(...this.columns.header);
+        array.push('___hierarchy__collapsible');
+      }
+      console.log(array)
+      this.displayedFields.next(array);
+    }
+  }
+  /**
+   * Update the selected columns ... based on selected node
+   * @param nodeId selected node id ...
+   * @param nodeType selected node type ...
+   */
+  updateColumnBasedOnNodeSelection(nodeId: string, nodeType: string) {
+    const nodeIds = this.getNodeParentsHierarchy(this.activeNode);
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, nodeIds.reverse())
+      .subscribe(res => {
+        const allFields = [];
+        let updateTableView = false;
+        this.columns = {};
+        const metadata = this.metadata.getValue();
+        if(res && res.length) {
+          res.forEach(node => {
+            if(node.fieldsList && node.fieldsList.length) {
+              this.columns[node.nodeId] = [];
+              node.fieldsList = node.fieldsList.sort((a, b) => a.order - b.order);
+              node.fieldsList.forEach(f => {
+                if(!allFields.find(fld => fld.fieldId === f.fieldId)) {
+                  allFields.push(f);
+                  this.columns[node.nodeId].push(f.fieldId);
+                }
+              });
+            } else {
+              let fields = [];
+              const nType = this.getNodeTypeById(node.nodeId);
+              if(nType === 'HEIRARCHY') {
+                if(metadata && metadata.hierarchyFields && metadata.hierarchyFields.hasOwnProperty(node.nodeId)) {
+                  fields = Object.keys(metadata.hierarchyFields[node.nodeId]).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach((f, index) => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.order = index;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(fldMap);
+                  });
+                  updateTableView = true;
+                }
+              } else if(nType === 'GRID') {
+                if(metadata && metadata.gridFields && metadata.gridFields.hasOwnProperty(node.nodeId)) {
+                  fields = Object.keys(metadata.gridFields[node.nodeId]).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach((f,index) => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.order = index;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(fldMap);
+                  });
+                  updateTableView = true;
+                }
+              } else if(nType === 'HEADER') {
+                if(metadata && metadata.headers) {
+                  fields = Object.keys(metadata.headers).slice(0,10);
+                  this.columns[node.nodeId] = fields;
+                  fields.forEach((f,index) => {
+                    const fldMap = new SchemaTableViewFldMap();
+                    fldMap.fieldId = f;
+                    fldMap.order = index;
+                    fldMap.nodeId = node.nodeId;
+                    fldMap.nodeType = nType;
+                    allFields.push(fldMap);
+                  });
+                  updateTableView = true;
+                }
+              }
+            }
+          });
+          this.selectedFields = allFields;
+          this.selectedFieldsOb.next(updateTableView);
+        };
+
+      }, error => {
+        console.error(`Error:: ${error.message}`);
+      });
+
+  }
+
+  getNodeTypeById(nodeId: string) {
+    const treeArray = this.getExectionArray(this.executionTreeHierarchy);
+    const nodeDetails = treeArray.find(n => n.nodeId === nodeId);
+    return nodeDetails && nodeDetails.nodeType;
+  }
+
+  isHeaderColumn(dynCols) {
+    return this.columns.header?.includes(dynCols);
+  }
+
 }

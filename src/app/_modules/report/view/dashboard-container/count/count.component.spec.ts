@@ -37,7 +37,7 @@ describe('CountComponent', () => {
     spyOn(WidgetServiceSpy,'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(res));
     component.getHeaderMetaData();
     expect(WidgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
-    expect(component.headerDesc).toEqual(res.widgetName);
+    expect(component.widgetHeader.widgetName).toEqual(res.widgetName);
   }));
 
   it('getCountMetadata(), return countMeatadata of the widget', async(() => {
@@ -65,5 +65,22 @@ describe('CountComponent', () => {
     component.getCountData(widgetId,criteria);
     expect(WidgetServiceSpy.getWidgetData).toHaveBeenCalledWith(String(widgetId), criteria);
     expect(component.count).toEqual(46);
+  }));
+
+  it('ngOnChanges(), while change rule type', async(()=>{
+    // mock data
+    const changes: import('@angular/core').SimpleChanges = {filterCriteria:{currentValue:true, previousValue:false,firstChange:null,isFirstChange:null}};
+    component.widgetHeader = { isEnableGlobalFilter: true } as WidgetHeader;
+    component.ngOnChanges(changes);
+    expect(component.widgetHeader.isEnableGlobalFilter).toEqual(true);
+
+    component.widgetHeader = { isEnableGlobalFilter: false } as WidgetHeader;
+    spyOn(component,'getCountData');
+    component.ngOnChanges(changes);
+    expect(component.getCountData).toHaveBeenCalled();
+
+    const changes2: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes2);
+    expect(component.ngOnChanges).toBeTruthy();
   }));
 });

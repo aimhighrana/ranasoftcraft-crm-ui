@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
@@ -10,6 +9,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { UserService } from '@services/user/userservice.service';
+import { TransientService } from 'mdo-ui-library';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
@@ -65,7 +65,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private sharedService: SharedServiceService,
               private schemaVariantService: SchemaVariantService,
-              private matSnackBar: MatSnackBar,
+              private toasterService: TransientService,
               private userService: UserService) { }
 
 
@@ -93,9 +93,12 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   getDataScopeDetails(variantId: string) {
     const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
       const variantDetais = this.schemaVariantService.getVariantdetailsByvariantId(variantId, user.currentRoleId, user.plantCode, user.userName).subscribe((res) => {
-        this.variantInfo.variantName = res.variantName;
-        this.variantInfo.filterCriteria = res.filterCriteria;
-        this.variantInfo.variantId = res.variantId;
+        if (res) {
+          this.variantInfo.variantName = res.variantName || '';
+          this.variantName.setValue(this.variantInfo.variantName);
+          this.variantInfo.filterCriteria = res.filterCriteria || [];
+          this.variantInfo.variantId = res.variantId || '';
+        }
       }, (error) => {
         console.log('Something went wrong while getting variant details.', error.message);
       })
@@ -122,10 +125,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     filterCtrl.type = 'DROPDOWN';
     filterCtrl.values = [];
     filterCtrl.textValues = [];
+    filterCtrl.selectedValues = [];
+
     event.selectedValues.forEach((value) => {
       if(value.FIELDNAME === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
+        filterCtrl.selectedValues.push(value);
       }
     })
     // In case we are adding data-scope
@@ -138,11 +144,19 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       this.variantInfo.filterCriteria.forEach((filCtrl) => {
         if(filCtrl.fieldId === event.fldCtrl.fieldId) {
           flag = true;
-          filCtrl.values = [];
-          filCtrl.textValues = [];
+          filCtrl.values =  filterCtrl.values || [];
 
-          filCtrl.values.push(...filterCtrl.values);
-          filCtrl.textValues.push(...filterCtrl.textValues);
+          filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
+          filterCtrl.selectedValues.forEach(v => {
+            if(!filCtrl.selectedValues.some(value => value.CODE === v.CODE)) {
+              filCtrl.selectedValues.push(v);
+            }
+          });
+
+          filCtrl.textValues = [];
+          filCtrl.selectedValues.forEach(v => {
+              filCtrl.textValues.push(v.TEXT);
+          });
         }
       })
       if(flag === false){
@@ -158,8 +172,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   prepareTextToShow(ctrl: FilterCriteria) {
     if(ctrl.values.length > 1) {
       return ctrl.values.length;
-    }else {
-      return ctrl.textValues ? ctrl.textValues[0] : ctrl.selectedValues[0].TEXT;
+    } else {
+      if(ctrl.textValues && ctrl.textValues.length) {
+        return ctrl.textValues[0] || ctrl.fieldId;
+      } else {
+        const selected = ctrl.selectedValues && ctrl.selectedValues.find(s => s.CODE === ctrl.values[0]);
+        return selected ? selected.TEXT : ctrl.fieldId;
+      }
     }
   }
 
@@ -170,7 +189,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     if (fldC && fldC.values) {
       const dropArray: DropDownValue[] = [];
       fldC.values.forEach(val => {
-        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
+        const dropDetails = fldC.selectedValues && fldC.selectedValues.find(v => v.CODE === val);
+        const drop: DropDownValue = dropDetails || { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
         dropArray.push(drop);
       });
       this.loadDropValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
@@ -188,9 +208,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     const saveVariant = this.schemaService.saveUpdateDataScope(this.variantInfo).subscribe((res) => {
       this.close();
       this.sharedService.setDataScope(res);
-      this.matSnackBar.open('This action has been performed.', 'Okay', {
+      this.toasterService.open('This action has been performed.', 'Okay', {
         duration: 2000
-      })
+      });
     }, (error) => {
       console.log('Something went wrong while saving data scope', error.message)
     })
@@ -217,6 +237,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       if(filterCtrl.fieldId === fieldId) {
         filterCtrl.values.length = 0;
         filterCtrl.textValues = [];
+        filterCtrl.selectedValues = selectedValues;
         selectedValues.forEach((value) => {
           filterCtrl.values.push(value.CODE);
           filterCtrl.textValues.push(value.TEXT ? value.TEXT : value.CODE);

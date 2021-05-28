@@ -71,23 +71,23 @@ describe('MetadatafieldControlComponent', () => {
 
   const metadataModeleResponse = {headers: header, grids: grid, gridFields, hierarchy, hierarchyFields};
 
-  it(`getFields(), should return all field belong to object / module`, async(()=>{
-    // mock data
-    component.moduleId = '1005';
-    component.selectedFldId = 'NDC_TYPE'
-    component.isCustomdataset = false;
-    // call actual component method
-    spyOn(schemaDetailsService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse));
-    component.getFields();
+  // it(`getFields(), should return all field belong to object / module`, async(()=>{
+  //   // mock data
+  //   component.moduleId = '1005';
+  //   component.selectedFldId = 'NDC_TYPE'
+  //   component.isCustomdataset = false;
+  //   // call actual component method
+  //   spyOn(schemaDetailsService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse));
+  //   component.getFields();
 
-    // veriry & asserts
-    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
+  //   // veriry & asserts
+  //   expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
 
-    component.moduleId = null;
-    component.getFields();
-    expect(component.getFields()).toEqual(undefined);
+  //   component.moduleId = null;
+  //   component.getFields();
+  //   expect(component.getFields()).toEqual(undefined);
 
-  }));
+  // }));
 
   it(`transformFieldRes(), help to transform metadata field with groups & autocomplete search`, async(()=>{
     // call actual method

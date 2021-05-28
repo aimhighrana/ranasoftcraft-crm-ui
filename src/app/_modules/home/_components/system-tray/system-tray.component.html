@@ -1,26 +1,19 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button (click)="close()" icon="times" type="plain" iconFontType="light"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">System tray</div>
+                <div i18n="@@system_tray" class="display-heading-large">System tray</div>
             </div>
         </div>
     </div>
 
     <div class="f-col sidesheetcontent-listing">
-        <mat-tab-group disableRipple="true" #matTabgroup>
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    Notifications
-                </ng-template>
-                <!-- <button mat-button (click)="paginateNotification()" *ngIf="notifications.length === 10">next</button> -->
+        <lib-tab-group disableRipple="true" #matTabgroup class="lib-tab">
+            <lib-tab i18n-label="@@notifications" label="Notifications">
                 <mat-nav-list>
-                    <mat-list-item *ngFor="let notification of notifications;"
-                        >
+                    <mat-list-item *ngFor="let notification of notifications;">
                         <div class="f-col notification-listing">
                             <div mat-line>{{notification.headerText}}</div>
                             <div class="f-row notify-row">
@@ -51,9 +44,7 @@
                                     <mat-card-header>
                                         <ng-template [ngIf]="notification.senderUid || notification.senderMail" [ngIfElse]="showUserProfile">
                                             <mat-card-header>
-                                                <div mat-card-avatar>
-                                                    {{notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]}}
-                                                </div>
+                                                <lib-avatar [initials]="notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]"></lib-avatar>
                                             </mat-card-header>
                                         </ng-template>
             
@@ -66,25 +57,17 @@
                                         </ng-template>
                                     </mat-card-header>
                                     <span class="f-col-spacer-half"></span>
-                                    <button mat-button (click)="deleteNotification(notification.id)"
-                                        prosClickStopPropagation>
-                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                                    </button>
+                                    <lib-button (click)="deleteNotification(notification.id)" type="plain" icon="trash-alt" prosClickStopPropagation></lib-button>
                                 </div>
                             </div>
-                            <p class="notify-content" disableRipple="true">{{notification.sendTime | date:'dd MMM
-                                hh:mm:ss' }}</p>
+                            <p class="notify-content" disableRipple="true">{{notification.sendTime | date:"dd MMM hh:mm:ss" }}</p>
                         </div>
 
                     </mat-list-item>
                 </mat-nav-list>
-            </mat-tab>
+            </lib-tab>
 
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    Job query <span class="mat-tab-count">{{jobQueueData.length}}</span>
-                </ng-template>
-
+            <lib-tab label="Job queue" [badgeCount]="jobQueueData.length">
                 <mat-nav-list>
                     <mat-list-item *ngFor="let job of jobQueueData">
                         <div mat-line class="job-line">{{job.logMessage}}</div>
@@ -93,22 +76,20 @@
                             <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'IN_PROGRESS'" class="success-status">
                                 <mat-spinner diameter="14"></mat-spinner>&nbsp;Running
                             </mat-chip>
-                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'" class="unselected">
-                                <mat-icon fontSet="mdo-icons" class="time-icon">form-time</mat-icon>&nbsp;{{
+                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'" class="unselected job-date">
+                                <mat-icon fontSet="mdo-icons" class="time-icon">clock</mat-icon>&nbsp;{{
                                 job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
                             </mat-chip>
                         </mat-chip-list>
                         <span class="col-spacer"></span>
                         <mat-card-header>
-                            <div mat-card-avatar>{{ job.initiatedBy }}</div>
+                            <lib-avatar [initials]="job.initiatedBy"></lib-avatar>
                         </mat-card-header>
                         <span class="col-spacer"></span>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">more</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="ellipsis-h"></lib-button>
                     </mat-list-item>
                 </mat-nav-list>
-            </mat-tab>
-        </mat-tab-group>
+            </lib-tab>
+        </lib-tab-group>
     </div>
 </div>

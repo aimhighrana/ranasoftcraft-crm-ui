@@ -1,3 +1,7 @@
+import { TaskListDataResponse } from './../_models/task-list/tasklistData';
+import { InboxNodesCount } from '@models/list-page/listpage';
+import { EndpointsProcessService } from './_endpoints/endpoints-process.service';
+
 import { Injectable } from '@angular/core';
 import { TaskListRequest } from '@models/task-list/filter';
 import { of } from 'rxjs';
@@ -23,6 +27,7 @@ export class TaskListService {
    */
   constructor(
     public endpointService: EndpointsClassicService,
+    public endpointsProcessService: EndpointsProcessService,
     private http: HttpClient
   ) { }
 
@@ -122,5 +127,25 @@ export class TaskListService {
 
   getChangeAuditLogDetails(taskId: string, userId: string, language: string) {
     return this.http.post(this.endpointService.getChangeLogDetails(), { taskId, userId, language })
+  }
+
+  saveTasklistVisitByUser(nodeId: string) {
+    return this.http.post(this.endpointsProcessService.saveTasklistVisitByUserUrl(nodeId), {});
+  }
+
+  public getInboxNodesCount() {
+    return this.http.get<InboxNodesCount[]>(this.endpointsProcessService.getInboxNodesCountUrl());
+  }
+
+  public saveOrUpdateTasklistHeaders(nodeId: string, payload: {fldId: string, order: number}[]) {
+    return this.http.post(this.endpointsProcessService.saveOrUpdateTasklistHeadersUrl(nodeId), payload);
+  }
+
+  public getHeadersForNode(nodeId: string) {
+    return this.http.get<any[]>(this.endpointsProcessService.getHeadersForNodeUrl(nodeId));
+  }
+
+  public getTaskListData(nodeId: string, lang: string, size: number, searchAfter: any) {
+    return this.http.post<TaskListDataResponse>(this.endpointsProcessService.getTaskListDataUrl(nodeId, lang, size, searchAfter), {});
   }
 }

@@ -6,11 +6,11 @@ import { BreadcrumbComponent } from '../../../shared/_components/breadcrumb/brea
 import { UserService } from 'src/app/_services/user/userservice.service';
 import { Userdetails } from 'src/app/_models/userdetails';
 import { of, Subscription } from 'rxjs';
-import { PrimaryNavbarComponent } from '@modules/schema/_components/primary-navbar/primary-navbar.component';
-import { SecondaryNavbarComponent } from '@modules/schema/_components/secondary-navbar/secondary-navbar.component';
+import { SecondaryNavbarComponent } from '@modules/home/_components/secondary-navbar/secondary-navbar.component';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { NavigationDropdownComponent } from '@modules/shared/_components/navigation-dropdown/navigation-dropdown.component';
 import { SharedModule } from '@modules/shared/shared.module';
+import { PrimaryNavigationComponent } from '../primary-navigation/primary-navigation.component';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -53,7 +53,7 @@ describe('HomeLayoutComponent', () => {
       providers: [
         { provide: UserService, useValue: userSvcSpy }
       ],
-      declarations: [HomeLayoutComponent, BreadcrumbComponent, PrimaryNavbarComponent, SecondaryNavbarComponent,
+      declarations: [HomeLayoutComponent, BreadcrumbComponent, PrimaryNavigationComponent, SecondaryNavbarComponent,
         SearchInputComponent, NavigationDropdownComponent]
     })
       .compileComponents();

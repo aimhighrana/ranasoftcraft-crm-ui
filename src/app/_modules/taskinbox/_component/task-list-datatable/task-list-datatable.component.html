@@ -1,0 +1,218 @@
+<div class="root">
+  <div class="f-row-spacer-half"></div>
+  <div class="f-row">
+    <lib-text-line type="leading">Inbox</lib-text-line>
+    <span class="f-spacer"></span>
+    <lib-button-group>
+      <lib-button type="minor">New task</lib-button>
+      <lib-button type="minor" icon="ellipsis-h"></lib-button>
+    </lib-button-group>
+  </div>
+  <div class="f-row-spacer-half"></div>
+
+  <div class="f-row">
+    <lib-chip-list>
+      <lib-search placeholder="Search tasks"></lib-search>
+      <ng-container *ngFor="let chip of currentNodeFilterChips">
+        <lib-chip-list>
+          <lib-chip
+            *ngIf="chip.hasMenu; else noMenu"
+            [label]="chip.fldId"
+            [icon]="chip.icon"
+            [type]="chip.type"
+            [matMenuTriggerFor]="filterMenu"
+            (click)="!chip.hasMenu ? setChipValue(chip, true) : null"
+            >{{ chip.hasMenu ? ': ' : '' }}{{ chip.hasMenu ? (chip.value.length > 0 ? chip.value.join(', ') : 'All') : '' }}</lib-chip
+          >
+          <ng-template #noMenu>
+            <lib-chip
+              [label]="chip.fldId"
+              [icon]="chip.icon"
+              [type]="chip.type"
+              (click)="!chip.hasMenu ? setChipValue(chip, true) : null"
+              [selectable]="true"
+              [selected]="chip.value.includes(true) && !chip.hasMenu"
+              >{{ chip.hasMenu ? ': ' : '' }}{{ chip.hasMenu ? (chip.value.length > 0 ? chip.value.join(', ') : 'All') : '' }}</lib-chip
+            >
+          </ng-template>
+        </lib-chip-list>
+        <mat-menu #filterMenu="matMenu" xPosition="after">
+          <lib-filter-dropdown *ngIf="chip?.hasMenu">
+            <div class="dropdown-search-wrapper">
+              <lib-search #searchInput prosClickStopPropagation (valueChange)="filterModulesMenu($event, chip.fldId)"></lib-search>
+            </div>
+            <div class="dropdown-options-wrapper f-col">
+              <div class="dropdown-options-inner-container">
+                <div class="default-options">
+                  <lib-filter-option>
+                    <lib-checkbox label="All" [checked]="chip.value.length <= 0"></lib-checkbox>
+                  </lib-filter-option>
+                  <div class="separator">
+                    <mat-divider></mat-divider>
+                  </div>
+                </div>
+                <div class="options">
+                  <lib-filter-option
+                    prosClickStopPropagation
+                    (click)="setChipValue(chip, item)"
+                    *ngFor="let item of filteredNodeChipsMenuItems[chip.fldId]"
+                  >
+                    <lib-checkbox
+                      [label]="item"
+                      prosClickStopPropagation
+                      (valueChange)="setChipValue(chip, item)"
+                      [checked]="chip.value.indexOf(item) >= 0"
+                    ></lib-checkbox>
+                  </lib-filter-option>
+                </div>
+              </div>
+            </div>
+          </lib-filter-dropdown>
+        </mat-menu>
+      </ng-container>
+      <lib-chip icon="filter" (click)="openFilterSettingsPanel()"></lib-chip>
+      <lib-chip icon="ellipsis-h"></lib-chip>
+    </lib-chip-list>
+  </div>
+  <div class="f-row-spacer-half"></div>
+  <div class="task-inbox">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+      matSortActive="Records"
+      matSortDisableClear
+      matSortDirection="desc"
+      class="mat-elevation-z0"
+    >
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <lib-checkbox
+            (valueChange)="masterToggle()"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [aria-label]="checkboxLabel()"
+          ></lib-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <lib-checkbox
+            (valueChange)="selection.toggle(element)"
+            [checked]="selection.isSelected(element)"
+            [aria-label]="checkboxLabel(element)"
+          ></lib-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Setting Column -->
+      <ng-container matColumnDef="setting" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <lib-button icon="cog" (click)="openTableViewSettings()"></lib-button>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <lib-button-group>
+            <lib-button type="minor" icon="ellipsis-h"></lib-button>
+            <lib-button type="minor" iconFontType="solid" icon="star"></lib-button>
+            <lib-button type="minor" icon="comment-alt"></lib-button>
+          </lib-button-group>
+        </td>
+      </ng-container>
+
+      <!-- Records Column -->
+      <ng-container matColumnDef="Records" sticky>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Records</th>
+        <td mat-cell *matCellDef="let element"><lib-text-line type="base" textColor="link">1209876</lib-text-line></td>
+      </ng-container>
+
+      <!-- dynamic columns -->
+      <ng-template ngFor let-dynCol [ngForOf]="displayedColumns">
+        <ng-template [ngIf]="isStaticCol(dynCol)" [ngIfElse]="dynamic"> </ng-template>
+        <ng-template #dynamic>
+          <ng-container [matColumnDef]="dynCol">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ getFieldDesc(dynCol) }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="dynCol == 'labels'; else defaultCellTemplate" class="pt-6">
+                <lib-chip-list>
+                  <ng-container *ngFor="let label of element[dynCol].slice(0, 3)">
+                    <lib-chip>{{ label }}</lib-chip>
+                  </ng-container>
+                  <ng-container *ngIf="element[dynCol].length > 3">
+                    <lib-chip>{{ element[dynCol].slice(3, element[dynCol].length).length }}+</lib-chip>
+                  </ng-container>
+                  <lib-chip *ngIf="element.isImportant" icon="long-arrow-up"></lib-chip>
+
+                  <lib-button
+                    #editButton
+                    icon="edit"
+                    iconFontType="light"
+                    [matMenuTriggerFor]="labelsMenu"
+                    #levelOneTrigger="matMenuTrigger"
+                    (mouseover)="levelOneTrigger.openMenu()"
+                    prosClickStopPropagation
+                  >
+                  </lib-button>
+                </lib-chip-list>
+
+                <mat-menu #labelsMenu="matMenu" direction="down" yPosition="below" [overlapTrigger]="false">
+                  <div (mouseleave)="searchLabelInput.clearSearch(); levelOneTrigger.closeMenu()" prosClickStopPropagation>
+                    <lib-filter-dropdown>
+                      <div class="dropdown-search-wrapper">
+                        <lib-search
+                          #searchLabelInput
+                          prosClickStopPropagation
+                          (valueChange)="labelSearchFieldSub.next($event)"
+                        ></lib-search>
+                      </div>
+                      <div class="dropdown-options-wrapper f-col">
+                        <div class="dropdown-options-inner-container">
+                          <div class="height-zero-mat-menu-item" mat-menu-item></div>
+                          <mat-list class="default-options">
+                            <mat-list-item class="f-row" *ngFor="let label of element[dynCol]; let index = index">
+                              <div class="f-col">
+                                <lib-text-line type="base"> {{ label }} </lib-text-line>
+                              </div>
+                              <span class="f-spacer"></span>
+                              <span class="f-col-spacer-half"></span>
+                              <lib-button iconFontType="solid" icon="times" (click)="removeLabel(element, label)"></lib-button>
+                            </mat-list-item>
+                          </mat-list>
+                          <lib-section></lib-section>
+                          <mat-list class="options">
+                            <button mat-menu-item *ngFor="let flabel of filteredLabels" (click)="applyLabel(element, flabel)">
+                              <lib-text-line type="base" enableWrap="flase">{{ flabel }}</lib-text-line>
+                            </button>
+                          </mat-list>
+                        </div>
+                      </div>
+                    </lib-filter-dropdown>
+                  </div>
+                </mat-menu>
+              </div>
+              <ng-template #defaultCellTemplate>
+                <div>
+                  {{ element[dynCol] ? element[dynCol] : '' }}
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+        </ng-template>
+      </ng-template>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="selection.toggle(row)"></tr>
+    </table>
+  </div>
+
+  <div class="f-row-spacer-half"></div>
+  <div class="pagination-section">
+    <lib-pagination
+      [currentPageIndex]="pageEvent.pageIndex"
+      [totalCount]="pageEvent.length"
+      [pageSize]="pageEvent.pageSize"
+      (pageChangeEvent)="onPageChange($event)"
+    >
+    </lib-pagination>
+  </div>
+</div>

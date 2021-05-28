@@ -3,6 +3,7 @@ export const CONDITIONS = {
         desc: 'Common Operator',
         operators: [
             'EQUAL',
+            'NOT_EQUAL',
             'STARTS_WITH',
             'ENDS_WITH',
             'CONTAINS',
@@ -24,7 +25,6 @@ export const CONDITIONS = {
         desc: 'Special Operators',
         operators: [
             'REGEX',
-            'FIELD2FIELD',
             'LOCATION'
         ]
     },

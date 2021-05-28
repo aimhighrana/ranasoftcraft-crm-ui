@@ -5,12 +5,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
+import { CategoryInfo, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
 import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, PRE_DEFINED_REGEX, TransformationModel, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SharedModule } from '@modules/shared/shared.module';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
+import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 
 describe('NewBusinessRulesComponent', () => {
     let component: NewBusinessRulesComponent;
@@ -20,7 +23,7 @@ describe('NewBusinessRulesComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [NewBusinessRulesComponent],
-            imports: [AppMaterialModuleForSpec, SharedModule],
+            imports: [AppMaterialModuleForSpec, SharedModule, MdoUiLibraryModule],
             providers: [
                 HttpClientTestingModule,
                 SchemaDetailsService,
@@ -788,5 +791,67 @@ describe('NewBusinessRulesComponent', () => {
         component.form = null;
         const res = component.selectedTransformationType;
         expect(res).toEqual('');
-    })
+    });
+    it('selectSingle(), should set Single field', async()=> {
+        component.initializeForm();
+        component.selectSingle(component.form, 'categoryId', {option: {value: 1}});
+        expect(component.form.controls.categoryId.value).toEqual(1);
+    });
+    it('displayRuleFn(), should display Rule name', async()=> {
+        let result = component.displayRuleFn('');
+        expect(result).toEqual('');
+        component.businessRuleTypes = [{
+            ruleDesc: 'test',
+            ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT
+        } as BusinessRules];
+        result = component.displayRuleFn(BusinessRuleType.BR_CUSTOM_SCRIPT);
+        expect(result).toEqual('test');
+        result = component.displayRuleFn('Test1');
+        expect(result).toBeUndefined();
+    });
+
+    it('displayCategoryFn(), should display category name', async()=> {
+        let result = component.displayCategoryFn('');
+        expect(result).toEqual('');
+        component.categoryList = [{
+            categoryDesc: 'test',
+            categoryId: 'Test'
+        } as CategoryInfo];
+        result = component.displayCategoryFn('Test');
+        expect(result).toEqual('test');
+        result = component.displayCategoryFn('Test1');
+        expect(result).toBeUndefined();
+    });
+
+    it('displayRegexFn(), should display regex name', async()=> {
+        let result = component.displayRegexFn('');
+        expect(result).toEqual('');
+        component.preDefinedRegex = [{
+            FUNC_NAME: 'test',
+            FUNC_TYPE: 'Test'
+        } as Regex];
+        result = component.displayRegexFn('Test');
+        expect(result).toEqual('test');
+        result = component.displayRegexFn('Test1');
+        expect(result).toBeUndefined();
+    });
+
+    it('updateTransformationRuleType(), should update transformation rule type', async()=> {
+        component.initializeForm();
+        component.updateTransformationRuleType({value:'test'});
+        expect(component.form.value.transformationRuleType).toEqual('');
+    });
+    it('businessRuleTypesFiltered should get businessRuleTypes Filtered', async () => {
+        component.businessRuleTypes = [{
+          ruleDesc: 'test',
+          ruleId: 'test',
+          ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT
+        }];
+        component.searchRuleTypeStr = '';
+        expect(component.businessRuleTypesFiltered.length).toEqual(1);
+        component.searchRuleTypeStr = 'test';
+        expect(component.businessRuleTypesFiltered.length).toEqual(1);
+        component.searchRuleTypeStr = 'test1';
+        expect(component.businessRuleTypesFiltered.length).toEqual(0);
+    });
 });

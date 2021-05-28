@@ -1,0 +1,17 @@
+mat-card.root {
+  padding: 0 16px;
+  user-select: none;
+  height: 100%;
+
+  .empty-state {
+    justify-content: center;
+    height: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+  mat-card.root {
+    width: 62%;
+    margin: 0 auto;
+  }
+}

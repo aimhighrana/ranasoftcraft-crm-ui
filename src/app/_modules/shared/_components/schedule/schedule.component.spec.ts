@@ -11,13 +11,15 @@ import { of } from 'rxjs';
 import { ScheduleComponent } from './schedule.component';
 import { Router } from '@angular/router';
 import { SchemaScheduler, SchemaSchedulerEnd, SchemaSchedulerRepeat, SchemaSchedulerRepeatMetric } from '@models/schema/schemaScheduler';
+import { TitleCasePipe } from '@angular/common';
+import { MdoUiLibraryModule, TransientService } from 'mdo-ui-library';
 
 const isRequired = (control: AbstractControl) => {
   const validator = control.validator({} as AbstractControl);
-    if (validator && validator.required) {
-      return true;
-    }
-    return false;
+  if (validator && validator.required) {
+    return true;
+  }
+  return false;
 }
 
 describe('ScheduleComponent', () => {
@@ -28,17 +30,18 @@ describe('ScheduleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScheduleComponent, FormInputComponent, DatePickerFieldComponent ],
+      declarations: [ScheduleComponent, FormInputComponent, DatePickerFieldComponent],
       imports: [
         HttpClientTestingModule,
         AppMaterialModuleForSpec,
         RouterTestingModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MdoUiLibraryModule
       ],
-      providers: [SchemaService]
+      providers: [TransientService, TitleCasePipe, SchemaService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -63,7 +66,7 @@ describe('ScheduleComponent', () => {
   it('getScheduleInfo(), should call getSchedule service', () => {
     component.schemaId = '12564';
     spyOn(component, 'setValueForFormControl');
-    spyOn(schemaService, 'getSchedule').and.returnValue(of({schedulerId: 1701} as SchemaScheduler));
+    spyOn(schemaService, 'getSchedule').and.returnValue(of({ schedulerId: 1701 } as SchemaScheduler));
     component.getScheduleInfo(component.schemaId);
     expect(schemaService.getSchedule).toHaveBeenCalledWith(component.schemaId);
   });
@@ -77,10 +80,10 @@ describe('ScheduleComponent', () => {
   it('close(), should close schedule side sheet', () => {
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }], {queryParamsHandling: 'preserve'})
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }], { queryParamsHandling: 'preserve' })
   })
 
-  it('setValueForFormControl(), should set values into form fields', async() => {
+  it('setValueForFormControl(), should set values into form fields', async () => {
     component.scheduleInfo = {
       isEnable: false
     } as SchemaScheduler;
@@ -91,11 +94,11 @@ describe('ScheduleComponent', () => {
 
   it(`To get FormControl from fromGroup `, async(() => {
     component.createForm()
-    const field=component.formField('repeatValue');
+    const field = component.formField('repeatValue');
     expect(field).toBeDefined();
-   }));
+  }));
 
-   it('should getMetricHours', () => {
+  it('should getMetricHours', () => {
     component.createForm();
     expect(component.getMetricHours).toEqual(SchemaSchedulerRepeatMetric.HOURLY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
@@ -111,6 +114,10 @@ describe('ScheduleComponent', () => {
     component.setValue('end', SchemaSchedulerEnd.AFTER);
     component.submit();
     expect(component.formSubmitted).toEqual(true);
+
+    component.schedulerId = 'new';
+    component.submit();
+    expect(component.scheduleInfo.schedulerId).toEqual(null);
   });
 
   it('get getReferenceString', () => {
@@ -126,11 +133,21 @@ describe('ScheduleComponent', () => {
     component.setValue('end', SchemaSchedulerEnd.NEVER);
     expect(component.getReferenceString).toContain('Occurs every');
 
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
+    expect(component.getReferenceString).toContain('Days');
+
+    component.setValue('repeatValue', 2);
+    component.setValue('schemaSchedulerRepeat', '');
+    expect(component.getReferenceString).toContain('2  starting');
+
   });
 
   it('should init component', () => {
 
     component.ngOnInit();
+
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.HOURLY);
+    expect(component.form.value.repeatValue).toEqual(12);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.WEEKLY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.MONTHLY);
@@ -143,6 +160,29 @@ describe('ScheduleComponent', () => {
     component.setValue('end', SchemaSchedulerEnd.ON);
     expect(isRequired(component.form.controls.endOn)).toBeTrue();
 
+  });
+
+
+  it('createForm(), should set startOn as null first time', () => {
+    component.schedulerId = 'test';
+    component.createForm();
+    expect(component.form.controls.startOn.value).toBeNull();
+  });
+
+  it('submit(), should set Weekly on and monthly on values', () => {
+    spyOn(schemaService, 'createUpdateSchedule').and.returnValue(of(1));
+    component.createForm();
+    component.setValue('weeklyOn', { key: 'test' });
+    component.setValue('monthOn', { key: 'test' });
+    component.form.patchValue({
+      isEnable: true,
+      schemaSchedulerRepeat: SchemaSchedulerRepeat.HOURLY,
+      repeatValue: 2,
+      end: 'test'
+    });
+    component.submit();
+    expect(component.scheduleInfo.weeklyOn).toBe('test');
+    expect(component.scheduleInfo.monthOn).toBe('test');
   });
 
 });

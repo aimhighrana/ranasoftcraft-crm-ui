@@ -3,13 +3,13 @@ import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType } from '../../../_models/widget';
+import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType, DisplayCriteria } from '../../../_models/widget';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import * as moment from 'moment';
 import { debounceTime } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'pros-filter',
   templateUrl: './filter.component.html',
@@ -17,6 +17,21 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges,OnDestroy {
 
+  displayCriteriaOptions = [
+    {
+      key: DisplayCriteria.TEXT,
+      value: 'Text'
+    },
+    {
+      key: DisplayCriteria.CODE,
+      value: 'Code'
+    },
+    {
+      key: DisplayCriteria.CODE_TEXT,
+      value: 'Code and Text'
+    }
+  ];
+  displayCriteriaOption = this.displayCriteriaOptions[0];
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
   filteredOptions: Observable<DropDownValues[]> = of([]);
@@ -85,12 +100,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   isClearFilter = false;
 
   subscriptions: Subscription[] = [];
+  returnData: any;
 
   /**
    * Constructor of Class
    */
   constructor(
     private widgetService : WidgetService,
+    private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) public locale: string
   ) {
     super();
@@ -109,10 +126,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue !== changes.hasFilterCriteria.previousValue && changes.hasFilterCriteria.currentValue ) {
       this.clearFilterCriteria();
+      this.filterFormControl.setValue('');
     }
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
-      if (this.filterWidget && this.filterWidget.value) {
+      if (this.filterWidget && this.filterWidget.value && !this.widgetHeader.isEnableGlobalFilter) {
+        this.filteredOptions = of([]);
         this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '');
       }
     }
@@ -141,6 +160,15 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       }
     });
     this.subscriptions.push(filterWid);
+
+    /*
+    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
+    });
+    this.subscriptions.push(getDisplayCriteria);
+    */
   }
 
   getFieldsMetadaDesc(buckets:any[], fieldId: string) {
@@ -167,30 +195,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
       } else {
         finalVal[key] = key;
-      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
-        switch(fieldId) {
-          case 'TIME_TAKEN':
-            const days = moment.duration(Number(key), 'milliseconds').days();
-            const hours = moment.duration(Number(key), 'milliseconds').hours();
-            const minutes = moment.duration(Number(key), 'milliseconds').minutes();
-            const seconds = moment.duration(Number(key), 'milliseconds').seconds();
-            const timeString = `${days >0 ? days + ' d ': ``}${hours >0 ? hours + ' h ': ``}${minutes >0 ? minutes + ' m ': ``}${seconds >0 ? seconds + ' s': ``}`;
-            finalVal[key] = timeString ? timeString : '0 s';
-            break;
-
-          case 'OVERDUE':
-          case 'FORWARDENABLED':
-            if(key === '1' || key === 'y') {
-              finalVal[key] = 'Yes';
-            }
-            if(key === '0' || key === 'n') {
-              finalVal[key] = 'No';
-            }
-            break;
-
-          default:
-            break;
-        }
+      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN' || this.filterWidget.getValue().metaData.picklist === '35') {
+        finalVal[key] = this.getFields(fieldId, key);
       }
     });
     Object.keys(finalVal).forEach(key=>{
@@ -199,6 +205,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           const index = this.values.indexOf(valOld[0]);
           valOld[0].TEXT = finalVal[key];
           valOld[0].FIELDNAME = fieldId;
+          valOld[0].display = this.setDisplayCriteria(key, finalVal[key]);
           this.values[index] = valOld[0];
         }
     });
@@ -243,6 +250,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           const index = this.values.indexOf(valOld[0]);
           valOld[0].TEXT = finalVal[key];
           valOld[0].FIELDNAME = fieldId;
+          valOld[0].display = this.setDisplayCriteria(key, finalVal[key]);
           this.values[index] = valOld[0];
         }
     });
@@ -369,45 +377,48 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   public loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string, searchAfter?:string): void{
     criteria = this.removefilter(this.filterWidget.value.fieldId, criteria);
     const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString,searchAfter).subscribe(returnData=>{
-      const res = Object.keys(returnData.aggregations);
-      const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
-      if (buckets && buckets.length === 10) {
-        this.searchAfter = returnData.aggregations[res[0]].after_key.FILTER ? returnData.aggregations[res[0]].after_key.FILTER : '';
-        this.isLoadMore = true;
-      } else {
-        this.isLoadMore = false;
-      }
-      const picklist = ['1', '30', '37', '4', '38', '35'];
-      if(this.filterWidget.getValue().metaData && (picklist.find(val => val === this.filterWidget.getValue().metaData.picklist))) {
-        const metadatas: DropDownValues[] = [];
-        buckets.forEach(bucket => {
-          const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER} as DropDownValues;
-          metadatas.push(metaData);
-        });
-        this.values = metadatas;
-        if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35') {
-          this.getFieldsMetadaDesc(buckets, fieldId);
-        } else if(this.filterWidget.getValue().metaData.picklist === '30'){
-          this.updateObjRefDescription(buckets, fieldId);
-        } else {
-          this.filteredOptions.subscribe(sub=>{
-            sub.push(...this.values);
-              this.filteredOptions = of(sub);
-            });
-        }
-      } else if(this.filterWidget.getValue().metaData && (this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC')) {
-        // static data  TODO
-        const filterResponse = new FilterResponse();
-        filterResponse.min = 1;
-        filterResponse.max = 2000;
-        filterResponse.fieldId = this.filterWidget.getValue().fieldId;
-        this.filterResponse = filterResponse;
-      }
-
+      this.returnData = returnData;
+      this.updateFilter(fieldId, this.returnData);
     }, error=>{
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(widgetData);
+  }
+
+  private updateFilter(fieldId: string, returnData) {
+    const res = Object.keys(returnData.aggregations);
+    const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
+    if (buckets && buckets.length === 10) {
+      this.searchAfter = returnData.aggregations[res[0]].after_key.FILTER ? returnData.aggregations[res[0]].after_key.FILTER : '';
+      this.isLoadMore = true;
+    } else {
+      this.isLoadMore = false;
+    }
+    if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37'|| this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35')) {
+      const metadatas: DropDownValues[] = [];
+      buckets.forEach(bucket => {
+        const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER, display: this.setDisplayCriteria(bucket.key.FILTER, bucket.key.FILTER)} as DropDownValues;
+        metadatas.push(metaData);
+      });
+      this.values = metadatas;
+      if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35') {
+        this.getFieldsMetadaDesc(buckets, fieldId);
+      } else if(this.filterWidget.getValue().metaData.picklist === '30'){
+        this.updateObjRefDescription(buckets, fieldId);
+      } else {
+        this.filteredOptions.subscribe(sub=>{
+          sub.push(...this.values);
+            this.filteredOptions = of(sub);
+          });
+      }
+    } else if(this.filterWidget.getValue().metaData && (this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC')) {
+      // static data  TODO
+      const filterResponse = new FilterResponse();
+      filterResponse.min = 1;
+      filterResponse.max = 2000;
+      filterResponse.fieldId = this.filterWidget.getValue().fieldId;
+      this.filterResponse = filterResponse;
+    }
   }
 
   fieldDisplayFn(data): string {
@@ -505,7 +516,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         const existValue = this.selectedDropVals.filter(exist => exist.CODE === value.conditionFieldValue);
         const textVal = this.values.filter(val => val.CODE === value.conditionFieldValue);
         const text = textVal.length >0 ? textVal[0].TEXT : existValue.length > 0? existValue[0].TEXT : value.conditionFieldValue;
-        returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null});
+        returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null, display: this.setDisplayCriteria(value.conditionFieldValue, text)});
       }
 
     });
@@ -753,5 +764,61 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.filteredOptions = of([]);
     this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '', '');
     }
+  }
+
+  /**
+   * Return the value of DisplayCriteria
+   */
+  setDisplayCriteria(code: string, text: string): string {
+    switch (this.displayCriteriaOption.key) {
+      case DisplayCriteria.CODE:
+        return code || '';
+        case DisplayCriteria.TEXT:
+          return text || '';
+        case DisplayCriteria.CODE_TEXT:
+          return `${code || ''} -- ${text || ''}`;
+        default:
+          break;
+    }
+    return text ? text : code;
+  }
+
+  /**
+   * Save DisplayCriteria and update filter widget
+   */
+  saveDisplayCriteria() {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+      this.filteredOptions.subscribe(sub=>{
+        sub.forEach(v => {
+          v.display = this.setDisplayCriteria(v.CODE, v.TEXT);
+        });
+      });
+      // Update filterFormControl with updated values
+      if (this.filterFormControl.value) {
+        this.filteredOptions.subscribe(sub=>{
+          sub.forEach(v => {
+            if (v.CODE === this.filterFormControl.value.CODE) {
+              this.filterFormControl.setValue(v);
+            }
+          });
+        });
+      }
+      // Update selectedDropVals with updated values
+      if (this.selectedDropVals && this.selectedDropVals.length > 0) {
+        this.filteredOptions.subscribe(sub=>{
+          this.selectedDropVals.forEach(item => {
+            sub.forEach(v => {
+              if (v.CODE === item.CODE) {
+                item.display = v.display;
+              }
+            });
+          });
+        });
+      }
+    }, error => {
+      console.error(`Error : ${error}`);
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
+    });
+    this.subscriptions.push(saveDisplayCriteria);
   }
 }

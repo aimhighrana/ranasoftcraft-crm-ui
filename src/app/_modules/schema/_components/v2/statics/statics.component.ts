@@ -151,14 +151,14 @@ export class StaticsComponent implements OnInit, OnDestroy {
 
   /**
    * Called after  value change on date range ..
-   * @param type define its start_date or end_date ..
    * @param evt event after value change from date range...
    */
-  changeDateRange(type: string , evt: MatDatepickerInputEvent<Date>) {
-    if(type === 'start') {
-      this.statsFilterParams.exe_start_date = String(moment(evt.value).startOf('day').toDate().getTime());
-    } else if(type === 'end') {
-      this.statsFilterParams.exe_end_date = String(moment(evt.value).endOf('day').toDate().getTime());
+  changeDateRange(evt: {start:Date, end:Date}) {
+    if(evt.start) {
+      this.statsFilterParams.exe_start_date = String(moment(evt.start).startOf('day').toDate().getTime());
+    }
+    if(evt.end) {
+      this.statsFilterParams.exe_end_date = String(moment(evt.end).endOf('day').toDate().getTime());
     }
     this.statsFilterParams._date_filter_type = 'date_range';
     this._updatefilterCriteria();

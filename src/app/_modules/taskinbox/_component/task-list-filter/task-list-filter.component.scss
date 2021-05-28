@@ -1,0 +1,54 @@
+.root {
+  user-select: none;
+  height: 100%;
+  width: 900px;
+  padding: 0 16px;
+  overflow: hidden;
+
+  .system {
+    align-items: flex-start;
+    height: 100%;
+
+    .system-fields-col {
+      width: 220px;
+      height: 100%;
+
+      .filters-list {
+        height: calc(100% - 128px - 16px * 3);
+        overflow: auto;
+
+        .mat-tree-node {
+          overflow: visible;
+        }
+
+        mat-tree .mat-tree-node {
+          background: #fff;
+          font-size: 14px;
+          cursor: pointer;
+        }
+
+        mat-tree .mat-tree-node:hover {
+          background-color: #f2f5f8;
+        }
+
+        mat-tree .mat-tree-node mat-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          font-size: 24px;
+          line-height: 24px;
+        }
+      }
+    }
+
+    .system-values-col {
+      width: calc(100% - 220px);
+    }
+
+    .date-list {
+      flex: 1;
+    }
+  }
+}

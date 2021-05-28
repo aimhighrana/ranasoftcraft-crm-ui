@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -76,7 +76,12 @@ import { SubscriberInviteComponent } from './_components/subscriber-invite/subsc
 import { ClassificationDatatableCellEditableComponent } from './_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { SubscriberInviteSidesheetComponent } from './_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
 import { SchemaExecutionTrendComponent } from './_components/statistics/schema-execution-trend/schema-execution-trend.component';
+import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
+import { ResizableColumnDirective } from './_directives/resizable-column.directive';
+import { DateFormatPipe } from './_pipes/date-format.pipe'
+import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
 
 @NgModule({
   declarations: [
@@ -84,10 +89,13 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     ClickStopPropagationDirective,
     TagsEllipsisDirective,
     ContainerRefDirective,
+    InfiniteScrollDirective,
+    ResizableColumnDirective,
     // pipes
     SubstringPipe,
     ReplaceUnderscorePipe,
     ThousandconvertorPipe,
+    DateFormatPipe,
     // shared components
     PageNotFoundComponent,
     BreadcrumbComponent,
@@ -118,7 +126,8 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     ClassificationDatatableCellEditableComponent,
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
-    AutoCompleteScrollDirective
+    AutoCompleteScrollDirective,
+    GenericFieldControlComponent
   ],
   imports: [
     // ng modules
@@ -171,7 +180,8 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     OverlayModule,
     // chart module
     ChartsModule,
-    ScrollingModule
+    ScrollingModule,
+    MdoUiLibraryModule
   ],
   exports: [
     // modules
@@ -221,6 +231,8 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     MatTreeModule,
     DragDropModule,
     OverlayModule,
+    // MDO UI Library Module
+    MdoUiLibraryModule,
     // chart module
     ChartsModule,
     ScrollingModule,
@@ -229,11 +241,14 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     TagsEllipsisDirective,
     ResizeableDirective,
     ContainerRefDirective,
+    InfiniteScrollDirective,
+    ResizableColumnDirective,
     // pipes
     SubstringPipe,
     ReplaceUnderscorePipe,
     ThousandconvertorPipe,
     FormatTableHeadersPipe,
+    DateFormatPipe,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,
@@ -258,7 +273,11 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     SubscriberInviteComponent,
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
-    AutoCompleteScrollDirective
+    AutoCompleteScrollDirective,
+    GenericFieldControlComponent
+  ],
+  providers: [
+    TitleCasePipe
   ],
   entryComponents: [
     TableCellInputComponent

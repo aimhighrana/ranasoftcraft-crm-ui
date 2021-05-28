@@ -1,39 +1,44 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaService } from './schema.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupRequest, ObjectTypeResponse, ExcelValues, SchemaGroupCountResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
+import { ObjectTypeResponse, ExcelValues, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes } from 'src/app/_models/schema/schema';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
-import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { Category, CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { HttpResponse } from '@angular/common/http';
 import { SchemaListModuleList, SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 describe('SchemaService', () => {
   let schemaService: SchemaService;
   let httpTestingController: HttpTestingController;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsRuleService>;
+  let endpointClassicServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl',
+    const epsSpy = jasmine.createSpyObj('EndpointsRuleService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl',
     'deleteConditionBlock', 'deleteSchema', 'schemaExecutionProgressDetailUrl', 'getSchemaGroupCountUrl', 'getAllSchemabymoduleids', 'groupDetailswithAssignedschemaUrl',
     'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
     'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
     'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
-    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate']);
+    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree', 'getModuleInfoByModuleIdUrl']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
     'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
+    const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount', 'downloadExecutionDetailsByNodesUrl']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         SchemaService,
-        { provide: EndpointsClassicService, useValue: epsSpy },
-        { provide: Any2tsService, useValue: any2Spy }
+        { provide: EndpointsRuleService, useValue: epsSpy },
+        { provide: Any2tsService, useValue: any2Spy },
+        { provide: EndpointsClassicService, useValue: epsClassicSpy },
       ]
     }).compileComponents();
     schemaService = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
-    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
+    endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
+    endpointClassicServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
     any2tsSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
     httpTestingController = TestBed.inject(HttpTestingController);
   }));
@@ -43,77 +48,7 @@ describe('SchemaService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getAllSchemaGroup() : be able to retrive schemagroups from the API', async(() => {
-    const testurl = 'dummy url to test';
-    // mocking url
-    endpointServiceSpy.getSchemaGroupsUrl.and.returnValue(testurl);
-    // mock data
-    const mockhttpData = {} as any;
-    const mockTS: SchemaGroupResponse[] = [];
-    mockTS.push(new SchemaGroupResponse());
-    mockTS.push(new SchemaGroupResponse());
-    // mock any2TS
-    any2tsSpy.any2SchemaGroupResponse.withArgs(mockhttpData).and.returnValue(mockTS);
-    // actual call
-    schemaService.getAllSchemaGroup().subscribe(actualData => {
-      expect(actualData).toEqual(mockTS);
-    });
-    // mocking http
-    const req = httpTestingController.expectOne(testurl);
-    expect(req.request.method).toEqual('GET');
-    req.flush(mockhttpData);
-    // verify http
-    httpTestingController.verify();
 
-  }));
-
-  it('getSchemaGroupDetailsBySchemaGrpId(): be able to retrive Schema Group Details By Group Id from the API', async(() => {
-    const url = 'test url for schema details by grp id';
-    const groupId = '826462836823234';
-    // mock url
-    endpointServiceSpy.getSchemaGroupDetailsByGrpIdUrl.withArgs(groupId).and.returnValue(url);
-    // making mock data
-    const mockhttpData = {} as any;
-    const mockTS: SchemaGroupDetailsResponse = new SchemaGroupDetailsResponse();
-    // mock any2ts
-    any2tsSpy.any2SchemaDetails.withArgs(mockhttpData).and.returnValue(mockTS);
-    // actual service call
-    schemaService.getSchemaGroupDetailsBySchemaGrpId(groupId).subscribe(actualData => {
-      expect(actualData).toEqual(mockTS);
-    });
-    // mocking http
-    const httpReq = httpTestingController.expectOne(url);
-    expect(httpReq.request.method).toEqual('GET');
-    httpReq.flush(mockhttpData);
-    // verify http
-    httpTestingController.verify();
-  }));
-
-  it('createSchemaGroup(): schema and update group ', async(() => {
-    // mock data
-    const createSchemaGroupRequest: CreateSchemaGroupRequest = new CreateSchemaGroupRequest();
-    createSchemaGroupRequest.moduleIds = ['1005', '23345'];
-    createSchemaGroupRequest.schemaIds = [827368263875, 72354725378];
-    createSchemaGroupRequest.schemaGroupName = 'Test group create 1';
-    createSchemaGroupRequest.groupId = '23764527357534';
-
-    // mock url
-    const createUrl = 'create-schema-group';
-    endpointServiceSpy.getCreateSchemaGroupUrl.and.returnValue(createUrl);
-
-    // call actual service method
-    schemaService.createSchemaGroup(createSchemaGroupRequest).subscribe(data => {
-      expect(createSchemaGroupRequest.groupId).toEqual(data.groupId);
-    });
-
-    // mock http
-    const httpReq = httpTestingController.expectOne(createUrl);
-    expect(httpReq.request.method).toEqual('POST');
-    httpReq.flush(createSchemaGroupRequest);
-    // verify http
-    httpTestingController.verify();
-
-  }));
 
   it('getAllObjectType() : will return list of object type ', async(() => {
     // mock data
@@ -123,7 +58,7 @@ describe('SchemaService', () => {
     // mock url
     const getObejctTypeUrl = 'get-all-objecttype';
     const httpMockData = {} as any;
-    endpointServiceSpy.getAllObjecttypeUrl.and.returnValue(getObejctTypeUrl);
+    endpointClassicServiceSpy.getAllObjecttypeUrl.and.returnValue(getObejctTypeUrl);
 
     any2tsSpy.any2ObjectType.withArgs(httpMockData).and.returnValue(objectTypeList);
 
@@ -231,27 +166,27 @@ describe('SchemaService', () => {
     expect(schemaService.currentweightageValue).toEqual(100);
   });
 
-  it('should getSchemaGroupCounts()', async(() => {
-    const url = 'test getSchemaGroupCountUrl';
-    const groupId = 826462836823234;
-    // mock url
-    endpointServiceSpy.getSchemaGroupCountUrl.withArgs(groupId).and.returnValue(url);
-    // making mock data
-    const mockhttpData = {} as any;
-    const mockTS: SchemaGroupCountResponse = new SchemaGroupCountResponse();
-    // mock any2ts
-    any2tsSpy.any2SchemaGroupCountResposne.withArgs(mockhttpData).and.returnValue(mockTS);
-    // actual service call
-    schemaService.getSchemaGroupCounts(groupId).subscribe(actualData => {
-      expect(actualData).toEqual(mockTS);
-    });
-    // mocking http
-    const httpReq = httpTestingController.expectOne(url);
-    expect(httpReq.request.method).toEqual('GET');
-    httpReq.flush(mockhttpData);
-    // verify http
-    httpTestingController.verify();
-  }));
+  // it('should getSchemaGroupCounts()', async(() => {
+  //   const url = 'test getSchemaGroupCountUrl';
+  //   const groupId = 826462836823234;
+  //   // mock url
+  //   endpointServiceSpy.getSchemaGroupCountUrl.withArgs(groupId).and.returnValue(url);
+  //   // making mock data
+  //   const mockhttpData = {} as any;
+  //   const mockTS: SchemaGroupCountResponse = new SchemaGroupCountResponse();
+  //   // mock any2ts
+  //   any2tsSpy.any2SchemaGroupCountResposne.withArgs(mockhttpData).and.returnValue(mockTS);
+  //   // actual service call
+  //   schemaService.getSchemaGroupCounts(groupId).subscribe(actualData => {
+  //     expect(actualData).toEqual(mockTS);
+  //   });
+  //   // mocking http
+  //   const httpReq = httpTestingController.expectOne(url);
+  //   expect(httpReq.request.method).toEqual('GET');
+  //   httpReq.flush(mockhttpData);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
   it('should getAllSchemabymoduleids()', async(() => {
     const url = 'test getAllSchemabymoduleids url';
@@ -275,33 +210,12 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-  it('should getSchemaGroupDetailsByGroupId()', async(() => {
-    const url = 'test groupDetailswithAssignedschemaUrl';
-    const groupId = '826462836823234'
-    // mock url
-    endpointServiceSpy.groupDetailswithAssignedschemaUrl.and.returnValue(url);
-    // making mock data
-    const mockhttpData = {} as any;
-    const mockTS: SchemaGroupWithAssignSchemas = new SchemaGroupWithAssignSchemas();
-    // mock any2ts
-    any2tsSpy.any2SchemaGroupWithAssignSchemasResponse.withArgs(mockhttpData).and.returnValue(mockTS);
-    // actual service call
-    schemaService.getSchemaGroupDetailsByGroupId(groupId).subscribe(actualData => {
-      expect(actualData).toEqual(mockTS);
-    });
-    // mocking http
-    const httpReq = httpTestingController.expectOne(url);
-    expect(httpReq.request.method).toEqual('GET');
-    httpReq.flush(mockhttpData);
-    // verify http
-    httpTestingController.verify();
-  }));
 
   it('should scheduleSchemaCount()', async(() => {
     const url = 'test scheduleSchemaCount url';
     const schemaId = '826462836823234'
     // mock url
-    endpointServiceSpy.scheduleSchemaCount.and.returnValue(url);
+    endpointClassicServiceSpy.scheduleSchemaCount.and.returnValue(url);
     // making mock data
     const mockTS = 1;
 
@@ -317,25 +231,6 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-  it('should deleteSchemaGroup()', async(() => {
-    const url = 'test deleteSchemaGroupUrl';
-    const groupId = '826462836823234'
-    // mock url
-    endpointServiceSpy.deleteSchemaGroupUrl.and.returnValue(url);
-    // making mock data
-    const mockResponse = true;
-
-    // actual service call
-    schemaService.deleteSchemaGroup(groupId).subscribe(actualData => {
-      expect(actualData).toEqual(mockResponse);
-    });
-    // mocking http
-    const httpReq = httpTestingController.expectOne(url);
-    expect(httpReq.request.method).toEqual('DELETE');
-    httpReq.event(new HttpResponse<boolean>({body: true}));
-    // verify http
-    httpTestingController.verify();
-  }));
 
   it('should uploadUpdateFileData()', async(() => {
     const url = 'test uploadFileDataUrl';
@@ -790,6 +685,66 @@ describe('SchemaService', () => {
     expect(httpReq.request.method).toEqual('POST');
     httpReq.flush(mockResponse);
     // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getSchemaExecutionTree(), should call http get to get execution tree details', async(() => {
+    const schemaId = '1452462152';
+    const moduleId = '1597845';
+    const variantId = '123344';
+    const plantCode = '123445';
+    const userId = '123';
+    const requestStatus = 'error';
+
+    const url = 'test getSchemaExecutionTree';
+    endpointServiceSpy.getSchemaExecutionTree.and.returnValue(url);
+
+    const httpMockData = new SchemaExecutionTree();
+    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus).subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+
+    httpTestingController.verify();
+  }));
+
+  it('getModuleInfoByModuleId(), should call http get to get module info', async(() => {
+    const moduleId = '1597845';
+
+    const url = 'test getModuleInfoByModuleIdUrl';
+    endpointServiceSpy.getModuleInfoByModuleIdUrl.and.returnValue(url);
+
+    const httpMockData = [];
+    schemaService.getModuleInfoByModuleId(moduleId).subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(httpMockData);
+
+    httpTestingController.verify();
+  }));
+
+  it('downloadExecutionDetailsByNodes()', async(() => {
+
+    const url = 'test downloadExecutionDetailsByNodesUrl';
+    endpointClassicServiceSpy.downloadExecutionDetailsByNodesUrl.and.returnValue(url);
+
+    const httpMockData = {
+      message: 'success'
+    };
+    schemaService.downloadExecutionDetailsByNodes('1701', 'error', ['header']).subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+
     httpTestingController.verify();
   }));
 });

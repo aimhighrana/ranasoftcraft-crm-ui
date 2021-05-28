@@ -7,6 +7,9 @@ import { GlobaldialogService } from '@services/globaldialog.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { DuplicateReportComponent } from '../duplicate-report/duplicate-report.component';
+import { MatDialog } from '@angular/material/dialog';
+
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -37,7 +40,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private sharedService: SharedServiceService,
     private router: Router,
     private globalDialogService: GlobaldialogService,
-    private userService: UserService
+    private userService: UserService,
+    private matDialog: MatDialog
   ) { }
 
   ngOnDestroy(): void {
@@ -82,11 +86,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   clearFilters() {
-    this.emitClearBtnEvent =  this.emitClearBtnEvent ? false : true;
+    this.emitClearBtnEvent = true;
   }
 
   showClearBtnEmit(isTrue: boolean) {
     this.showClearFilterBtn = isTrue;
+    this.emitClearBtnEvent = isTrue ? false : true;
   }
 
   delete() {
@@ -106,4 +111,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.sharedService.setTogglePrimaryEmit();
     this.router.navigate(['/home', 'report', 'dashboard-builder', this.reportId.toString()]);
   }
+
+  duplicateReport() {
+    this.matDialog.open(DuplicateReportComponent, {
+      data: {
+        reportName: this.reportName,
+        reportId: this.reportId
+      },
+      disableClose: true,
+      width: '600px',
+      height: '250px'
+    });
+  }
+
+  /**
+   * method to navigate on import log page
+   */
+  importLog() {
+    this.router.navigate([{ outlets: { sb: 'sb/report/import-log/' + this.reportId } }])
+  }
+
 }

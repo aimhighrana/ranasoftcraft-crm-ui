@@ -1,0 +1,57 @@
+div.root {
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
+  overflow: hidden;
+
+  .lib-search {
+    width: 213px;
+  }
+
+  .data-listing {
+    height: 100%;
+    overflow: auto;
+
+    .mat-table {
+      &.resizing {
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: col-resize;
+      }
+
+      .large-cell-header,
+      .large-cell-content {
+        word-break: break-word;
+      }
+
+      .mat-cell {
+        flex: none;
+      }
+
+      .mat-header-cell {
+        flex: none;
+
+        &.resizable {
+          border-right: 1px solid #e4ebf3;
+        }
+      }
+    }
+  }
+
+  .pagination-section {
+    display: flex;
+    align-items: center;
+  }
+
+  .loading-result {
+    height: calc(100% - 36px - 16px * 3);
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.menu-customdropdown {
+  max-height: 50px;
+  overflow-y: auto;
+}

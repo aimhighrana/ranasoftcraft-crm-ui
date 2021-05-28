@@ -44,6 +44,11 @@ describe('SchemaListsComponent', () => {
   it('getSchemaList(),get schema list according to module ID', async(()=> {
     component.moduleId = '1005';
     spyOn(SchemaServiceSpy,'getSchemaInfoByModuleId').withArgs(component.moduleId).and.returnValue(of({} as SchemaListModuleList));
+    component.moduleData = {
+      moduleDesc: '',
+      moduleId: '',
+      schemaLists: []
+    };
     component.getSchemaList();
     expect(SchemaServiceSpy.getSchemaInfoByModuleId).toHaveBeenCalledWith(component.moduleId);
   }));
@@ -65,7 +70,11 @@ describe('SchemaListsComponent', () => {
   });
 
   it('should init component', () => {
-
+    component.moduleData = {
+      moduleDesc: '',
+      moduleId: '',
+      schemaLists: []
+    };
     spyOn(component, 'getSchemaList');
     component.ngOnInit();
 

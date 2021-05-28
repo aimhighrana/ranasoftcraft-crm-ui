@@ -31,9 +31,10 @@
                     </div>
                 </ng-template>
                 <div class="f-spacer"></div>
-                <button mat-button (click)="updateEmit()">
+                <!-- <button mat-button (click)="updateEmit()">
                     <mat-icon>save</mat-icon>
-                </button>
+                </button> -->
+                <lib-button (click)="updateEmit()" icon="save"></lib-button>
             </div>
             <div class="f-row permissions" [formGroup]="permissionFrmGrp">
                 <mat-slide-toggle color="primary" formControlName="isViewable">Can View</mat-slide-toggle>
@@ -75,13 +76,9 @@
                     </div>
                 </ng-template>
                 <div class="f-spacer"></div>
-                <button mat-button [style.display]="isEditDisplay ? 'block' : 'none'" (click)="isEditMode = true">
-                    <mat-icon fontSet="mdo-icons">pencil</mat-icon>
-                </button>
+                <lib-button [style.display]="isEditDisplay ? 'block' : 'none'" (click)="isEditMode = true" type="plain" icon="pencil-alt"></lib-button>
                 <div class="f-col-spacer-half"></div>
-                <button mat-button [style.display]="isEditDisplay ? 'block' : 'none'" (click)="deleteEmit()">
-                    <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                </button>
+                <lib-button [style.display]="isEditDisplay ? 'block' : 'none'" (click)="deleteEmit()" icon="trash-alt"></lib-button>
             </div>
         </div>
     </mat-list-item>

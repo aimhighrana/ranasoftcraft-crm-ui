@@ -27,12 +27,13 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   filterCriteria: Criteria[] = [];
 
-  widgetList: WidgetMapInfo[];
+  widgetList: WidgetMapInfo[] = [];
   permissons: ReportDashboardPermission;
 
   subscriptions: Subscription[] = [];
 
-  @ViewChild('rootContainer') rootContainer: ElementRef;
+  @ViewChild('rootContainer') rootContainer: ElementRef<HTMLElement>;
+
   constructor(
     private reportService: ReportService,
     private userService: UserService
@@ -46,7 +47,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
 
-    if (changes && changes.emitClearBtnEvent && changes.emitClearBtnEvent.currentValue !== changes.emitClearBtnEvent.previousValue && changes.emitClearBtnEvent.currentValue){
+    if (changes && changes.emitClearBtnEvent && changes.emitClearBtnEvent.currentValue){
       this.filterCriteria = [];
       this.emitFilterApplied.emit(false);
     }
@@ -61,11 +62,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   ngAfterViewInit(): void {
-    if(this.rootContainer) {
-      // this.screenWidth = (this.rootContainer.nativeElement as HTMLDivElement).offsetWidth;
-      this.screenWidth = window.innerWidth;
-      this.boxSize = this.screenWidth / this.noOfboxes;
-    }
+    this.resize();
   }
 
   ngOnInit(): void {
@@ -85,14 +82,13 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
       this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
     } else {
       this.emitFilterApplied.emit(false);
-      this.filterCriteria = [];
     }
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if(event) {
-      this.screenWidth = event.target.innerWidth;
+  @HostListener('window:resize')
+  resize() {
+    if(this.rootContainer) {
+      this.screenWidth = this.rootContainer.nativeElement.clientWidth;
       this.boxSize = this.screenWidth / this.noOfboxes;
     }
   }
@@ -102,6 +98,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
       this.reportService.getReportInfo(reportId, user.plantCode).subscribe(res=>{
         this.widgetList = res.widgets;
         this.permissons = res.permissons;
+        this.resize();
       },error=>{
         console.log(`Error ${error}`);
       });

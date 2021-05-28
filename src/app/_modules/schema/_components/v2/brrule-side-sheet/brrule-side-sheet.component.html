@@ -1,15 +1,13 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="close()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Business rule</div>
+                <div i18n="@@business_rule" class="display-heading-large">Business rule</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+                <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
             </div>
         </div>
     </div>
@@ -17,90 +15,79 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
 
-            <mat-card class="mat-elevation-z0 error-stackbar" *ngIf="validationError.status">
-                {{validationError.message}}
-            </mat-card>
+            <lib-banner *ngIf="validationError.status" status="error" [text]="validationError.message"></lib-banner>
 
             <form [formGroup]="form">
-                <div class="f-col mdo-form-field">
-                    <mat-label>Rule type</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName="rule_type">
-                            <ng-container *ngFor="let rule of businessRuleTypes">
-                                <mat-option *ngIf="rule.isImplemented" [value]="rule.ruleType">{{rule.ruleDesc}}
+
+                <div class="f-col mdo-field">
+                    <!-- label -->
+                    <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                            <input matInput [(ngModel)]="searchRuleTypeStr" formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
+                            [matAutocomplete]="ruleTypeAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
+                            <ng-container *ngFor="let rule of businessRuleTypesFiltered">
+                                <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
+                                    {{rule.ruleDesc}}
                                 </mat-option>
                             </ng-container>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-error *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
-                            Please enter rule type</mat-error>
+                        </mat-autocomplete>
+                    </div>
                 </div>
     
                 <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-                    <mat-label>Weightage</mat-label>
+                    <mat-label i18n="@@weightage">Weightage</mat-label>
                 
-                        <div class="f-row slider-row">
-                            <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
-                        [max]="currentweightageValue" color="primary"></mat-slider>
-                            <span class="f-col-spacer-half"></span>
+                    <div class="f-row slider-row">
+                        <lib-range-slider class="lib-slider" thumbLabel="true" formControlName="weightage"  tickInterval="1" minValue="0" [formatLabelFn]="rangeSliderLabelFormat"
+                            [value]="form.controls.weightage.value" [maxValue]="currentweightageValue" color="primary"></lib-range-slider><span class="f-col-spacer-half"></span>
                             <div class="percent-count">{{form.controls.weightage.value}}%</div>
-                          </div>
-
-
-                    <mat-error
+                    </div>
+                    <mat-error i18n="@@weightage_missing_msg"
                         *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
                         Please enter Weightage</mat-error>
                 </div>
     
-                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
-                    <mat-label>Category</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName="categoryId">
-                            <mat-option *ngFor="let category of categoryList" [value]="category.categoryId">
+                <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType">
+                    <!-- label -->
+                    <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                            <input matInput formControlName="categoryId"  i18n-placeholder="@@category" placeholder="Category"
+                            [matAutocomplete]="categoryIDAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)" #categoryIDAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'categoryId', $event)">
+                            <mat-option class="mdo-option" *ngFor="let category of categoryList" [value]="category.categoryId">
                                 {{category.categoryDesc}}
                             </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-error
-                        *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
-                        Please enter Category Id</mat-error>
+                        </mat-autocomplete>
+                    </div>
+                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value))">Please select category</mat-error>
                 </div>
                 
                 <div class="f-col mdo-form-field">
-                    <pros-form-input [control]="formField('rule_name')" [label]="'Rule name (Description)'"
-                        [value]="form.controls.rule_name.value">
-                    </pros-form-input>
-                    <mat-error
-                        *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
-                        Please enter Rule name</mat-error>
+                    <lib-input i18n-label="@@rule_name_desc" label="Rule name (Description)" formControlName="rule_name" [hint]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required ? 'Please enter Rule name' : ''" [hasError]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
+                    </lib-input>
                 </div>
                 <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-                    <pros-form-input  [control]="formField('error_message')"
-                        [value]="form.controls.error_message.value" [label]="'Error message'">
-                    </pros-form-input>
-                    <mat-error
-                        *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
-                        Please enter Error message</mat-error>
+                    <lib-input i18n-label="@@error_message" label="Error message" formControlName="error_message"
+                    [hint]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required ? 'Please enter Error message' : ''"
+                    [hasError]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
+                    </lib-input>
                 </div>
 
                 <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
                     <pros-form-input  [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
-                        [label]="'Enter access token'" [isHelpIcon]="true" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
+                        i18n-label="@@enter_access_token" [label]="'Enter access token'" [isHelpIcon]="true" i18n-toolTipInfo="@@access_token_tooltip" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
                     </pros-form-input>
-                    <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
+                    <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required" i18n="@@access_token_msg">
                         Please enter access token</mat-error>
                 </div>
 
-                <mat-divider></mat-divider>
+                <lib-section></lib-section>
 
                 <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
-                    <mat-radio-group formControlName="transformationRuleType" class="f-row">
-                        <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}
-                        </mat-radio-button>
-                        <span class="col-spacer"></span>
-                        <mat-radio-button [value]="transformationType.LOOKUP" color="primary">{{transformationType.LOOKUP}}
-                        </mat-radio-button>
-                    </mat-radio-group>
+                    <lib-radio-group [options]="transRuleTypeList" class="f-col" color="primary" (valueChange)="updateTransformationRuleType($event)" [value]="selectedTransRuleTypeRadio"></lib-radio-group>
                 </div>
                 <!-- transformation rule -->
                 <pros-transformation-rule
@@ -112,12 +99,12 @@
                 </pros-transformation-rule>
                 <!-- transformation lookup rule -->
                 <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
-                    [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
+                    [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData" [allGridAndHirarchyData]="allGridAndHirarchyData"
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
 
-                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
-                    <mat-label>Fields</mat-label>
+                <div class="f-col mdo-form-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
+                    <mat-label i18n="@@fields">Fields</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-chip-list #chipList>
                             <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
@@ -139,7 +126,7 @@
                                 <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding style="cursor: pointer;"
                                     (click)="clickTreeNode(node)">
                                     <!-- use a disabled button to provide padding for tree leaf -->
-                                    <button mat-icon-button disabled></button>
+                                    <lib-button disabled="true"></lib-button>
                                     {{node.name}}
                                 </mat-tree-node>
                                 <!-- This is the tree node template for expandable nodes -->
@@ -154,30 +141,35 @@
                             </mat-tree>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
                         Please select the fields
                     </mat-error>
                 </div>
-                
-                <div class="f-col mdo-form-field" *ngIf="isRegexType ">
-                    <mat-label>Standard function</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
-                            <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
-                                {{regex.FUNC_NAME}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                <div class="f-col mdo-field" *ngIf="isRegexType">
+                    <!-- label -->
+                    <mat-label class="mdo-field-label" i18n="@@standard_function">Standard function</mat-label>
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                            <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function"
+                            [matAutocomplete]="regexNameAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)" #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
+                            <ng-container *ngFor="let regex of preDefinedRegex">
+                                <mat-option class="mdo-option" [value]="regex.FUNC_TYPE">
+                                    {{regex.FUNC_NAME}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
                     <mat-error
-                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
+                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required" i18n="@@standard_fn_missing">
                         Please select the standard function</mat-error>
                 </div>
+
                 <div class="f-col mdo-form-field" *ngIf="isRegexType">
-                    <pros-form-input [control]="formField('regex')" [value]='form.value.regex'
-                        [value]="form.controls.regex.value" [label]="'Regex value'">
-                    </pros-form-input>
-                    <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
-                        Please enter regex</mat-error>
+                    <lib-input label="Regex value" formControlName="regex"
+                        [hint]="submitted && form.controls.regex.errors && form.controls.regex.errors.required ? 'Please enter regex' : ''"
+                        [hasError]="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
+                    </lib-input>
                 </div>
             </form>
     
@@ -188,7 +180,7 @@
                         <ng-container [formGroupName]="i">
                             <div class="f-row defined-row" [id]="item.value.id">
                                 <!-- rule type -->
-                                <div class="col select-col" *ngIf="i > 0">
+                                <div class="col select-col udr-select-col" *ngIf="i > 0" [class.has-error]="submitted && (!item.value.blockType || item.value.blockType=='COND')">
                                     <mat-select mat-stroked-button formControlName="blockType">
                                         <mat-option value="AND">
                                             AND
@@ -199,71 +191,75 @@
                                     </mat-select>
                                 </div>
                                 <div class="col" *ngIf="i === 0">
-                                    <button mat-flat-button color="accent">When</button>
+                                    <lib-button type="minor">When</lib-button>
                                 </div>
                                 <!-- field name -->
                                 <div class="col">
-                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
+                                    <!-- <mat-select formControlName="conditionFieldId" placeholder="Select field">
                                         <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                                             {{fieldItem.fieldDescri}}
                                         </mat-option>
-                                    </mat-select>
+                                    </mat-select> -->
+                                    <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(item.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="item.controls.conditionFieldId ? [item.controls.conditionFieldId.value] : []" 
+                                    [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i)"></pros-generic-field-control>
                                 </div>
                                 <!-- operators -->
                                 <div class="col">
                                     <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-                                    <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select Operator">
+                                    <mat-select class="udr-form-select" mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select Operator">
                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                                            <mat-option *ngFor="let child of group.childs" [value]="child">
-                                                <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
-                                                {{child | replaceUnderscorePipe}}
-                                                </ng-container>
-                                                <ng-container *ngIf="child === 'EQUAL'">
-                                                {{'EQUALS'}}
-                                                </ng-container>
-                                                <ng-container *ngIf="child === 'FIELD2FIELD'">
-                                                {{'FIELD TO FIELD'}}
-                                                </ng-container>
-                                            </mat-option>
+                                            <ng-container *ngFor="let child of group.childs">
+                                                <mat-option [value]="child">
+                                                    <ng-container *ngIf="child !== 'EQUAL'">
+                                                    {{child | replaceUnderscorePipe}}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="child === 'EQUAL'">
+                                                    {{'EQUALS'}}
+                                                    </ng-container>
+                                                </mat-option>
+                                            </ng-container>
                                         </mat-optgroup>
                                     </mat-select>
                                 </div>
                                 <!-- Comparison value -->
-                                <div class="col" *ngIf="item.value.conditionOperator !== 'RANGE'">
+                                <div class="col" *ngIf="i == 0 && item.value.conditionOperator !== 'RANGE'">
+                                    <div class="f-row" *ngIf="item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
+                                        <lib-input label="‎" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" 
+                                        (valueChange)="setComparisonValue($event,i)"></lib-input>
+                                        <div class="f-col-spacer-half"></div>
+                                    </div>
+                                </div>
+                                <div class="col" *ngIf="i != 0 && item.value.conditionOperator !== 'RANGE' && item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
                                     <div class="f-row">
-                                        <pros-form-input [placeholder]="'Comparison value'"
-                                            [value]="item.value.conditionFieldValue" 
-                                            (valueChange)="setComparisonValue($event,i)">
-                                        </pros-form-input>
+                                        <lib-input label="‎" i18n-placeholder="@@comparison_value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" 
+                                        (valueChange)="setComparisonValue($event,i)"></lib-input>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
                                 <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
                                     <div class="f-row">
-                                        <pros-form-input [placeholder]="'start value'"
+                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value"
                                             [value]="item.value.conditionFieldStartValue"
                                             (valueChange)="setRangeValue($event,'start',i)">
-                                        </pros-form-input>
+                                        </lib-input>
                                         <div class="f-col-spacer-half"></div>
-                                        <pros-form-input [placeholder]="'end value'"
-                                            [value]="item.value.conditionFieldEndValue"
-                                            (valueChange)="setRangeValue($event,'end',i)">
-                                        </pros-form-input>
+                                        <lib-input label="‎" placeholder="end value"
+                                        [value]="item.value.conditionFieldEndValue"
+                                        (valueChange)="setRangeValue($event,'end',i)">
+                                        </lib-input>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
                                 <!-- three dots -->
                                 <div class="col" *ngIf="i !== 0">
-                                    <button mat-button [matMenuTriggerFor]="menu">
-                                        <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-                                    </button>
+                                    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-v"></lib-button>
                                 </div>
                                 <mat-menu #menu="matMenu" class="navigation-menu">
                                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-                                    <button mat-menu-item (click)="addChildBlock(i)">
+                                    <button i18n="@@add_child_rule" mat-menu-item (click)="addChildBlock(i)">
                                         Add child rule
                                     </button>
-                                    <button mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
+                                    <button i18n="@@delete" mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
                                         Delete
                                     </button>
                                 </mat-menu>
@@ -274,7 +270,7 @@
                                     <ng-container [formGroupName]="childIndex">
                                         <ul class="sub-defined">
                                             <div class="f-row defined-row">
-                                                <div class="col select-col">
+                                                <div class="col select-col udr-select-col" [class.has-error]="submitted && chldNode.errors?.required">
                                                     <mat-select formControlName="blockDesc">
                                                         <mat-option *ngFor="let condition of initialConditions"
                                                             [value]="condition" [disabled]="condition === 'When'">
@@ -283,60 +279,54 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
+                                                    <!-- <mat-select formControlName="conditionFieldId" placeholder="Select field">
                                                         <mat-option *ngFor="let fieldItem of fieldsList"
                                                             [value]="fieldItem.fieldId">
                                                             {{fieldItem.fieldDescri}}
                                                         </mat-option>
-                                                    </mat-select>
+                                                    </mat-select> -->
+                                                    <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(chldNode.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
+                                                    [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
+
                                                 <div class="col">
-                                                    <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select operator">
+                                                    <mat-select class="udr-form-select" mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select operator">
                                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                                                            <mat-option *ngFor="let child of group.childs" [value]="child">
-                                                                <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
-                                                                {{child | replaceUnderscorePipe}}
-                                                                </ng-container>
-                                                                <ng-container *ngIf="child === 'EQUAL'">
-                                                                {{'EQUALS'}}
-                                                                </ng-container>
-                                                                <ng-container *ngIf="child === 'FIELD2FIELD'">
-                                                                {{'FIELD TO FIELD'}}
-                                                                </ng-container>
-                                                            </mat-option>
+                                                            <ng-container *ngFor="let child of group.childs">
+                                                                <mat-option [value]="child">
+                                                                    <ng-container *ngIf="child !== 'EQUAL'">
+                                                                    {{child | replaceUnderscorePipe}}
+                                                                    </ng-container>
+                                                                    <ng-container *ngIf="child === 'EQUAL'">
+                                                                    {{'EQUALS'}}
+                                                                    </ng-container>
+                                                                </mat-option>
+                                                            </ng-container>
                                                         </mat-optgroup>
                                                     </mat-select>
                                                 </div>
-                                                <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE'">
-                                                    <pros-form-input [placeholder]="'Comparison value'"
-                                                        [value]="chldNode.value.conditionFieldValue"
-                                                        (valueChange)="setComparisonValueForChild($event,childIndex,i)">
-                                                    </pros-form-input>
+                                                <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE' && chldNode.value.conditionOperator !== 'EMPTY' && chldNode.value.conditionOperator !== 'NOT_EMPTY'">
+                                                    <lib-input label="‎" [placeholder]="chldNode.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="chldNode.value.conditionFieldValue"
+                                                    (valueChange)="setComparisonValueForChild($event,childIndex,i)"></lib-input>
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                     <div class="f-row">
-                                                        <pros-form-input [placeholder]="'start value'"
-                                                            [value]="chldNode.value.conditionFieldStartValue"
-                                                            (valueChange)="setRangeValueForChild($event,'start',childIndex, i)">
-                                                        </pros-form-input>
+                                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
+                                                        (valueChange)="setRangeValueForChild($event,'start',childIndex, i)"></lib-input>
                                                         <div class="f-col-spacer-half"></div>
-                                                        <pros-form-input [placeholder]="'end value'"
-                                                            [value]="chldNode.value.conditionFieldEndValue"
-                                                            (valueChange)="setRangeValueForChild($event,'end',childIndex,i)">
-                                                        </pros-form-input>
+                                                        <lib-input label="‎" i18n-placeholder="@@end_value" placeholder="end value" [value]="chldNode.value.conditionFieldEndValue"
+                                                        (valueChange)="setRangeValueForChild($event,'end',childIndex,i)"></lib-input>
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <button mat-button [matMenuTriggerFor]="nestedMenu">
-                                                        <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-                                                    </button>
+                                                    <lib-button [matMenuTriggerFor]="nestedMenu" type="plain" icon="ellipsis-v"></lib-button>
                                                     <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                                                         <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                                                         <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
                                                             <mat-icon>add</mat-icon>
                                                             <span>Add</span>
                                                         </button> -->
-                                                        <button mat-menu-item (click)="removeChildNode(i,childIndex)">
+                                                        <button mat-menu-item (click)="removeChildNode(i,childIndex)" i18n="@@delete">
                                                             Delete
                                                         </button>
                                                     </mat-menu>
@@ -351,9 +341,7 @@
                     <!-- button to ad primary block -->
                     <div class="f-row defined-row add-col">
                         <div class="col">
-                            <button mat-flat-button color="accent" (click)="addParentBlock()">
-                                <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                            </button>
+                            <lib-button (click)="addParentBlock()" type="plain" icon="plus"></lib-button>
                         </div>
                     </div>
                 </div>

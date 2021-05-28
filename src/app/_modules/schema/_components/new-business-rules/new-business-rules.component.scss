@@ -4,6 +4,12 @@ div.root {
   overflow: hidden;
   margin: 0 -16px;
 
+  .mat-error {
+    font-size: 11.2px;
+    margin-top: 6px;
+    line-height: 12px;
+  }
+
   .breadcrum-toolbar {
     padding: 8px 16px;
 
@@ -47,8 +53,9 @@ div.root {
           justify-content: center;
           flex: 1;
 
-          mat-slider.mat-slider {
+          .lib-slider {
             flex: 1;
+            height: 48px;
           }
         }
       }
@@ -111,6 +118,13 @@ div.root {
               align-items: center;
               display: flex;
               z-index: 1;
+            }
+
+            &.udr-select-col {
+              padding: 8px;
+              margin-left: 10px;
+              border-radius: 3px;
+              box-sizing: border-box;
             }
           }
 

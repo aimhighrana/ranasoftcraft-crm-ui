@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { SchemaExecutionService } from './schema-execution.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 
 
@@ -11,7 +11,7 @@ describe('SchemaExecutionService', () => {
 
   let service: SchemaExecutionService;
   let httpTesintController: HttpTestingController;
-  let endpointService: EndpointsClassicService;
+  let endpointService: EndpointsRuleService;
 
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('SchemaExecutionService', () => {
 
     service = TestBed.inject(SchemaExecutionService);
     httpTesintController = TestBed.inject(HttpTestingController);
-    endpointService = TestBed.inject(EndpointsClassicService);
+    endpointService = TestBed.inject(EndpointsRuleService);
 
   });
 

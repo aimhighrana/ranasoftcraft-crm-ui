@@ -6,6 +6,7 @@ div.root {
 
   .breadcrum-toolbar {
     padding: 8px 16px;
+    align-items: flex-start;
 
     .mdo-constrained-right {
       width: 100%;
@@ -25,6 +26,22 @@ div.root {
     }
   }
 
+  .colunm-list {
+    overflow: hidden;
+    display: block;
+
+    .colunm-box {
+      align-items: center;
+      box-sizing: border-box;
+      padding: 8px;
+
+      mat-form-field {
+        margin-left: auto;
+        width: 100px;
+      }
+    }
+  }
+
   .sidesheetcontent-listing {
     height: calc(100% - 103px);
     overflow: auto;
@@ -37,19 +54,16 @@ div.root {
         top: 0;
         z-index: 2;
         padding: 8px 0 8px 38px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        mat-form-field {
+          margin-right: 8px;
+          width: 100px;
+        }
       }
     }
-  }
-}
-
-.colunm-list {
-  overflow: hidden;
-  display: block;
-
-  .colunm-box {
-    align-items: center;
-    box-sizing: border-box;
-    padding: 8px;
   }
 }
 

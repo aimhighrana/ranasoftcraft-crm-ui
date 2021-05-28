@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SchemalistService {
   constructor(
-    private endpointService: EndpointsClassicService,
+    private endpointService: EndpointsRuleService,
     private http: HttpClient,
     private any2tsService: Any2tsService
   ) { }

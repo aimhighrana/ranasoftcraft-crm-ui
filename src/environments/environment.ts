@@ -15,10 +15,12 @@
 export const environment = {
   production: false,
   analyticsUrl: 'http://localhost:8081',
-  apiurl: 'https://beta.mdoondemand.com',
+  apiurl: 'https://dev-classic.masterdataonline.com',
+  listurl: 'https://dev-classic.masterdataonline.com',
   coreUrl:'http://localhost:8084',
   syncUrl:'http://localhost:8085',
   authUrl:'http://localhost:8082',
+  ruleUrl: 'http://localhost:1002',
   dataPlalyUri:'http://dataplay.connekthub.com/api/v1.0',
 
 };

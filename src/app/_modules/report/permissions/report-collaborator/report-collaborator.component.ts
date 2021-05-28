@@ -193,6 +193,7 @@ export class ReportCollaboratorComponent implements OnInit {
       this.paginateChip('next');
       this.addCollaboratorFrmGrp.controls.addCollaboratorCtrl.reset();
       this.loosefocus.nativeElement.blur();
+      this.getCollaboratorPermission('', 0);
     }
   }
 

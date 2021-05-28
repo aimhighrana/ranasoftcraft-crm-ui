@@ -19,6 +19,7 @@ import { ValidationError } from '@models/schema/schema';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { RuleDependentOn } from '@models/collaborator';
+import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -185,11 +186,32 @@ export class BrruleSideSheetComponent implements OnInit {
    * data source
    */
   dataSource = null;
-
+  /**
+   * Hold search string for business rule type ....
+   */
+  searchRuleTypeStr = '';
   /**
    * has child
    */
   hasChild = null;
+
+  /**
+   * Hold the metadata fields response ....
+   */
+  metataData: MetadataModeleResponse = null;
+
+  /**
+   * transformation rule type list
+   */
+  transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
+
+  /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+  rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
 
   /**
    * transformer = return tree object.
@@ -241,6 +263,19 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * Getter for selected transformation type for radio button
+   */
+  get selectedTransRuleTypeRadio() {
+    if (this.form && this.form.controls) {
+      return this.transRuleTypeList.find(ruleType => this.form.controls.transformationRuleType.value === ruleType.value);
+    }
+    return '';
+  }
+  get businessRuleTypesFiltered() {
+    const searchStr = this.searchRuleTypeStr?.toLowerCase();
+    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+  }
+  /**
    * Angular hook
    */
   ngOnInit(): void {
@@ -269,6 +304,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
         } else {
           this.getFieldsByModuleId();
+          this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
         }
       });
     });
@@ -281,13 +317,13 @@ export class BrruleSideSheetComponent implements OnInit {
     this.udrNodeForm = this.formBuilder.group({
       frmArray: this.formBuilder.array([this.formBuilder.group({
         blockDesc: new FormControl('When'),
-        blockType: new FormControl(BlockType.AND),
+        blockType: new FormControl(BlockType.AND, [Validators.required]),
         conditionFieldEndValue: new FormControl(''),
-        conditionFieldId: new FormControl(''),
+        conditionFieldId: new FormControl('', [Validators.required]),
         conditionFieldStartValue: new FormControl(''),
         conditionFieldValue: new FormControl(''),
-        conditionOperator: new FormControl(''),
-        conditionValueFieldId: new FormControl(''),
+        conditionOperator: new FormControl('', [Validators.required]),
+        conditionValueFieldId: new FormControl('', [Validators.required]),
         id: new FormControl(Math.floor(Math.random() * 1000000000000).toString()),
         objectType: new FormControl(this.moduleId),
         udrid: new FormControl(this.brId),
@@ -334,6 +370,7 @@ export class BrruleSideSheetComponent implements OnInit {
         startWith(''),
         map(keyword => {
           if (keyword) {
+            keyword = keyword.toLowerCase();
             const filterData = [];
             this.allGridAndHirarchyData.forEach(item => {
               if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
@@ -486,6 +523,15 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * function to UPDATE Transformation rule type when lib radio is clicked
+   */
+  updateTransformationRuleType($event) {
+    if (this.form?.controls) {
+      this.form.controls.transformationRuleType.setValue($event.value);
+    }
+  }
+
+  /**
    * Apply conditional form validation based on rule type
    * keep the required field updated based on a selected rule type
    * loop through the required keys and add validators to all required fields
@@ -563,7 +609,7 @@ export class BrruleSideSheetComponent implements OnInit {
       udrTreeData: '',
       weightage: br.brWeightage,
       categoryId: br.categoryId,
-      transformationRuleType: '',
+      transformationRuleType: ''
     };
 
     let patchList = [];
@@ -572,7 +618,7 @@ export class BrruleSideSheetComponent implements OnInit {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      patchList = ['rule_type', 'rule_name', 'weightage', 'error_message'];
+      patchList = ['rule_type', 'categoryId', 'rule_name', 'weightage', 'error_message'];
     }
     if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
       dataToPatch.transformationRuleType = this.getTrRuleType(br.transFormationSchema);
@@ -755,14 +801,14 @@ export class BrruleSideSheetComponent implements OnInit {
     console.log(udr);
 
     return this.formBuilder.group({
-      blockDesc: new FormControl(udr ? udr.blockDesc : 'And'),
-      blockType: new FormControl(udr ? udr.blockType : BlockType.COND),
+      blockDesc: new FormControl(udr ? udr.blockDesc : 'And', [Validators.required]),
+      blockType: new FormControl(udr ? udr.blockType : BlockType.COND, [Validators.required]),
       conditionFieldEndValue: new FormControl(udr ? udr.conditionFieldEndValue : ''),
-      conditionFieldId: new FormControl(udr ? udr.conditionFieldId : ''),
+      conditionFieldId: new FormControl(udr ? udr.conditionFieldId : '', [Validators.required]),
       conditionFieldStartValue: new FormControl(udr ? udr.conditionFieldStartValue : ''),
       conditionFieldValue: new FormControl(udr ? udr.conditionFieldValue : ''),
-      conditionOperator: new FormControl(udr ? udr.conditionOperator : ''),
-      conditionValueFieldId: new FormControl(udr ? udr.conditionValueFieldId : ''),
+      conditionOperator: new FormControl(udr ? udr.conditionOperator : '', [Validators.required]),
+      conditionValueFieldId: new FormControl(udr ? udr.conditionValueFieldId : '', [Validators.required]),
       id: new FormControl(udr ? udr.id : Math.floor(Math.random() * 1000000000000).toString()),
       objectType: new FormControl(this.moduleId),
       udrid: new FormControl(this.brId),
@@ -820,6 +866,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (!this.moduleId) { return };
     this.schemaDetailsService.getMetadataFields(this.moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
+        this.metataData = metadataModeleResponse;
         const keys = Object.keys(metadataModeleResponse.headers);
         keys.forEach((key) => {
           this.fieldsList.push(metadataModeleResponse.headers[key])
@@ -951,6 +998,41 @@ export class BrruleSideSheetComponent implements OnInit {
   close() {
     this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], {queryParamsHandling: 'preserve'});
   }
+  /**
+   * function to set form values from mat auto complete
+   */
+  selectSingle(form: FormGroup, controlName: string, $event) {
+    form.controls[controlName].setValue($event.option.value);
+    if (controlName === 'standard_function') {
+      const code = this.preDefinedRegex.find(x => x.FUNC_TYPE === $event.option.value)?.FUNC_CODE;
+      form.controls.regex.setValue(code);
+    }
+    if (controlName === 'rule_type') {
+      const categoryValidators = this.isDuplicateType ? [] : [Validators.required];
+      this.form.controls.categoryId.setValidators(categoryValidators);
+    }
+  }
+
+  /**
+   * function to display category name in mat auto complete
+   */
+  displayCategoryFn(value?: string) {
+    return value ? this.categoryList.find(category => `${category.categoryId}` === `${value}`)?.categoryDesc : '';
+  }
+
+  /**
+   * function to display rule desc in mat auto complete
+   */
+   displayRuleFn(value?: string) {
+    return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
+  }
+
+  /**
+   * function to display Regex name in mat auto complete
+   */
+   displayRegexFn(value?: string) {
+    return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
+  }
 
   /**
    * function to save the form data
@@ -969,13 +1051,17 @@ export class BrruleSideSheetComponent implements OnInit {
           control.markAsTouched();
       });
     this.submitted = true;
-    if (!this.form.valid) {
-      this.showValidationError('Please fill the required fields.');
-      return;
-    }
 
     let brType: string = this.form.value ? this.form.value.rule_type : '';
     brType = brType ? brType : this.coreSchemaBrInfo.brType;
+
+    if (!this.form.valid) {
+      this.form.markAllAsTouched();
+      this.showValidationError('Please fill the required fields.');
+      if (brType!=='BR_CUSTOM_SCRIPT') {
+        return;
+      }
+    }
 
     if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
       this.selectedTransformationType === this.transformationType.LOOKUP &&
@@ -995,14 +1081,39 @@ export class BrruleSideSheetComponent implements OnInit {
         schemaId: this.schemaId,
         moduleId: this.moduleId,
         brWeightage: this.form.value.weightage,
+        categoryId: this.form.value.categoryId,
         isCopied: false,
         copiedFrom: '',
+        dependantStatus: this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL,
+        order: this.coreSchemaBrInfo.order || 0,
+        status: this.coreSchemaBrInfo.status || '1'
       } as CoreSchemaBrInfo;
 
       const blocks: UDRBlocksModel[] = [];
       const frm = this.udrNodeArray();
       for (let i = 0; i < frm.length; i++) {
-        blocks.push(frm.at(i).value as UDRBlocksModel)
+        const row = frm.at(i) as FormGroup;
+        const value =row.value as UDRBlocksModel;
+        blocks.push(value);
+        if (!value.blockType) {
+          row.controls.blockType.markAsTouched();
+        }
+        if (!value.conditionOperator) {
+          row.controls.conditionOperator?.markAsTouched();
+        }
+        if (!value.conditionFieldId) {
+          row.controls.conditionFieldId?.markAsTouched();
+        }
+        (row.controls.childs as any).controls.forEach((childRow) => {
+          childRow.markAllAsTouched();
+        });
+      }
+      if (!this.form.valid) {
+        return;
+      }
+      if (!(blocks.length && blocks.every(x => x.blockType && x.blockType !== BlockType.COND && x.blockDesc && x.conditionOperator && x.conditionFieldId && x.childs.every(y => y.blockDesc && y.conditionOperator && y.conditionFieldId)))) {
+        this.showValidationError('Please select the condition(s) between the rules.');
+        return;
       }
       const blockHierarchy: UDRHierarchyModel[] = [];
       blocks.forEach(block => {
@@ -1053,6 +1164,11 @@ export class BrruleSideSheetComponent implements OnInit {
         transFormationSchema: this.mapTransformationData(response, brType),
       }
       const brObject = this.createBrObject(finalFormData);
+
+      brObject.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
+      brObject.order = this.coreSchemaBrInfo.order || 0;
+      brObject.status = this.coreSchemaBrInfo.status || '1';
+
       this.schemaService.createBusinessRule(brObject).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.close();
@@ -1074,7 +1190,9 @@ export class BrruleSideSheetComponent implements OnInit {
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
-      request.dependantStatus=this.coreSchemaBrInfo.dependantStatus? this.coreSchemaBrInfo.dependantStatus:RuleDependentOn.ALL;
+      request.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
+      request.order = this.coreSchemaBrInfo.order || 0;
+      request.status = this.coreSchemaBrInfo.status || '1';
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.close();
@@ -1373,7 +1491,10 @@ export class BrruleSideSheetComponent implements OnInit {
       brInfo: this.form.value.rule_name,
       message: this.form.value.error_message,
       schemaId: this.schemaId,
-      categoryId: this.coreSchemaBrInfo.categoryId
+      categoryId: this.coreSchemaBrInfo.categoryId,
+      dependantStatus: this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL,
+      order: this.coreSchemaBrInfo.order || 0,
+      status: this.coreSchemaBrInfo.status || '1'
     } as CoreSchemaBrInfo;
 
     if (!this.duplicateFormRef.valid) {
@@ -1420,5 +1541,20 @@ export class BrruleSideSheetComponent implements OnInit {
     setTimeout(() => {
       this.validationError.status = false;
     }, 3000)
+  }
+
+  /**
+   * Update udr node fieldids .....
+   * @param field selected field ctrl
+   * @param controlIndex parent ctrl index
+   * @param childElementCtrl child ctrl index ...
+   */
+   udrFieldSelectionChange(field: Metadata[] , controlIndex: number, childElementCtrl?: number) {
+    if(childElementCtrl !== undefined) {
+      this.getChildAsControl(controlIndex).at(childElementCtrl).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');
+    } else {
+      this.udrNodeArray().at(controlIndex).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');
+    }
+    console.log(this.udrNodeArray());
   }
 }

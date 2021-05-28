@@ -1,0 +1,31 @@
+.root {
+  user-select: none;
+  height: 100%;
+  width: 1200px;
+  padding: 0 16px;
+  overflow: hidden;
+  align-items: flex-start;
+
+  .mat-list-item.selected {
+    background-color: #f2f5f8;
+  }
+
+  .setting-tabs {
+    width: 220px;
+    height: 100%;
+    padding: 0 12px;
+  }
+
+  .list-item {
+    cursor: pointer;
+  }
+
+  .tabs-result {
+    width: calc(100% - 220px - 24px);
+    align-items: center;
+
+    .tabs-middle {
+      width: 70%;
+    }
+  }
+}

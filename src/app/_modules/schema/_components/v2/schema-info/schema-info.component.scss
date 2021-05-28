@@ -1,24 +1,8 @@
 div.root {
   user-select: none;
-  height: 100%;
   padding: 0 16px;
   overflow: hidden;
-
-  .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    min-height: 40px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
+  height: calc(100% - 10px);
 
   .summary-root {
     padding: 16px 0;
@@ -131,9 +115,10 @@ div.root {
   flex-wrap: wrap;
   flex: 1;
 
-  mat-slider.mat-slider {
+  .lib-slider {
     flex: 1;
     width: 1px;
+    height: 48px;
   }
 }
 
@@ -141,5 +126,32 @@ div.root {
   .summary-root {
     width: 62%;
     margin: 0 auto;
+  }
+}
+
+.rule-border-row {
+  div {
+    &.col-reorder {
+      width: 45px;
+      box-sizing: border-box;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    &.col-action {
+      width: 75px;
+      box-sizing: border-box;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    &.col-enabled {
+      width: 65px;
+      box-sizing: border-box;
+      flex-grow: 0;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+    }
   }
 }

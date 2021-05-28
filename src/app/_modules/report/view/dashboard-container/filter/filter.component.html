@@ -5,9 +5,14 @@
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
-    <button mat-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon">
-      <mat-icon fontSet="mdo-icons">close</mat-icon>
-    </button>
+    <!-- <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button> -->
+    <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
+    <mat-menu #menu="matMenu" class="navigation-menu">
+      <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
+      <mat-menu #tcOptionMenu="matMenu">
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
+      </mat-menu>
+    </mat-menu>
   </div>
 
   <mat-card-content>
@@ -22,7 +27,7 @@
               <mat-chip-list #chipList aria-label="Select">
                 <mat-chip *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
                   (removed)="remove(option)">
-                  {{ option.TEXT }}
+                  {{ option.display }}
                   <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
               </mat-chip-list>
@@ -35,7 +40,7 @@
           <div class="f-col">
             <mat-form-field appearance="outline">
               <input type="text" placeholder="Select" aria-label="Number"
-                value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
+                value="{{ selectedDropVals.length ? selectedDropVals[0].display : ''}}" matInput
                 [formControl]="filterFormControl" [matAutocomplete]="auto" (focus)="onfocus()">
               <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
               <mat-icon>close</mat-icon>
@@ -45,15 +50,15 @@
         </ng-template>
 
           <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" prosAutoCompleteScroll (autoCompleteScroll)="onScroll($event)" prosClickStopPropagation (optionSelected) = "optionClicked($event)">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.TEXT }}" matTooltipPosition="right">
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.display }}" matTooltipPosition="right">
                 <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
                   <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
                     color="primary">
-                    {{ option.TEXT }}
+                    {{ option.display }}
                   </mat-checkbox>
                 </ng-template>
                 <ng-template #singleSelection>
-                  {{ option.TEXT }}
+                  {{ option.display }}
                 </ng-template>
               </mat-option>
           </mat-autocomplete>
@@ -65,10 +70,10 @@
           <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
             <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
               <button mat-stroked-button color="primary" prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+                (click)="optionClicked($event, option)">{{ option.display }}</button>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.display }}</button>
             </ng-template>
           </ng-template>
         </div>
@@ -80,11 +85,11 @@
           <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
             <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
               <button mat-stroked-button color="primary" prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+                (click)="optionClicked($event, option)">{{ option.display }}</button>
             </ng-template>
             <ng-template #unselectedButton>
               <button mat-stroked-button prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+                (click)="optionClicked($event, option)">{{ option.display }}</button>
             </ng-template>
           </ng-template>
         </div>

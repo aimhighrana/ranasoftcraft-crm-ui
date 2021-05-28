@@ -7,7 +7,7 @@
             {{ variantName ? variantName : 'Unknown'  }}
         </div>
         <button mat-button [matMenuTriggerFor]="check">
-            <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+            <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
         </button>
         <mat-menu #check="matMenu" class="navigation-menu">
             <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
@@ -29,14 +29,14 @@
         <div class="col-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> Check data
             </button>
             <button mat-fab color="accent"
                 (click)="openExecutionTrendSideSheet()">
                 <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
             </button>
             <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
-                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
             </button>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="getDownloadAbledataforMroExecution()">Export to CSV</button>
@@ -273,16 +273,16 @@
                                     <div class="f-row action-iconbtns">
                                         <ng-template [ngIf]="!row['__aditionalProp'].isReviewed && (isReviewer || isApprover)">
                                             <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">
-                                                <mat-icon fontSet="mdo-icons">form-file</mat-icon>
+                                                <mat-icon fontSet="mdo-icons">file-alt</mat-icon>
                                             </button>
     
                                             <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && row['__aditionalProp'].hasLatestDescGenerated && !row['__aditionalProp'].isReviewed"
                                             (click)="approveRec(row, rIndex)" id="approveBtn_{{ rIndex }}">
-                                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                                <mat-icon fontSet="mdo-icons">check</mat-icon>
                                             </button>
     
                                             <button mat-fab color="accent" (click)="rejectRec(row, rIndex)" id="rejectBtn_{{ rIndex }}">
-                                                <mat-icon fontSet="mdo-icons">declined</mat-icon>
+                                                <mat-icon fontSet="mdo-icons">ban</mat-icon>
                                             </button>
                                         </ng-template>
                                     </div>

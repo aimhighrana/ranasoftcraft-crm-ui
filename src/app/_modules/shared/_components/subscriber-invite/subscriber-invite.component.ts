@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionType, SchemaDashboardPermission } from '@models/collaborator';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-subscriber-invite',
@@ -24,7 +24,7 @@ export class SubscriberInviteComponent implements OnInit {
    * @param data data from parent component
    * @param globalDialogService global dialog service object
    * @param schemaDetailsService schema details service
-   * @param snackBar mat snackbar for notifications
+   * @param transientService mat snackbar for notifications
    */
   constructor(
     public dialogRef: MatDialogRef<SubscriberInviteComponent>,
@@ -32,7 +32,7 @@ export class SubscriberInviteComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private globalDialogService: GlobaldialogService,
     private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar) { }
+    private transientService: TransientService) { }
 
   /**
    * Angular hook
@@ -61,7 +61,7 @@ export class SubscriberInviteComponent implements OnInit {
   newInvite(): FormGroup {
     return this._formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required]
+      role: ['viewer', Validators.required]
     });
   }
 
@@ -84,7 +84,7 @@ export class SubscriberInviteComponent implements OnInit {
    * @param inviteIndex pass the row index to remove
    */
   removeInvite(inviteIndex: number) {
-    this.globalDialogService.confirm({ label: 'Sure to delete ?' }, (res) => {
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (res) => {
       this.removeInviteAfterConfirm(res, inviteIndex);
     });
   }
@@ -115,7 +115,7 @@ export class SubscriberInviteComponent implements OnInit {
   sendInvitation() {
     this.submitted = true;
     if(!this.invitationForm.valid){
-      this.snackBar.open('Please enter the required fields', 'Dismiss');
+      this.transientService.open('Please enter the required fields', 'Dismiss');
       return;
     }
     const body: SchemaDashboardPermission[] = []

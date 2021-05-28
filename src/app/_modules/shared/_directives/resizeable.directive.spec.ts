@@ -61,10 +61,10 @@ describe('ResizeableDirective', () => {
         expect(directive).toBeTruthy();
     });
 
-    it('should call newWidth()', async () => {
-        directive.newWidth('200');
-        expect(directive.el.nativeElement.style.width).toBe('200px')
-    });
+    // it('should call newWidth()', async () => {
+    //     directive.newWidth('200');
+    //     expect(directive.el.nativeElement.style.width).toBe('200px')
+    // });
 
     it('should call inDragRegion()', async () => {
         const evt = {

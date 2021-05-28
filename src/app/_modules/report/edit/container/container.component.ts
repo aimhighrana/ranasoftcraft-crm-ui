@@ -30,6 +30,8 @@ import { distinctUntilChanged } from 'rxjs/operators';
 })
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  readonly OrderWith = OrderWith;
+
   /** when user click enable/disable widget property */
   showProperty = false;
 
@@ -130,7 +132,34 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** store workflow path for workflow dataset */
   workflowPath: WorkflowPath[];
-  workflowPathOb: Observable<WorkflowPath[]> = of([])
+  workflowPathOb: Observable<WorkflowPath[]> = of([]);
+
+  objectDesc: FormControl = new FormControl('');
+
+  /** system fields for Transactional module dataset */
+  systemFields = [
+    {
+      fieldId:'STATUS',
+      fieldDescri:'Status',
+    },
+    {
+      fieldId:'USERMODIFIED',
+      fieldDescri:'User Modified',
+      picklist: '1',
+      dataType: 'AJAX',
+    },{
+      fieldId:'APPDATE',
+      fieldDescri:'Update Date',
+
+      picklist: '0',
+      dataType: 'DTMS',
+    },{
+      fieldId:'STAGE',
+      fieldDescri:'Creation Date',
+      picklist: '0',
+      dataType: 'DTMS',
+    }
+  ] as MetadataModel[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -186,6 +215,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       aggregrationOp: [''],
       filterType: [''],
       isMultiSelect: [false],
+      orderWith: [OrderWith.DESC],
       groupById: [''],
       objectType: [''],
       imageUrl: [''],
@@ -201,7 +231,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isCustomdataSet: [false],
       pageDefaultSize: [''],
       isFieldDistinct: [false],
-      displayCriteria: [DisplayCriteria.TEXT]
+      displayCriteria: [DisplayCriteria.TEXT],
+      isEnableGlobalFilter: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -213,7 +244,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       legendPosition: [LegendPosition.top],
       xAxisLabel: [''],
       yAxisLabel: [''],
-      orderWith: [OrderWith.DESC],
+      orderWith: [OrderWith.ROW_DESC],
       scaleFrom: [''],
       scaleTo: [''],
       stepSize: [''],
@@ -240,6 +271,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.aggregrationOp = latestVal.aggregrationOp;
         changedWidget.filterType = latestVal.filterType;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
+        changedWidget.orderWith = latestVal.orderWith;
         changedWidget.groupById = latestVal.groupById;
         changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
@@ -253,6 +285,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
         changedWidget.displayCriteria = latestVal.displayCriteria;
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
+        changedWidget.isEnableGlobalFilter = latestVal.isEnableGlobalFilter;
 
         // hold selected field control
         if (typeof latestVal.field !== 'string') {
@@ -505,6 +538,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
           filterType: data.filterType ? data.filterType : '',
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
+          orderWith: data.orderWith ? data.orderWith : OrderWith.DESC,
           groupById: data.groupById ? data.groupById : '',
           isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
           imageUrl: data.imageUrl ? data.imageUrl : '',
@@ -520,7 +554,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
           objectType: data.objectType ? data.objectType: '',
-          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false
+          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
+          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
         });
 
         // set value to properties frm ctrl
@@ -531,7 +566,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.chartPropCtrlGrp.setValue({
             chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
             datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top, xAxisLabel: '', yAxisLabel: '',
-            orderWith: OrderWith.DESC, scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: SeriesWith.day, seriesFormat: '', blankValueAlias: '', timeseriesStartDate: TimeseriesStartDate.D7,
+            orderWith: OrderWith.ROW_DESC, scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: SeriesWith.day, seriesFormat: '', blankValueAlias: '', timeseriesStartDate: TimeseriesStartDate.D7,
             isEnabledBarPerc: false, bucketFilter: null
           });
         }
@@ -557,20 +592,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
+      this.objectDesc.setValue('');
       // make while edit widget ..
-      if (!data.isWorkflowdataSet && !data.isCustomdataSet) {
+      if (!data.isWorkflowdataSet && !data.isCustomdataSet && data.objectType) {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          setTimeout(() => {
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          }, 1000);
+          this.objectDesc.setValue(hasObj);
         }
-      } else if(!data.isWorkflowdataSet && data.isCustomdataSet) {
+      } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          setTimeout(() => {
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          }, 1000);
+          this.objectDesc.setValue(hasObj);
         }
       }
     }
@@ -853,7 +885,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
-    (document.getElementById('dataSets') as HTMLInputElement).value = '';
+    this.objectDesc.setValue('');
   }
 
   /**
@@ -968,7 +1000,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const movedX = event.movementX;
     const movedY = event.movementY;
 
-    console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
+    // console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
     // drop added widget
     const dropableWidget = new Widget();
@@ -1003,13 +1035,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         dropableWidget.chartProperties = {
           chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
           datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top,
-          xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
+          xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.ROW_DESC, scaleFrom: null, scaleTo: null, stepSize: null,
           dataSetSize: null, seriesWith: SeriesWith.day, seriesFormat: null, blankValueAlias: null, timeseriesStartDate: TimeseriesStartDate.D7, isEnabledBarPerc: false,
           bucketFilter: null
         };
       }
       this.isSerieswithDisabled = false;
       this.preapreNewWidgetPosition(dropableWidget);
+      this.showStyle(dropableWidget);
     }
   }
 
@@ -1072,6 +1105,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue(1000);
     } else if(value<1){
       return this.styleCtrlGrp.get('pageDefaultSize').setValue('');
+    }
+  }
+
+  checkEnabledBarPerc(){
+    if(this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
+        this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
     }
   }
 }

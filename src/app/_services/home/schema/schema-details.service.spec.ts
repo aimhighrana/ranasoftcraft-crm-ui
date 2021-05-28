@@ -2,41 +2,46 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaDetailsService } from './schema-details.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
-import { CategoryChartDataSet, CategoryInfo, ClassificationNounMod, MetadataModeleResponse, Noun, OverViewChartDataSet, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaDataTableColumnInfoResponse, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, SendReqForSchemaDataTableColumnInfo } from '@models/schema/schemadetailstable';
+import { CategoryInfo, ClassificationNounMod, Noun, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { HttpResponse } from '@angular/common/http';
 import { Any2tsService } from '@services/any2ts.service';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 describe('SchemaDetailsService', () => {
-  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsRuleService>;
+  let endpointClassicServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   let schemaDetaService: SchemaDetailsService;
   let httpTestingController: HttpTestingController;
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllSelectedFields', 'getCreateUpdateSchemaActionUrl', 'getFindActionsBySchemaUrl',
+    const endpointSpy = jasmine.createSpyObj('EndpointsRuleService', ['getAllSelectedFields', 'getCreateUpdateSchemaActionUrl', 'getFindActionsBySchemaUrl',
     'getDeleteSchemaActionUrl', 'getCrossMappingUrl', 'getCreateUpdateSchemaActionsListUrl', 'getAllSelectedFields', 'getWorkFlowFieldsUrl', 'getUpdateSchemaTableViewUrl',
     'getSchemaTableDetailsUrl', 'getSchemaBrInfoList', 'getCorrectedRecords', 'getSchemaExecutionLogUrl', 'doCorrectionUrl', 'getLastBrErrorRecords',
     'approveCorrectedRecords', 'resetCorrectionRecords', 'getAllUserDetailsUrl', 'createUpdateUserDetailsUrl', 'deleteSchemaCollaboratorDetailsUrl',
     'saveNewSchemaUrl', 'getClassificationDataTableUrl', 'generateCrossEntryUri', 'doClassificationCorrectionUri', 'approveClassificationUri', 'rejectClassificationUri',
     'generateMroClassificationDescriptionUri', 'downloadMroExceutionUri', 'getSchemaDataTableColumnInfoUrl', 'getSchemaDetailsBySchemaId', 'getShowMoreSchemaTableDataUrl',
     'getOverviewChartDataUrl', 'getCategoryInfoUrl', 'getSchemaStatusUrl', 'categoryChartData', 'getMetadataFields', 'getClassificationNounMod',
-    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl']);
+    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds', 'uploadCsvFileDataUrl', 'getUploadProgressUrl']);
 
     const mapperSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaDataTableResponse', 'any2OverviewChartData', 'any2CategoryInfo', 'any2SchemaStatus', 'any2CategoryChartData',
       'any2MetadataResponse']);
+
+    const endpointclassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getWorkFlowFieldsUrl']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         SchemaDetailsService,
-        { provide: EndpointsClassicService, useValue: endpointSpy },
-        { provide: Any2tsService, useValue: mapperSpy}
+        { provide: EndpointsRuleService, useValue: endpointSpy },
+        { provide: Any2tsService, useValue: mapperSpy},
+        { provide: EndpointsClassicService, useValue: endpointclassicSpy}
       ]
     }).compileComponents();
     schemaDetaService = TestBed.inject(SchemaDetailsService);
     httpTestingController = TestBed.inject(HttpTestingController);
-    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
+    endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
+    endpointClassicServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
     any2tsSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
   });
 
@@ -53,8 +58,8 @@ describe('SchemaDetailsService', () => {
     endpointServiceSpy.getAllSelectedFields.and.returnValue(url);
     // mock data
     const mockData = [
-      {fieldId: 'FIELD1', order:0, editable: false},
-      {fieldId: 'FIELD2', order:1, editable: false}
+      {fieldId: 'FIELD1', order:0, editable: false,isEditable: false},
+      {fieldId: 'FIELD2', order:1, editable: false, isEditable:false}
     ];
     // actual service call
     schemaDetaService.getAllSelectedFields(schemaId, variantId).subscribe(actualResponse => {
@@ -220,7 +225,7 @@ describe('SchemaDetailsService', () => {
 
     const url = `getWorkFlowFieldsUrl`;
     // mock url
-    endpointServiceSpy.getWorkFlowFieldsUrl.and.returnValue(url);
+    endpointClassicServiceSpy.getWorkFlowFieldsUrl.and.returnValue(url);
 
     const request = ['1005'];
     const response = {};
@@ -752,110 +757,7 @@ describe('SchemaDetailsService', () => {
     httpTestingController.verify();
   }));
 
-  it('should getSchemaDataTableColumnInfo()', async(() => {
 
-    const url = `getSchemaDataTableColumnInfoUrl`;
-    // mock url
-    endpointServiceSpy.getSchemaDataTableColumnInfoUrl.and.returnValue(url);
-
-    const request = new SendReqForSchemaDataTableColumnInfo();
-    const mockHttpResp = {};
-    const response = new SchemaDataTableColumnInfoResponse();
-
-    any2tsSpy.any2SchemaDataTableResponse.withArgs(mockHttpResp).and.returnValue(response);
-
-    // actual service call
-    schemaDetaService.getSchemaDataTableColumnInfo(request).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('POST');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
-
-  it('should getSchemaDetailsBySchemaId()', async(() => {
-
-    const url = `getSchemaDetailsBySchemaId url`;
-    // mock url
-    endpointServiceSpy.getSchemaDetailsBySchemaId.and.returnValue(url);
-
-    const schemaId = '15488788';
-    const response = new SchemaListDetails();
-
-    // actual service call
-    schemaDetaService.getSchemaDetailsBySchemaId(schemaId).subscribe(actualResponse => {
-      expect(actualResponse).toBeNull();
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('POST');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(response);
-    // verify http
-    httpTestingController.verify();
-  }));
-
-  it('should getSchemaDataTableShowMore()', async(() => {
-
-    const url = `getShowMoreSchemaTableDataUrl`;
-    // mock url
-    endpointServiceSpy.getShowMoreSchemaTableDataUrl.and.returnValue(url);
-
-    const scrollId = '15488788';
-    const response = {};
-
-    // actual service call
-    schemaDetaService.getSchemaDataTableShowMore(scrollId).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('POST');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(response);
-    // verify http
-    httpTestingController.verify();
-  }));
-
-  it('should getOverviewChartDetails()', async(() => {
-
-    const url = `getOverviewChartDataUrl`;
-    // mock url
-    endpointServiceSpy.getOverviewChartDataUrl.and.returnValue(url);
-
-    const mockHttpResp = {};
-    const response = new OverViewChartDataSet();
-
-    any2tsSpy.any2OverviewChartData.withArgs(mockHttpResp).and.returnValue(response);
-
-    // actual service call
-    schemaDetaService.getOverviewChartDetails('schema1', '0', 'run1').subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    let mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-
-    // actual service call
-    schemaDetaService.getOverviewChartDetails('', '0', '').subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-
-    // mock http call
-    mockRequst = httpTestingController.expectOne(`${url}`);
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-
-  }));
 
   it('should getAllCategoryInfo()', async(() => {
 
@@ -881,78 +783,6 @@ describe('SchemaDetailsService', () => {
     httpTestingController.verify();
   }));
 
-  it('should getSchemaStatus()', async(() => {
-
-    const url = `getSchemaStatusUrl`;
-    // mock url
-    endpointServiceSpy.getSchemaStatusUrl.and.returnValue(url);
-
-    const mockHttpResp = {};
-    const response: string[] = [];
-
-    any2tsSpy.any2SchemaStatus.withArgs(mockHttpResp).and.returnValue(response);
-
-    // actual service call
-    schemaDetaService.getSchemaStatus().subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
-
-  it('should getCategoryChartDetails()', async(() => {
-
-    const url = `categoryChartData url`;
-    // mock url
-    endpointServiceSpy.categoryChartData.and.returnValue(url);
-
-    const mockHttpResp = {};
-    const response = new CategoryChartDataSet();
-
-    any2tsSpy.any2CategoryChartData.withArgs(mockHttpResp).and.returnValue(response);
-
-    // actual service call
-    schemaDetaService.getCategoryChartDetails('schema1', '0', 'cat1', '').subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
-
-  it('should getMetadataFields()', async(() => {
-
-    const url = `getMetadataFields url`;
-    // mock url
-    endpointServiceSpy.getMetadataFields.and.returnValue(url);
-
-    const mockHttpResp = {};
-    const response = new MetadataModeleResponse();
-    const objectId = '1005';
-
-    any2tsSpy.any2MetadataResponse.withArgs(mockHttpResp).and.returnValue(response);
-
-    // actual service call
-    schemaDetaService.getMetadataFields(objectId).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
 
   it('should getClassificationNounMod()', async(() => {
 
@@ -1041,6 +871,78 @@ describe('SchemaDetailsService', () => {
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getSelectedFieldsByNodeIds(): get selected fields ', async(() => {
+    const schemaId = '837645763957';
+    const variantId = '0';
+    const url = `getSelectedFieldsByNodeIds url`;
+    // mock url
+    endpointServiceSpy.getSelectedFieldsByNodeIds.and.returnValue(url);
+    // mock data
+    const mockData = [];
+    // actual service call
+    schemaDetaService.getSelectedFieldsByNodeIds(schemaId, variantId, []).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
+      expect(actualResponse.length).toEqual(mockData.length);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&variantId=${variantId}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('uploadCsvFileData(): uploadCsvFileData ', async(() => {
+    const file = new File([], 'test.csv');
+    const schemId = '';
+    const nodeId = '';
+    const nodeType = '';
+    const runId = '';
+    const objNDesc = '';
+
+    const url = `file upload url`;
+    // mock url
+    endpointServiceSpy.uploadCsvFileDataUrl.and.returnValue(url);
+
+    const action: any = [];
+
+    // actual service call
+    schemaDetaService.uploadCsvFileData(file, schemId, nodeId, nodeType, runId, objNDesc).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getUploadProgressPercent(): getUploadProgressPercent ', async(() => {
+    const schemId = '';
+    const runId = '';
+
+    const url = `upload progress url`;
+    // mock url
+    endpointServiceSpy.getUploadProgressUrl.and.returnValue(url);
+
+    const action: any = [];
+
+    // actual service call
+    schemaDetaService.getUploadProgressPercent(schemId, runId).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
     // verify http
     httpTestingController.verify();
   }));
