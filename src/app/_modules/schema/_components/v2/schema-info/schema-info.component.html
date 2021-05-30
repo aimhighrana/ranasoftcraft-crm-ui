@@ -314,9 +314,11 @@
                             <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isReviewer"> Reviewer </lib-button>
                             <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
-                                *ngIf="subscriber.isViewer"> Viewer </lib-button>
-                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isEditer"> Editor </lib-button>
+                            <ng-template [ngIf]="!subscriber.isAdmin && !subscriber.isReviewer && !subscriber.isEditer">
+                                <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
+                                *ngIf="subscriber.isViewer"> Viewer </lib-button>
+                            </ng-template>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
                             <button mat-menu-item *ngFor="let role of roles"

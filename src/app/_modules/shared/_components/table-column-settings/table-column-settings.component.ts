@@ -205,13 +205,14 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
    * While change checkbox state ..
    * @param fld changeable checkbox
    */
-  selectionChange(fld: MetadataModel) {
+  selectionChange(evt, fld: MetadataModel) {
+    console.log(evt);
     const selIndex =  this.beforeSaveState.findIndex(f => f.fieldId === fld.fieldId);
     if(selIndex !==-1) {
-      this.beforeSaveState[selIndex].isSelected = this.beforeSaveState[selIndex].isSelected  ? false : true;
+      this.beforeSaveState[selIndex].isSelected = evt;
       this.beforeSaveState[selIndex].isEditable = !this.beforeSaveState[selIndex].isSelected  ? false : this.beforeSaveState[selIndex].isEditable;
 
-      this.fields[selIndex].isSelected = this.fields[selIndex].isSelected  ? false : true;
+      this.fields[selIndex].isSelected = evt;
       this.fields[selIndex].isEditable = !this.fields[selIndex].isSelected  ? false : this.fields[selIndex].isEditable;
       this.fieldsObs = of(this.fields);
     } else {
