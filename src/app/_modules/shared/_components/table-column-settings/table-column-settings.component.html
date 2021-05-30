@@ -59,7 +59,7 @@
                                 <div class="f-spacer"></div>
 
                                 <div class="col">
-                                    <lib-checkbox (valueChange)="selectionChange(fld)" [checked]="isChecked(fld)">
+                                    <lib-checkbox (valueChange)="selectionChange($event, fld)" [checked]="isChecked(fld)">
                                     </lib-checkbox>
                                 </div>
                                 <span class="f-col-spacer-half"></span>

@@ -342,12 +342,12 @@ describe('TableColumnSettingsComponent', () => {
     component.fields = [{fieldId: 'MATL_TYPE', order: 0, editable: true,isEditable: true}];
     component.beforeSaveState = [{fieldId: 'MATL_TYPE', order: 0, editable: true,isEditable: true}];
 
-    component.selectionChange({fieldId:'MATL_TYPE'} as MetadataModel);
+    component.selectionChange(true , {fieldId:'MATL_TYPE'} as MetadataModel);
 
     expect(component.beforeSaveState[0].isSelected).toEqual(true);
     expect(component.beforeSaveState[0].isEditable).toEqual(true);
 
-    component.selectionChange({fieldId:'MATL_GRP'} as MetadataModel);
+    component.selectionChange(true,{fieldId:'MATL_GRP'} as MetadataModel);
 
     expect(component.beforeSaveState.length).toEqual(2, 'After push the length should be 2');
 
