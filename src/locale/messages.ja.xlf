@@ -2378,6 +2378,50 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="download" datatype="html">
+        <source>Download</source>
+        <target>ダウンロード</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\download-execution-data\download-execution-data.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="end" datatype="html">
+        <source>End</source>
+        <target>終わり</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">213</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="start" datatype="html">
+        <source>Start</source>
+        <target>開始</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">199</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="show_selected" datatype="html">
+        <source>Show selected</source>
+        <target>選択したものを表示</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">124</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule" datatype="html">
+        <source>Rule</source>
+        <target>ルール</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
