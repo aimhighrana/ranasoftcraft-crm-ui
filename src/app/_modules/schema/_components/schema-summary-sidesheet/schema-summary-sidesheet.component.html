@@ -203,7 +203,8 @@
                                 <div class="col"></div>
                                 <div class="col col-x8"><strong i18n="@@subscriber">Subscriber</strong></div>
                                 <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
-                                <div class="col col-x16"><strong i18n="@@data_allocation">Data allocation</strong></div>
+                                <div class="col col-x16"></div>
+                                <div class="col col-x16" *ngIf="false"><strong i18n="@@data_allocation">Data allocation</strong></div>
                                 <div class="col">
                                 </div>
                             </div>
@@ -271,7 +272,8 @@
                                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                                     </mat-menu>
         
-                                    <div class="col col-x16">
+                                    <div class="col col-x16"></div>
+                                    <div class="col col-x16" *ngIf="false">
                                         <mat-chip-list>
                                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
         
