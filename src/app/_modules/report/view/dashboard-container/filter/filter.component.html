@@ -99,7 +99,7 @@
               <!-- <button mat-stroked-button color="primary" prosClickStopPropagation
                 (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button> -->
               <lib-chip-list>
-                <lib-chip class="button" (click)="optionClicked($event, option)">
+                <lib-chip (click)="optionClicked($event, option)">
                   {{ option.TEXT ? option.TEXT : option.CODE }}
                 </lib-chip>
               </lib-chip-list>
@@ -108,7 +108,7 @@
               <!-- <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
                 ? option.TEXT : option.CODE }}</button> -->
               <lib-chip-list>
-                <lib-chip class="button" (click)="optionClicked($event, option)">
+                <lib-chip (click)="optionClicked($event, option)">
                   {{ option.TEXT ? option.TEXT : option.CODE }}
                 </lib-chip>
               </lib-chip-list>
@@ -127,11 +127,17 @@
       <div class="f-row horizontal-row">
         <ng-template ngFor let-quickDate [ngForOf]="dateFilterQuickSelect">
           <ng-template [ngIf]="quickDate.isSelected" [ngIfElse]="nopselect">
-            <button mat-stroked-button color="primary" (click)="selectQuickDate(quickDate.code, true)">{{ quickDate.text
-              }}</button>
+            <!-- <button mat-stroked-button color="primary" (click)="selectQuickDate(quickDate.code, true)">{{ quickDate.text
+              }}</button> -->
+            <lib-chip-list>
+              <lib-chip (click)="selectQuickDate(quickDate.code, true)">{{ quickDate.text}}</lib-chip>
+            </lib-chip-list>
           </ng-template>
           <ng-template #nopselect>
-            <button mat-stroked-button (click)="selectQuickDate(quickDate.code, false)">{{ quickDate.text }}</button>
+            <lib-chip-list>
+              <lib-chip (click)="selectQuickDate(quickDate.code, false)">{{ quickDate.text }}</lib-chip>
+            </lib-chip-list>
+            <!-- <button mat-stroked-button (click)="selectQuickDate(quickDate.code, false)">{{ quickDate.text }}</button> -->
           </ng-template>
         </ng-template>
         <!-- <button mat-flat-button color="primary">Today</button>

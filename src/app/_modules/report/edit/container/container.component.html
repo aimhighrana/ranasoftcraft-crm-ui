@@ -10,7 +10,7 @@
             <lib-button (click)="createUpdateReport()" type="major">Save</lib-button>
         </lib-button-group>
     </div>
-    
+
     <div class="row-spacer"></div>
 
     <div class="f-col report-builder">
@@ -381,8 +381,10 @@
                                             <mat-label i18n="@@sortBy">Sort by</mat-label>
                                             <mat-form-field appearance="outline">
                                                 <mat-select formControlName="orderWith">
-                                                    <mat-option [value]="OrderWith.ASC" i18n="@@ascending"> Ascending </mat-option>
-                                                    <mat-option [value]="OrderWith.DESC" i18n="@@descending"> Descending </mat-option>
+                                                    <mat-option [value]="OrderWith.ASC" i18n="@@ascending"> Ascending
+                                                    </mat-option>
+                                                    <mat-option [value]="OrderWith.DESC" i18n="@@descending"> Descending
+                                                    </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
 
@@ -542,6 +544,11 @@
                                     </ng-template>
                                 </div>
 
+                                <div class="f-col">
+                                    <mat-checkbox color="primary" formControlName="isEnableGlobalFilter">Global Filters
+                                        not applicable</mat-checkbox>
+                                </div>
+                                
                                 <div class="f-col">
                                     <!-- FOR IMAGE WIDGET-->
                                     <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'IMAGE'">

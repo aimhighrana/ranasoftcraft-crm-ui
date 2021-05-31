@@ -20,7 +20,7 @@
         </mat-chip-list> 
     </ng-template>
     <ng-template #singleSelection>
-        <input matInput
+        <input matInput (input)="clear()"
         [formControl]="fieldFrmCtrl"
         [matAutocomplete]="fieldsCtrl"
         [placeholder]="placeholder"
