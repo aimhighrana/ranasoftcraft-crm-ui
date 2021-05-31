@@ -203,7 +203,8 @@
                                 <div class="col"></div>
                                 <div class="col col-x8"><strong i18n="@@subscriber">Subscriber</strong></div>
                                 <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
-                                <div class="col col-x16"><strong i18n="@@data_allocation">Data allocation</strong></div>
+                                <div class="col col-x16"></div>
+                                <div class="col col-x16" *ngIf="false"><strong i18n="@@data_allocation">Data allocation</strong></div>
                                 <div class="col">
                                 </div>
                             </div>
@@ -260,15 +261,19 @@
         
                                     <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
                                         <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isAdmin" i18n="@@admin"> Admin </lib-button>
-                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isReviewer" i18n="@@reviewer"> Reviewer </lib-button>
-                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isViewer" i18n="@@viewer"> Viewer </lib-button>
+                                        <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isReviewer" i18n="@@viewer"> Reviewer </lib-button>
                                         <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before" *ngIf="subscriber.isEditer" i18n="@@editor"> Editor </lib-button>
+                                        <ng-template [ngIf]="!subscriber.isAdmin && !subscriber.isReviewer && !subscriber.isEditer">
+                                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
+                                            *ngIf="subscriber.isViewer"> Viewer </lib-button>
+                                        </ng-template>
                                     </div>
                                     <mat-menu #subscriberRole="matMenu" class="navigation-menu">
                                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                                     </mat-menu>
         
-                                    <div class="col col-x16">
+                                    <div class="col col-x16"></div>
+                                    <div class="col col-x16" *ngIf="false">
                                         <mat-chip-list>
                                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
         

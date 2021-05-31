@@ -239,7 +239,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       if (response) {
         this.close();
         this.sharedService.setScheduleInfo(response);
-        this.mdoToastService.open('Schema Has Been Scheduled..', 'Okay', {
+        this.mdoToastService.open('Schema has been scheduled.', 'Okay', {
           duration: 3000
         })
       }

@@ -854,4 +854,18 @@ describe('NewBusinessRulesComponent', () => {
         component.searchRuleTypeStr = 'test1';
         expect(component.businessRuleTypesFiltered.length).toEqual(0);
     });
+
+    it('preDefinedRegexFiltered should get regex functions Filtered', async () => {
+      component.preDefinedRegex = [{
+        FUNC_NAME: 'test',
+        FUNC_CODE: 'test',
+        FUNC_TYPE: 'test'
+      }];
+      component.searchRegexFunctionStr = '';
+      expect(component.preDefinedRegexFiltered.length).toEqual(1);
+      component.searchRegexFunctionStr = 'test';
+      expect(component.preDefinedRegexFiltered.length).toEqual(1);
+      component.searchRegexFunctionStr = 'test1';
+      expect(component.preDefinedRegexFiltered.length).toEqual(0);
+    });
 });

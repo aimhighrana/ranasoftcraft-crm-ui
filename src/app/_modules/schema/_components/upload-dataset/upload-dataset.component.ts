@@ -1373,9 +1373,15 @@ get selectedRunningSchedule () {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
-      this.transientService.open('Schema created successfully', 'Okay', {
-        duration: 5000
-      });
+      if(runNow) {
+        this.transientService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
+          duration: 5000
+        });
+      } else {
+        this.transientService.open('Schema created successfully', 'Okay', {
+          duration: 5000
+        });
+      }
       this.dialogRef.close();
     }, (err) => {
       this.transientService.open('Schema cannot be created', 'Okay', {

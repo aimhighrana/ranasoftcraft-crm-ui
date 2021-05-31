@@ -326,7 +326,8 @@
                     <div class="col"></div>
                     <div class="col col-x4"><strong i18n="@@subscriber">Subscriber</strong></div>
                     <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
-                    <div class="col col-x8"><strong i18n="@@data_allocation">Data allocation</strong></div>
+                    <div class="col col-x8"></div>
+                    <div class="col col-x8" *ngIf="false"><strong i18n="@@data_allocation">Data allocation</strong></div>
                     <div class="col"></div>
                 </div>
                 <div class="f-row colunm-box rule-border-row">
@@ -372,7 +373,8 @@
                             {{ role.text }}</button>
                     </mat-menu>
 
-                    <div class="col col-x8">
+                    <div class="col col-x8"></div>
+                    <div class="col col-x8" *ngIf="false">
                         <mat-chip-list>
                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"

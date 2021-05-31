@@ -741,7 +741,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
-      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode) };
+      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode)};
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
@@ -841,7 +841,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         }
 
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          row[fldid].fieldData = value;
+          if(this.activeTab === 'review') {
+            row[fldid].oldData = value;
+          } else if (row[fldid])  {
+            row[fldid].fieldData = value;
+          }
+
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
@@ -940,7 +945,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    *
    * @param type type of request is inline or submit all
-   * @param row if request  type is inline then submit single rec ..
+   * @param row if request  type is inline then submit single rec..
    */
   approveRecords(type: string, row?: any) {
     const id: string[] = [];
@@ -961,6 +966,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
       if (res === true) {
+        this.dataSource.setDocValue([]);
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
@@ -998,6 +1004,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       if(res && res.acknowledge) {
         this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
+            this.dataSource.setDocValue([]);
             this.getData();
             this.selection.clear();
         }
@@ -1186,7 +1193,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     // binding dynamic component inputs/outputs
     componentRef.instance.fieldId = fldid;
     componentRef.instance.inputType = this.getFieldInputType(fldid);
-    componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
+    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] ? row[fldid].oldData : '');
+    // componentRef.instance.value =  row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
   }
