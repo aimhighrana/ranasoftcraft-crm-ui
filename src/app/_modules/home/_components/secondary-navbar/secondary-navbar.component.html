@@ -16,7 +16,7 @@
       </ng-template>
       <ng-template #isSchema>
         <lib-button type="plain" iconFontType="light" icon="plus" [matMenuTriggerFor]="moduleMenu"
-          *ngIf="activatedPrimaryNav !== 'list'"></lib-button>
+          *ngIf="activatedPrimaryNav !== 'list' && activatedPrimaryNav !== 'welcome'"></lib-button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
           <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
           <div class="menu-customdropdown search-module-dropdown">

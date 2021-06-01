@@ -204,6 +204,11 @@ export class NewBusinessRulesComponent implements OnInit {
     searchRuleTypeStr = '';
 
     /**
+     * Hold search string for regex functions ....
+     */
+    searchRegexFunctionStr = '';
+
+    /**
      * Class contructor
      * @param snackBar refernce to matSnackbar
      * @param dialogRef refernce to matdialog
@@ -800,6 +805,11 @@ export class NewBusinessRulesComponent implements OnInit {
     get businessRuleTypesFiltered() {
         const searchStr = this.searchRuleTypeStr?.toLowerCase();
         return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+    }
+
+    get preDefinedRegexFiltered() {
+        const searchStr = this.searchRegexFunctionStr?.toLowerCase();
+        return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
     }
 
     /**

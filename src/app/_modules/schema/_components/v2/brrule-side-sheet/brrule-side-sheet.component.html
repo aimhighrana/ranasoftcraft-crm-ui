@@ -150,10 +150,10 @@
                     <mat-label class="mdo-field-label" i18n="@@standard_function">Standard function</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function"
+                            <input matInput [(ngModel)]="searchRegexFunctionStr" [ngModelOptions]="{standalone: true}" i18n-placeholder="@@standard_function" placeholder="Standard function"
                             [matAutocomplete]="regexNameAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)" #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
-                            <ng-container *ngFor="let regex of preDefinedRegex">
+                            <ng-container *ngFor="let regex of preDefinedRegexFiltered">
                                 <mat-option class="mdo-option" [value]="regex.FUNC_TYPE">
                                     {{regex.FUNC_NAME}}
                                 </mat-option>

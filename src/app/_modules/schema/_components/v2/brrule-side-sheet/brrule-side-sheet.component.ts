@@ -191,6 +191,10 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   searchRuleTypeStr = '';
   /**
+   * Hold search string for regex functions ....
+   */
+  searchRegexFunctionStr = '';
+  /**
    * has child
    */
   hasChild = null;
@@ -274,6 +278,10 @@ export class BrruleSideSheetComponent implements OnInit {
   get businessRuleTypesFiltered() {
     const searchStr = this.searchRuleTypeStr?.toLowerCase();
     return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+  }
+  get preDefinedRegexFiltered() {
+    const searchStr = this.searchRegexFunctionStr?.toLowerCase();
+    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
   /**
    * Angular hook
@@ -544,7 +552,7 @@ export class BrruleSideSheetComponent implements OnInit {
     const controlKeys: any[] = Object.keys(this.currentControls);
     let requiredKeys: string[] = [];
     if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      requiredKeys = ['rule_name', 'error_message'];
+      requiredKeys = ['categoryId', 'rule_name', 'error_message'];
     }
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -1108,13 +1116,15 @@ export class BrruleSideSheetComponent implements OnInit {
           childRow.markAllAsTouched();
         });
       }
-      if (!this.form.valid) {
-        return;
-      }
+
       if (!(blocks.length && blocks.every(x => x.blockType && x.blockType !== BlockType.COND && x.blockDesc && x.conditionOperator && x.conditionFieldId && x.childs.every(y => y.blockDesc && y.conditionOperator && y.conditionFieldId)))) {
         this.showValidationError('Please select the condition(s) between the rules.');
         return;
       }
+      if (!this.form.valid) {
+        return;
+      }
+
       const blockHierarchy: UDRHierarchyModel[] = [];
       blocks.forEach(block => {
         const hie: UDRHierarchyModel = new UDRHierarchyModel();
