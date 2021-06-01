@@ -93,15 +93,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       },
       zoom: {
         pan: {
-          enabled: true,
-          mode: 'x',
-          speed: 10,
-          threshold: 10,
-          // onPan() {                                  /** Event handling while panning */
-          // },
-          onPanComplete: () => {
-            this.getVisibleValues(this.chart);
-          }
+          enabled: false
         },
         zoom: {
           enabled: true,
