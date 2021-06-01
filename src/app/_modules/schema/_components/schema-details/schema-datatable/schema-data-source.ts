@@ -113,7 +113,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
                 // score column
                 const score: SchemaTableData = new SchemaTableData();
-                score.fieldData = String(doc._score ? (doc._score * 100) : 0);
+                score.fieldData = String(doc._score ? (doc._score * 100).toFixed(2) : 0);
                 score.fieldId = '_score_weightage';
                 score.fieldDesc = 'Score';
                 rowData._score_weightage = score;
