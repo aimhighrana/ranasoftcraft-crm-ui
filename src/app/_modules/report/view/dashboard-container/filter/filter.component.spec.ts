@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType, DisplayCriteria } from '../../../_models/widget';
+import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType, DisplayCriteria, WidgetHeader } from '../../../_models/widget';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
@@ -62,6 +62,9 @@ describe('FilterComponent', () => {
     widget.height = 10;
     component.widgetInfo = widget;
     component.boxSize = 10;
+    const widgetHeader = new WidgetHeader();
+    widgetHeader.desc = 'Name test'
+    component.widgetHeader = widgetHeader;
     fixture.detectChanges();
   });
 
@@ -377,4 +380,8 @@ describe('FilterComponent', () => {
     expect(component.dateFilterQuickSelect[0].isSelected).toEqual(true);
   }))
 
+  it('showHeadingTooltip() should set tooltipDirective disabled', async(()=> {
+    component.showHeadingTooltip();
+    expect(component.tooltipDirective.disabled).toBeTruthy();
+  }))
 });
