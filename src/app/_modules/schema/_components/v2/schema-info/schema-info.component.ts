@@ -691,12 +691,23 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   makeFilterControl(event: AddFilterOutput, sNo: number) {
-    const exitingFilterCtrl = [];
+    const exitingFilterCtrl: FilterCriteria[] = [];
 
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = event.fldCtrl.fieldId;
+    filterCtrl.fldCtrl = event.fldCtrl;
     filterCtrl.type = 'DROPDOWN';
-    filterCtrl.values = event.selectedValues.map(val => val.CODE);
+    filterCtrl.values = [];
+    filterCtrl.textValues = [];
+    filterCtrl.selectedValues = [];
+
+    event.selectedValues.forEach((value) => {
+      if(value.FIELDNAME === filterCtrl.fieldId) {
+        filterCtrl.values.push(value.CODE);
+        filterCtrl.textValues.push(value.TEXT);
+        filterCtrl.selectedValues.push(value);
+      }
+    })
 
     exitingFilterCtrl.push(filterCtrl);
 
@@ -706,9 +717,23 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           this.updateSubscriberInfo(sNo, exitingFilterCtrl)
           return;
         }
-        subscriber.filterCriteria.forEach((res) => {
-          if (event.fldCtrl.fieldId === res.fieldId) {
-            res.values.push(...filterCtrl.values);
+        const filCtrl = subscriber.filterCriteria.find(fc => fc.fieldId === event.fldCtrl.fieldId);
+          if (filCtrl) {
+
+            filCtrl.values =  filterCtrl.values || [];
+            filCtrl.fldCtrl = filterCtrl.fldCtrl;
+
+            filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
+            filterCtrl.selectedValues.forEach(v => {
+              if(!filCtrl.selectedValues.some(value => value.CODE === v.CODE)) {
+                filCtrl.selectedValues.push(v);
+              }
+            });
+
+            filCtrl.textValues = [];
+            filCtrl.selectedValues.forEach(v => {
+              filCtrl.textValues.push(v.TEXT);
+            });
 
             const updateSubscriber: SchemaDashboardPermission = subscriber;
 
@@ -722,9 +747,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           } else {
             this.updateSubscriberInfo(sNo, exitingFilterCtrl)
           }
-        })
-      }
-    })
+        }
+      })
   }
 
 
@@ -733,11 +757,16 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param ctrl Filter criteria
    */
   prepareTextToShow(ctrl: FilterCriteria): string {
-    const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
-    if (selCtrl && selCtrl.length > 1) {
-      return String(selCtrl.length);
+    if (ctrl.values && ctrl.values.length > 1) {
+      return String(ctrl.values.length);
+    } else {
+      if(ctrl.textValues && ctrl.textValues.length) {
+        return ctrl.textValues[0] || 'Unknown';
+      } else {
+        const selected = ctrl.selectedValues && ctrl.selectedValues.find(s => s.CODE === ctrl.values[0]);
+        return selected ? selected.TEXT : 'Unknown';
+      }
     }
-    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT : selCtrl[0].CODE) : 'Unknown');
   }
 
 
@@ -749,7 +778,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     if (fldC) {
       const dropArray: DropDownValue[] = [];
       fldC.values.forEach(val => {
-        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
+        const dropDetails = fldC.selectedValues && fldC.selectedValues.find(v => v.CODE === val);
+        const drop: DropDownValue = dropDetails || { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
         dropArray.push(drop);
       });
       this.loadDopValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
@@ -823,7 +853,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaId schema id
    * @param exitingFilterCtrl array of filter criteria
    */
-  updateSubscriberInfo(sNo: number, exitingFilterCtrl) {
+  updateSubscriberInfo(sNo: number, exitingFilterCtrl: FilterCriteria[]) {
     /**
      * Filter data according to sNo.
      */
@@ -834,6 +864,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
          */
         data.schemaId = this.schemaId;
         data.sno = data.sno.toString();
+
         /**
          * Delete not required fields for UPDATE api
          */
@@ -866,10 +897,15 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           subscriber.sno = sNo.toString();
           delete subscriber.userMdoModel;
 
-          subscriber.filterCriteria.forEach((res) => {
-            if (res.fieldId === selectedValues[0].FIELDNAME) {
-              res.values = [];
-              res.values = selectedValues.map((value) => value.CODE)
+          subscriber.filterCriteria.forEach((filterCtrl) => {
+            if (filterCtrl.fieldId === selectedValues[0].FIELDNAME) {
+              filterCtrl.values.length = 0;
+              filterCtrl.textValues = [];
+              filterCtrl.selectedValues = selectedValues;
+              selectedValues.forEach((value) => {
+                filterCtrl.values.push(value.CODE);
+                filterCtrl.textValues.push(value.TEXT ? value.TEXT : value.CODE);
+              })
             }
           })
           this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {
@@ -1078,7 +1114,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaDescription: updated schema description.
    * @param event: event of mat slider(for schema threshold).
    */
-  updateSchemaInfo(schemaDescription: string, event?: any) {
+  updateSchemaInfo(schemaDescription: string, event?: any, field = 'description') {
     console.log(event);
     if (this.schemaDetails && schemaDescription !== this.schemaDetails.schemaDescription || event) {
       const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
@@ -1090,7 +1126,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.toasterService.open('Schema description updated successfully.', 'ok', {
+        this.toasterService.open(`Schema ${field} updated successfully.`, 'ok', {
           duration: 2000
         })
         this.getSchemaDetails(this.schemaId);
@@ -1114,7 +1150,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       this.schemaThresholdChanged
         .pipe(debounceTime(1000), distinctUntilChanged())
         .subscribe(threshold => {
-          this.updateSchemaInfo(this.schemaDetails.schemaDescription, {value: threshold});
+          this.updateSchemaInfo(this.schemaDetails.schemaDescription, {value: threshold}, 'threshold');
         });
     }
     this.schemaThresholdChanged.next($event);

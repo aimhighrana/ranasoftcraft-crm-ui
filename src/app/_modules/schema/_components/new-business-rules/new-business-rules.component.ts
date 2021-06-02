@@ -199,6 +199,16 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     /**
+     * Hold search string for business rule type ....
+     */
+    searchRuleTypeStr = '';
+
+    /**
+     * Hold search string for regex functions ....
+     */
+    searchRegexFunctionStr = '';
+
+    /**
      * Class contructor
      * @param snackBar refernce to matSnackbar
      * @param dialogRef refernce to matdialog
@@ -534,7 +544,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            requiredKeys = ['rule_type', 'rule_name', 'error_message'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -757,6 +767,13 @@ export class NewBusinessRulesComponent implements OnInit {
                 children: block.children
             })
         });
+        if (this.currentSelectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+            if (!(blocks.length && blocks.every(x => x.blockType && x.blockDesc && x.conditionOperator && x.conditionFieldId
+                && x.children.every(y => y.blockTypeText && y.operator && y.fieldId)))) {
+                this.showValidationError('Please select the condition(s) between the rules.');
+                return;
+            }
+        }
         const finalObject = {
             blocks: this.finalResponseBlocks,
             udrHierarchies: this.allhierarchies
@@ -783,6 +800,16 @@ export class NewBusinessRulesComponent implements OnInit {
 
     get isTransformationRule() {
         return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION;
+    }
+
+    get businessRuleTypesFiltered() {
+        const searchStr = this.searchRuleTypeStr?.toLowerCase();
+        return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+    }
+
+    get preDefinedRegexFiltered() {
+        const searchStr = this.searchRegexFunctionStr?.toLowerCase();
+        return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
     }
 
     /**

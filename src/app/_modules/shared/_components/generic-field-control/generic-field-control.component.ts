@@ -298,4 +298,7 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
     }
   }
 
+  clear() {
+   this.selectionChange.emit([]);
+  }
 }

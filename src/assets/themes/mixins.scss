@@ -1051,6 +1051,11 @@
     }
   }
 
+  .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
+  .udr-select-col.has-error {
+    border: 1px solid  $color-status-error;
+  }
+
   //MDO-Table
   .mat-table {
     .mat-row,
@@ -1978,6 +1983,17 @@
     }
   }
 
+  .mdo-field.has-error,
+  .mdo-form-field.has-error {
+    .mdo-field-label {
+      color: $color-status-error;
+    }
+
+    .mdo-field-input {
+      border: 1px solid $color-status-error;
+    }
+  }
+
   pros-import-log {
     table.mat-table.table-vertical tbody tr {
       td.mat-cell {
@@ -2056,6 +2072,17 @@
 
     .mat-sort-header-container.mat-focus-indicator {
       justify-content: flex-end;
+    }
+  }
+
+  .mat-select.udr-form-select {
+    padding: 7px;
+    box-sizing: border-box;
+    border-radius: 5px;
+
+    &.ng-touched.ng-invalid {
+      border: 1px solid $color-status-error;
+      color: $color-status-error;
     }
   }
 }

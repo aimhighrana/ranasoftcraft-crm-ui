@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z0 widget" *ngIf="dataSet && chartType">
+<mat-card class="mat-elevation-z0 widget">
   <div class="f-row breadcrum-toolbar">
     <div class="display-heading-large">
       {{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
@@ -16,7 +16,7 @@
     </mat-menu>
   </div>
   <div class="row-spacer"></div>
-  <mat-card-content>
+  <mat-card-content *ngIf="chartType">
     <ng-template [ngIf]="showFilterOption">
       <div class="f-row datafilter">
 

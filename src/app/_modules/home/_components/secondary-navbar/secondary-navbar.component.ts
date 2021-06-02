@@ -622,7 +622,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   checkNewSchemaCount(moduleId: string) {
     const findModule:SchemaListModuleList = this.moduleList.filter((module) => module.moduleId === moduleId)[0];
     let newSchemaArr = [];
-    if(findModule.schemaLists) {
+    if(findModule && findModule.schemaLists) {
       newSchemaArr = findModule.schemaLists.filter((schema) => {
         schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
         return schema.schemaDescription.toLocaleLowerCase().startsWith('new schema');

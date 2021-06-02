@@ -277,6 +277,17 @@ describe('SecondaryNavbarComponent', () => {
     filteredSchemas = component.searchForSchema(module, searchString);
 
     expect(filteredSchemas.length).toEqual(0);
+    module.schemaLists = [
+      {
+        schemaId: '1005',
+        schemaDescription: ''
+      }
+    ] as SchemaListModuleList['schemaLists'];
+
+    searchString = 'untitled';
+    filteredSchemas = component.searchForSchema(module, searchString);
+
+    expect(filteredSchemas.length).toEqual(1);
   })
 
   it('checkNewSchemaCount(), shoule check existing count of new schema', async () => {

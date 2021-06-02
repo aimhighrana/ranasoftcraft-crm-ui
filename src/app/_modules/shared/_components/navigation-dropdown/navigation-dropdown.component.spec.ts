@@ -52,8 +52,10 @@ describe('NavigationDropdownComponent', () => {
   }));
 
   it('getObjectTypes(), should return all the modules with their schemas', async(() => {
-    spyOn(schemaServiceSpy,'getDatasetsAlongWithSchemas').and.returnValue(of([[],[]]));
+    spyOn(schemaServiceSpy,'getDatasetsAlongWithSchemas').and.returnValue(of({datasetsHttp:[], schemaHttp:[]}));
     component.getObjectTypes();
+    expect(component.modulesList).toEqual([]);
+    expect(component.schemas).toEqual([]);
     expect(schemaServiceSpy.getDatasetsAlongWithSchemas).toHaveBeenCalled();
   }));
 

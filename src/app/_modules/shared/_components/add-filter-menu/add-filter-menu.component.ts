@@ -338,7 +338,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     else {
       if (this.alreadySelectedValues && this.alreadySelectedValues.length > 0) {
         const sel = this.alreadySelectedValues.filter((selectedValue) => selectedValue.fieldId === fld.fieldId);
-        this.dropValuesCode = sel ? sel[0].values : [];
+        this.dropValuesCode = sel && sel.length ? sel[0].values : [];
       }
     }
   }

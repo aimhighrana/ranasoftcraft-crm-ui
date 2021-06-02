@@ -11,7 +11,6 @@
       </div>
     </div>
   </div>
-
   <div class="f-col sidesheetcontent-listing">
     <div class="f-col mdo-justify">
 
@@ -23,10 +22,10 @@
           <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
           <!-- input container -->
           <div class="mdo-field-input">
-            <input matInput formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type" [matAutocomplete]="ruleTypeAuto" />
+            <input matInput [(ngModel)]="searchRuleTypeStr" formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type" [matAutocomplete]="ruleTypeAuto" />
             <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)"
               #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
-              <ng-container *ngFor="let rule of businessRuleTypes">
+              <ng-container *ngFor="let rule of businessRuleTypesFiltered">
                 <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
                   {{rule.ruleDesc}}
                 </mat-option>
@@ -47,7 +46,7 @@
           <mat-error i18n="@@weightage_missing_msg" *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
             Please enter weightage</mat-error>
         </div>
-        <div class="f-col mdo-field" *ngIf="!isUDR && !isDuplicateType">
+        <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType">
           <!-- label -->
           <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
           <!-- input container -->
@@ -141,10 +140,10 @@
 
         <div class="mdo-field-input" *ngIf="isRegexType">
           <mat-label i18n="@@standard_function">Standard function</mat-label>
-          <input [formControlName]="'standard_function'" matInput i18n-placeholder="@@standard_function" placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
+          <input [formControlName]="'standard_function'" matInput i18n-placeholder="@@standard_function" [(ngModel)]="searchRegexFunctionStr" placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
           <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)"
             #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
-            <ng-container *ngFor="let regex of preDefinedRegex">
+            <ng-container *ngFor="let regex of preDefinedRegexFiltered">
               <mat-option class="mdo-option" [value]="regex.FUNC_TYPE">
                 {{regex.FUNC_NAME}}
               </mat-option>
@@ -179,7 +178,7 @@
             </div>
 
             <!-- field name -->
-            <div class="col">
+            <div class="col udr-select-col" [class.has-error]="submitted && !udrBlock.fieldId">
               <mat-select [(ngModel)]="udrBlock.fieldId" i18n-placeholder="@@select_field" placeholder="Select Field">
                 <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                   {{fieldItem.fieldDescri}}
@@ -188,7 +187,7 @@
             </div>
 
             <!-- operators -->
-            <div class="col">
+            <div class="col udr-select-col" [class.has-error]="submitted && !udrBlock.operator">
               <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
               <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
@@ -251,7 +250,7 @@
               <ul class="sub-defined">
                 <div class="f-row defined-row">
 
-                  <div class="col select-col">
+                  <div class="col select-col udr-select-col" [class.has-error]="submitted && !child.blockTypeText">
                     <mat-select [(ngModel)]="child.blockTypeText">
                       <mat-option *ngFor="let condition of initialConditions" [value]="condition"
                         [disabled]="condition === 'When'">
@@ -260,7 +259,7 @@
                     </mat-select>
                   </div>
 
-                  <div class="col">
+                  <div class="col udr-select-col" [class.has-error]="submitted && !child.fieldId">
                     <mat-select [(ngModel)]="child.fieldId" placeholder="Select Field">
                       <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                         {{fieldItem.fieldDescri}}
@@ -268,8 +267,8 @@
                     </mat-select>
                   </div>
 
-                  <div class="col">
-                    <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
+                  <div class="col udr-select-col" [class.has-error]="submitted && !child.operator">
+                    <mat-select [(ngModel)]="child.operator" mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                         <ng-container *ngFor="let child of group.childs">

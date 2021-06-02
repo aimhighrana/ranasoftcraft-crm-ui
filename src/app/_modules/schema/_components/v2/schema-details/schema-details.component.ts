@@ -470,11 +470,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.nodeId = params.get('node') || 'header';
       this.nodeType = params.get('node-level') || 'HEADER';
       this.updateColumnBasedOnNodeSelection(this.nodeId, this.nodeType);
-      this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      setTimeout(() => {
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
+      }, 300);
   }
 
   /**
-   * Get schema info ..
+   * Get schema info..
    */
   getSchemaDetails() {
    const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
@@ -725,6 +727,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
+      this.dataSource.setDocValue([]);
       this.getData();
     }
 
@@ -734,11 +737,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   /**
-   * Oen choose column side sheet ..
+   * Oen choose column side sheet..
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
-      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode) };
+      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode)};
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
@@ -795,6 +798,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  isFieldEditable(fldid) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    return (field && field.isEditable) ? true : false;
+  }
+
   /**
    * After value change on & also call service for do correction
    * @param fldid fieldid that have blur triggered
@@ -833,7 +841,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         }
 
         const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          row[fldid].fieldData = value;
+          if(this.activeTab === 'review') {
+            row[fldid].oldData = value;
+          } else if (row[fldid])  {
+            row[fldid].fieldData = value;
+          }
+
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
@@ -932,7 +945,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    *
    * @param type type of request is inline or submit all
-   * @param row if request  type is inline then submit single rec ..
+   * @param row if request  type is inline then submit single rec..
    */
   approveRecords(type: string, row?: any) {
     const id: string[] = [];
@@ -953,6 +966,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
       if (res === true) {
+        this.dataSource.setDocValue([]);
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
@@ -990,6 +1004,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       if(res && res.acknowledge) {
         this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
+            this.dataSource.setDocValue([]);
             this.getData();
             this.selection.clear();
         }
@@ -1178,7 +1193,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     // binding dynamic component inputs/outputs
     componentRef.instance.fieldId = fldid;
     componentRef.instance.inputType = this.getFieldInputType(fldid);
-    componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
+    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] ? row[fldid].oldData : '');
+    // componentRef.instance.value =  row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
   }
