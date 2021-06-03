@@ -256,7 +256,8 @@
                     <div class="col"></div>
                     <div class="col col-x8"><strong>Subscriber</strong></div>
                     <div class="col col-x4"><strong>Role</strong></div>
-                    <div class="col col-x16"><strong>Data allocation</strong></div>
+                    <div class="col col-x16"></div>
+                    <div class="col col-x16" *ngIf="false"><strong>Data allocation</strong></div>
                     <div class="col mat-item-end"></div>
                 </div>
 
@@ -325,7 +326,8 @@
                                 (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                         </mat-menu>
 
-                        <div class="col col-x16">
+                        <div class="col col-x16"></div>
+                        <div class="col col-x16" *ngIf="false">
                             <mat-chip-list>
                                 <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
 
@@ -412,7 +414,7 @@
         </lib-tab>
 
         <!-- Tab for the Statistics of the schema -->
-        <lib-tab label="Statistics" i18n-label="@@statistics">
+        <lib-tab *ngIf="false" label="Statistics" i18n-label="@@statistics">
             <pros-statics [moduleId]="moduleId" [schemaId]="schemaId">
             </pros-statics>
         </lib-tab>

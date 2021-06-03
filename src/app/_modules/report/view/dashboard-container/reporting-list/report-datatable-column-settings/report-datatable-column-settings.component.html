@@ -24,7 +24,7 @@
                         <mat-option value="CODE" i18n="@@code">Code</mat-option>
                         <mat-option value="CODE_TEXT" i18n="@@codeAndText">Code and Text</mat-option>
                     </mat-select>
-                </mat-form-field> -->
+                </mat-form-field>
             </div>
             <div cdkDropList [cdkDropListData]="headers" (cdkDropListDropped)="drop($event)">
                 <div *ngFor="let header of headersObs | async; let index = index" id="{{ header.fieldId }}" cdkDragHandle cdkDrag
@@ -34,16 +34,17 @@
                         <div class="col-spacer"></div>
                         <lib-checkbox label="{{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}" (valueChange)="selectionChange(header)" [checked]="isChecked(header)">
                         </lib-checkbox>
-                        <!-- <mat-form-field appearance="outline" *ngIf="header.picklist == '1' || header.picklist == '30' || header.picklist == '37'">
+                        <mat-form-field appearance="outline" *ngIf="header.picklist == '1' || header.picklist == '30' || header.picklist == '37'">
                             <mat-select [(ngModel)]="header.displayCriteria" (ngModelChange)="manageAllDisplayCriteria()">
                                 <mat-option value="TEXT" i18n="@@text">Text</mat-option>
                                 <mat-option value="CODE" i18n="@@code">Code</mat-option>
                                 <mat-option value="CODE_TEXT" i18n="@@codeAndText">Code and Text</mat-option>
                             </mat-select>
-                        </mat-form-field> -->
+                        </mat-form-field>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
-    </div>
-</div>
+     </div>
+  </div>
+
