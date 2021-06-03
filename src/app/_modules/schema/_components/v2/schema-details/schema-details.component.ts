@@ -800,7 +800,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   isFieldEditable(fldid) {
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    return (field && field.isEditable) ? true : false;
+    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
