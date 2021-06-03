@@ -6,7 +6,7 @@ import { RequestForSchemaDetailsWithBr, SchemaBrInfo } from 'src/app/_models/sch
 import { Observable, of, throwError } from 'rxjs';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 
-fdescribe('SchemaDataSource', () => {
+describe('SchemaDataSource', () => {
     let schemaDetailSerSpy: jasmine.SpyObj<SchemaDetailsService>;
     let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
     let schemaDataSourceService: SchemaDataSource;
