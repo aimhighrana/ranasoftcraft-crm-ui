@@ -141,7 +141,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
                         // check for old values
                         if(hdvs[hdfld].oc && hdvs[hdfld].oc.length>0) {
-                            const oldVal = hdvs[hdfld].oc ?  hdvs[hdfld].oc.map(map => map.c).toString() : '';
+                            const oldVal = hdvs[hdfld].oc.map(map => map.c).toString();
                             cell.oldData = oldVal;
                             // cell.isCorrected = cell.oldData === cell.fieldData ? false : true;
                             cell.isCorrected = true;
