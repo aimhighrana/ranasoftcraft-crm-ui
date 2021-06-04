@@ -150,7 +150,7 @@ describe('SchemaDataSource', () => {
             filterCriterias: [],
             sort: {},
             isLoadMore: false,
-            nodeId: 'plant code',
+            nodeId: 'plant_code',
             nodeType: 'HEIRARCHY'
         };
         const res = {
@@ -226,6 +226,86 @@ describe('SchemaDataSource', () => {
                 }
             ]
         };
+        response = schemaDataSourceService.docsTransformation(res2, req);
+        expect(response.length).toEqual(1);
+
+        res2.docs[0].hyvs = {
+            plant_code: {
+                rows: []
+            }
+        };
+        response = schemaDataSourceService.docsTransformation(res2, req);
+        expect(response.length).toEqual(0);
+
+        res2.docs[0].hyvs = {
+            plant_code : {}
+        }
+        response = schemaDataSourceService.docsTransformation(res2, req);
+        expect(response.length).toEqual(0);
+
+        res2.docs[0].hyvs = {
+            plant_code : {
+                rows: [
+                    {
+                        test: {
+                            ls: 1,
+                            vc: [
+                                {
+                                    c: 1
+                                }
+                            ],
+                            oc: [
+                                {
+                                    c: 1
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+        req.requestStatus = 'error';
+        response = schemaDataSourceService.docsTransformation(res2, req);
+        expect(response.length).toEqual(1);
+
+        res2.docs[0].hyvs.plant_code.rows[0].test = {
+            ls: 0,
+            isInError: true,
+            errmsgs: 'test'
+        };
+        response = schemaDataSourceService.docsTransformation(res2, req);
+        expect(response.length).toEqual(1);
+
+        req.requestStatus = '';
+        response = schemaDataSourceService.docsTransformation(res2, req);
+        expect(response.length).toEqual(1);
+
+        req.nodeType = 'GRID';
+        res2.docs[0] = {
+            gvs: {
+                plant_code: {
+                    rows: [
+                        {
+                            test: {
+                                ls: 1,
+                                vc: [
+                                    {
+                                        c: 1
+                                    }
+                                ],
+                                oc: [
+                                    {
+                                        c: 1
+                                    }
+                                ]
+                            }
+                        }
+
+                    ]
+                }
+            }
+        };
+        req.requestStatus = 'error';
         response = schemaDataSourceService.docsTransformation(res2, req);
         expect(response.length).toEqual(1);
     }));
