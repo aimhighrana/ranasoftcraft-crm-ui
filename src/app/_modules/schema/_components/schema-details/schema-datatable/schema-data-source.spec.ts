@@ -8,7 +8,6 @@ import { BlockType } from '@modules/admin/_components/module/business-rules/user
 
 describe('SchemaDataSource', () => {
     let schemaDetailSerSpy: jasmine.SpyObj<SchemaDetailsService>;
-    let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
     let schemaDataSourceService: SchemaDataSource;
     beforeEach(async(() => {
         const schemaSerSpy = jasmine.createSpyObj('SchemaDetailsService', ['getSchemaTableDetailsByBrId', 'getCorrectedRecords', 'getLastBrErrorRecords', 'getSchemaBrInfoList', 'getSchemaTableData']);
@@ -21,7 +20,6 @@ describe('SchemaDataSource', () => {
         }).compileComponents();
         schemaDetailSerSpy = TestBed.inject(SchemaDetailsService) as jasmine.SpyObj<SchemaDetailsService>;
         schemaDetailSerSpy.getSchemaBrInfoList.withArgs('12345').and.returnValue(new Observable<SchemaBrInfo[]>());
-        any2tsServiceSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
     }));
 
     beforeEach(() => {
@@ -67,8 +65,8 @@ describe('SchemaDataSource', () => {
     }));
 
     it('getTableData()', async(() => {
-        let req = new RequestForSchemaDetailsWithBr();
-        let res: any = {
+        const req = new RequestForSchemaDetailsWithBr();
+        const res: any = {
             loadMore: true
         };
         schemaDetailSerSpy.getSchemaTableData.withArgs(req).and.returnValue(of(res as Observable<any>));
