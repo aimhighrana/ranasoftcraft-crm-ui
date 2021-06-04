@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../../../_services/user/userservice.service'
@@ -13,7 +13,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 @Component({
   selector: 'pros-send-email',
   templateUrl: './send-email.component.html',
-  styleUrls: ['./send-email.component.scss']
+  styleUrls: ['./send-email.component.scss'],
 })
 export class SendEmailComponent implements OnInit,OnDestroy {
   /* Email Form group */
@@ -34,6 +34,12 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   /* Separator codes */
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
+  /* Options for Attachment */
+  optionsList = [
+    { label: 'PDF', value: 'PDF' },
+    { label: 'PPT', value: 'PPT' }
+  ]
+
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
@@ -45,6 +51,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.getCollaboratorPermission('', 0);
     this.getSelectedTemplate();
     this.filterUsers();
+    // this.ref.detectChanges();
   }
 
   /* Close Slidesheet */
@@ -54,15 +61,16 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   /* Navigate to select template slidesheet */
   selectTemplate() {
-    this.router.navigate([{ outlets: { outer: 'outer/report/email-template' } }]);
+    this.router.navigate([{ outlets: { sb:`sb/report/send-email`, outer: 'outer/report/email-template' } }]);
   }
 
   /* Set Email Form group fields */
   setEmailFormGroup() {
     this.emailFormGrp = this.formBuilder.group({
-      subject: new FormControl(''),
-      message: new FormControl(''),
+      subject: new FormControl('', [Validators.required]),
+      message: new FormControl('', [Validators.required]),
       to: new FormControl([''], [Validators.email, Validators.required]),
+      attachmentType: new FormControl(['']),
     });
   }
 

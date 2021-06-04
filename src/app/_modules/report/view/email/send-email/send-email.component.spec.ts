@@ -68,7 +68,7 @@ describe('SendEmailComponent', () => {
     spyOn(router, 'navigate');
     component.selectTemplate();
     expect(component.selectTemplate).toBeTruthy();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: 'outer/report/email-template' } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb:`sb/report/send-email`, outer: 'outer/report/email-template' } }]);
   });
 
   it('setEmailFormGroup(), should build the email form' , () => {
