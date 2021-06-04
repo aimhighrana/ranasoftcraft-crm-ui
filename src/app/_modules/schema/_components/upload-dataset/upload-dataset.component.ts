@@ -359,7 +359,7 @@ get selectedRunningSchedule () {
     private transientService: TransientService,
     private userService: UserService,
     public dialogRef: MatDialogRef<UploadDatasetComponent>,
-    private globaldialogService: GlobaldialogService,
+    public globaldialogService: GlobaldialogService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private utilties: Utilities
   ) {
@@ -1918,14 +1918,16 @@ get selectedRunningSchedule () {
     } else {
       idx = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
     }
-    this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=this.getSelectedDependantStatus(event.value)?.key;
+    if (this.selectedBusinessRules[idx]?.dep_rules[index]) {
+      this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=this.getSelectedDependantStatus(event.value)?.key;
+    }
     if(event.value===RuleDependentOn.ALL)
-   { const childIdx=this.selectedBusinessRules[idx].dep_rules[index]
-   console.log(childIdx)
-   childIdx.dep_rules=[];
-   this.selectedBusinessRules.push(childIdx)
-   this.selectedBusinessRules[idx].dep_rules.splice(index,1);
-   }
+    { const childIdx=this.selectedBusinessRules[idx]?.dep_rules[index] || {};
+      console.log(childIdx)
+      childIdx.dep_rules=[];
+      this.selectedBusinessRules.push(childIdx)
+      this.selectedBusinessRules[idx].dep_rules.splice(index,1);
+    }
    }
   getSelectedDependantStatus(value: string) {
     return this.dependantStatusList.find(x => x.key === value || x.value === value) || this.dependantStatusList[0];
