@@ -9,7 +9,7 @@ import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-m
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaService } from '@services/home/schema.service';
-import { of, Subscription } from 'rxjs';
+import { of, Subscription, throwError } from 'rxjs';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -194,6 +194,10 @@ fdescribe('UploadDatasetComponent', () => {
         groups: []
       })
     })
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   it('should create', () => {
@@ -627,16 +631,14 @@ fdescribe('UploadDatasetComponent', () => {
   }));
 
   it('should check getScheduleInfo error', async(() => {
-    spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema').and.throwError('');
-
+    spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema').and.returnValue(throwError({message:'error'}));
     component.getScheduleInfo('test schema');
-
     expect(schemaServiceSpy.getSchedule).toHaveBeenCalledWith('test schema');
-    expect(component.canEditSchedule).toEqual(false);
+    expect(component.canEditSchedule).toBeFalsy();
 
   }));
 
-  it('getWeightage(), should return weightage', async () => {
+  it('getWeightage(), should return weightage', async (() => {
     const br: CoreSchemaBrInfo = {
       sno: 1299484,
       brId: '22',
@@ -670,7 +672,7 @@ fdescribe('UploadDatasetComponent', () => {
       duplicacyMaster: []
     };
     expect(component.getWeightage(br)).toEqual(10);
-  });
+  }));
 
   it('setRunningSchedule(), should set runTime value in request form', async () => {
     const runId = { value: false };
@@ -954,6 +956,7 @@ fdescribe('UploadDatasetComponent', () => {
     spyOn(userService, 'getUserDetails').and.returnValue(of(mockRes))
     spyOn(component, 'getBusinessRulesList');
     spyOn(component, 'getCollaborators');
+    spyOn(schemaServiceSpy, 'getAllBusinessRules');
 
     component.requestForm = new FormGroup({
       dataScope: new FormControl(''),
@@ -962,7 +965,6 @@ fdescribe('UploadDatasetComponent', () => {
       plantCode: new FormControl()
     })
     component.ngOnInit();
-
     expect(userService.getUserDetails).toHaveBeenCalled();
   });
 
@@ -1238,7 +1240,7 @@ fdescribe('UploadDatasetComponent', () => {
 
 
    it('closeDialog() will call dialog service close function', async() => {
-    expect(component.closeDialog()).toBeUndefined();
+    expect(component.closeDialog()).toBeFalsy();
   });
 
   it('getSelectedDependantStatus() will get currently selected dependant status', async() => {
@@ -1375,8 +1377,10 @@ it('fileChange() should validate the file before parsing', async() => {
     writable: true,
     value: undefined
   });
-  component.fileChange(event);
-  expect(component.uploadedFile).toBeFalsy();
+  /*expect(function() {
+    component.fileChange(event);
+  }).toThrowError();
+  expect(component.uploadedFile).toBeFalsy();*/
   Object.defineProperty(file, 'name', {
     writable: true,
     value: 'name.csv'
@@ -1488,7 +1492,7 @@ it('deleteBR() should delete br', async() => {
   component.initHeaderForm([]);
   component.createForm();
   component.selectedBusinessRules = [rule];
-  expect(component.deleteBR({} as any)).toBeUndefined();
+  expect(component.deleteBR(rule as any)).toBeUndefined();
 });
 it('deleteBrChild() should delete br child', async() => {
   expect(component.deleteBrChild({} as any, {} as any)).toBeUndefined();
@@ -1568,13 +1572,31 @@ it('getSchemaBrInfo() should get business rules by schema id', async() => {
   expect(schemaServiceSpy.getBusinessRulesBySchemaId).toHaveBeenCalledWith(selectedData.schemaId);
 });
 it('uploadFileData() should upload file data', async(() => {
-  const file = new File([], 'test.csv');
+  const file = new File([], 'test_file', {
+    type: 'image/jpeg'
+  });
+  const mockRes = {
+    userName: 'AshishK',
+    plantCode: '0'
+  } as Userdetails;
+  spyOn(component, 'getObjectTypes');
+  spyOn(userService, 'getUserDetails').and.returnValue(of(mockRes))
+
+  spyOn(component, 'getBusinessRulesList');
+  spyOn(schemaServiceSpy, 'getAllBusinessRules').and.callFake(() => of([]));
+  spyOn(component, 'getCollaborators');
+
+  spyOn(schemaServiceSpy, 'uploadUpdateFileData')
+  .withArgs(file, '1')
+  .and.returnValue(of(null));
   component.createForm();
   component.initHeaderForm([]);
   fixture.detectChanges();
   component.requestForm.controls.fileSerialNo.setValue('1');
-  spyOn(schemaServiceSpy, 'uploadUpdateFileData').and.returnValue(of(null));
-  expect(component.uploadFileData()).toBeUndefined();
+  component.requestForm.controls.file.setValue(file);
+  component.data = {};
+  component.uploadFileData();
+  expect(schemaServiceSpy.uploadUpdateFileData).toHaveBeenCalledWith(file, '1');
 }));
 it('onClick() should be called when an element on ui is clicked', async() => {
   spyOn(component, 'onClick');
@@ -1654,7 +1676,8 @@ it('createfieldObjectForRequest() should create field object for request', async
     columnIndex: 0
   }];
   await component.initHeaderForm(list);
-  await component.createfieldObjectForRequest(list);
+  let res = await component.createfieldObjectForRequest(list);
+  expect(res).toBeTruthy();
   
   try {
     await component.createfieldObjectForRequest({
@@ -1662,6 +1685,7 @@ it('createfieldObjectForRequest() should create field object for request', async
     } as Array<DataSource>);
   } catch (e) {
     done();
+    return;
   }
   done();
 });
