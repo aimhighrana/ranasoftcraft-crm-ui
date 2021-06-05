@@ -27,7 +27,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Validators } from '@angular/forms';
 
 
-fdescribe('UploadDatasetComponent', () => {
+describe('UploadDatasetComponent', () => {
   let component: UploadDatasetComponent;
   let fixture: ComponentFixture<UploadDatasetComponent>;
   let schemaServiceSpy: SchemaService;
