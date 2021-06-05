@@ -1309,7 +1309,10 @@ fdescribe('UploadDatasetComponent', () => {
 
   it('deleteSubscriber() shoud delete subscriber after confirm box displayed', async() => {
     component.subscribersList = [{}];
-    spyOn(globaldialogService, 'confirm').and.callFake(() => of['yes']);
+    component.initHeaderForm([]);
+    component.createForm();
+    component.requestForm.controls.subcribers.setValue(['1']);
+    spyOn(globaldialogService, 'confirm').and.callFake((a,b) => b('yes'));
     component.deleteSubscriber(0);
     expect(globaldialogService.confirm).toHaveBeenCalled();
   });
@@ -1569,7 +1572,17 @@ it('deleteBR() should delete br', async() => {
   expect(component.deleteBR(rule as any)).toBeUndefined();
 });
 it('deleteBrChild() should delete br child', async() => {
-  expect(component.deleteBrChild({} as any, {} as any)).toBeUndefined();
+  const chldBr: any = {
+    brId: '1',
+    tempId: '1'
+  };
+  const parentBr: any = {
+    dep_rules: [chldBr]
+  };
+  component.existingTempIds = ['1'];
+  component.selectedBusinessRules = [parentBr];
+  spyOn(globaldialogService, 'confirm').and.callFake((a,b) => b('yes'));
+  expect(component.deleteBrChild(chldBr, parentBr)).toBeUndefined();
 });
 
 it('setFormValue() should set form value', async(done) => {
