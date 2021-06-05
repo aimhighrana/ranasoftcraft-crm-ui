@@ -621,12 +621,27 @@ fdescribe('UploadDatasetComponent', () => {
   });
 
   it('mapTransformationData(), should create transformation data', () => {
-    const res = component.mapTransformationData(transformationRule);
+    let res = component.mapTransformationData(transformationRule);
     expect(res).toBeTruthy();
     const transFormationSchema: TransformationModel[] = res;
     expect(transFormationSchema.length).toEqual(1);
     expect(transFormationSchema[0].excludeScript).toEqual('rwrewreew');
     expect(transFormationSchema[0].includeScript).toEqual('grfgsregr');
+    transformationRule.lookupData = [{
+      fieldId: '1',
+      lookupTargetField:'1',
+      fieldLookupConfig: {
+        moduleId: '1'
+      }
+    }];
+    res = component.mapTransformationData(transformationRule);
+    expect(res).toBeTruthy();
+    
+    res = component.mapTransformationData({
+      formData: {}
+    });
+    expect(res).toBeNull();
+    
   });
 
   it('should getScheduleInfo', async(() => {
@@ -1512,6 +1527,12 @@ it('updateMapFields() should setupdate map field', async() => {
   const data: any = {};
   expect(component.updateMapFields(data)).toBeUndefined();
   data.index = 1;
+  component.excelMdoFieldMappedData = [{
+    columnIndex: 1
+  } as DataSource];
+  expect(component.updateMapFields(data)).toBeUndefined();
+  data.fieldId = '';
+  expect(component.updateMapFields(data)).toBeUndefined();
 });
 it('setModuleValueAndTakeStep() should set module value and take step', async() => {
   component.createForm();
@@ -1727,15 +1748,16 @@ it('selectBusinessRule() should select business rule', async() => {
       duplicacyField: [],
       duplicacyMaster: []
   };
-  const brList: Array<CoreSchemaBrInfo> = [];
-  expect(component.selectBusinessRule(brList)).toBeUndefined();
   component.existingTempIds = [];
   const checkIFspy = spyOn(component, 'checkIfExist');
   component.selectBusinessRule(schemaInfo);
   expect(component.checkIfExist).toHaveBeenCalled();
-  component.existingTempIds = ['1'];
+  checkIFspy.and.returnValue(true);
   component.selectBusinessRule(schemaInfo);
   expect(component.checkIfExist).toHaveBeenCalled();
+  const brList: Array<CoreSchemaBrInfo> = [schemaInfo];
+  component.existingTempIds = [];
+  expect(component.selectBusinessRule(brList)).toBeUndefined();
 
 });
 
