@@ -6,6 +6,8 @@ import { ReportService } from '../../../_service/report.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { EmailTemplate } from '../../../_models/email';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('EmailTemplateComponent', () => {
   let component: EmailTemplateComponent;
@@ -16,7 +18,7 @@ describe('EmailTemplateComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ EmailTemplateComponent ],
-      imports:[ RouterTestingModule,HttpClientTestingModule]
+      imports:[ RouterTestingModule,HttpClientTestingModule,AppMaterialModuleForSpec,MdoUiLibraryModule]
     })
     .compileComponents();
     router = TestBed.inject(Router);
