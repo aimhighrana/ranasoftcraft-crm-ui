@@ -3,6 +3,9 @@
 
 module.exports = function (config) {
   config.set({
+    files: [
+      require('path').join(__dirname, 'karma.globals.js')
+    ],
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
