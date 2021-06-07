@@ -1,12 +1,13 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReportCategory } from '@modules/report/_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ImportComponent } from './import.component';
+import { ConfirmationDialogComponent } from 'mdo-ui-library';
 
 describe('ImportComponent', () => {
   let component: ImportComponent;
@@ -15,12 +16,18 @@ describe('ImportComponent', () => {
   // let router: Router;
 
   const mockDialogRef = {
-    close: jasmine.createSpy('close')
+    close: jasmine.createSpy('close'),
+    open: jasmine.createSpy('open'),
+    afterClosed : of({result:'yes'}),
+    addPanelClass: (abc)=>{}
   };
+
+  let dialogSpy: jasmine.Spy;
+  // const dialogRefSpyObj = jasmine.createSpyObj(mockDialogRef);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ImportComponent],
+      declarations: [ImportComponent,ConfirmationDialogComponent],
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule
@@ -41,6 +48,7 @@ describe('ImportComponent', () => {
     fixture = TestBed.createComponent(ImportComponent);
     component = fixture.componentInstance;
     WidgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
+
     // router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -190,4 +198,18 @@ describe('ImportComponent', () => {
     expect(component.isDuplicate).toBeFalsy();
     expect(component.isMissingModule).toBeTruthy();
   }));
+
+  it('addReport(),should add report',async(()=>{
+    const mockImportData = { alreadyExits: false, acknowledge: true, reportId: 'extract_from_file', reportName: 'extract_from_file', importedBy: '${current_userid_who_imported}', importedAt: 16887879908, updatedAt: 16887879908, fileSno: 872234723674 };
+    component.importData = mockImportData;
+    spyOn(mockDialogRef, 'addPanelClass').withArgs('display-dialog');
+    dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').withArgs(ConfirmationDialogComponent, { width: '600px',
+    data:   {
+      label : 'Existing schedule will not be duplicated. Schedule will need to be reconfigued. '
+    } }).and.returnValue({} as MatDialogRef<any, any>);
+    spyOn(WidgetServiceSpy, 'importReport').withArgs(component.importData.fileSno,true,true).and.returnValue(of());
+
+    component.addReport(true,true);
+    expect(dialogSpy).toBeTruthy();
+  }))
 });

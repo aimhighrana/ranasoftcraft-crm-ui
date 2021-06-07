@@ -2,13 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-
+import { WidgetService } from '@services/widgets/widget.service';
 import { ExportComponent } from './export.component';
+import { of, throwError } from 'rxjs';
 
 describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
-  // let WidgetServiceSpy: WidgetService;
+  let WidgetServiceSpy: WidgetService;
   // let router: Router;
 
   const mockDialogRef = {
@@ -37,7 +38,7 @@ describe('ExportComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ExportComponent);
     component = fixture.componentInstance;
-    // WidgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
+    WidgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
     // router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -50,4 +51,33 @@ describe('ExportComponent', () => {
     component.close();
     expect(mockDialogRef.close).toHaveBeenCalled();
   }));
+
+  it('onConfirm(),shouldCOnfirm',async(()=>{
+    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValue(of({errorMsg:'Network error'}));
+    component.data = { reportId:'1234'};
+    component.onConfirm();
+    expect(component.errorMsg).toContain('Unable to complete export:');
+  }))
+
+  it('onConfirm(),should close when no error',async(()=>{
+    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValue(of({errorMsg:''}));
+    component.data = { reportId:'1234'};
+    component.onConfirm();
+    expect(component.errorMsg).toBeUndefined();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  }))
+
+  it('onConfirm(),should close when error thrown',async(()=>{
+    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValues(throwError('error'),throwError({error: {errorMsg :'error'}}),
+    throwError({error: {error :'error thown'}}));
+    component.data = { reportId:'1234'};
+    component.onConfirm();
+    expect(component.errorMsg).toContain('Unable to complete export:');
+
+    component.onConfirm();
+    expect(component.errorMsg).toContain('error');
+
+    component.onConfirm();
+    expect(component.errorMsg).toContain('error thown');
+  }))
 });
