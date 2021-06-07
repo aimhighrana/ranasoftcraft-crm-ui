@@ -18,6 +18,7 @@ describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
   let htmlnative: HTMLElement;
+  let widgetService: WidgetService;
 
   const mockMatDialogOpen = {
     open: jasmine.createSpy('open')
@@ -41,6 +42,7 @@ describe('BarChartComponent', () => {
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
     htmlnative = fixture.nativeElement;
+    widgetService = fixture.debugElement.injector.get(WidgetService);
   });
 
   it('should create', () => {
@@ -414,5 +416,39 @@ describe('BarChartComponent', () => {
     const fieldId = 'REQUESTOR_DATE';
     const res = component.applyDateFilter(startDate, fieldId);
     expect(res.conditionFieldEndValue).toEqual('1588291200000');
+  }));
+
+  it('ngOnInit(), check the prerequired stuff', async(()=>{
+
+    component.widgetInfo = {widgetId: '23156122', widgetType: WidgetType.BAR_CHART} as Widget;
+
+    spyOn(component,'getBarChartMetadata');
+    spyOn(component,'getHeaderMetaData');
+    spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({displayCriteria: 'CODE'}));
+    component.ngOnInit();
+
+    expect(component.getBarChartMetadata).toHaveBeenCalled();
+    expect(component.getHeaderMetaData).toHaveBeenCalled();
+    expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, component.widgetInfo.widgetType);
+  }));
+
+  it('getHeaderMetaData(), get header info for bar widget', async(()=>{
+    spyOn(widgetService,'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of({widgetId:2423432} as WidgetHeader));
+    component.getHeaderMetaData();
+    expect(widgetService.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
+    expect(component.widgetHeader.widgetId).toEqual(2423432);
+
+  }));
+
+  it('getBarChartMetadata(), get metadata for bar chart ', async(()=>{
+    spyOn(widgetService,'getBarChartMetadata').withArgs(component.widgetId).and.returnValue(of({widgetColorPalette:{reportId:'32423423'}} as BarChartWidget));
+    spyOn(component, 'getBarConfigurationData');
+
+    component.getBarChartMetadata();
+
+    expect(widgetService.getBarChartMetadata).toHaveBeenCalledWith(component.widgetId);
+    expect(component.getBarConfigurationData).toHaveBeenCalled();
+    expect(component.widgetColorPalette.reportId).toEqual('32423423');
+
   }));
 });

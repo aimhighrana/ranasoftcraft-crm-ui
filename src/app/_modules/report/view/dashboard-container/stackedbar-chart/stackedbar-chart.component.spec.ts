@@ -169,14 +169,14 @@ describe('StackedbarChartComponent', () => {
     component.widgetInfo.widgetType = WidgetType.STACKED_BAR_CHART;
     component.widgetInfo.widgetId = component.widgetId.toString();
     component.stackBarWidget.next(new StackBarChartWidget());
-    // spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({propId:'626039146695',widgetId:12345,createdBy:'initiator',createdAt:1618442609,displayCriteria:'CODE_TEXT'}));
+    spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({propId:'626039146695',widgetId:12345,createdBy:'initiator',createdAt:1618442609,displayCriteria:'CODE_TEXT'}));
     component.ngOnInit();
     expect(component.stackbarLegend.length).toEqual(0, 'Initial stacked bar legend length should be 0');
     expect(component.stachbarAxis.length).toEqual(0, 'Initial stacked bar axis length should be 0');
     expect(component.barChartLabels.length).toEqual(0, 'Initial stack chart lebels length should 0');
     expect(component.listxAxis2.length).toEqual(0, 'Initial stack chart Axis2 length should 0');
     expect(component.barChartData[0].data.length).toEqual(5, 'Initial stack chart data  length should 5');
-    // expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, WidgetType.STACKED_BAR_CHART);
+    expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, WidgetType.STACKED_BAR_CHART);
   }));
 
   it('should show bar orienation based on orienation value', async(()=> {

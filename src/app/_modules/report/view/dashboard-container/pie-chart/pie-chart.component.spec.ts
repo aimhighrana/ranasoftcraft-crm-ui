@@ -170,12 +170,12 @@ describe('PieChartComponent', () => {
   component.widgetInfo.widgetType = WidgetType.PIE_CHART;
   component.widgetInfo.widgetId = component.widgetId.toString();
   component.pieWidget.next(new PieChartWidget());
-  // spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({propId:'626039146695',widgetId:12345,createdBy:'initiator',createdAt:1618442609,displayCriteria:'CODE_TEXT'}));
+  spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({propId:'626039146695',widgetId:12345,createdBy:'initiator',createdAt:1618442609,displayCriteria:'CODE_TEXT'}));
   component.ngOnInit();
   expect(component.chartLegend.length).toEqual(0, 'Initial pie legend length should be 0');
   expect(component.lablels.length).toEqual(0, 'Initial pie lebels length should 0');
   expect(component.pieChartData[0].data.length).toEqual(6, 'Initial pie data  length should 6');
-  // expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, WidgetType.PIE_CHART);
+  expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, WidgetType.PIE_CHART);
 }));
 
 it('legendClick(), should show paticular stack , after click on stack',async(()=>{
