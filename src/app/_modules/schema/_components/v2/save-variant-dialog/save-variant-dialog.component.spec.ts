@@ -32,7 +32,7 @@ describe('SaveVariantDialogComponent', () => {
         },
         SchemaVariantService
       ],
-      imports:[ MdoUiLibraryModule, 
+      imports:[ MdoUiLibraryModule,
         HttpClientTestingModule, RouterTestingModule, AppMaterialModuleForSpec, SharedModule
       ]
     })

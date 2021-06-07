@@ -1443,7 +1443,7 @@ describe('UploadDatasetComponent', () => {
 
   it(`step() should run the step function`, async () => {
     let formBody: any = {};
-    formBody['name'] = new FormControl('name', [Validators.required]);
+    formBody.name = new FormControl('name', [Validators.required]);
     component.headerForm = new FormGroup(formBody);
     component.createForm();
     fixture.detectChanges();

@@ -27,7 +27,7 @@ describe('SubscriberInviteSidesheetComponent', () => {
         SubscriberInviteSidesheetComponent,
         FormInputComponent
       ],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule,
         MatSnackBarModule,
         ReactiveFormsModule,

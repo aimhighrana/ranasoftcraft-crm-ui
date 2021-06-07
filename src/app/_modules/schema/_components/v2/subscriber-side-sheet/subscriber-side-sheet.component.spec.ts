@@ -23,7 +23,7 @@ describe('SubscriberSideSheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SubscriberSideSheetComponent, SearchInputComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule
       ],
       providers: [{

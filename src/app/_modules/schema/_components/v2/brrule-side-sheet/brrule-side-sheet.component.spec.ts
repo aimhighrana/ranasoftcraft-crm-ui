@@ -27,7 +27,7 @@ describe('BrruleSideSheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BrruleSideSheetComponent, FormInputComponent, SetupDuplicateRuleComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule
       ],
       providers: [SchemaDetailsService,

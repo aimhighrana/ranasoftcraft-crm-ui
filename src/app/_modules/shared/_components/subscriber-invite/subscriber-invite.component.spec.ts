@@ -29,7 +29,7 @@ describe('SubscriberInviteComponent', () => {
         SubscriberInviteComponent,
         FormInputComponent
       ],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule,
         HttpClientModule,
         MatSnackBarModule,

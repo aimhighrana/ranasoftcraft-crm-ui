@@ -53,7 +53,7 @@ describe('SchemaInfoComponent', () => {
         DatePickerFieldComponent,
         StaticsComponent
       ],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,

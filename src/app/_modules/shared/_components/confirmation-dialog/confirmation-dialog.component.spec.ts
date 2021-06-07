@@ -15,7 +15,7 @@ describe('ConfirmationDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ConfirmationDialogComponent ],
-      imports:[ MdoUiLibraryModule, 
+      imports:[ MdoUiLibraryModule,
         AppMaterialModuleForSpec
       ],
       providers: [

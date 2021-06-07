@@ -21,7 +21,7 @@ describe('ProfileComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ProfileComponent ],
-      imports: [ AppMaterialModuleForSpec, 
+      imports: [ AppMaterialModuleForSpec,
         SharedModule,
         MdoUiLibraryModule,
         FormsModule,
