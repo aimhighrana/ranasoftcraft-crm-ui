@@ -23,6 +23,7 @@ const routes: Routes = [
   { path: 'sb/add-business-rules', component: NewBusinessRulesComponent, outlet: 'sb' },
   { path: 'sb/system-tray', component: SystemTrayComponent, outlet: 'sb' },
   { path: 'sb/task', loadChildren: () => import('./_modules/taskinbox/taskinbox.module').then((m) => m.TaskinboxModule), outlet: 'sb' },
+  { path: 'outer/report', loadChildren: () => import('./_modules/report/report.module').then((m) => m.ReportModule), outlet: 'outer' },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent },
 ];
