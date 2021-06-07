@@ -35,7 +35,6 @@ describe('UploadDatasetComponent', () => {
   let schemadetailsService: SchemaDetailsService;
   let globaldialogService: GlobaldialogService;
   let userService: UserService;
-  let dialogRef: MatDialogRef<UploadDatasetComponent>;
   let usersSpy;
   const mockDialogRef = {
     close: jasmine.createSpy('close')
@@ -113,7 +112,6 @@ describe('UploadDatasetComponent', () => {
     schemadetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
     globaldialogService = fixture.debugElement.injector.get(GlobaldialogService);
     userService = fixture.debugElement.injector.get(UserService);
-    dialogRef = fixture.debugElement.injector.get(MatDialogRef);
     usersSpy = spyOn(schemadetailsService, 'getAllUserDetails').and.callFake(() => {
       return of({
         users: [{
