@@ -1,5 +1,5 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
-/* import { SchemaDetailsComponent } from './schema-details.component';
+/* import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { SchemaDetailsComponent } from './schema-details.component';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,7 +22,7 @@ describe('SchemaDetailsComponent', () => {
   let schemaListService: SchemalistService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         RouterTestingModule,
         FormsModule,

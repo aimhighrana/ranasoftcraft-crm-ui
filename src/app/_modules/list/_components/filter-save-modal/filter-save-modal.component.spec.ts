@@ -16,7 +16,7 @@ describe('FilterSaveModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FilterSaveModalComponent ],
-      imports:[ MdoUiLibraryModule, 
+      imports:[ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         SharedModule
       ],

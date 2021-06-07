@@ -22,7 +22,7 @@ describe('DuplicateReportComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DuplicateReportComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         RouterTestingModule
       ],

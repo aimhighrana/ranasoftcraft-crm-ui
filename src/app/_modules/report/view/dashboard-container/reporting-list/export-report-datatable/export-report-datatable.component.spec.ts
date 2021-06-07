@@ -25,7 +25,7 @@ describe('ExportReportDatatableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ExportReportDatatableComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         ReactiveFormsModule,
         FormsModule,

@@ -19,7 +19,7 @@ describe('TimeseriesWidgetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TimeseriesWidgetComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule,
         AppMaterialModuleForSpec,
         SharedModule

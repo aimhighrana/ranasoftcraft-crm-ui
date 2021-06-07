@@ -27,7 +27,7 @@ describe('WidgetColorPaletteComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ WidgetColorPaletteComponent ],
-      imports:[ MdoUiLibraryModule, 
+      imports:[ MdoUiLibraryModule,
         AppMaterialModuleForSpec, HttpClientTestingModule, SharedModule
       ],providers: [
         {

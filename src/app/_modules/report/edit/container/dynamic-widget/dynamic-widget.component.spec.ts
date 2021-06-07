@@ -14,7 +14,7 @@ describe('DynamicWidgetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DynamicWidgetComponent, SvgIconComponent ],
-      imports:[ MdoUiLibraryModule, 
+      imports:[ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         SharedModule

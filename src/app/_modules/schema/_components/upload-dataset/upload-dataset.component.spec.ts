@@ -39,7 +39,6 @@ describe('UploadDatasetComponent', () => {
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
-  let dialogRef: MatDialogRef<UploadDatasetComponent>;
   const transformationRule = {
     formData: {
       rule_type: 'BR_TRANSFORMATION',
@@ -90,7 +89,7 @@ describe('UploadDatasetComponent', () => {
         FormInputComponent,
         AddFilterMenuComponent,
         FormInputAutoselectComponent],
-      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, SharedModule],
+      imports: [MdoUiLibraryModule, AppMaterialModuleForSpec, SharedModule],
       providers: [
         SchemaDetailsService,
         GlobaldialogService,
@@ -239,31 +238,6 @@ describe('UploadDatasetComponent', () => {
 
     });
   }));
-
-/*  it(`createfieldObjectForRequest(), should create fieldValues`, async(done) => {
-    const dataSource = [{
-      excelFld: 'testField',
-      excelFrstRow: 'test',
-      mdoFldId: 'testId',
-      mdoFldDesc: 'Test Field',
-      columnIndex: 0
-    }];
-    component.initHeaderForm(dataSource).then((res) => {
-      component.createfieldObjectForRequest(dataSource, component.headerForm.value).then((fieldValues: any[]) => {
-        expect(fieldValues.length).toBeGreaterThan(0);
-        component.createfieldObjectForRequest({length: 1} as any, component.headerForm.value)
-        .then((res) => {
-          expect(Array.isArray(res)).toBeTrue();
-          done();          
-        })
-        .catch((error) => {
-          expect(Array.isArray(error)).toBeFalse();
-          done();
-        });
-      })
-    });
-  });
-*/
 
   it(`createBrObject(), should create business rule object`, async(() => {
     const formData = {
@@ -448,7 +422,7 @@ describe('UploadDatasetComponent', () => {
     component.createForm();
     component.setValueToForm('schemaThreshold', '13');
     expect(component.requestForm.controls.schemaThreshold.value).toEqual('13');
-    component.setValueToForm('schemaThreshold', {value: '3'});
+    component.setValueToForm('schemaThreshold', { value: '3' });
     expect(component.requestForm.controls.schemaThreshold.value).toEqual('3');
   }))
 
@@ -462,7 +436,7 @@ describe('UploadDatasetComponent', () => {
     component.getCollaborators('a', 0);
     expect(usersSpy).toHaveBeenCalledWith('a', 0);
     expect(component.allSubscribers.length).toEqual(2);
-    usersSpy.and.returnValue(throwError({message:'error'}));
+    usersSpy.and.returnValue(throwError({ message: 'error' }));
     component.getCollaborators('a', 0);
     expect(component.subscriberLoader).toBeFalse();
   });
@@ -485,7 +459,7 @@ describe('UploadDatasetComponent', () => {
     } as CoreSchemaBrInfo]));
     component.getBusinessRulesList(null, '', '', '0');
     expect(schemaServiceSpy.getAllBusinessRules).toHaveBeenCalled();
-    
+
     component.getBusinessRulesList('test', '', '', '0');
     expect(schemaServiceSpy.getAllBusinessRules).toHaveBeenCalled();
   }));
@@ -540,7 +514,7 @@ describe('UploadDatasetComponent', () => {
     component.subscribersList = [];
     component.updateSubscribersList(subscriberObject);
     expect(component.subscribersList.length).toEqual(1);
-    
+
     component.subscribersList = [{
       userName: 'test'
     }];
@@ -630,19 +604,19 @@ describe('UploadDatasetComponent', () => {
     expect(transFormationSchema[0].includeScript).toEqual('grfgsregr');
     transformationRule.lookupData = [{
       fieldId: '1',
-      lookupTargetField:'1',
+      lookupTargetField: '1',
       fieldLookupConfig: {
         moduleId: '1'
       }
     }];
     res = component.mapTransformationData(transformationRule);
     expect(res).toBeTruthy();
-    
+
     res = component.mapTransformationData({
       formData: {}
     });
     expect(res).toBeNull();
-    
+
   });
 
   it('should getScheduleInfo', async(() => {
@@ -671,14 +645,14 @@ describe('UploadDatasetComponent', () => {
   }));
 
   it('should check getScheduleInfo error', async(() => {
-    spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema').and.returnValue(throwError({message:'error'}));
+    spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema').and.returnValue(throwError({ message: 'error' }));
     component.getScheduleInfo('test schema');
     expect(schemaServiceSpy.getSchedule).toHaveBeenCalledWith('test schema');
     expect(component.canEditSchedule).toBeFalsy();
 
   }));
 
-  it('getWeightage(), should return weightage', async (() => {
+  it('getWeightage(), should return weightage', async(() => {
     const br: CoreSchemaBrInfo = {
       sno: 1299484,
       brId: '22',
@@ -1161,7 +1135,7 @@ describe('UploadDatasetComponent', () => {
     delete br.brId;
     component.updateDepRuleForChild(br, 0, event);
     expect(component.selectedBusinessRules.length).toEqual(4);
-  
+
     spyOn(component, 'getSelectedDependantStatus').withArgs(event.value).and.returnValue(null);
     br.brId = '22';
     component.updateDepRuleForChild(br, 0, event);
@@ -1202,7 +1176,6 @@ describe('UploadDatasetComponent', () => {
     expect(component.subscribersList[0].isEditer).toBeTruthy();
   }));
 
-  
   it('ngAfterViewInit() should subscrie the stepper component change', async () => {
     fixture.detectChanges();
     spyOn(component.stepper.selectionChange, 'subscribe');
@@ -1216,51 +1189,50 @@ describe('UploadDatasetComponent', () => {
     expect(component.setProgressValue).toHaveBeenCalledWith(1);
   });
 
-
-  it(`validateStep() should validate the steps`, async(done) => {
+  it(`validateStep() should validate the steps`, async (done) => {
     component.createForm();
     await component.initHeaderForm([]);
     fixture.detectChanges();
-    let res= component.validateStep();
+    let res = component.validateStep();
     expect(res).toBeFalsy();
-    
-    let headerFormBody = {
+
+    const headerFormBody = {
       name: new FormControl('name', [Validators.required])
     };
-    let requestFormBody = {
+    const requestFormBody = {
       core_schema: new FormControl('core_schema', [Validators.required])
     };
     component.headerForm = new FormGroup(headerFormBody);
     component.requestForm = new FormGroup(requestFormBody);
-    component.headerForm.controls['name'].setValue('name');
-    
-    Object.defineProperty( component.stepper, 'selectedIndex', {
+    component.headerForm.controls.name.setValue('name');
+
+    Object.defineProperty(component.stepper, 'selectedIndex', {
       writable: true,
       value: 2
     });
-    
-    res= component.validateStep();
+
+    res = component.validateStep();
     expect(res).toBeFalsy();
 
-    component.requestForm.controls['core_schema'].setValue({
+    component.requestForm.controls.core_schema.setValue({
     });
-    res= component.validateStep();
+    res = component.validateStep();
     expect(res).toBeFalsy();
 
-    component.requestForm.controls['core_schema'].setValue({
+    component.requestForm.controls.core_schema.setValue({
       discription: 'test'
     });
     component.selectedBusinessRules = [];
-    res= component.validateStep();
+    res = component.validateStep();
     expect(res).toBeFalsy();
 
-    component.stepper.selectedIndex=3;
-    res= component.validateStep();
-    expect(res).toBeTruthy(); 
+    component.stepper.selectedIndex = 3;
+    res = component.validateStep();
+    expect(res).toBeTruthy();
     done();
   });
 
-  it('onClick() should reset editable field list on invalid id present', async() => {
+  it('onClick() should reset editable field list on invalid id present', async () => {
     component.editableFieldIds = ['test'];
     const event = {
       target: {
@@ -1279,18 +1251,18 @@ describe('UploadDatasetComponent', () => {
   });
 
 
-   it('closeDialog() will call dialog service close function', async() => {
+  it('closeDialog() will call dialog service close function', async () => {
     expect(component.closeDialog()).toBeFalsy();
   });
 
-  it('getSelectedDependantStatus() will get currently selected dependant status', async() => {
+  it('getSelectedDependantStatus() will get currently selected dependant status', async () => {
     expect(component.getSelectedDependantStatus('Test').key).toBe(component.dependantStatusList[0].key);
     expect(component.getSelectedDependantStatus('ERROR').key).toBe('ERROR');
     expect(component.getSelectedDependantStatus('FAILURE').key).toBe('ERROR');
   });
 
-  it('createUDRBlockFromLookup() will create new UDRBlocksModel', async() => {
-    const lookupData: LookupFields= {
+  it('createUDRBlockFromLookup() will create new UDRBlocksModel', async () => {
+    const lookupData: LookupFields = {
       fieldDescri: 'testDesc',
       fieldId: 'testId',
       fieldLookupConfig: {
@@ -1308,17 +1280,17 @@ describe('UploadDatasetComponent', () => {
     expect(res.objectType).toEqual(lookupData.fieldLookupConfig.moduleId);
   });
 
-  it('deleteSubscriber() shoud delete subscriber after confirm box displayed', async() => {
+  it('deleteSubscriber() shoud delete subscriber after confirm box displayed', async () => {
     component.subscribersList = [{}];
     component.initHeaderForm([]);
     component.createForm();
     component.requestForm.controls.subcribers.setValue(['1']);
-    spyOn(globaldialogService, 'confirm').and.callFake((a,b) => b('yes'));
+    spyOn(globaldialogService, 'confirm').and.callFake((a, b) => b('yes'));
     component.deleteSubscriber(0);
     expect(globaldialogService.confirm).toHaveBeenCalled();
   });
-  
-  it('removeAllocation() should remove allocation', async() => {
+
+  it('removeAllocation() should remove allocation', async () => {
     const ctrl: FilterCriteria = {
       fieldId: '1',
       values: [],
@@ -1337,19 +1309,19 @@ describe('UploadDatasetComponent', () => {
     expect(component.subscribersList[0].filterCriteria.length).toEqual(1);
   });
 
-  it('addTempIdToExisting() should add temp id to temp list', async(done) => {
+  it('addTempIdToExisting() should add temp id to temp list', async (done) => {
     component.existingTempIds = [];
     await component.addTempIdToExisting('1');
     expect(component.existingTempIds.length).toEqual(1);
     done();
   });
-  
-  it('isExistingRule() should correct status of temp list', async() => {
+
+  it('isExistingRule() should correct status of temp list', async () => {
     component.existingTempIds = ['1', '2'];
     expect(component.isExistingRule('1')).toBeTrue();
     expect(component.isExistingRule('15')).toBeFalse();
   });
-  it('clearFileInput() should clear the input', async() => {
+  it('clearFileInput() should clear the input', async () => {
     component.clearFileInput();
     fixture.detectChanges();
     component.clearFileInput();
@@ -1357,7 +1329,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.uploadInput.nativeElement.value).toBeFalsy();
   });
 
-  it('toggleBrStatus() should toggle the br status', async() => {
+  it('toggleBrStatus() should toggle the br status', async () => {
     component.createForm();
     let br: any = {
       fields: 'test',
@@ -1372,365 +1344,365 @@ describe('UploadDatasetComponent', () => {
     expect(br.status).toEqual('0')
   });
 
-it('updateCurrentRulesList() should update current rule list', async() => {
-  component.createForm();
-  expect(component.updateCurrentRulesList(undefined)).toBeFalsy();
-  component.selectedBusinessRules = [];
-  const response = {
-    tempId: '1',
-    brId: '1',
-    formDta: {
+  it('updateCurrentRulesList() should update current rule list', async () => {
+    component.createForm();
+    expect(component.updateCurrentRulesList(undefined)).toBeFalsy();
+    component.selectedBusinessRules = [];
+    const response = {
+      tempId: '1',
+      brId: '1',
+      formDta: {
 
-    }
-  };
-  component.updateCurrentRulesList(response);
-  expect(component.selectedBusinessRules.length).toEqual(0);
-
-});
-
-it('openExplorer() should clear the error message', async() => {
-  fixture.detectChanges();
-  component.openExplorer();
-  expect(component.uploadError.status).toBeFalse();
-  expect(component.uploadError.message).toBeFalsy();
-});
-
-
-it('fileChange() should validate the file before parsing', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  const file = new File(new Array(300), 'test.csv');
-  let files = [
-    file
-  ];
-  const event = {
-    target: {
-      files: {
-        item: (i) => files[i],
-        files,
-        length: files.length,
-        ...files
       }
-    }
-  } as any;
-  component.fileChange(event);
-  expect(component.uploadedFile).toBeFalsy();
-  
-  Object.defineProperty(file, 'name', {
-    writable: true,
-    value: []
+    };
+    component.updateCurrentRulesList(response);
+    expect(component.selectedBusinessRules.length).toEqual(0);
+
   });
-  // expect(function() {
+
+  it('openExplorer() should clear the error message', async () => {
+    fixture.detectChanges();
+    component.openExplorer();
+    expect(component.uploadError.status).toBeFalse();
+    expect(component.uploadError.message).toBeFalsy();
+  });
+
+
+  it('fileChange() should validate the file before parsing', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    const file = new File(new Array(300), 'test.csv');
+    const files = [
+      file
+    ];
+    const event = {
+      target: {
+        files: {
+          item: (i) => files[i],
+          files,
+          length: files.length,
+          ...files
+        }
+      }
+    } as any;
     component.fileChange(event);
-  // }).toThrowError();
-  expect(component.uploadedFile).toBeFalsy();
-  Object.defineProperty(file, 'name', {
-    writable: true,
-    value: 'name.csv'
+    expect(component.uploadedFile).toBeFalsy();
+
+    Object.defineProperty(file, 'name', {
+      writable: true,
+      value: []
+    });
+    // expect(function() {
+    component.fileChange(event);
+    // }).toThrowError();
+    expect(component.uploadedFile).toBeFalsy();
+    Object.defineProperty(file, 'name', {
+      writable: true,
+      value: 'name.csv'
+    });
+    Object.defineProperty(file, 'size', {
+      writable: true,
+      value: 99999999999
+    });
+    spyOn(component, 'showValidationError');
+    component.fileChange(event);
+    expect(component.showValidationError).toHaveBeenCalled();
+
+    Object.defineProperty(file, 'name', {
+      writable: true,
+      value: 'test'
+    });
+    component.fileChange(event);
+    expect(component.showValidationError).toHaveBeenCalled();
+
+    event.target.files.length = 3;
+    expect(() => { component.fileChange(event) }).toThrowError('Cannot use multiple files');
+
   });
-  Object.defineProperty(file, 'size', {
-    writable: true,
-    value: 99999999999
-  });
-  spyOn(component,'showValidationError');
-  component.fileChange(event);
-  expect(component.showValidationError).toHaveBeenCalled();
-
-  Object.defineProperty(file, 'name', {
-    writable: true,
-    value: 'test'
-  });
-  component.fileChange(event);
-  expect(component.showValidationError).toHaveBeenCalled();
-
-  event.target.files.length = 3;
-  expect(function(){component.fileChange(event)}).toThrowError('Cannot use multiple files');
-
-});
 
 
-it('fileChange() should call initheader form after loading', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  const file = new File(new Array(300), 'test.csv');
-  let files = [
-    file
-  ];
-  const event = {
-    target: {
-      files: {
-        item: (i) => files[i],
-        files,
-        length: files.length,
-        ...files
+  it('fileChange() should call initheader form after loading', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    const file = new File(new Array(300), 'test.csv');
+    const files = [
+      file
+    ];
+    const event = {
+      target: {
+        files: {
+          item: (i) => files[i],
+          files,
+          length: files.length,
+          ...files
+        }
       }
-    }
-  } as any;
-  expect(component.fileChange(event)).toBeUndefined();
-});
-
-it(`step() should run the step function`, async() => {
-  let formBody = {};
-  formBody['name'] = new FormControl('name', [Validators.required]);
-  component.headerForm = new FormGroup(formBody);
-  component.createForm();
-  fixture.detectChanges();
-  component.headerTextIndex = 0;
-  component.stepper['testFn'] = () => true;
-  component.stepper['next'] = () => true;
-  expect(component.step('testFn')).toBeUndefined();
-  formBody = {};
-  formBody['objectDesc'] = new FormControl('objectDesc', [Validators.required]);
-  formBody['objectId'] = new FormControl('objectId', [Validators.required]);
-  formBody['mappedData'] = new FormControl('mappedData', [Validators.required]);
-  formBody['coreSchemaBr'] = new FormControl('coreSchemaBr', [Validators.required]);
-  component.requestForm = new FormGroup(formBody);
-  component.requestForm.controls.objectDesc.setValue(null);
-  expect(component.requestForm.controls.objectDesc.invalid).toBeTrue();
-  Object.defineProperty( component.stepper, 'selectedIndex', {
-    writable: true,
-    value: 1
+    } as any;
+    expect(component.fileChange(event)).toBeUndefined();
   });
-  expect(component.step('next', true)).toBeUndefined();
-  component.progressBar = 100;
-  expect(component.step('next', false)).toBeUndefined();
-  component.stepper.selectedIndex = 1;
-  component.requestForm.controls.objectId.setValue('test');
-  component.requestForm.controls.mappedData.setValue([]);
-  component.requestForm.controls.coreSchemaBr.setValue([]);
-  component.progressBar = 0;
-  expect(component.step('next', false)).toBeUndefined();
-  component.stepper.selectedIndex = 2;
-  expect(component.step('next', false)).toBeUndefined();
+
+  it(`step() should run the step function`, async () => {
+    let formBody: any = {};
+    formBody['name'] = new FormControl('name', [Validators.required]);
+    component.headerForm = new FormGroup(formBody);
+    component.createForm();
+    fixture.detectChanges();
+    component.headerTextIndex = 0;
+    const stepper: any = component.stepper;
+    stepper.testFn = () => true;
+    stepper.next = () => true;
+    expect(component.step('testFn')).toBeUndefined();
+    formBody = {};
+    formBody.objectDesc = new FormControl('objectDesc', [Validators.required]);
+    formBody.objectId = new FormControl('objectId', [Validators.required]);
+    formBody.mappedData = new FormControl('mappedData', [Validators.required]);
+    formBody.coreSchemaBr = new FormControl('coreSchemaBr', [Validators.required]);
+    component.requestForm = new FormGroup(formBody);
+    component.requestForm.controls.objectDesc.setValue(null);
+    expect(component.requestForm.controls.objectDesc.invalid).toBeTrue();
+    Object.defineProperty(component.stepper, 'selectedIndex', {
+      writable: true,
+      value: 1
+    });
+    expect(component.step('next', true)).toBeUndefined();
+    component.progressBar = 100;
+    expect(component.step('next', false)).toBeUndefined();
+    component.stepper.selectedIndex = 1;
+    component.requestForm.controls.objectId.setValue('test');
+    component.requestForm.controls.mappedData.setValue([]);
+    component.requestForm.controls.coreSchemaBr.setValue([]);
+    component.progressBar = 0;
+    expect(component.step('next', false)).toBeUndefined();
+    component.stepper.selectedIndex = 2;
+    expect(component.step('next', false)).toBeUndefined();
 
 
-}); 
+  });
 
-it('getSelectedFieldId() get selected field id from list', async() => {
-  component.excelMdoFieldMappedData = [{
-    columnIndex: 1,
-    mdoFldId: 'test'
-  } as DataSource];
-  expect(component.getSelectedFieldId(1)).toEqual('test');
-  expect(component.getSelectedFieldId(11)).toEqual('');
-});
-it('save() should save', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  const fields = [{
-    fieldDescri: 'test',
-    fieldId: '1'
-  }];
-  component.requestForm.controls.objectId.setValue('');
-  component.requestForm.controls.fields.setValue(fields);
-  expect(component.save()).toBeUndefined();
-});
-it('updateMapFields() should setupdate map field', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  const data: any = {};
-  expect(component.updateMapFields(data)).toBeUndefined();
-  data.index = 1;
-  component.excelMdoFieldMappedData = [{
-    columnIndex: 1
-  } as DataSource];
-  expect(component.updateMapFields(data)).toBeUndefined();
-  data.fieldId = '';
-  expect(component.updateMapFields(data)).toBeUndefined();
-});
-it('setModuleValueAndTakeStep() should set module value and take step', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  fixture.detectChanges();
-  expect(component.setModuleValueAndTakeStep()).toBeUndefined();
-});
-it('removeTempId() should remove temp id', async() => {
-  const val: any = {
-    coreSchemaBr: [{
-      tempId: 'test',
-      brId: 'test',
-      dep_rules: [{
-        brId: 'test'
+  it('getSelectedFieldId() get selected field id from list', async () => {
+    component.excelMdoFieldMappedData = [{
+      columnIndex: 1,
+      mdoFldId: 'test'
+    } as DataSource];
+    expect(component.getSelectedFieldId(1)).toEqual('test');
+    expect(component.getSelectedFieldId(11)).toEqual('');
+  });
+  it('save() should save', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    const fields = [{
+      fieldDescri: 'test',
+      fieldId: '1'
+    }];
+    component.requestForm.controls.objectId.setValue('');
+    component.requestForm.controls.fields.setValue(fields);
+    expect(component.save()).toBeUndefined();
+  });
+  it('updateMapFields() should setupdate map field', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    const data: any = {};
+    expect(component.updateMapFields(data)).toBeUndefined();
+    data.index = 1;
+    component.excelMdoFieldMappedData = [{
+      columnIndex: 1
+    } as DataSource];
+    expect(component.updateMapFields(data)).toBeUndefined();
+    data.fieldId = '';
+    expect(component.updateMapFields(data)).toBeUndefined();
+  });
+  it('setModuleValueAndTakeStep() should set module value and take step', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    fixture.detectChanges();
+    expect(component.setModuleValueAndTakeStep()).toBeUndefined();
+  });
+  it('removeTempId() should remove temp id', async () => {
+    const val: any = {
+      coreSchemaBr: [{
+        tempId: 'test',
+        brId: 'test',
+        dep_rules: [{
+          brId: 'test'
+        }]
       }]
-    }]
-  };
-  expect(component.removeTempId(val)).toBeTruthy();
-});
-it('deleteBR() should delete br', async() => {
-  const rule: CoreSchemaBrInfo = {
-    sno: 1,
-    brId: 'test',
-    brType: 'test',
-    refId: 1,
-    fields: 'test',
-    dep_rules: [],
-    regex: 'test'
-  } as CoreSchemaBrInfo;
-  fixture.detectChanges();
-  component.initHeaderForm([]);
-  component.createForm();
-  component.selectedBusinessRules = [rule];
-  expect(component.deleteBR(rule as any)).toBeUndefined();
-});
-it('deleteBrChild() should delete br child', async() => {
-  const chldBr: any = {
-    brId: '1',
-    tempId: '1'
-  };
-  const parentBr: any = {
-    dep_rules: [chldBr]
-  };
-  component.existingTempIds = ['1'];
-  component.selectedBusinessRules = [parentBr];
-  spyOn(globaldialogService, 'confirm').and.callFake((a,b) => b('yes'));
-  expect(component.deleteBrChild(chldBr, parentBr)).toBeUndefined();
-});
-
-it('setFormValue() should set form value', async(done) => {
-  component.createForm();
-  component.initHeaderForm([]);
-  const formBody = {};
-  formBody['name'] = new FormControl('name', [Validators.required]);
-  component.headerForm = new FormGroup(formBody);
-  component.dataSource= [{
-    mdoFldId: 'name'
-  } as DataSource];
-  component.setFormValue('test','name');
-  expect(component.headerForm.controls.name.value).toEqual('test');
-  done();
-});
-
-it('configureRule() should configure the rule', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  expect(component.configureRule({} as any)).toBeUndefined();
-});
-
-it('callSaveSchemaAPI() should call save schema api', async() => {
-  const objectId = 'test';
-  const variantId = 'test';
-  const fileSerialNo = 'test';
-  component.createForm();
-  component.initHeaderForm([]);
-  expect(component.callSaveSchemaAPI(objectId, variantId, fileSerialNo)).toBeUndefined();
-  component.requestForm.controls.runTime.setValue('Run the schema once now');
-  expect(component.callSaveSchemaAPI(objectId, variantId, fileSerialNo)).toBeUndefined();
-
-  spyOn(schemadetailsService, 'saveNewSchemaDetails').and.returnValue(of(null));
-  component.callSaveSchemaAPI(objectId, variantId, fileSerialNo);
-  expect(schemadetailsService.saveNewSchemaDetails).toHaveBeenCalled();
-  component.requestForm.controls.runTime.setValue('');
-  component.callSaveSchemaAPI(objectId, variantId, fileSerialNo);
-  expect(schemadetailsService.saveNewSchemaDetails).toHaveBeenCalled();
-
-});
-it('makeFilterControl() should make filter control', async() => {
-  const event: any = {
-    fldCtrl: {
-      fieldId: ''
-    },
-    selectedValues: [],
-    fieldId: 'test1',
-    fieldDescription: 'testDescription'
-  };
-  component.subscribersList = [{
-    filterCriteria: []
-  }];
-  expect(component.makeFilterControl(event, 0, {})).toBeUndefined();
-  event.selectedValues = [{
-    CODE: 'test'
-  }];
-  event.fldCtrl.fieldId = 'test';
-  component.subscribersList = [{
-    filterCriteria: [{
-      fieldId: 'test',
-      values: []
-    }, {
-      fieldId: 'test1',
-      values: []      
-    }]
-  }];
-  expect(component.makeFilterControl(event, 0, {})).toBeUndefined();
-});
-it(`getObjectTypes(), should call service getAllObjectTypes`, async(() => {
-  const returnData = [];
-  spyOn(schemaServiceSpy, 'getAllObjectType').and.returnValue(of(returnData));
-  component.getObjectTypes();
-  expect(schemaServiceSpy.getAllObjectType).toHaveBeenCalled();
-}));
-it('getSchemaBrInfo() should get business rules by schema id', async() => {
-  component.createForm();
-  const selectedData = {
-    schemaId: `1`
-  }
-  const returnData: Array<CoreSchemaBrInfo> = [{
-    sno: 1,
-    brId: 'test',
-    brType: 'test',
-    refId: 1,
-    fields: 'test',
-    regex: 'test',
-    order: 1
-  } as CoreSchemaBrInfo];
-  spyOn(schemaServiceSpy, 'getBusinessRulesBySchemaId').withArgs(selectedData.schemaId).and.returnValue(of(returnData));
-  component.getSchemaBrInfo(selectedData);
-  expect(schemaServiceSpy.getBusinessRulesBySchemaId).toHaveBeenCalledWith(selectedData.schemaId);
-});
-it('uploadFileData() should upload file data', async(() => {
-  const file = new File([], 'test_file', {
-    type: 'image/jpeg'
+    };
+    expect(component.removeTempId(val)).toBeTruthy();
   });
-  const mockRes = {
-    userName: 'AshishK',
-    plantCode: '0'
-  } as Userdetails;
-  spyOn(component, 'getObjectTypes');
-  spyOn(userService, 'getUserDetails').and.returnValue(of(mockRes))
+  it('deleteBR() should delete br', async () => {
+    const rule: CoreSchemaBrInfo = {
+      sno: 1,
+      brId: 'test',
+      brType: 'test',
+      refId: 1,
+      fields: 'test',
+      dep_rules: [],
+      regex: 'test'
+    } as CoreSchemaBrInfo;
+    fixture.detectChanges();
+    component.initHeaderForm([]);
+    component.createForm();
+    component.selectedBusinessRules = [rule];
+    expect(component.deleteBR(rule as any)).toBeUndefined();
+  });
+  it('deleteBrChild() should delete br child', async () => {
+    const chldBr: any = {
+      brId: '1',
+      tempId: '1'
+    };
+    const parentBr: any = {
+      dep_rules: [chldBr]
+    };
+    component.existingTempIds = ['1'];
+    component.selectedBusinessRules = [parentBr];
+    spyOn(globaldialogService, 'confirm').and.callFake((a, b) => b('yes'));
+    expect(component.deleteBrChild(chldBr, parentBr)).toBeUndefined();
+  });
 
-  spyOn(component, 'getBusinessRulesList');
-  spyOn(schemaServiceSpy, 'getAllBusinessRules').and.callFake(() => of([]));
-  spyOn(component, 'getCollaborators');
+  it('setFormValue() should set form value', async (done) => {
+    component.createForm();
+    component.initHeaderForm([]);
+    const formBody: any = {};
+    formBody.name = new FormControl('name', [Validators.required]);
+    component.headerForm = new FormGroup(formBody);
+    component.dataSource = [{
+      mdoFldId: 'name'
+    } as DataSource];
+    component.setFormValue('test', 'name');
+    expect(component.headerForm.controls.name.value).toEqual('test');
+    done();
+  });
 
-  spyOn(schemaServiceSpy, 'uploadUpdateFileData')
-  .withArgs(file, '1')
-  .and.returnValue(of(null));
-  component.createForm();
-  component.initHeaderForm([]);
-  fixture.detectChanges();
-  component.requestForm.controls.fileSerialNo.setValue('1');
-  component.requestForm.controls.file.setValue(file);
-  component.data = {};
-  component.uploadFileData();
-  expect(schemaServiceSpy.uploadUpdateFileData).toHaveBeenCalledWith(file, '1');
-}));
-it('onClick() should be called when an element on ui is clicked', async() => {
-  spyOn(component, 'onClick');
-  
-  fixture.detectChanges();
-  const inputEl = document.createElement('button');
-  fixture.nativeElement.appendChild(inputEl);
-  const event = new Event('click', { bubbles: true });
+  it('configureRule() should configure the rule', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    expect(component.configureRule({} as any)).toBeUndefined();
+  });
 
-  inputEl.dispatchEvent(event);
-  expect(component.onClick).toHaveBeenCalled();
-  inputEl.id = 'test';
-  component.editableFieldIds = ['test1', 'test2'];
-  inputEl.dispatchEvent(event);
-  expect(component.editableFieldIds.length).toEqual(2);
-});
-it('openGlobalDialog() should open global dialog', async() => {
-  component.createForm();
-  component.initHeaderForm([]);
-  component.requestForm.controls.objectId.setValue('test');
-  component.requestForm.controls.fields.setValue('test');
-  expect(component.openGlobalDialog()).toBeUndefined();
-});
+  it('callSaveSchemaAPI() should call save schema api', async () => {
+    const objectId = 'test';
+    const variantId = 'test';
+    const fileSerialNo = 'test';
+    component.createForm();
+    component.initHeaderForm([]);
+    expect(component.callSaveSchemaAPI(objectId, variantId, fileSerialNo)).toBeUndefined();
+    component.requestForm.controls.runTime.setValue('Run the schema once now');
+    expect(component.callSaveSchemaAPI(objectId, variantId, fileSerialNo)).toBeUndefined();
 
-it('selectBusinessRule() should select business rule', async() => {
-  component.initHeaderForm([]);
-  component.createForm();
-  const schemaInfo: CoreSchemaBrInfo = {
-    sno: 1299484,
+    spyOn(schemadetailsService, 'saveNewSchemaDetails').and.returnValue(of(null));
+    component.callSaveSchemaAPI(objectId, variantId, fileSerialNo);
+    expect(schemadetailsService.saveNewSchemaDetails).toHaveBeenCalled();
+    component.requestForm.controls.runTime.setValue('');
+    component.callSaveSchemaAPI(objectId, variantId, fileSerialNo);
+    expect(schemadetailsService.saveNewSchemaDetails).toHaveBeenCalled();
+
+  });
+  it('makeFilterControl() should make filter control', async () => {
+    const event: any = {
+      fldCtrl: {
+        fieldId: ''
+      },
+      selectedValues: [],
+      fieldId: 'test1',
+      fieldDescription: 'testDescription'
+    };
+    component.subscribersList = [{
+      filterCriteria: []
+    }];
+    expect(component.makeFilterControl(event, 0, {})).toBeUndefined();
+    event.selectedValues = [{
+      CODE: 'test'
+    }];
+    event.fldCtrl.fieldId = 'test';
+    component.subscribersList = [{
+      filterCriteria: [{
+        fieldId: 'test',
+        values: []
+      }, {
+        fieldId: 'test1',
+        values: []
+      }]
+    }];
+    expect(component.makeFilterControl(event, 0, {})).toBeUndefined();
+  });
+  it(`getObjectTypes(), should call service getAllObjectTypes`, async(() => {
+    const returnData = [];
+    spyOn(schemaServiceSpy, 'getAllObjectType').and.returnValue(of(returnData));
+    component.getObjectTypes();
+    expect(schemaServiceSpy.getAllObjectType).toHaveBeenCalled();
+  }));
+  it('getSchemaBrInfo() should get business rules by schema id', async () => {
+    component.createForm();
+    const selectedData = {
+      schemaId: `1`
+    }
+    const returnData: Array<CoreSchemaBrInfo> = [{
+      sno: 1,
+      brId: 'test',
+      brType: 'test',
+      refId: 1,
+      fields: 'test',
+      regex: 'test',
+      order: 1
+    } as CoreSchemaBrInfo];
+    spyOn(schemaServiceSpy, 'getBusinessRulesBySchemaId').withArgs(selectedData.schemaId).and.returnValue(of(returnData));
+    component.getSchemaBrInfo(selectedData);
+    expect(schemaServiceSpy.getBusinessRulesBySchemaId).toHaveBeenCalledWith(selectedData.schemaId);
+  });
+  it('uploadFileData() should upload file data', async(() => {
+    const file = new File([], 'test_file', {
+      type: 'image/jpeg'
+    });
+    const mockRes = {
+      userName: 'AshishK',
+      plantCode: '0'
+    } as Userdetails;
+    spyOn(component, 'getObjectTypes');
+    spyOn(userService, 'getUserDetails').and.returnValue(of(mockRes))
+
+    spyOn(component, 'getBusinessRulesList');
+    spyOn(schemaServiceSpy, 'getAllBusinessRules').and.callFake(() => of([]));
+    spyOn(component, 'getCollaborators');
+
+    spyOn(schemaServiceSpy, 'uploadUpdateFileData')
+      .withArgs(file, '1')
+      .and.returnValue(of(null));
+    component.createForm();
+    component.initHeaderForm([]);
+    fixture.detectChanges();
+    component.requestForm.controls.fileSerialNo.setValue('1');
+    component.requestForm.controls.file.setValue(file);
+    component.data = {};
+    component.uploadFileData();
+    expect(schemaServiceSpy.uploadUpdateFileData).toHaveBeenCalledWith(file, '1');
+  }));
+  it('onClick() should be called when an element on ui is clicked', async () => {
+    spyOn(component, 'onClick');
+    fixture.detectChanges();
+    const inputEl = document.createElement('button');
+    fixture.nativeElement.appendChild(inputEl);
+    const event = new Event('click', { bubbles: true });
+
+    inputEl.dispatchEvent(event);
+    expect(component.onClick).toHaveBeenCalled();
+    inputEl.id = 'test';
+    component.editableFieldIds = ['test1', 'test2'];
+    inputEl.dispatchEvent(event);
+    expect(component.editableFieldIds.length).toEqual(2);
+  });
+  it('openGlobalDialog() should open global dialog', async () => {
+    component.createForm();
+    component.initHeaderForm([]);
+    component.requestForm.controls.objectId.setValue('test');
+    component.requestForm.controls.fields.setValue('test');
+    expect(component.openGlobalDialog()).toBeUndefined();
+  });
+
+  it('selectBusinessRule() should select business rule', async () => {
+    component.initHeaderForm([]);
+    component.createForm();
+    const schemaInfo: CoreSchemaBrInfo = {
+      sno: 1299484,
       brId: '22',
       brType: 'TRANSFORMATION',
       refId: 1,
@@ -1761,65 +1733,47 @@ it('selectBusinessRule() should select business rule', async() => {
       isCopied: false,
       duplicacyField: [],
       duplicacyMaster: []
-  };
-  component.existingTempIds = [];
-  const checkIFspy = spyOn(component, 'checkIfExist');
-  component.selectBusinessRule(schemaInfo);
-  expect(component.checkIfExist).toHaveBeenCalled();
-  checkIFspy.and.returnValue(true);
-  component.selectBusinessRule(schemaInfo);
-  expect(component.checkIfExist).toHaveBeenCalled();
-  const brList: Array<CoreSchemaBrInfo> = [schemaInfo];
-  component.existingTempIds = [];
-  expect(component.selectBusinessRule(brList)).toBeUndefined();
+    };
+    component.existingTempIds = [];
+    const checkIFspy = spyOn(component, 'checkIfExist');
+    component.selectBusinessRule(schemaInfo);
+    expect(component.checkIfExist).toHaveBeenCalled();
+    checkIFspy.and.returnValue(true);
+    component.selectBusinessRule(schemaInfo);
+    expect(component.checkIfExist).toHaveBeenCalled();
+    const brList: Array<CoreSchemaBrInfo> = [schemaInfo];
+    component.existingTempIds = [];
+    expect(component.selectBusinessRule(brList)).toBeUndefined();
 
-});
+  });
 
-it('openScheduleSideSheet() should open global schedule sheet', async() => {
-  component.createForm();
-  component.requestForm.controls.objectId.setValue('test');
-  component.requestForm.controls.fields.setValue('test');
-  expect(component.openScheduleSideSheet()).toBeUndefined();
-});
+  it('openScheduleSideSheet() should open global schedule sheet', async () => {
+    component.createForm();
+    component.requestForm.controls.objectId.setValue('test');
+    component.requestForm.controls.fields.setValue('test');
+    expect(component.openScheduleSideSheet()).toBeUndefined();
+  });
 
-it('createfieldObjectForRequest() should create field object for request', async(done) => {
-  const list: Array<DataSource> = [{
-    excelFld: 'test',
-    excelFrstRow: 'test',
-    mdoFldId: 'test',
-    mdoFldDesc: 'test',
-    columnIndex: 0
-  }];
-  await component.initHeaderForm(list);
-  let res = await component.createfieldObjectForRequest(list);
-  expect(res).toBeTruthy();
-  
-  try {
-    await component.createfieldObjectForRequest({
-      length: 1
-    } as Array<DataSource>);
-  } catch (e) {
-    done();
-    return;
-  }
-  done();
-});
+  it('createfieldObjectForRequest() should create field object for request', async (done) => {
+    const list: Array<DataSource> = [{
+      excelFld: 'test',
+      excelFrstRow: 'test',
+      mdoFldId: 'test',
+      mdoFldDesc: 'test',
+      columnIndex: 0
+    }];
+    await component.initHeaderForm(list);
+    const res = await component.createfieldObjectForRequest(list);
+    expect(res).toBeTruthy();
 
-/*it('drop() should change element position in array', async() => {
-  const event: any = {
-    container: {
-      data: [1,2,3],
-      previousIndex: 1,
-      currentIndex: 0
+    try {
+      await component.createfieldObjectForRequest({
+        length: 1
+      } as Array<DataSource>);
+    } catch (e) {
+      done();
+      return;
     }
-  };
-  expect(component.drop(event)).toBeUndefined();
-}); */
-
-/*it('reoderBR() should reorder br', async() => {
-  expect(component.reoderBR({} as any)).toBeUndefined();
-});*/
-/*
-
-*/
+    done();
+  });
 });

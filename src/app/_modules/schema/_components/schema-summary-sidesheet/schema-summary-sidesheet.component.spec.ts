@@ -1,4 +1,4 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
+// import { MdoUiLibraryModule } from 'mdo-ui-library';
 // Its failing many time ... need to revisite test cases ...
 // import { HttpClientTestingModule } from '@angular/common/http/testing';
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';

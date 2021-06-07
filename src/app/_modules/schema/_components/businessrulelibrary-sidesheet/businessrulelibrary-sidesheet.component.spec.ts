@@ -21,7 +21,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BusinessrulelibrarySidesheetComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,

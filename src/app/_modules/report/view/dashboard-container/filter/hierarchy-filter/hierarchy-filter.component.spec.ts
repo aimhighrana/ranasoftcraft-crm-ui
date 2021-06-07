@@ -14,7 +14,7 @@ describe('HierarchyFilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HierarchyFilterComponent, SearchInputComponent ],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule
       ]
     })

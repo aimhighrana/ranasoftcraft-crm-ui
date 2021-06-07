@@ -31,7 +31,7 @@ describe('NewSchemaCollaboratorsComponent', () => {
                 NewSchemaCollaboratorsComponent,
                 SearchInputComponent
             ],
-            imports: [ MdoUiLibraryModule, 
+            imports: [ MdoUiLibraryModule,
                 HttpClientTestingModule,
                 HttpClientModule,
                 MatSnackBarModule,

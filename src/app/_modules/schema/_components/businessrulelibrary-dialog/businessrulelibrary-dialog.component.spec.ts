@@ -21,7 +21,7 @@ describe('BusinessrulelibraryDialogComponent', () => {
     }
     TestBed.configureTestingModule({
       declarations: [BusinessrulelibraryDialogComponent, SearchInputComponent],
-      imports: [ MdoUiLibraryModule, 
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientModule,
         SharedModule],
