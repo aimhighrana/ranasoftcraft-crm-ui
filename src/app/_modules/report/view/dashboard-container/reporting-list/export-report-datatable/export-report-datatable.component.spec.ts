@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExportReportDatatableComponent } from './export-report-datatable.component';
@@ -24,7 +25,7 @@ describe('ExportReportDatatableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ExportReportDatatableComponent],
-      imports: [
+      imports: [ MdoUiLibraryModule, 
         AppMaterialModuleForSpec,
         ReactiveFormsModule,
         FormsModule,

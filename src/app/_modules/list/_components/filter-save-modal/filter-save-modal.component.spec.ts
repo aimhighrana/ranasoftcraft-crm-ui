@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -15,7 +16,7 @@ describe('FilterSaveModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FilterSaveModalComponent ],
-      imports:[
+      imports:[ MdoUiLibraryModule, 
         AppMaterialModuleForSpec,
         SharedModule
       ],

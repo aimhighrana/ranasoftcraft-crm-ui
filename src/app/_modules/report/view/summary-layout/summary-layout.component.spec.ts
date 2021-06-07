@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SummaryLayoutComponent } from './summary-layout.component';
@@ -16,7 +17,7 @@ describe('SummaryLayoutComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SummaryLayoutComponent ],
-        imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, AppMaterialModuleForSpec, RouterTestingModule,
+        imports:[ MdoUiLibraryModule, HttpClientTestingModule, ReactiveFormsModule, FormsModule, AppMaterialModuleForSpec, RouterTestingModule,
           SharedModule]
     })
     .compileComponents();

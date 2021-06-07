@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -19,7 +20,7 @@ describe('SystemTrayComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SystemTrayComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
     })
       .compileComponents();
       router = TestBed.inject(Router);

@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientModule } from '@angular/common/http';
 import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -20,7 +21,7 @@ describe('LookupRuleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LookupRuleComponent, FormInputComponent, NullStateComponent],
-      imports: [AppMaterialModuleForSpec],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec],
       providers: [
         MatSnackBarModule,
         FormsModule,

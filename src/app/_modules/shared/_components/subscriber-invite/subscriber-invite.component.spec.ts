@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -28,7 +29,7 @@ describe('SubscriberInviteComponent', () => {
         SubscriberInviteComponent,
         FormInputComponent
       ],
-      imports: [
+      imports: [ MdoUiLibraryModule, 
         HttpClientTestingModule,
         HttpClientModule,
         MatSnackBarModule,

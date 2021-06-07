@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BarChartComponent } from './bar-chart.component';
@@ -25,7 +26,7 @@ describe('BarChartComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BarChartComponent, BaseChartDirective ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {
           provide: MatDialog,

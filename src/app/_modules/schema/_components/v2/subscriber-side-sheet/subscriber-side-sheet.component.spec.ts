@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,7 +23,7 @@ describe('SubscriberSideSheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SubscriberSideSheetComponent, SearchInputComponent],
-      imports: [
+      imports: [ MdoUiLibraryModule, 
         AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule
       ],
       providers: [{

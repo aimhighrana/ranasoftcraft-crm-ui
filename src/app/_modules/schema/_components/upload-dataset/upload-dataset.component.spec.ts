@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { UploadDatasetComponent } from './upload-dataset.component';
@@ -89,7 +90,7 @@ describe('UploadDatasetComponent', () => {
         FormInputComponent,
         AddFilterMenuComponent,
         FormInputAutoselectComponent],
-      imports: [AppMaterialModuleForSpec, SharedModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, SharedModule],
       providers: [
         SchemaDetailsService,
         GlobaldialogService,

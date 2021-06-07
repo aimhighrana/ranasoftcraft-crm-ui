@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StackedbarChartComponent } from './stackedbar-chart.component';
@@ -27,7 +28,7 @@ describe('StackedbarChartComponent', () => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData', 'getWidgetData', 'getDisplayCriteria']);
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {provide: WidgetService, userValue: widgetServiceSpy},
         {
