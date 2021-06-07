@@ -1,3 +1,4 @@
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListComponent } from './list.component';

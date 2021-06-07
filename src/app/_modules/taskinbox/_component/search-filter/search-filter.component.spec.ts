@@ -1,3 +1,4 @@
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -9,7 +10,7 @@ describe('SearchFilterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[MdoUiLibraryModule],
+      imports:[ AppMaterialModuleForSpec, MdoUiLibraryModule],
       declarations: [ SearchFilterComponent ]
     })
     .compileComponents();

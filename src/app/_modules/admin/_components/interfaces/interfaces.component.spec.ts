@@ -1,3 +1,4 @@
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { InterfacesComponent } from './interfaces.component';
 
