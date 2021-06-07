@@ -22,7 +22,6 @@ describe('SubscriberInviteComponent', () => {
   let fixture: ComponentFixture<SubscriberInviteComponent>;
   const formBuilder: FormBuilder = new FormBuilder();
   let schemaDetailsService : SchemaDetailsService;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [

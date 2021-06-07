@@ -35,6 +35,7 @@ describe('UploadDatasetComponent', () => {
   let schemadetailsService: SchemaDetailsService;
   let globaldialogService: GlobaldialogService;
   let userService: UserService;
+  let dialogRef: MatDialogRef<UploadDatasetComponent>;
   let usersSpy;
   const mockDialogRef = {
     close: jasmine.createSpy('close')
