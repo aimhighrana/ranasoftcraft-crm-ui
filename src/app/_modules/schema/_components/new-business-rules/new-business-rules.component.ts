@@ -248,6 +248,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * Angular hook
      */
     ngOnInit(): void {
+        this.filterRuleTypes();
         // initialize form Object
         this.initializeForm();
 
@@ -344,6 +345,14 @@ export class NewBusinessRulesComponent implements OnInit {
         this.initiateAutocomplete();
 
         this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
+    }
+
+    /**
+     * Removes untested rule types
+     */
+    filterRuleTypes() {
+        const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT'];
+        this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
     }
 
     /**
