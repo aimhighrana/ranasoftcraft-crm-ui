@@ -23,6 +23,7 @@ export class ImportComponent implements OnInit {
   isMissingModule: boolean;
   seletedFile: File;
   errorMsg: string;
+  warningMessage:string;
 
   constructor(
     private widgetService: WidgetService,
@@ -46,9 +47,10 @@ export class ImportComponent implements OnInit {
    */
   fileChange(fileList: FileList) {
     const file = fileList.item(0);
+    const fileName = file?.name.toLocaleLowerCase();
     if (!file) {
       this.errorMsg = 'Unable to complete upload: (Select a file)';
-    } else if (file.type !== 'application/json') {
+    } else if (!fileName.endsWith('.mdopage')) {
       this.errorMsg = 'Unable to complete upload: (Incorrect file type)';
     } else {
       this.errorMsg = null;
@@ -58,6 +60,7 @@ export class ImportComponent implements OnInit {
         description: this.seletedFile.name,
         importedAt: new Date()
       }];
+      this.dialogRef.disableClose = true;
     }
   }
 
@@ -66,19 +69,23 @@ export class ImportComponent implements OnInit {
    */
   importReport() {
     this.widgetService.importUploadReport(this.seletedFile).subscribe(res => {
-      this.importData = res;
+      this.importData = res
 
-      if (!this.importData.alreadyExits && this.importData.acknowledge) {
+      if (!this.importData?.alreadyExits && this.importData?.acknowledge) {
         this.successful = true;
+        this.dialogRef.close();
       }
     }, error => {
       this.importData = error.error;
-      if (this.importData.logs) {
-        if (this.importData.logs.some(s => s.category === ReportCategory.DUPLICATE_REPORT)) {
+      if (this.importData?.logs) {
+        if (this.importData.logs?.some(s => s.category === ReportCategory.DUPLICATE_REPORT)) {
           this.isDuplicate = true;
+          this.warningMessage = `An existing report shares the name ${this.seletedFile.name} . Duplicate or Replace`;
         } else if (this.importData.logs.some(s => s.category === ReportCategory.MISSING_MODULE)) {
           this.isMissingModule = true;
         }
+      } else {
+        this.errorMsg = 'Error while importing file';
       }
     });
   }
@@ -93,6 +100,7 @@ export class ImportComponent implements OnInit {
     this.successful = false;
     this.isDuplicate = false;
     this.isMissingModule = false;
+    this.errorMsg = '';
   }
 
   /**
@@ -103,7 +111,9 @@ export class ImportComponent implements OnInit {
       this.dialogRef.addPanelClass('display-dialog');
       const dialogRef = this.matDialog.open(ConfirmationDialogComponent, {
         width: '600px',
+        disableClose:true,
         data:   {
+          dialogTitle:'Confirmation',
           label : 'Existing schedule will not be duplicated. Schedule will need to be reconfigued. '
         }
       });

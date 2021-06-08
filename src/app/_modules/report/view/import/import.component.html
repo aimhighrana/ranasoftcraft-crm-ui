@@ -6,6 +6,7 @@
     </div>
     <div class="modal-body">
         <lib-banner *ngIf="errorMsg" status="error" [text]="errorMsg"></lib-banner>
+        <lib-banner *ngIf="isDuplicate" status="info" [text]="warningMessage"></lib-banner>
         <!-- Upload Section -->
         <div class="f-col upload-col" *ngIf="!uploadLoader">
             <lib-empty-state icon="table" iconSize="120" primaryText="Upload a file" i18n-primaryText="@@upload_file" secondaryText="Upload a .mdopage report file" i18n-secondaryText="@@upload_mdoreport">
@@ -57,10 +58,12 @@
     <div class="f-row modal-footer space-between">
         <lib-button (click)="back()" *ngIf="uploadLoader" type="plain" i18n="@@back">Back</lib-button>
         <span class="f-spacer"></span>
-        <lib-button type="minor" (click)="addReport(true)" *ngIf="isDuplicate" i18n="replace_existing">Replace existing</lib-button>
-        <lib-button type="minor" (click)="addReport(false, true)" *ngIf="isDuplicate" i18n="duplicate_report">Duplicate report</lib-button>
-        <lib-button type="minor" (click)="addReport()" *ngIf="isMissingModule" i18n="add_report">Add report</lib-button>
-        <lib-button type="major" (click)="importReport()" *ngIf="uploadLoader && !isDuplicate && !isMissingModule" i18n="import">Import</lib-button>
-    </div>
+        <lib-button-group>
+            <lib-button type="minor" (click)="addReport(true)" *ngIf="isDuplicate" i18n="replace_existing">Replace existing</lib-button>
+            <lib-button type="minor" (click)="addReport(false, true)" *ngIf="isDuplicate" i18n="duplicate_report">Duplicate report</lib-button>
+            <lib-button type="minor" (click)="addReport()" *ngIf="isMissingModule" i18n="add_report">Add report</lib-button>
+            <lib-button type="major" (click)="importReport()" *ngIf="uploadLoader && !isDuplicate && !isMissingModule" i18n="import">Import</lib-button>
+        </lib-button-group>
+          </div>
 </div>
 

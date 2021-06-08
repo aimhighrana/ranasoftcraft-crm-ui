@@ -73,7 +73,7 @@ describe('ImportComponent', () => {
   }));
 
   it('fileChange(), should set file to seletedFile', async(() => {
-    const mockFile = new File([''], 'filename', { type: 'application/json' });
+    const mockFile = new File([''], 'test.mdopage', { type: 'application/json' });
     const mockFileList = new DataTransfer();
     mockFileList.items.add(mockFile);
     component.fileChange(mockFileList.files);
@@ -101,13 +101,16 @@ describe('ImportComponent', () => {
   it('importReport(), should be successful', async(() => {
     component.seletedFile = new File([''], 'filename', { type: 'application/json' });
     const mockRes = { alreadyExits: false, acknowledge: true, reportId: 'extract_from_file', reportName: 'extract_from_file', importedBy: '${current_userid_who_imported}', importedAt: 16887879908, updatedAt: 16887879908, fileSno: 872234723674 };
-    spyOn(WidgetServiceSpy, 'importUploadReport').withArgs(component.seletedFile).and.returnValue(of(mockRes));
+    spyOn(WidgetServiceSpy, 'importUploadReport').withArgs(component.seletedFile).and.returnValues(of(mockRes), throwError({}));
     component.importReport();
     expect(WidgetServiceSpy.importUploadReport).toHaveBeenCalledWith(component.seletedFile);
     fixture.detectChanges();
     expect(component.importData).toEqual(mockRes);
     // expect(component.dataSource).toEqual([mockRes]);
     expect(component.successful).toBeTruthy();
+
+    component.importReport();
+    expect(component.errorMsg).toBeDefined();
   }));
 
   it('importReport(), should have Duplicate report name', async(() => {

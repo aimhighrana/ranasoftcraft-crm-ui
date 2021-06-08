@@ -23,8 +23,8 @@
 					<mat-menu #moremenu="matMenu" class="navigation-menu">
 						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
 							(click)="editReport()">Edit</button>
-						<!-- <button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
-							(click)="duplicateReport()">Duplicate</button> -->
+						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
+							(click)="duplicateReport()">Duplicate</button>
 						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
 							(click)="exportReport()">Export</button>
 						<button mat-menu-item *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)"
