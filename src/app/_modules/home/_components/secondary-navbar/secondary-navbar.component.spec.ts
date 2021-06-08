@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { TaskListService } from '@services/task-list.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecondaryNavbarComponent } from './secondary-navbar.component';
@@ -39,7 +40,7 @@ describe('SecondaryNavbarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SecondaryNavbarComponent, SearchInputComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
     })
       .compileComponents();
     router = TestBed.inject(Router);

@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -20,7 +21,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BusinessrulelibrarySidesheetComponent],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,

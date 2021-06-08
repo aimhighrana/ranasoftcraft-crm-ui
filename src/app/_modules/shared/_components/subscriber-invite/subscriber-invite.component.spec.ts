@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -21,14 +22,13 @@ describe('SubscriberInviteComponent', () => {
   let fixture: ComponentFixture<SubscriberInviteComponent>;
   const formBuilder: FormBuilder = new FormBuilder();
   let schemaDetailsService : SchemaDetailsService;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         SubscriberInviteComponent,
         FormInputComponent
       ],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule,
         HttpClientModule,
         MatSnackBarModule,

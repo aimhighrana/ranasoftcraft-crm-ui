@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReportCollaboratorComponent } from './report-collaborator.component';
@@ -25,7 +26,7 @@ describe('ReportCollaboratorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportCollaboratorComponent, SearchInputComponent ],
-      imports:[AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule],
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule],
       providers:[
         ReportService,
         GlobaldialogService, { provide: ElementRef, useValue: MockElementRef }

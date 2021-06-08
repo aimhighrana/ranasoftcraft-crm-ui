@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -21,7 +22,7 @@ describe('FilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FilterComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule, SharedModule]
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec,HttpClientTestingModule, SharedModule]
     })
     .compileComponents();
   }));

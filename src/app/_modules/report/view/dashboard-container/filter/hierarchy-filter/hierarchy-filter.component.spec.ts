@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -13,7 +14,7 @@ describe('HierarchyFilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HierarchyFilterComponent, SearchInputComponent ],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule
       ]
     })

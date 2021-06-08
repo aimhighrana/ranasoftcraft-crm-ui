@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaInfoComponent } from './schema-info.component';
@@ -52,7 +53,7 @@ describe('SchemaInfoComponent', () => {
         DatePickerFieldComponent,
         StaticsComponent
       ],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,

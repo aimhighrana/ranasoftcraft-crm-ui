@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CollaboratorComponent } from './collaborator.component';
@@ -13,7 +14,7 @@ describe('CollaboratorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CollaboratorComponent ],
-      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule]
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule]
     })
     .compileComponents();
   }));

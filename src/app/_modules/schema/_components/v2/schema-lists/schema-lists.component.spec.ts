@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -20,7 +21,7 @@ describe('SchemaListsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaListsComponent ],
-      imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
+      imports: [ MdoUiLibraryModule,  AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
       providers: [ SchemaService,
       {
         provide: ActivatedRoute,

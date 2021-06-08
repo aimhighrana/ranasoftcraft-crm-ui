@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicWidgetComponent } from './dynamic-widget.component';
@@ -13,7 +14,7 @@ describe('DynamicWidgetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DynamicWidgetComponent, SvgIconComponent ],
-      imports:[
+      imports:[ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         SharedModule
