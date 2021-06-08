@@ -28,7 +28,7 @@
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
 //       declarations: [ ContainerComponent, BreadcrumbComponent, SvgIconComponent ],
-//       imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
+//       imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
 //       providers:[
 //         ReportService,
 //         SchemaDetailsService,

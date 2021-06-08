@@ -86,7 +86,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DragDropModule,
     FormsModule,
     ReactiveFormsModule,
-    MdoUiLibraryModule
+    MdoUiLibraryModule,
+    CommonModule
   ],
   exports: [
     ReactiveFormsModule,
@@ -132,7 +133,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DragDropModule,
     BrowserAnimationsModule,
     ScrollingModule,
-    MdoUiLibraryModule
+    MdoUiLibraryModule,
+    CommonModule
   ],
   declarations: []
 })

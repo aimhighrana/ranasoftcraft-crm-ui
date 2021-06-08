@@ -70,8 +70,7 @@
                         <mat-divider [vertical]="true"></mat-divider>
                         <div class="f-col dataset-grid-listing">
                             <div class="f-row">
-                                <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" 
-                                    [preValue]="preInpVal"></lib-search>
+                                <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);"></lib-search>
                                 <div class="f-col-spacer-half"></div>
                                 <mat-chip-list>
                                     <!-- Applied filters -->

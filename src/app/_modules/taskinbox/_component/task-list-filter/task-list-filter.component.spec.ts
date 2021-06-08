@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { Subject, of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -21,7 +22,7 @@ describe('TaskListFilterComponent', () => {
     queryParams = new Subject<Params>();
     TestBed.configureTestingModule({
       declarations: [TaskListFilterComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: ActivatedRoute,

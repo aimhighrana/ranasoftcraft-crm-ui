@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { BrruleSideSheetComponent } from './brrule-side-sheet.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -26,7 +27,7 @@ describe('BrruleSideSheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BrruleSideSheetComponent, FormInputComponent, SetupDuplicateRuleComponent],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule
       ],
       providers: [SchemaDetailsService,

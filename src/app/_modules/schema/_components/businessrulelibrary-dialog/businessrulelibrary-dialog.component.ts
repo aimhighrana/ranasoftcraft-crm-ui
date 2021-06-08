@@ -66,19 +66,15 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
    * using the ruleInfo as searchTerm
    */
   search(searchTerm: string) {
-    this.searchString = searchTerm ||'';
-    if (searchTerm && searchTerm.trim()) {
-      this.filteredBusinessRulesList =
-        this.businessRulesList.filter((rule: CoreSchemaBrInfo) => {
-          if (rule.brInfo) {
-            return this.selectedRuleType ? rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase()) && rule.brType === this.selectedRuleType.ruleType
-                   : rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase());
-          }
+    this.searchString = searchTerm || '';
+    searchTerm = this.searchString.trim();
+    this.filteredBusinessRulesList =
+      this.businessRulesList.filter((rule: CoreSchemaBrInfo) => {
+        if (rule.brInfo) {
+          return this.selectedRuleType ? rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase()) && rule.brType === this.selectedRuleType.ruleType
+            : rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase());
         }
-        );
-    } else {
-      this.filteredBusinessRulesList = this.businessRulesList;
-    }
+      });
   }
 
   /**

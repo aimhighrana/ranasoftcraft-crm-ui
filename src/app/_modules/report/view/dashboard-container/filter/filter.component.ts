@@ -15,7 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges,OnDestroy {
+export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   displayCriteriaOptions = [
     {

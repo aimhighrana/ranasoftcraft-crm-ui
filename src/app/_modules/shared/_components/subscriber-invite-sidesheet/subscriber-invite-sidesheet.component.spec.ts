@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -26,7 +27,7 @@ describe('SubscriberInviteSidesheetComponent', () => {
         SubscriberInviteSidesheetComponent,
         FormInputComponent
       ],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule,
         MatSnackBarModule,
         ReactiveFormsModule,

@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
@@ -27,7 +28,7 @@ describe('WelcomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [WelcomeComponent, SvgIconComponent, SearchInputComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         SchemalistService,
         SchemaService,

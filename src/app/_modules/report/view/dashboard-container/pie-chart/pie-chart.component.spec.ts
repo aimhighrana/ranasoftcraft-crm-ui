@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PieChartComponent } from './pie-chart.component';
@@ -25,7 +26,7 @@ describe('PieChartComponent', () => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData','getDisplayCriteria']);
     TestBed.configureTestingModule({
       declarations: [ PieChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {provide: WidgetService, userValue: widgetServiceSpy},
         {

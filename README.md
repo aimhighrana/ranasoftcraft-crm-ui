@@ -28,4 +28,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Deploying app with i18 locale 
 Run `ng build --prod --aot --build-optimizer --localize` to build the project with multiple locale defined in `angular.json`.
-Ref https://angular.io/guide/i18n#deploy-multiple-locales
+Ref https://angular.io/guide/i18n#deploy-multiple-locales 
