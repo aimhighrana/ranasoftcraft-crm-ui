@@ -46,25 +46,42 @@ describe('UdrConditionOperatorsComponent', () => {
 
   it('ngOnInit(), test prerequired things', async(()=>{
     component.selecetedOperator ='RANGE';
-    component.conditionalOperators = [{desc:'Common Operator', childs:['RANGE']}];
+    component.conditionalOperators = [{desc:'Common Operator', childs:[{ code: 'RANGE' }]}];
     component.ngOnInit();
     expect(component.operator.value).toEqual('RANGE');
 
-    component.conditionalOperators = [{desc:'Common Operator', childs:['EQUAL']}];
+    component.conditionalOperators = [{desc:'Common Operator', childs:[{ code: 'EQUAL' }]}];
     component.ngOnInit();
     expect(component.operator.value).toEqual('RANGE');
 
     component.selecetedOperator = '';
     component.ngOnInit();
     expect(component.operator.value).toEqual('RANGE');
+
+    component.selecetedOperator ='RANGE';
+    component.conditionalOperators = [{desc:'Common Operator', childs:[{ code: 'RANGE', value: 'Range label' }]}];
+    component.ngOnInit();
+    expect(component.operator.value).toEqual('Range label');
+
+    component.selecetedOperator = 'EQUAL';
+    component.conditionalOperators = [{desc:'Common Operator', childs:[{ code: 'EQUAL', value: 'Equal label' }]}];
+    component.ngOnInit();
+    expect(component.operator.value).toEqual('Equal label');
   }));
 
   it('operatorSelectionChng(), test operator selection change', async(()=>{
-    const option: MatAutocompleteSelectedEvent = {option:{value:'EQUAL'}} as MatAutocompleteSelectedEvent;
-    spyOn(component.afterSelect,'emit').withArgs(option.option.value).and.returnValue(null);
+    let option: MatAutocompleteSelectedEvent = {option:{value:{ code: 'EQUAL' }}} as MatAutocompleteSelectedEvent;
+    spyOn(component.afterSelect,'emit').withArgs(option.option.value.code).and.returnValue(null);
     component.operatorSelectionChng(option);
 
-    expect(component.afterSelect.emit).toHaveBeenCalledWith(option.option.value);
+    expect(component.afterSelect.emit).toHaveBeenCalledWith(option.option.value.code);
+    expect(component.operator.value).toEqual('EQUAL');
+
+    option = {option:{value:{ code: 'EQUAL', value: 'Equal label' }}} as MatAutocompleteSelectedEvent;
+    component.operatorSelectionChng(option);
+
+    expect(component.afterSelect.emit).toHaveBeenCalledWith(option.option.value.code);
+    expect(component.operator.value).toEqual('Equal label');
 
     const option1 = null;
     component.operatorSelectionChng(option1);

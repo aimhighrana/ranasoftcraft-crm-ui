@@ -824,41 +824,41 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(userSub);
   }
 
-    get possibleOperators(): ConditionalOperator[] {
+  get possibleOperators(): ConditionalOperator[] {
     // get generic operators
     const genericOp: ConditionalOperator = new ConditionalOperator();
     genericOp.desc = 'Common Operator';
     genericOp.childs = [];
-    genericOp.childs.push('EQUAL');
-    genericOp.childs.push('NOT_EQUAL');
-    genericOp.childs.push('STARTS_WITH');
-    genericOp.childs.push('ENDS_WITH');
-    genericOp.childs.push('CONTAINS');
-    genericOp.childs.push('EMPTY');
-    genericOp.childs.push('NOT_EMPTY');
+    genericOp.childs.push({ code: 'EQUAL', value: $localize`:@@equal:Equal` });
+    genericOp.childs.push({ code: 'NOT_EQUAL', value: $localize`:@@not_equal:Not Equal` });
+    genericOp.childs.push({ code: 'STARTS_WITH', value: $localize`:@@starts_with:Starts With` });
+    genericOp.childs.push({ code: 'ENDS_WITH', value: $localize`:@@ends_with:Ends With` });
+    genericOp.childs.push({ code: 'CONTAINS', value: $localize`:@@contains:Contains` });
+    genericOp.childs.push({ code: 'EMPTY', value: $localize`:@@empty:Empty` });
+    genericOp.childs.push({ code: 'NOT_EMPTY', value: $localize`:@@not_empty:Not Empty` });
 
     // for numeric number field
     const onlyNum: ConditionalOperator = new ConditionalOperator();
     onlyNum.desc = 'Numeric Operators';
     onlyNum.childs = [];
     // onlyNum.childs.push('RANGE');
-    onlyNum.childs.push('LESS_THAN');
-    onlyNum.childs.push('LESS_THAN_EQUAL');
-    onlyNum.childs.push('GREATER_THAN');
-    onlyNum.childs.push('GREATER_THAN_EQUAL');
+    onlyNum.childs.push({ code: 'LESS_THAN', value: $localize`:@@less_than:Less Than` });
+    onlyNum.childs.push({ code: 'LESS_THAN_EQUAL', value: $localize`:@@less_than_equal_to:Less Than Equal To` });
+    onlyNum.childs.push({ code: 'GREATER_THAN', value: $localize`:@@greater_than:Greater Than` });
+    onlyNum.childs.push({ code: 'GREATER_THAN_EQUAL', value: $localize`:@@Greater_than_equal_to:Greater Than Equal To` });
 
     // for special operators
     const specialOpe: ConditionalOperator = new ConditionalOperator();
     specialOpe.desc = 'Special Operators';
     specialOpe.childs = [];
-    specialOpe.childs.push('REGEX');
-    specialOpe.childs.push('FIELD2FIELD');
-    specialOpe.childs.push('LOCATION');
-    specialOpe.childs.push('FIELD2FIELD_EQUAL');
-    specialOpe.childs.push('FIELD2FIELD_GREATETHENEQUAL');
-    specialOpe.childs.push('FIELD2FIELD_GREATETHAN');
-    specialOpe.childs.push('FIELD2FIELD_LESSTHEN');
-    specialOpe.childs.push('FIELD2FIELD_LESSTHENEQUALTO');
+    specialOpe.childs.push({ code: 'REGEX', value: $localize`:@@regex:Regex` });
+    specialOpe.childs.push({ code: 'FIELD2FIELD', value: $localize`:@@field_to_field:Field To Field` });
+    specialOpe.childs.push({ code: 'LOCATION', value: $localize`:@@location:Location` });
+    specialOpe.childs.push({ code: 'FIELD2FIELD_EQUAL', value: $localize`:@@field_to_field_equal:Field To Field Equal` });
+    specialOpe.childs.push({ code: 'FIELD2FIELD_GREATETHENEQUAL', value: $localize`:@@Field_to_field_greater_than_equal:Field To Field Greater Than Equal` });
+    specialOpe.childs.push({ code: 'FIELD2FIELD_GREATETHAN', value: $localize`:@@field_to_field_greater_than:Field To Field Greater Than` });
+    specialOpe.childs.push({ code: 'FIELD2FIELD_LESSTHEN', value: $localize`:@@field_to_field_less_than:Field To Field Less Than` });
+    specialOpe.childs.push({ code: 'FIELD2FIELD_LESSTHENEQUALTO', value: $localize`:@@field_to_field_less_than_equal:Field To Field Less Than Equal` });
     return [genericOp, onlyNum, specialOpe];
   }
 
