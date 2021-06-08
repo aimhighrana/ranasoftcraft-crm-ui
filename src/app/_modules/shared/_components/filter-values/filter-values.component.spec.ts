@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilterValuesComponent } from './filter-values.component';
@@ -20,7 +21,7 @@ describe('FilterValuesComponent', () => {
     const spyObj = jasmine.createSpyObj('SchemaService', ['dropDownValues', 'getStaticFieldValues']);
     TestBed.configureTestingModule({
       declarations: [FilterValuesComponent, SearchInputComponent],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule],
       providers: [
         { provide: SchemaService, useValue: spyObj }
       ]

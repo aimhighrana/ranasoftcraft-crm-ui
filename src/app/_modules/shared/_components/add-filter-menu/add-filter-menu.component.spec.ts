@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AddFilterMenuComponent } from './add-filter-menu.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -20,7 +21,7 @@ describe('AddFilterMenuComponent', () => {
     const spyObj = jasmine.createSpyObj('SchemaService', ['dropDownValues', 'generateColumnByFieldId']);
     TestBed.configureTestingModule({
       declarations: [ AddFilterMenuComponent, FilterValuesComponent, SearchInputComponent ],
-      imports: [AppMaterialModuleForSpec],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec],
       providers: [SchemaDetailsService,
         { provide: SchemaService, useValue: spyObj }]
     })

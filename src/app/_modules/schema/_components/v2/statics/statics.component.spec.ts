@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '@modules/shared/shared.module';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -18,7 +19,7 @@ describe('StaticsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ StaticsComponent, ExecutionResultComponent, SchemaExecutionTrendComponent ],
-      imports: [AppMaterialModuleForSpec, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, SharedModule]
 
     })
     .compileComponents();
