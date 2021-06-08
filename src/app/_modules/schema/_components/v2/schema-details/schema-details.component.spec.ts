@@ -72,7 +72,7 @@ describe('SchemaDetailsComponent', () => {
     component.dataSource = new SchemaDataSource(schemaDetailService, endpointService, '274751');
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
 
-    // fixture.detectChanges();
+    // fixture.detectChanges();...
 
     component.schemaId = '274751';
     component.variantId = '0';
