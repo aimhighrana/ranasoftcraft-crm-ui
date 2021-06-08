@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
+import { Observable, Subject } from 'rxjs';
+import { Criteria, DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq, ReportingWidget } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@models/collaborator';
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
@@ -12,6 +12,9 @@ import { ObjectTypeResponse } from '@models/schema/schema';
   providedIn: 'root'
 })
 export class ReportService {
+  filterCriteria: Criteria[] = [];
+  tableColumnMetaData: ReportingWidget[] = [];
+  isSideSheetClose: Subject<boolean> = new Subject();
 
   constructor(
     private http: HttpClient,
@@ -20,41 +23,41 @@ export class ReportService {
   ) { }
 
   public getReportInfo(reportId: number, plantCode: string): Observable<any> {
-    return this.http.get<any>(this.endpointAnalyticService.reportDashboardUrl(reportId), {params: {plantCode}});
+    return this.http.get<any>(this.endpointAnalyticService.reportDashboardUrl(reportId), { params: { plantCode } });
   }
 
   public getMetaDataFldByFldIds(fieldId: string, code: string[], plantCode: string): Observable<DropDownValues[]> {
-    return this.http.post<DropDownValues[]>(this.endpointAnalyticService.getFieldMetadatByFldUrl(fieldId), code, {params: {plantCode}});
+    return this.http.post<DropDownValues[]>(this.endpointAnalyticService.getFieldMetadatByFldUrl(fieldId), code, { params: { plantCode } });
   }
 
   public createUpdateReport(request: ReportDashboardReq, plantCode: string): Observable<string> {
-    return this.http.post<string>(this.endpointAnalyticService.createUpdateReportUrl(), request, {params: {plantCode}});
+    return this.http.post<string>(this.endpointAnalyticService.createUpdateReportUrl(), request, { params: { plantCode } });
   }
 
-  public reportList(plantCode: string, roleId:string): Observable<ReportList[]> {
-    return this.http.get<ReportList[]>(this.endpointAnalyticService.getReportListUrl(), {params: {plantCode, roleId}});
+  public reportList(plantCode: string, roleId: string): Observable<ReportList[]> {
+    return this.http.get<ReportList[]>(this.endpointAnalyticService.getReportListUrl(), { params: { plantCode, roleId } });
   }
 
-  public getReportConfi(reportId: string, roleId:string): Observable<ReportList> {
-    return this.http.get<ReportList>(this.endpointAnalyticService.getReportConfigUrl(reportId), {params: {roleId}});
+  public getReportConfi(reportId: string, roleId: string): Observable<ReportList> {
+    return this.http.get<ReportList>(this.endpointAnalyticService.getReportConfigUrl(reportId), { params: { roleId } });
   }
 
   public deleteReport(reportId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointAnalyticService.deleteReport(reportId));
   }
 
-  public getDocCount(objectType: string, plantCode:string, isWorkflowDataset?:any, isCustomdataSet?:any): Observable<number> {
-    if(isWorkflowDataset) {
-      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType),{params:{plantCode, isWorkflowDataset}});
-    } else if(isCustomdataSet) {
-      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType),{params:{plantCode, isCustomdataSet}});
+  public getDocCount(objectType: string, plantCode: string, isWorkflowDataset?: any, isCustomdataSet?: any): Observable<number> {
+    if (isWorkflowDataset) {
+      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType), { params: { plantCode, isWorkflowDataset } });
+    } else if (isCustomdataSet) {
+      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType), { params: { plantCode, isCustomdataSet } });
     } else {
-      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType), {params:{plantCode}});
+      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType), { params: { plantCode } });
     }
   }
 
-  public getCollaboratorPermission(queryString: string, fetchCount: any) : Observable<PermissionOn> {
-    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(),{params:{ queryString, fetchCount }});
+  public getCollaboratorPermission(queryString: string, fetchCount: any): Observable<PermissionOn> {
+    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(), { params: { queryString, fetchCount } });
   }
 
   public getCollaboratorsPermisison(reportId: string): Observable<ReportDashboardPermission[]> {
@@ -65,8 +68,8 @@ export class ReportService {
     return this.http.post<ReportDashboardPermission[]>(this.endpointService.saveUpdateReportCollaborator(), request);
   }
 
-  public saveUpdateportDownload(request: WidgetDownloadUser[],widgetId:string, userName :string, conditionList: any): Observable<ReportDashboardPermission[]> {
-    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId,userName), request, {params: {conditionList}});
+  public saveUpdateportDownload(request: WidgetDownloadUser[], widgetId: string, userName: string, conditionList: any): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId, userName), request, { params: { conditionList } });
   }
 
   public deleteCollaborator(permissionId: string): Observable<boolean> {
@@ -81,7 +84,7 @@ export class ReportService {
   public getAllLayoutsForSummary(objectType: string, wfId: string, roleId: string, plantCode: string): Observable<LayoutConfigWorkflowModel[]> {
     objectType = objectType ? objectType : '';
     wfId = wfId ? wfId : '';
-    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointService.getlayoutsUrl(),{params:{objectType,wfId, roleId, plantCode}});
+    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointService.getlayoutsUrl(), { params: { objectType, wfId, roleId, plantCode } });
   }
 
   public getCustomData(): Observable<ObjectTypeResponse[]> {
@@ -90,5 +93,32 @@ export class ReportService {
 
   public getCustomDatasetFields(objectId: string): Observable<any> {
     return this.http.get<any>(this.endpointAnalyticService.getCustomDatasetFieldsUrl(objectId));
+  }
+
+  public getDropDownValues(fieldId, searchText?): Observable<any> {
+    if (searchText)
+      return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString: searchText } });
+    else 
+    return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId));
+  }
+
+  public setFilterCriteria(filterCriteria: Criteria[]) {
+    this.filterCriteria = filterCriteria;
+  }
+
+  public getFilterCriteria(): Criteria[] {
+    return this.filterCriteria;
+  }
+
+  public setColumnMetaData(metaData: ReportingWidget[]) {
+    this.tableColumnMetaData = metaData;
+  }
+
+  public getColumnMetaData(): ReportingWidget[] {
+    return this.tableColumnMetaData;
+  }
+
+  public sideSheetStatusChange() {
+    return this.isSideSheetClose.asObservable();
   }
 }

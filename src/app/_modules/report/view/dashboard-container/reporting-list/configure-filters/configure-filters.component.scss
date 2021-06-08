@@ -1,0 +1,58 @@
+div.root {
+  user-select: none;
+  height: 100%;
+  overflow: hidden;
+  width: 800px;
+
+  .breadcrum-toolbar {
+    padding: 8px 16px;
+
+    .mdo-constrained-right {
+      width: 100%;
+      align-items: center;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+      }
+    }
+  }
+
+  .sidesheetcontent-listing {
+    height: calc(100% - 52px);
+    overflow: auto;
+
+    .mdo-justify {
+      margin: 0 66px;
+    }
+  }
+  .bold {
+    font-weight: bold;
+  }
+
+  .selected {
+    background-color: #f2f5f8;
+  }
+  .item {
+    align-items: flex-start;
+  }
+
+  .itemWidth {
+    width: 200px;
+  }
+
+  .selected-values {
+    font-size: 14px;
+    font-weight: lighter;
+  }
+
+  .list {
+    overflow: auto;
+    height: calc(100vh - 70px);
+  }
+
+  .list-item {
+    min-height: fit-content;
+  }
+}

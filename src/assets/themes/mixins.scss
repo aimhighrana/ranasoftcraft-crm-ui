@@ -26,10 +26,8 @@
     bottom: 0;
     right: 0;
     animation: pulse_opacity_step_10_repeat 2s infinite;
-    box-shadow:
-      0 3px 5px -1px mat-color($primary-palette, 700, 0.4),
-      0 6px 10px 0 mat-color($primary-palette, 700, 0.28),
-      0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
+    box-shadow: 0 3px 5px -1px mat-color($primary-palette, 700, 0.4),
+      0 6px 10px 0 mat-color($primary-palette, 700, 0.28), 0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
     opacity: 0;
   }
 
@@ -161,9 +159,7 @@
   // CDK-Dragdrop
   .cdk-drag-preview {
     box-sizing: border-box;
-    box-shadow:
-      0 5px 5px -3px rgba(0, 0, 0, 0.2),
-      0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
       0 3px 14px 2px rgba(0, 0, 0, 0.12);
     background-color: mat-color($background-palette, card);
     border-radius: 3px;
@@ -1746,6 +1742,10 @@
         }
       }
     }
+    table.mat-table .mat-header-cell,
+    table.mat-table .mat-cell {
+      min-width: 100px;
+    }
   }
 
   pros-widget-color-palette {
@@ -2056,6 +2056,12 @@
 
     .mat-sort-header-container.mat-focus-indicator {
       justify-content: flex-end;
+    }
+  }
+
+  pros-configure-filters {
+    .mat-list-base .mat-list-item .mat-list-item-content {
+      display: block;
     }
   }
 }

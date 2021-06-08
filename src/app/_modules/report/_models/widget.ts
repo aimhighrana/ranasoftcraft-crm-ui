@@ -32,7 +32,7 @@ export class Widget {
     workflowPath: string[];
     distictWith: string;
     isCustomdataSet: boolean;
-    pageDefaultSize:number;
+    pageDefaultSize: number;
     isFieldDistinct: boolean;
     displayCriteria: DisplayCriteria;
     isEnableGlobalFilter: boolean;
@@ -94,47 +94,48 @@ export enum BlockType {
 }
 export enum ConditionOperator {
     AGG_GROUP_BY = 'AGG_GROUP_BY',
-	EQUAL = 'EQUAL',
-	MULTI_SELECT = 'MULTI_SELECT',
-	FIELD2FIELD = 'FIELD2FIELD',
-	STARTS_WITH = 'STARTS_WITH',
-	ENDS_WITH = 'ENDS_WITH',
-	CONTAINS = 'CONTAINS',
-	REGEX = 'REGEX',
-	IN = 'IN',
-	NOT_IN = 'NOT_IN',
-	LESS_THAN = 'LESS_THAN',
-	LESS_THAN_EQUAL = 'LESS_THAN_EQUAL',
-	GREATER_THAN = 'GREATER_THAN',
-	GREATER_THAN_EQUAL = 'GREATER_THAN_EQUAL',
-	RANGE = 'RANGE',
-	COUNT_IN = 'COUNT_IN',
-	COUNT_LESS_THAN = 'COUNT_LESS_THAN',
-	COUNT_LESS_THAN_EQUAL ='COUNT_LESS_THAN_EQUAL',
-	COUNT_GREATER_THAN ='COUNT_GREATER_THAN',
-	COUNT_GREATER_THAN_EQUAL ='COUNT_GREATER_THAN_EQUAL',
-	COUNT_RANGE ='COUNT_RANGE',
-	EMPTY ='EMPTY',
-	NOT_EMPTY ='NOT_EMPTY',
-	AVG_IN ='AVG_IN',
-	AVG_LESS_THAN ='AVG_LESS_THAN',
-	AVG_LESS_THAN_EQUAL ='AVG_LESS_THAN_EQUAL',
-	AVG_GREATER_THAN ='AVG_GREATER_THAN',
-	AVG_GREATER_THAN_EQUAL ='AVG_GREATER_THAN_EQUAL',
-	AVG_RANGE ='AVG_RANGE',
-	MAX_IN ='MAX_IN',
-	MAX_LESS_THAN = 'MAX_LESS_THAN',
-	MAX_LESS_THAN_EQUAL = 'MAX_LESS_THAN_EQUAL',
-	MAX_GREATER_THAN = 'MAX_GREATER_THAN',
-	MAX_GREATER_THAN_EQUAL ='MAX_GREATER_THAN_EQUAL',
-	MAX_RANGE = 'MAX_RANGE',
-	MIN_IN = 'MIN_IN',
-	MIN_LESS_THAN = 'MIN_LESS_THAN',
-	MIN_LESS_THAN_EQUAL = 'MIN_LESS_THAN_EQUAL',
-	MIN_GREATER_THAN = 'MIN_GREATER_THAN',
-	MIN_GREATER_THAN_EQUAL = 'MIN_GREATER_THAN_EQUAL',
+    EQUAL = 'EQUAL',
+    MULTI_SELECT = 'MULTI_SELECT',
+    FIELD2FIELD = 'FIELD2FIELD',
+    STARTS_WITH = 'STARTS_WITH',
+    ENDS_WITH = 'ENDS_WITH',
+    CONTAINS = 'CONTAINS',
+    REGEX = 'REGEX',
+    IN = 'IN',
+    NOT_IN = 'NOT_IN',
+    LESS_THAN = 'LESS_THAN',
+    LESS_THAN_EQUAL = 'LESS_THAN_EQUAL',
+    GREATER_THAN = 'GREATER_THAN',
+    GREATER_THAN_EQUAL = 'GREATER_THAN_EQUAL',
+    RANGE = 'RANGE',
+    COUNT_IN = 'COUNT_IN',
+    COUNT_LESS_THAN = 'COUNT_LESS_THAN',
+    COUNT_LESS_THAN_EQUAL = 'COUNT_LESS_THAN_EQUAL',
+    COUNT_GREATER_THAN = 'COUNT_GREATER_THAN',
+    COUNT_GREATER_THAN_EQUAL = 'COUNT_GREATER_THAN_EQUAL',
+    COUNT_RANGE = 'COUNT_RANGE',
+    EMPTY = 'EMPTY',
+    NOT_EMPTY = 'NOT_EMPTY',
+    AVG_IN = 'AVG_IN',
+    AVG_LESS_THAN = 'AVG_LESS_THAN',
+    AVG_LESS_THAN_EQUAL = 'AVG_LESS_THAN_EQUAL',
+    AVG_GREATER_THAN = 'AVG_GREATER_THAN',
+    AVG_GREATER_THAN_EQUAL = 'AVG_GREATER_THAN_EQUAL',
+    AVG_RANGE = 'AVG_RANGE',
+    MAX_IN = 'MAX_IN',
+    MAX_LESS_THAN = 'MAX_LESS_THAN',
+    MAX_LESS_THAN_EQUAL = 'MAX_LESS_THAN_EQUAL',
+    MAX_GREATER_THAN = 'MAX_GREATER_THAN',
+    MAX_GREATER_THAN_EQUAL = 'MAX_GREATER_THAN_EQUAL',
+    MAX_RANGE = 'MAX_RANGE',
+    MIN_IN = 'MIN_IN',
+    MIN_LESS_THAN = 'MIN_LESS_THAN',
+    MIN_LESS_THAN_EQUAL = 'MIN_LESS_THAN_EQUAL',
+    MIN_GREATER_THAN = 'MIN_GREATER_THAN',
+    MIN_GREATER_THAN_EQUAL = 'MIN_GREATER_THAN_EQUAL',
     MIN_RANGE = 'MIN_RANGE',
-    LOCATION = 'LOCATION'
+    LOCATION = 'LOCATION',
+    NOT_EQUAL = 'NOT_EQUAL'
 }
 export class FilterWidget {
     widgetId: number;
@@ -154,10 +155,10 @@ export interface DropDownValues {
 }
 
 export enum AggregationOperator {
-    GROUPBY ='GROUPBY',
-    COUNT='COUNT',
-    MIN='MIN',
-    MAX='MAX',
+    GROUPBY = 'GROUPBY',
+    COUNT = 'COUNT',
+    MIN = 'MIN',
+    MAX = 'MAX',
     SUM = 'SUM'
 }
 
@@ -187,14 +188,14 @@ export class BarChartWidget {
     isEnableDatalabels: boolean;
     isEnableLegend: boolean;
     orientation: Orientation;
-    legendPosition : PositionType;
+    legendPosition: PositionType;
     datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     displayAxisLabel: boolean;
-    xAxisLabel : string;
-    yAxisLabel : string;
-    bgColor : string;
-    borderColor : string;
+    xAxisLabel: string;
+    yAxisLabel: string;
+    bgColor: string;
+    borderColor: string;
     chartType: ChartType;
     metaData: MetadataModel;
     orderWith: OrderWith;
@@ -202,24 +203,24 @@ export class BarChartWidget {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
-    blankValueAlias : string;
+    blankValueAlias: string;
     widgetColorPalette: WidgetColorPalette;
-    isEnabledBarPerc : boolean;
+    isEnabledBarPerc: boolean;
 }
 
-export class StackBarChartWidget{
+export class StackBarChartWidget {
     widgetId: number;
     groupById: string;
-    fieldId : string;
-    aggregationOperator:AggregationOperator;
+    fieldId: string;
+    aggregationOperator: AggregationOperator;
     isEnableDatalabels: boolean;
     isEnableLegend: boolean;
-    legendPosition : PositionType;
+    legendPosition: PositionType;
     datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     displayAxisLabel: boolean;
-    xAxisLabel : string;
-    yAxisLabel : string;
+    xAxisLabel: string;
+    yAxisLabel: string;
     orientation: Orientation;
     fieldIdMetaData: MetadataModel;
     groupByIdMetaData: MetadataModel;
@@ -228,37 +229,37 @@ export class StackBarChartWidget{
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
-    blankValueAlias : string;
+    blankValueAlias: string;
     widgetColorPalette: WidgetColorPalette;
 }
 
 export class PieChartWidget {
     widgetId: number;
-    fieldId : string;
-    aggregationOperator:AggregationOperator;
+    fieldId: string;
+    aggregationOperator: AggregationOperator;
     isEnableDatalabels: boolean;
     isEnableLegend: boolean;
     orientation: string;
-    legendPosition : PositionType;
+    legendPosition: PositionType;
     datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     metaData: MetadataModel;
-    blankValueAlias : string;
-    isEnabledBarPerc:boolean;
+    blankValueAlias: string;
+    isEnabledBarPerc: boolean;
 }
 
-export class Count{
+export class Count {
     widgetId: number;
     fieldId: string;
     aggregationOperator: AggregationOperator;
 }
 
-export class ReportingWidget{
+export class ReportingWidget {
     widgetId: number;
     fields: string;
-    fieldOrder : string;
-    fieldDesc:string;
-    sno:number;
+    fieldOrder: string;
+    fieldDesc: string;
+    sno: number;
     fldMetaData: MetadataModel;
     displayCriteria: DisplayCriteria;
 }
@@ -278,10 +279,10 @@ export class WidgetHeader {
     isEnableGlobalFilter: boolean;
 }
 
-export interface ChartLegend{
-    legendIndex : number;
-    code : string;
-    text : string;
+export interface ChartLegend {
+    legendIndex: number;
+    code: string;
+    text: string;
 }
 
 export class FilterResponse {
@@ -310,32 +311,32 @@ export interface WidgetTimeseries {
     chartType: ChartType;
     isEnableDatalabels: boolean;
     isEnableLegend: boolean;
-    legendPosition : PositionType;
+    legendPosition: PositionType;
     datalabelsPosition: AlignPosition;
-    xAxisLabel : string;
-    yAxisLabel : string;
+    xAxisLabel: string;
+    yAxisLabel: string;
     scaleFrom: number;
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
-    groupWith : string;
-    widgetColorPalette : WidgetColorPalette;
+    groupWith: string;
+    widgetColorPalette: WidgetColorPalette;
     distictWith: string;
-    showInPercentage : boolean;
+    showInPercentage: boolean;
     bucketFilter: string;
     startDate: string;
     metaData: MetadataModel;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',
-	second = 'second',
-	minute = 'minute',
-	hour = 'hour',
-	day = 'day',
-	week = 'week',
-	month = 'month',
-	quarter = 'quarter',
-	year = 'year'
+    second = 'second',
+    minute = 'minute',
+    hour = 'hour',
+    day = 'day',
+    week = 'week',
+    month = 'month',
+    quarter = 'quarter',
+    year = 'year'
 }
 
 export class ReportDashboardReq {
@@ -361,7 +362,7 @@ export class WidgetImageModel {
     widgetId: number;
     imagesno: string;
     imageUrl: string;
-    imageName:string;
+    imageName: string;
 }
 
 export enum ChartType {
@@ -411,21 +412,21 @@ export class ChartProperties {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
-    seriesWith : SeriesWith;
-    seriesFormat:string;
-    blankValueAlias : string;
-    timeseriesStartDate : TimeseriesStartDate;
-    isEnabledBarPerc : boolean;
+    seriesWith: SeriesWith;
+    seriesFormat: string;
+    blankValueAlias: string;
+    timeseriesStartDate: TimeseriesStartDate;
+    isEnabledBarPerc: boolean;
     bucketFilter: string;
 }
 
 export class ButtonArr {
-    id:number;
+    id: number;
     value: string;
     isActive: boolean;
-  }
+}
 
-export enum TimeseriesStartDate{
+export enum TimeseriesStartDate {
     D7 = '7',
     D10 = '10',
     D20 = '20',
@@ -453,55 +454,55 @@ export enum PermissionType {
     GROUP = 'GROUP'
 }
 
-export class LayoutFieldsResponse{
-      tcode : number;
-      fieldId: string;
-      fieldDescri: string;
-      dataType: string;
-      picklist: number;
-      dispCriteria: number;
-      strucId: string;
-      mandatory: boolean;
-      hidden: boolean;
-      isCheckList: boolean;
-      maxChar:number;
-      dependency : string;
-      parentField : string;
-      locType:string;
-      refField:string;
-      textAreaLength:number;
-      textAreaWidth:number;
-      value:string;
-      sno : string;
-      showMore? : boolean;
+export class LayoutFieldsResponse {
+    tcode: number;
+    fieldId: string;
+    fieldDescri: string;
+    dataType: string;
+    picklist: number;
+    dispCriteria: number;
+    strucId: string;
+    mandatory: boolean;
+    hidden: boolean;
+    isCheckList: boolean;
+    maxChar: number;
+    dependency: string;
+    parentField: string;
+    locType: string;
+    refField: string;
+    textAreaLength: number;
+    textAreaWidth: number;
+    value: string;
+    sno: string;
+    showMore?: boolean;
 }
 
-export class LayoutTabResponse{
+export class LayoutTabResponse {
     tabCode: string;
     tabDesc: string;
     headerType: string;
     helpLink: string;
-    refParentObjectId:string;
-    fieldsList : LayoutFieldsResponse[];
+    refParentObjectId: string;
+    fieldsList: LayoutFieldsResponse[];
 }
 
-export class MDORECORDESV3{
-    id : string;
-    stat : string;
-    hdvs : {string:FieldValueV2}
+export class MDORECORDESV3 {
+    id: string;
+    stat: string;
+    hdvs: { string: FieldValueV2 }
 }
 
-export class FieldValueV2{
-    fId:string;
-    vc : FieldCodeText[];
-    oc : FieldCodeText[];
-    ls : string;
+export class FieldValueV2 {
+    fId: string;
+    vc: FieldCodeText[];
+    oc: FieldCodeText[];
+    ls: string;
 }
 
-export class FieldCodeText{
-    c : string;
-    t : string;
-    p : string;
+export class FieldCodeText {
+    c: string;
+    t: string;
+    p: string;
 }
 export interface AssginedColor {
     code: string;
@@ -534,39 +535,39 @@ export class DateBulder {
      * string[1] end date
      * @param dateSelectedFor param for take date selected type
      */
-    public build(dateSelectedFor: DateSelectionType): string[]{
-        let startDate  = '';
+    public build(dateSelectedFor: DateSelectionType): string[] {
+        let startDate = '';
         let endDate = '';
         switch (dateSelectedFor) {
             case DateSelectionType.TODAY:
-                startDate =  String(moment().startOf('day').toDate().getTime());
+                startDate = String(moment().startOf('day').toDate().getTime());
                 endDate = String(moment().endOf('day').toDate().getTime());
                 break;
 
             case DateSelectionType.DAY_7:
-                startDate =  String(moment().add(-7,'days').startOf('day').toDate().getTime());
+                startDate = String(moment().add(-7, 'days').startOf('day').toDate().getTime());
                 endDate = String(moment().endOf('day').toDate().getTime());
                 break;
 
             case DateSelectionType.DAY_10:
-                startDate =  String(moment().add(-10,'days').startOf('day').toDate().getTime());
+                startDate = String(moment().add(-10, 'days').startOf('day').toDate().getTime());
                 endDate = String(moment().endOf('day').toDate().getTime());
                 break;
 
             case DateSelectionType.DAY_20:
-                startDate =  String(moment().add(-20,'days').startOf('day').toDate().getTime());
+                startDate = String(moment().add(-20, 'days').startOf('day').toDate().getTime());
                 endDate = String(moment().endOf('day').toDate().getTime());
                 break;
 
             case DateSelectionType.DAY_30:
-                startDate =  String(moment().add(-30,'days').startOf('day').toDate().getTime());
+                startDate = String(moment().add(-30, 'days').startOf('day').toDate().getTime());
                 endDate = String(moment().endOf('day').toDate().getTime());
                 break;
 
             default:
                 break;
         }
-        if(startDate && endDate) {
+        if (startDate && endDate) {
             return [startDate, endDate];
         }
         return null;
@@ -596,4 +597,23 @@ export interface DuplicateReport {
     errorMsg: string;
     reportId: string;
     reportName: string;
+}
+
+export enum OutputFormat {
+    CODE = 'CODE',
+    TEXT = 'TEXT',
+    CODE_TEXT = 'CODE AND TEXT'
+}
+
+export enum FormControlType {
+    MULTI_SELECT = 'multiselectDropdown',
+    DROP_DOWN = 'dropdown',
+    TEXT = 'text',
+    NUMBER = 'number',
+    CHECKBOX = 'checkbox',
+    RADIO = 'radio',
+    TEXTAREA = 'textarea',
+    DATE = 'date',
+    DATE_TIME = 'dateTime',
+    TIME = 'time'
 }

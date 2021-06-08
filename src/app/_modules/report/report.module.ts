@@ -31,6 +31,11 @@ import { ReportDatatableColumnSettingsComponent } from './view/dashboard-contain
 import { HierarchyFilterComponent } from './view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 import { DuplicateReportComponent } from './view/duplicate-report/duplicate-report.component';
 import { ImportLogComponent } from './import-log/import-log.component';
+import { ConfigureFiltersComponent } from './view/dashboard-container/reporting-list/configure-filters/configure-filters.component'
+import { FormSingleSelectComponent } from './view/dashboard-container/reporting-list/form-single-select/form-single-select.component';
+import { FormMultiselectComponent } from './view/dashboard-container/reporting-list/form-multiselect/form-multiselect.component';
+import { FormRadioButtonGroupComponent } from './view/dashboard-container/reporting-list/form-radio-button-group/form-radio-button-group.component';
+import { FormRangeSliderComponent } from './view/dashboard-container/reporting-list/form-range-slider/form-range-slider.component';
 
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -65,7 +70,12 @@ Chart.plugins.register(ChartDataLabels);
     ReportDatatableColumnSettingsComponent,
     HierarchyFilterComponent,
     DuplicateReportComponent,
-    ImportLogComponent
+    ImportLogComponent,
+    ConfigureFiltersComponent,
+    FormSingleSelectComponent,
+    FormMultiselectComponent,
+    FormRadioButtonGroupComponent,
+    FormRangeSliderComponent
   ],
   imports: [
     CommonModule,

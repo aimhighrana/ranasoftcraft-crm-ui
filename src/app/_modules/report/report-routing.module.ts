@@ -8,6 +8,7 @@ import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.com
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 import { ExportReportDatatableComponent } from './view/dashboard-container/reporting-list/export-report-datatable/export-report-datatable.component';
 import { ImportLogComponent } from './import-log/import-log.component';
+import { ConfigureFiltersComponent } from './view/dashboard-container/reporting-list/configure-filters/configure-filters.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'column-settings/:widgetId', component: ReportDatatableColumnSettingsComponent },
   { path: 'download-widget/:widgetId', component: ExportReportDatatableComponent },
   { path: 'import-log/:reportId', component: ImportLogComponent },
-  { path: '**', component: PageNotFoundComponent }
+  { path: 'configure-filters/:widgetId', component: ConfigureFiltersComponent },
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
