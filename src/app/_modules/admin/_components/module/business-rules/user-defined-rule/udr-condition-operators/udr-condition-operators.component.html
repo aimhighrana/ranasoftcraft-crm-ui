@@ -4,8 +4,8 @@
         [matAutocomplete]="auto1">
     <mat-autocomplete #auto1="matAutocomplete" (optionSelected)="operatorSelectionChng($event)">
         <mat-optgroup *ngFor="let object of conditionalOperatorsOb | async" [label]="object.desc">
-            <mat-option *ngFor="let operator of object.childs" [value]="operator" matTooltip="{{operator}}">
-                    {{ operator }}
+            <mat-option *ngFor="let operator of object.childs" [value]="operator" [libTooltip]="operator.value ? operator.value : operator.code" matTooltipPosition="left">
+                    {{ operator.value ? operator.value : operator.code }}
             </mat-option>
         </mat-optgroup>
     </mat-autocomplete>
