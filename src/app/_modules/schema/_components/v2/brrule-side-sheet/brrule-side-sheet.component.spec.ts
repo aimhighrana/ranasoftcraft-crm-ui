@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { BrruleSideSheetComponent } from './brrule-side-sheet.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -26,7 +27,7 @@ describe('BrruleSideSheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BrruleSideSheetComponent, FormInputComponent, SetupDuplicateRuleComponent],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule
       ],
       providers: [SchemaDetailsService,
@@ -231,6 +232,12 @@ describe('BrruleSideSheetComponent', () => {
     component.updateTransformationRuleType({value: true})
    const field=component.formField('transformationRuleType');
    expect(field).toBeTruthy();
+   component.form.controls.transformationRuleType.setValue(false);
+   component.updateTransformationRuleType({value: true});
+   const field2=component.formField('transformationRuleType');
+   delete component.form.controls;
+   expect(field2.value).toBeFalsy();
+
   }));
 
   it(`To set form value in a form `, async(() => {
@@ -248,6 +255,12 @@ describe('BrruleSideSheetComponent', () => {
     expect(blocks.length).toEqual(7);
     expect(blockHierarchy[0].blockRefId).toEqual(blocks[0].id);
     expect(blocks[0].blockDesc).toEqual('When');
+    delete businessRule.udrDto.blocks;
+    delete businessRule.udrDto.udrHierarchies;
+    const result = component.mapBlocksAndHierarchy(businessRule);
+    expect(result.blockHierarchy.length).toEqual(0);
+    expect(result.blocks.length).toEqual(0);
+
   });
 
   it('showValidationError(), should hide validation message', fakeAsync(() => {
@@ -282,6 +295,8 @@ describe('BrruleSideSheetComponent', () => {
     component.form.controls.transformationRuleType.setValue('REGEX', {emitEvent: false});
     selectedType = component.selectedTransRuleTypeRadio;
     expect(selectedType?.value).toEqual('REGEX');
+    delete component.form;
+    expect(component.selectedTransRuleTypeRadio).toEqual('');
   }))
 
   it('should init component', async(() => {
@@ -455,6 +470,9 @@ describe('BrruleSideSheetComponent', () => {
     brInfo.udrDto = {blocks: [{blockDesc: 'When', blockType: BlockType.COND}] as UDRBlocksModel[], udrHierarchies: []} as UdrModel;
     const result = component.mapBlocksAndHierarchy(brInfo);
     expect(result.blocks.length).toEqual(1);
+    delete brInfo.udrDto.blocks;
+    delete brInfo.udrDto.udrHierarchies;
+    expect(result.blocks.length).toEqual(1);
   })
 
   it('should editUdr', () => {
@@ -505,6 +523,16 @@ describe('BrruleSideSheetComponent', () => {
 
   it('sould createBrObject', () => {
     expect(component.createBrObject({brId: '1'}).brId).toEqual('1');
+    expect(component.createBrObject({refId: 1, refid: 1}).refId).toEqual(1);
+    expect(component.createBrObject({standardFunction: 'Test'}).standardFunction).toEqual('Test');
+    expect(component.createBrObject({brWeightage: 'Test'}).brWeightage).toEqual('Test');
+    expect(component.createBrObject({qryScript: 'Test'}).qryScript).toEqual('Test');
+    expect(component.createBrObject({dependantStatus: 'Test'}).dependantStatus).toEqual('Test');
+    expect(component.createBrObject({udrHierarchies: ['']}).udrDto.udrHierarchies.length).toEqual(1);
+    expect(component.createBrObject({}).brId).toEqual('');
+    expect(component.createBrObject({}, null).udrDto.udrHierarchies.length).toEqual(0);
+    expect(component.createBrObject({}, null).udrDto.blocks.length).toEqual(0);
+    expect(component.createBrObject({blocks: [], object: ['']}, null).udrDto.blocks.length).toEqual(1);
   });
 
   it('should mapTransformationData', () => {
@@ -578,6 +606,34 @@ describe('BrruleSideSheetComponent', () => {
     const lookupData =  [{fieldId: 'fld'}] as LookupFields[];
     component.setLookupData(lookupData);
     expect(component.lookupData).toEqual(lookupData);
+  });
+
+  it('businessRuleTypesFiltered should get businessRuleTypes Filtered', async () => {
+    component.businessRuleTypes = [{
+      ruleDesc: 'test',
+      ruleId: 'test',
+      ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT
+    }];
+    component.searchRuleTypeStr = '';
+    expect(component.businessRuleTypesFiltered.length).toEqual(1);
+    component.searchRuleTypeStr = 'test';
+    expect(component.businessRuleTypesFiltered.length).toEqual(1);
+    component.searchRuleTypeStr = 'test1';
+    expect(component.businessRuleTypesFiltered.length).toEqual(0);
+  });
+
+  it('preDefinedRegexFiltered should get regex functions Filtered', async () => {
+    component.preDefinedRegex = [{
+      FUNC_NAME: 'test',
+      FUNC_CODE: 'test',
+      FUNC_TYPE: 'test'
+    }];
+    component.searchRegexFunctionStr = '';
+    expect(component.preDefinedRegexFiltered.length).toEqual(1);
+    component.searchRegexFunctionStr = 'test';
+    expect(component.preDefinedRegexFiltered.length).toEqual(1);
+    component.searchRegexFunctionStr = 'test1';
+    expect(component.preDefinedRegexFiltered.length).toEqual(0);
   });
 
   it('should displayFn', () => {

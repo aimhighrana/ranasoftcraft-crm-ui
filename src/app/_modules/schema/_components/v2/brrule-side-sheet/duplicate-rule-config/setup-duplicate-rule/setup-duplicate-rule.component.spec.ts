@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
@@ -19,7 +20,7 @@ describe('SetupDuplicateRuleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SetupDuplicateRuleComponent ],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
     })
     .compileComponents();
   }));

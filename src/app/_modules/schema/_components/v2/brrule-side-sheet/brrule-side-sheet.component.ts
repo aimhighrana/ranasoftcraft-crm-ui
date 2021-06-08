@@ -186,7 +186,14 @@ export class BrruleSideSheetComponent implements OnInit {
    * data source
    */
   dataSource = null;
-
+  /**
+   * Hold search string for business rule type ....
+   */
+  searchRuleTypeStr = '';
+  /**
+   * Hold search string for regex functions ....
+   */
+  searchRegexFunctionStr = '';
   /**
    * has child
    */
@@ -268,6 +275,14 @@ export class BrruleSideSheetComponent implements OnInit {
     }
     return '';
   }
+  get businessRuleTypesFiltered() {
+    const searchStr = this.searchRuleTypeStr?.toLowerCase();
+    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+  }
+  get preDefinedRegexFiltered() {
+    const searchStr = this.searchRegexFunctionStr?.toLowerCase();
+    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
+  }
   /**
    * Angular hook
    */
@@ -310,13 +325,13 @@ export class BrruleSideSheetComponent implements OnInit {
     this.udrNodeForm = this.formBuilder.group({
       frmArray: this.formBuilder.array([this.formBuilder.group({
         blockDesc: new FormControl('When'),
-        blockType: new FormControl(BlockType.AND),
+        blockType: new FormControl(BlockType.AND, [Validators.required]),
         conditionFieldEndValue: new FormControl(''),
-        conditionFieldId: new FormControl(''),
+        conditionFieldId: new FormControl('', [Validators.required]),
         conditionFieldStartValue: new FormControl(''),
         conditionFieldValue: new FormControl(''),
-        conditionOperator: new FormControl(''),
-        conditionValueFieldId: new FormControl(''),
+        conditionOperator: new FormControl('', [Validators.required]),
+        conditionValueFieldId: new FormControl('', [Validators.required]),
         id: new FormControl(Math.floor(Math.random() * 1000000000000).toString()),
         objectType: new FormControl(this.moduleId),
         udrid: new FormControl(this.brId),
@@ -363,6 +378,7 @@ export class BrruleSideSheetComponent implements OnInit {
         startWith(''),
         map(keyword => {
           if (keyword) {
+            keyword = keyword.toLowerCase();
             const filterData = [];
             this.allGridAndHirarchyData.forEach(item => {
               if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
@@ -536,7 +552,7 @@ export class BrruleSideSheetComponent implements OnInit {
     const controlKeys: any[] = Object.keys(this.currentControls);
     let requiredKeys: string[] = [];
     if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      requiredKeys = ['rule_name', 'error_message'];
+      requiredKeys = ['categoryId', 'rule_name', 'error_message'];
     }
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -610,7 +626,7 @@ export class BrruleSideSheetComponent implements OnInit {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      patchList = ['rule_type', 'rule_name', 'weightage', 'error_message'];
+      patchList = ['rule_type', 'categoryId', 'rule_name', 'weightage', 'error_message'];
     }
     if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
       dataToPatch.transformationRuleType = this.getTrRuleType(br.transFormationSchema);
@@ -793,14 +809,14 @@ export class BrruleSideSheetComponent implements OnInit {
     console.log(udr);
 
     return this.formBuilder.group({
-      blockDesc: new FormControl(udr ? udr.blockDesc : 'And'),
-      blockType: new FormControl(udr ? udr.blockType : BlockType.COND),
+      blockDesc: new FormControl(udr ? udr.blockDesc : 'And', [Validators.required]),
+      blockType: new FormControl(udr ? udr.blockType : BlockType.COND, [Validators.required]),
       conditionFieldEndValue: new FormControl(udr ? udr.conditionFieldEndValue : ''),
-      conditionFieldId: new FormControl(udr ? udr.conditionFieldId : ''),
+      conditionFieldId: new FormControl(udr ? udr.conditionFieldId : '', [Validators.required]),
       conditionFieldStartValue: new FormControl(udr ? udr.conditionFieldStartValue : ''),
       conditionFieldValue: new FormControl(udr ? udr.conditionFieldValue : ''),
-      conditionOperator: new FormControl(udr ? udr.conditionOperator : ''),
-      conditionValueFieldId: new FormControl(udr ? udr.conditionValueFieldId : ''),
+      conditionOperator: new FormControl(udr ? udr.conditionOperator : '', [Validators.required]),
+      conditionValueFieldId: new FormControl(udr ? udr.conditionValueFieldId : '', [Validators.required]),
       id: new FormControl(udr ? udr.id : Math.floor(Math.random() * 1000000000000).toString()),
       objectType: new FormControl(this.moduleId),
       udrid: new FormControl(this.brId),
@@ -999,6 +1015,10 @@ export class BrruleSideSheetComponent implements OnInit {
       const code = this.preDefinedRegex.find(x => x.FUNC_TYPE === $event.option.value)?.FUNC_CODE;
       form.controls.regex.setValue(code);
     }
+    if (controlName === 'rule_type') {
+      const categoryValidators = this.isDuplicateType ? [] : [Validators.required];
+      this.form.controls.categoryId.setValidators(categoryValidators);
+    }
   }
 
   /**
@@ -1039,13 +1059,17 @@ export class BrruleSideSheetComponent implements OnInit {
           control.markAsTouched();
       });
     this.submitted = true;
-    if (!this.form.valid) {
-      this.showValidationError('Please fill the required fields.');
-      return;
-    }
 
     let brType: string = this.form.value ? this.form.value.rule_type : '';
     brType = brType ? brType : this.coreSchemaBrInfo.brType;
+
+    if (!this.form.valid) {
+      this.form.markAllAsTouched();
+      this.showValidationError('Please fill the required fields.');
+      if (brType!=='BR_CUSTOM_SCRIPT') {
+        return;
+      }
+    }
 
     if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
       this.selectedTransformationType === this.transformationType.LOOKUP &&
@@ -1065,6 +1089,7 @@ export class BrruleSideSheetComponent implements OnInit {
         schemaId: this.schemaId,
         moduleId: this.moduleId,
         brWeightage: this.form.value.weightage,
+        categoryId: this.form.value.categoryId,
         isCopied: false,
         copiedFrom: '',
         dependantStatus: this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL,
@@ -1075,8 +1100,31 @@ export class BrruleSideSheetComponent implements OnInit {
       const blocks: UDRBlocksModel[] = [];
       const frm = this.udrNodeArray();
       for (let i = 0; i < frm.length; i++) {
-        blocks.push(frm.at(i).value as UDRBlocksModel)
+        const row = frm.at(i) as FormGroup;
+        const value =row.value as UDRBlocksModel;
+        blocks.push(value);
+        if (!value.blockType) {
+          row.controls.blockType.markAsTouched();
+        }
+        if (!value.conditionOperator) {
+          row.controls.conditionOperator?.markAsTouched();
+        }
+        if (!value.conditionFieldId) {
+          row.controls.conditionFieldId?.markAsTouched();
+        }
+        (row.controls.childs as any).controls.forEach((childRow) => {
+          childRow.markAllAsTouched();
+        });
       }
+
+      if (!(blocks.length && blocks.every(x => x.blockType && x.blockType !== BlockType.COND && x.blockDesc && x.conditionOperator && x.conditionFieldId && x.childs.every(y => y.blockDesc && y.conditionOperator && y.conditionFieldId)))) {
+        this.showValidationError('Please select the condition(s) between the rules.');
+        return;
+      }
+      if (!this.form.valid) {
+        return;
+      }
+
       const blockHierarchy: UDRHierarchyModel[] = [];
       blocks.forEach(block => {
         const hie: UDRHierarchyModel = new UDRHierarchyModel();

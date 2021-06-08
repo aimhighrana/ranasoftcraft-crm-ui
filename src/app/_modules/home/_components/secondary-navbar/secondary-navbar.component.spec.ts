@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { TaskListService } from '@services/task-list.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecondaryNavbarComponent } from './secondary-navbar.component';
@@ -39,7 +40,7 @@ describe('SecondaryNavbarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SecondaryNavbarComponent, SearchInputComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -277,6 +278,17 @@ describe('SecondaryNavbarComponent', () => {
     filteredSchemas = component.searchForSchema(module, searchString);
 
     expect(filteredSchemas.length).toEqual(0);
+    module.schemaLists = [
+      {
+        schemaId: '1005',
+        schemaDescription: ''
+      }
+    ] as SchemaListModuleList['schemaLists'];
+
+    searchString = 'untitled';
+    filteredSchemas = component.searchForSchema(module, searchString);
+
+    expect(filteredSchemas.length).toEqual(1);
   })
 
   it('checkNewSchemaCount(), shoule check existing count of new schema', async () => {
@@ -370,14 +382,14 @@ describe('SecondaryNavbarComponent', () => {
     ] as SchemaListModuleList[];
 
     component.filterModulesMenu('');
-    expect(component.filteredModulesMenu.length).toEqual(3);
+    component.filteredModulesMenu.subscribe(s=>{ expect(s.length).toEqual(0); });
 
     component.filterModulesMenu(searchString);
-    expect(component.filteredModulesMenu.length).toEqual(1);
+    component.filteredModulesMenu.subscribe(s=>{ expect(s.length).toEqual(0); });
 
     searchString = 'untitle'
     component.filterModulesMenu(searchString);
-    expect(component.filteredModulesMenu.length).toEqual(1);
+    component.filteredModulesMenu.subscribe(s=>{ expect(s.length).toEqual(0); });
   });
 
   it('createNewSchema(), should create new schema', async () => {

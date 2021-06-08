@@ -53,7 +53,6 @@
                                     variantDetails.length : 0}})
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
-
                             <mat-nav-list role="navigation" class="summary-rowlist">
                                 <mat-list-item (click)="addDataScope()">
                                     <div mat-line class="info-link">[<span i18n="@@add_data_scope">Add data
@@ -63,7 +62,7 @@
                                     <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">
                                         {{variant.variantName}}</div>
                                     <span class="f-spacer"></span>
-                                    <lib-button (click)="deleteVariant(variant.variantId)" type="plain" icon="recycle">
+                                    <lib-button (click)="deleteVariant(variant.variantId)" type="plain" icon="trash-alt">
                                     </lib-button>
                                 </mat-list-item>
                             </mat-nav-list>
@@ -211,7 +210,7 @@
 
                                         <div class="col col-enabled">
                                             <lib-checkbox color="primary" [checked]="deps.status === '1' ? true : false"
-                                                (change)="updateBr(deps,$event, 'checkbox')"></lib-checkbox>
+                                                (valueChange)="updateBr(deps,$event, 'checkbox')"></lib-checkbox>
                                         </div>
 
                                         <div class="col col-action text-end">
@@ -256,7 +255,8 @@
                     <div class="col"></div>
                     <div class="col col-x8"><strong>Subscriber</strong></div>
                     <div class="col col-x4"><strong>Role</strong></div>
-                    <div class="col col-x16"><strong>Data allocation</strong></div>
+                    <div class="col col-x16"></div>
+                    <div class="col col-x16" *ngIf="false"><strong>Data allocation</strong></div>
                     <div class="col mat-item-end"></div>
                 </div>
 
@@ -314,27 +314,30 @@
                             <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isReviewer"> Reviewer </lib-button>
                             <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
-                                *ngIf="subscriber.isViewer"> Viewer </lib-button>
-                            <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
                                 *ngIf="subscriber.isEditer"> Editor </lib-button>
+                            <ng-template [ngIf]="!subscriber.isAdmin && !subscriber.isReviewer && !subscriber.isEditer">
+                                <lib-button type="minor" icon="caret-down" iconFontType="solid" iconPosition="before"
+                                *ngIf="subscriber.isViewer"> Viewer </lib-button>
+                            </ng-template>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
                             <button mat-menu-item *ngFor="let role of roles"
                                 (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                         </mat-menu>
 
-                        <div class="col col-x16">
+                        <div class="col col-x16"></div>
+                        <div class="col col-x16" *ngIf="false">
                             <mat-chip-list>
                                 <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
 
                                     <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                         [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                         <label>
-                                            {{ ctrl.filterCtrl && ctrl.filterCtrl.fldCtrl ? ctrl.filterCtrl.fldCtrl.fieldDesc || ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                            {{ ctrl && ctrl.fldCtrl ? ctrl.fldCtrl.fieldDesc || ctrl.fldCtrl.fieldDescri : 'Unknown' }}
                                             :
                                         </label>
                                         <ng-template
-                                            [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
+                                            [ngIf]="ctrl.selectedValues && ctrl.selectedValues.length >= 1">
                                             <span class="info">
                                                 {{ prepareTextToShow(ctrl) }}
                                             </span>
@@ -363,6 +366,7 @@
                             <mat-menu #addfiltermenu="matMenu">
                                 <pros-add-filter-menu [moduleId]="moduleId"
                                     (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
+                                    [alreadySelectedValues]="subscriber.filterCriteria"
                                     [reInilize]="reInilize">
                                 </pros-add-filter-menu>
                             </mat-menu>
@@ -409,7 +413,7 @@
         </lib-tab>
 
         <!-- Tab for the Statistics of the schema -->
-        <lib-tab label="Statistics" i18n-label="@@statistics">
+        <lib-tab *ngIf="false" label="Statistics" i18n-label="@@statistics">
             <pros-statics [moduleId]="moduleId" [schemaId]="schemaId">
             </pros-statics>
         </lib-tab>

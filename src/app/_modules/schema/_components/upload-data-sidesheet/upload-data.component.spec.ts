@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UploadDataComponent } from './upload-data.component';
@@ -29,7 +30,7 @@ describe('UploadDataComponent', () => {
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       declarations: [ UploadDataComponent, BreadcrumbComponent, AddTileComponent ],
       providers: [
         {

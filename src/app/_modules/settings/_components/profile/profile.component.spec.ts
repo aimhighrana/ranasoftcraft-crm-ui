@@ -1,3 +1,4 @@
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,7 +21,7 @@ describe('ProfileComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ProfileComponent ],
-      imports: [
+      imports: [ AppMaterialModuleForSpec,
         SharedModule,
         MdoUiLibraryModule,
         FormsModule,
@@ -153,5 +154,30 @@ describe('ProfileComponent', () => {
 
     component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
     expect(component.langFormErrMsg).toEqual('');
+  }));
+
+  it('updateLanguageSettings()', async(() => {
+    component.createLanguageSettingsForm();
+    spyOn(component, 'makeLangSettingsUpdateCall');
+
+    component.languagesList = ['Eng'];
+    component.updateLanguageSettings('language');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.dateFormatList = ['dd/mm/yyyy'];
+    component.updateLanguageSettings('dateFormat');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.numberFormatList = ['0'];
+    component.updateLanguageSettings('numberFormat');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.timeZoneList = ['IST'];
+    component.updateLanguageSettings('timeZone');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
+
+    component.timeFormatList = ['00:00'];
+    component.updateLanguageSettings('timeFormat');
+    expect(component.makeLangSettingsUpdateCall).toHaveBeenCalled();
   }));
 });

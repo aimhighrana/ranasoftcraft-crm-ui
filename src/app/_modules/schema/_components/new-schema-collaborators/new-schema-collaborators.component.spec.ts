@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NewSchemaCollaboratorsComponent } from './new-schema-collaborators.component';
@@ -30,7 +31,7 @@ describe('NewSchemaCollaboratorsComponent', () => {
                 NewSchemaCollaboratorsComponent,
                 SearchInputComponent
             ],
-            imports: [
+            imports: [ MdoUiLibraryModule,
                 HttpClientTestingModule,
                 HttpClientModule,
                 MatSnackBarModule,

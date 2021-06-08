@@ -7,6 +7,8 @@ import { ReportCollaboratorComponent } from './permissions/report-collaborator/r
 import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 import { ExportReportDatatableComponent } from './view/dashboard-container/reporting-list/export-report-datatable/export-report-datatable.component';
+import { SendEmailComponent } from './view/email/send-email/send-email.component';
+import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
 import { ImportLogComponent } from './import-log/import-log.component';
 import { ConfigureFiltersComponent } from './view/dashboard-container/reporting-list/configure-filters/configure-filters.component';
 
@@ -18,6 +20,8 @@ const routes: Routes = [
   { path: 'summary/:widgetId/:objectNumber/:layoutId', component: SummaryLayoutComponent },
   { path: 'column-settings/:widgetId', component: ReportDatatableColumnSettingsComponent },
   { path: 'download-widget/:widgetId', component: ExportReportDatatableComponent },
+  { path: 'send-email', component: SendEmailComponent },
+  { path: 'email-template', component: EmailTemplateComponent },
   { path: 'import-log/:reportId', component: ImportLogComponent },
   { path: 'configure-filters/:widgetId', component: ConfigureFiltersComponent },
   { path: '**', component: PageNotFoundComponent },

@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -21,7 +22,7 @@ describe('ListFilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ListFilterComponent ],
-      imports: [ AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
+      imports: [ MdoUiLibraryModule,  AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
       providers: [
         { provide: ActivatedRoute, useValue: { params: of(pathPrams), queryParams: of(queryParams)}}
       ]

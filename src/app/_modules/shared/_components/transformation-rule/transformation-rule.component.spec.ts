@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -34,7 +35,7 @@ describe('TransformationRuleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TransformationRuleComponent, FormInputComponent],
-      imports: [AppMaterialModuleForSpec],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec],
       providers: [
         FormsModule,
         MatSnackBarModule,

@@ -1,17 +1,18 @@
-import { Input, EventEmitter, Output, Component } from '@angular/core';
+import { Input, EventEmitter, Output, Component, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Criteria } from '../../_models/widget';
 import {WidgetColorPalette, ReportDashboardPermission, Widget } from '../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
 import { WidgetColorPaletteComponent } from '@modules/report/edit/widget-color-palette/widget-color-palette.component';
 import { BehaviorSubject } from 'rxjs';
 import * as moment from 'moment';
+import { TooltipDirective } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-generic-widget',
   template: ''
 })
 
-export abstract class GenericWidgetComponent {
+export abstract class GenericWidgetComponent implements AfterViewInit {
 
   @Input()
   reportId: number;
@@ -47,9 +48,23 @@ export abstract class GenericWidgetComponent {
    */
   widgetColorPalette: WidgetColorPalette;
 
+  @ViewChild('displayHeading') displayHeading: ElementRef<HTMLElement>;
+  @ViewChild(TooltipDirective) tooltipDirective: TooltipDirective;
+
   constructor(
     public matDialog?: MatDialog
   ){}
+
+  ngAfterViewInit(): void {
+    if (this.displayHeading) {
+      const checkExist = setInterval(() => {
+        if (this.displayHeading.nativeElement.offsetWidth) {
+           clearInterval(checkExist);
+           this.showHeadingTooltip();
+        }
+     }, 100);
+    }
+  }
 
   /**
    * Emit filter criteria change
@@ -108,6 +123,20 @@ export abstract class GenericWidgetComponent {
         break;
     }
     return finalValue;
+  }
+
+  /**
+   * Show Tooltip for display heading when it is overflowing
+   */
+  @HostListener('window:resize', [])
+  showHeadingTooltip() {
+    if (this.displayHeading && this.tooltipDirective) {
+      if (this.displayHeading.nativeElement.offsetWidth < this.displayHeading.nativeElement.scrollWidth) {
+        this.tooltipDirective.disabled = false;
+      } else {
+        this.tooltipDirective.disabled = true;
+      }
+    }
   }
 
 }

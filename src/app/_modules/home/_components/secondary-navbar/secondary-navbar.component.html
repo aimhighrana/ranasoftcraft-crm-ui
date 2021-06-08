@@ -4,14 +4,14 @@
     <div class="f-row secondary-padd-lr">
       <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
       <span class="f-spacer"></span>
-      <lib-button type="plain" iconFontType="light" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
+      <lib-button type="plain" iconFontType="light" icon="plus" *ngIf="(activatedPrimaryNav !== 'welcome' && activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
       <ng-template #isSchema>
         <lib-button type="plain" iconFontType="light" icon="plus" [matMenuTriggerFor]="moduleMenu"
-          *ngIf="activatedPrimaryNav !== 'list'"></lib-button>
+          *ngIf="activatedPrimaryNav !== 'list' && activatedPrimaryNav !== 'welcome'"></lib-button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
           <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
           <div class="menu-customdropdown search-module-dropdown">
-            <lib-button class="lib-button" *ngFor="let module of filteredModulesMenu;"
+            <lib-button class="lib-button" *ngFor="let module of filteredModulesMenu | async;"
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
             </lib-button>
           </div>

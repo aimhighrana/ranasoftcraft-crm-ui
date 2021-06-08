@@ -30,6 +30,8 @@ import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/work
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 import { HierarchyFilterComponent } from './view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 import { DuplicateReportComponent } from './view/duplicate-report/duplicate-report.component';
+import { SendEmailComponent } from './view/email/send-email/send-email.component';
+import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
 import { ImportLogComponent } from './import-log/import-log.component';
 import { ConfigureFiltersComponent } from './view/dashboard-container/reporting-list/configure-filters/configure-filters.component'
 import { FormSingleSelectComponent } from './view/dashboard-container/reporting-list/form-single-select/form-single-select.component';
@@ -75,7 +77,9 @@ Chart.plugins.register(ChartDataLabels);
     FormSingleSelectComponent,
     FormMultiselectComponent,
     FormRadioButtonGroupComponent,
-    FormRangeSliderComponent
+    FormRangeSliderComponent,
+    EmailTemplateComponent,
+    ImportLogComponent
   ],
   imports: [
     CommonModule,

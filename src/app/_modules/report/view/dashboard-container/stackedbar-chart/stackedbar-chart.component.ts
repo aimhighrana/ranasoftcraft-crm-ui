@@ -4,7 +4,7 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria, WidgetType } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria, WidgetType, AlignPosition } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -165,12 +165,14 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
     this.subscriptions.push(afterColorDefined);
 
+
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
+
   }
 
   public getHeaderMetaData():void{
@@ -215,6 +217,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         anchor: this.stackBarWidget.getValue().datalabelsPosition,
         display: 'auto'
       };
+      if (this.stackBarWidget.getValue().datalabelsPosition === AlignPosition.END) {
+        // Datalabel was being cut off the screen when the height was small.
+        this.barChartOptions.plugins.datalabels.offset = -4;
+        this.barChartOptions.plugins.datalabels.padding = 0;
+      }
       if (this.chart) {
         this.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;
         this.chart.chart.options.plugins.datalabels = this.barChartOptions.plugins.datalabels;

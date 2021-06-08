@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaInfoComponent } from './schema-info.component';
@@ -52,7 +53,7 @@ describe('SchemaInfoComponent', () => {
         DatePickerFieldComponent,
         StaticsComponent
       ],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,
@@ -297,30 +298,37 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('prepateTextToShow(), should prepare text to show over mat-chips', async () => {
-    const ctrl: FilterCriteria = {
-      fieldId: 'MaterialType',
-      values: ['123', '456'],
-      type: 'DROPDOWN',
-      filterCtrl: {
-        selectedValues: [
-          {
-            CODE: 'ABC',
-            FIELDNAME: 'MaterialType'
-          } as DropDownValue
-        ]
-      } as AddFilterOutput
-    }
-    const result = component.prepareTextToShow(ctrl);
-    expect(result).toEqual('ABC');
+    let ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA Region', 'Asia Region']
+    } as FilterCriteria;
+    let result =  component.prepareTextToShow(ctrl);
+    expect(result).toEqual('2');
 
-    ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
-    expect(component.prepareTextToShow(ctrl)).toEqual('first value');
+    ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA_Region'],
+      textValues: ['USA data scope'],
+      selectedValues: [{
+        CODE: 'xyz',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
+    } as FilterCriteria;
+    result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('USA data scope');
 
-    ctrl.filterCtrl.selectedValues.push({ CODE: 'DEF', FIELDNAME: 'MaterialType'} as DropDownValue);
-    expect(component.prepareTextToShow(ctrl)).toEqual('2');
-
-    ctrl.filterCtrl.selectedValues = [];
-    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
+    ctrl = {
+      fieldId: 'MATL_TYPE',
+      values: ['USA_Region'],
+      selectedValues: [{
+        CODE: 'USA_Region',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
+    } as FilterCriteria;
+    result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('Data scope from API');
 
 
   })
@@ -634,11 +642,12 @@ describe('SchemaInfoComponent', () => {
 
     const sliderEvent = new MatSliderChange();
     sliderEvent.value = 25;
-    component.updateBr(br, sliderEvent);
+    component.updateBr(br, sliderEvent, 'slider');
 
     const checkboxEvent = new MatCheckboxChange();
     checkboxEvent.checked = true;
-    component.updateBr(br, checkboxEvent);
+    component.updateBr(br, checkboxEvent, 'checkbox');
+
 
     checkboxEvent.checked = false;
     component.updateBr(br, checkboxEvent);
@@ -998,5 +1007,18 @@ describe('SchemaInfoComponent', () => {
     component.getModuleInfo();
     component.getModuleInfo();
     expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
+  }));
+
+  it('getCurrentBrStatusObj(), should get current br status info', async(() => {
+   component.depRuleList = [{
+     key: 'all',
+     value: 'ALL'
+   }, {
+     key: 'success',
+     value: 'SUCCESS'
+   }];
+   expect(component.getCurrentBrStatusObj('').key).toEqual('all');
+   expect(component.getCurrentBrStatusObj('All').key).toEqual('all');
+   expect(component.getCurrentBrStatusObj('success').key).toEqual('success');
   }));
 });

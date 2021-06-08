@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
+import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse, SchemaTableViewDto } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
-import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { SchemaExecutionNodeType, SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
@@ -331,5 +331,37 @@ export class SchemaService {
 
   public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[]): Observable<any> {
     return this.http.get<any>(this.endpointClassic.downloadExecutionDetailsByNodesUrl(schemaId, status, nodes));
+  }
+
+  /**
+   * Call http to get the datasets list
+   * @returns return the all available datasets list
+   */
+  public getAllDataSets() : Observable<ModuleInfo[]> {
+    return this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
+  }
+
+
+  /**
+   * Get all datasets and schemas ...
+   * @returns the module along with schema [0] for module and [1] for schemas
+   */
+  public getDatasetsAlongWithSchemas(): Observable<any> {
+    const datasetsHttp = this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
+    const schemaHttp = this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
+    return forkJoin({ datasetsHttp, schemaHttp});
+  }
+
+  /**
+   * call http and get all selected or unselected fields based on the parameters
+   * @returns the Observable of SchemaTableViewDto
+   */
+  public getallFieldsbynodeId(nodeType: SchemaExecutionNodeType, nodeIds: string, schemaId: string, variantId: string,
+    fetchCount: any, searchString: string, selected: any): Observable<SchemaTableViewDto> {
+
+    fetchCount = fetchCount? fetchCount : 0;
+    searchString = searchString? searchString : '';
+    selected = selected? selected : false;
+    return this.http.get<SchemaTableViewDto>(this.endpointService.getallFieldsbynodeId(), { params: { nodeType, nodeIds, schemaId , variantId, fetchCount,searchString, selected   } });
   }
 }

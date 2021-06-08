@@ -7,6 +7,8 @@ import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@mo
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { ObjectTypeResponse } from '@models/schema/schema';
+import { BehaviorSubject } from 'rxjs';
+import { EmailTemplate } from '../_models/email';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,7 @@ export class ReportService {
   filterCriteria: Criteria[] = [];
   tableColumnMetaData: ReportingWidget[] = [];
   isSideSheetClose: Subject<boolean> = new Subject();
+  selectedTemplate: BehaviorSubject<EmailTemplate> = new BehaviorSubject(null);
 
   constructor(
     private http: HttpClient,
@@ -98,8 +101,8 @@ export class ReportService {
   public getDropDownValues(fieldId, searchText?): Observable<any> {
     if (searchText)
       return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString: searchText } });
-    else 
-    return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId));
+    else
+      return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId));
   }
 
   public setFilterCriteria(filterCriteria: Criteria[]) {
@@ -120,5 +123,8 @@ export class ReportService {
 
   public sideSheetStatusChange() {
     return this.isSideSheetClose.asObservable();
+  }
+  public shareReport(request: any, reportId: string): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.shareReport(reportId), request);
   }
 }

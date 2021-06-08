@@ -2,7 +2,7 @@ import { TaskListService } from '@services/task-list.service';
 import { InboxNodesCount } from './../../../../_models/list-page/listpage';
 import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaListModuleList, SchemaListDetails, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
@@ -62,7 +62,12 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   /**
    * filtered modules for schema create menu
    */
-  filteredModulesMenu: SchemaListModuleList[] = [];
+  filteredModulesMenu: Observable<ModuleInfo[]> = of([]);
+
+  /**
+   * filtered modules for schema create menu
+   */
+   dataSets: ModuleInfo[] = [];
 
   /**
    * report list observal ..
@@ -206,6 +211,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
         case 'schema':
           this.getSchemaList();
+          this.getAllDataSets();
           break;
 
         case 'report':
@@ -359,7 +365,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     const subscription = this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
-      this.filteredModulesMenu = this.moduleList;
       if (this.moduleList && this.activatedPrimaryNav === 'schema') {
         if ( !this.isPageReload ) {
           const firstModuleId = this.moduleList[0].moduleId;
@@ -495,7 +500,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     }
     if (this.activatedPrimaryNav === 'report') {
       if (searchString) {
-        this.reportOb = of(this.reportList.filter(fil => fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1));
+        this.reportOb = of(this.reportList.filter(fil => fil.reportName ? fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1 : false));
       } else {
         this.reportOb = of(this.reportList);
       }
@@ -558,6 +563,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     else if (url.includes('/home/schema')) {
       this.activatedPrimaryNav = 'schema';
       this.getSchemaList();
+      this.getAllDataSets();
     }
     else if (url.includes('/home/list')) {
       this.activatedPrimaryNav = 'list';
@@ -571,13 +577,13 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    */
   filterModulesMenu(searchString){
     if (!searchString){
-      this.filteredModulesMenu = this.moduleList;
+      this.filteredModulesMenu = of(this.dataSets);
       return;
     }
-    this.filteredModulesMenu = this.moduleList.filter(module => {
+    this.filteredModulesMenu = of(this.dataSets.filter(module => {
       module.moduleDesc = module.moduleDesc ? module.moduleDesc : 'untitled';
       return module.moduleDesc.toLowerCase().includes(searchString.toLowerCase());
-    })
+    }));
   }
 
   /**
@@ -616,7 +622,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   checkNewSchemaCount(moduleId: string) {
     const findModule:SchemaListModuleList = this.moduleList.filter((module) => module.moduleId === moduleId)[0];
     let newSchemaArr = [];
-    if(findModule.schemaLists) {
+    if(findModule && findModule.schemaLists) {
       newSchemaArr = findModule.schemaLists.filter((schema) => {
         schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
         return schema.schemaDescription.toLocaleLowerCase().startsWith('new schema');
@@ -737,5 +743,16 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     }, err => {
       console.log(err);
     });
+  }
+
+
+  /**
+   * Get all available modules / datasets
+   */
+  getAllDataSets() {
+    this.subscriptions.push(this.schemaService.getAllDataSets().subscribe((res : ModuleInfo[])=>{
+      this.dataSets = res;
+      this.filteredModulesMenu = of(res);
+    }, err=>{console.error(`Exception : ${err.message}`)}));
   }
 }

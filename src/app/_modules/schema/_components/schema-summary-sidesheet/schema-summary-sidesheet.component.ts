@@ -324,8 +324,21 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param br updateable business rules...
    * @param event value of chnaged
    */
-  updateBr(br: CoreSchemaBrInfo, event?: any, eventName?: string) {
-    const businessRule: CoreSchemaBrInfo = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
+  updateBr(br: CoreSchemaBrInfo, event?: any, eventName?: string, child?: boolean) {
+    let businessRule: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    if (child) {
+      this.businessRuleData.filter((rule) => {
+        if (rule.dep_rules.length) {
+          rule.dep_rules.filter((depRule) => {
+            if (depRule.brIdStr === br.brIdStr) {
+              businessRule = depRule;
+            }
+          });
+        }
+      });
+    } else {
+      businessRule = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
+    }
     if (event instanceof MatSliderChange) {
       businessRule.brWeightage = String((event as MatSliderChange).value);
     }
@@ -798,7 +811,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           console.log(result);
           this.runSchema();
           this.close();
-          this.toasterService.open('Schema run triggered successfully..', 'Okay', {
+          this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
             duration: 2000
           })
         }, (error) => {

@@ -24,10 +24,10 @@
                     <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
+                            <input matInput [(ngModel)]="searchRuleTypeStr" formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
                             [matAutocomplete]="ruleTypeAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
-                            <ng-container *ngFor="let rule of businessRuleTypes">
+                            <ng-container *ngFor="let rule of businessRuleTypesFiltered">
                                 <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
                                     {{rule.ruleDesc}}
                                 </mat-option>
@@ -49,7 +49,7 @@
                         Please enter Weightage</mat-error>
                 </div>
     
-                <div class="f-col mdo-field" *ngIf="!isUDR && !isDuplicateType">
+                <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType">
                     <!-- label -->
                     <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
                     <!-- input container -->
@@ -62,7 +62,7 @@
                             </mat-option>
                         </mat-autocomplete>
                     </div>
-                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required)">Please select category</mat-error>
+                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value))">Please select category</mat-error>
                 </div>
                 
                 <div class="f-col mdo-form-field">
@@ -103,7 +103,7 @@
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
 
-                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
+                <div class="f-col mdo-form-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
                     <mat-label i18n="@@fields">Fields</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-chip-list #chipList>
@@ -150,10 +150,10 @@
                     <mat-label class="mdo-field-label" i18n="@@standard_function">Standard function</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function"
+                            <input matInput [(ngModel)]="searchRegexFunctionStr" [ngModelOptions]="{standalone: true}" i18n-placeholder="@@standard_function" placeholder="Standard function"
                             [matAutocomplete]="regexNameAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)" #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
-                            <ng-container *ngFor="let regex of preDefinedRegex">
+                            <ng-container *ngFor="let regex of preDefinedRegexFiltered">
                                 <mat-option class="mdo-option" [value]="regex.FUNC_TYPE">
                                     {{regex.FUNC_NAME}}
                                 </mat-option>
@@ -180,7 +180,7 @@
                         <ng-container [formGroupName]="i">
                             <div class="f-row defined-row" [id]="item.value.id">
                                 <!-- rule type -->
-                                <div class="col select-col" *ngIf="i > 0">
+                                <div class="col select-col udr-select-col" *ngIf="i > 0" [class.has-error]="submitted && (!item.value.blockType || item.value.blockType=='COND')">
                                     <mat-select mat-stroked-button formControlName="blockType">
                                         <mat-option value="AND">
                                             AND
@@ -200,13 +200,13 @@
                                             {{fieldItem.fieldDescri}}
                                         </mat-option>
                                     </mat-select> -->
-                                    <pros-generic-field-control [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="item.controls.conditionFieldId ? [item.controls.conditionFieldId.value] : []" 
+                                    <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(item.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="item.controls.conditionFieldId ? [item.controls.conditionFieldId.value] : []" 
                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i)"></pros-generic-field-control>
                                 </div>
                                 <!-- operators -->
                                 <div class="col">
                                     <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-                                    <mat-select mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select Operator">
+                                    <mat-select class="udr-form-select" mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select Operator">
                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                                             <ng-container *ngFor="let child of group.childs">
                                                 <mat-option [value]="child">
@@ -270,7 +270,7 @@
                                     <ng-container [formGroupName]="childIndex">
                                         <ul class="sub-defined">
                                             <div class="f-row defined-row">
-                                                <div class="col select-col">
+                                                <div class="col select-col udr-select-col" [class.has-error]="submitted && chldNode.errors?.required">
                                                     <mat-select formControlName="blockDesc">
                                                         <mat-option *ngFor="let condition of initialConditions"
                                                             [value]="condition" [disabled]="condition === 'When'">
@@ -285,11 +285,12 @@
                                                             {{fieldItem.fieldDescri}}
                                                         </mat-option>
                                                     </mat-select> -->
-                                                    <pros-generic-field-control [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
+                                                    <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(chldNode.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
                                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
+
                                                 <div class="col">
-                                                    <mat-select mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select operator">
+                                                    <mat-select class="udr-form-select" mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select operator">
                                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                                                             <ng-container *ngFor="let child of group.childs">
                                                                 <mat-option [value]="child">

@@ -52,26 +52,30 @@
         <div class="f-col-spacer-half"></div>
         <lib-avatar size="small"
             initials="{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}"
-            [matMenuTriggerFor]="profile_navigation"></lib-avatar>
-
-        <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
+           ></lib-avatar>
+           <!--  [matMenuTriggerFor]="profile_navigation" -->
+        <!-- <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
             <lib-button class="menu-btn" (afterClick)="openSettings()" i18n="@@settings">Settings</lib-button>
             <mat-divider></mat-divider>
             <lib-button class="menu-btn" (afterClick)="signOut()" i18n="@@sign_out">Sign out</lib-button>
-        </mat-menu>
+        </mat-menu> -->
     </div>
 </div>
 
 <mat-sidenav-content id="primaryContent" class="body-sidecontent">
     <mat-sidenav-container autosize>
         <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav
-            [ngStyle]="{'width.px': secondarySideBarOpened ? '260' : '16'}">
+            [ngStyle]="{'width.px': secondarySideBarOpened ? '260' : '16', 'cursor': grabCursor}">
             <!-- secondary side nav -->
             <pros-secondary-navbar [activatedPrimaryNav]="isNavSelected" [secondarySideBarOpened]="secondarySideBarOpened" (toggleEmitter)="toggleSecondarySideBar()"></pros-secondary-navbar>
         </mat-sidenav>
       <mat-sidenav-content id="secondaryContent" #secondaryContent
         [ngStyle]="{'marginLeft.px': secondarySideBarOpened ? '200' : '73'}">
+        <div #grabberElement class="resizable-grabber"
+            (mousedown)="resizableMousedown($event)"></div>
         <router-outlet></router-outlet>
       </mat-sidenav-content>
     </mat-sidenav-container>
 </mat-sidenav-content>
+
+<div *ngIf="grab" class="resizable-overlay" (window:mouseup)="resizableMouseup($event)" (mouseout)="resizableMouseup($event)" (window:mousemove)="resizableMousemove($event)"></div>

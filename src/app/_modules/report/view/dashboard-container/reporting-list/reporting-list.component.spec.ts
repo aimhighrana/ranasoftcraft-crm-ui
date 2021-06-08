@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReportingListComponent } from './reporting-list.component';
@@ -25,9 +26,9 @@ describe('ReportingListComponent', () => {
   let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ReportingListComponent],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, MatMenuModule, RouterTestingModule, SharedModule],
-      providers: [WidgetService, ReportService]
+      declarations: [ ReportingListComponent ],
+      imports:[ MdoUiLibraryModule, AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, RouterTestingModule, SharedModule],
+      providers:[ WidgetService, ReportService ]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -160,7 +161,7 @@ describe('ReportingListComponent', () => {
     expect(component.listData[0].OVERDUE).toEqual('No');
     expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
     expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
-    expect(component.listData[0].objectNumber).toEqual('C000164628');
+    expect(component.listData[0].objectNumber).toEqual(103048380550997540);
 
     component.widgetHeader = { displayCriteria: DisplayCriteria.TEXT } as WidgetHeader;
     component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
@@ -172,7 +173,7 @@ describe('ReportingListComponent', () => {
     expect(component.listData[0].OVERDUE).toEqual('No');
     expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
     expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
-    expect(component.listData[0].objectNumber).toEqual('C000164628');
+    expect(component.listData[0].objectNumber).toEqual(103048380550997540);
 
     component.widgetHeader = { displayCriteria: DisplayCriteria.CODE_TEXT } as WidgetHeader;
     component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
@@ -184,7 +185,7 @@ describe('ReportingListComponent', () => {
     expect(component.listData[0].OVERDUE).toEqual('No');
     expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
     expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
-    expect(component.listData[0].objectNumber).toEqual('C000164628');
+    expect(component.listData[0].objectNumber).toEqual(103048380550997540);
 
     component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
     expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
@@ -194,7 +195,7 @@ describe('ReportingListComponent', () => {
     expect(component.listData[0].OVERDUE).toEqual('No');
     expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
     expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
-    expect(component.listData[0].objectNumber).toEqual('C000164628');
+    expect(component.listData[0].objectNumber).toEqual(103048380550997540);
   }));
 
   it('isDateType(),isDateType  case', async(() => {

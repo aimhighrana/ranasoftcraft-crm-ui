@@ -4,8 +4,8 @@ import { FieldInputType } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-table-cell-input',
@@ -92,14 +92,15 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
     return this.selectFieldOptions.filter(option => option.TEXT.toLowerCase().includes(searchText.toLowerCase()));
   }
 
-  prepareDropdownOptions() {
-    this.schemaService.dropDownValues(this.fieldId, '').subscribe((data) => {
+  prepareDropdownOptions(searchString?: string) {
+    this.schemaService.dropDownValues(this.fieldId, searchString ? searchString : '').subscribe((data) => {
       this.selectFieldOptions = data;
-      this.filterdOptionsObs = this.searchControl.valueChanges.pipe(
-        startWith(''),
-        distinctUntilChanged(),
-        map(v => this.filterSelectFieldOptions(v))
-      )
+
+      this.filterdOptionsObs = of(data);
+
+      this.searchControl.valueChanges.pipe(distinctUntilChanged(), debounceTime(400)).subscribe(v=>{
+        this.prepareDropdownOptions(v);
+      });
     })
   }
 

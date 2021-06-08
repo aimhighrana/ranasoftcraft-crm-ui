@@ -24,7 +24,7 @@
         <lib-button-group>
             <lib-button i18n="@@check_data" type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
                 Check data </lib-button>
-            <lib-button type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
+            <lib-button *ngIf="false" type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
             <lib-button type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
         </lib-button-group>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -97,7 +97,7 @@
             <lib-chip class="mdo-filter-matchip" disableRipple="true" icon="ellipsis-h" [matMenuTriggerFor]="moreFilterMenu"></lib-chip>
             <!-- More control MatMenu -->
             <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
-                <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button>
+                <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->
                 <button mat-menu-item i18n="@@reset" (click)="resetAppliedFilter()">Reset</button>
             </mat-menu>
         </div>
@@ -366,8 +366,8 @@
                                             </ng-template>
                                         </th>
 
-
-                                        <td [class.schema-header-cell]="isHeaderColumn(dynCols)" mat-cell *matCellDef="let element; let rIndex = index;"
+                                        <!-- [class.schema-header-cell] = "isHeaderColumn(dynCols)" -->
+                                        <td class="schema-header-cell" mat-cell *matCellDef="let element; let rIndex = index;" [class.editable-cell] = "isFieldEditable(dynCols)"
                                             [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                             <div class="f-col grid-cell-editable">
@@ -383,12 +383,12 @@
                                                         [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                                         [ngIfElse]="other">
                                                         <div class="f-col">
-                                                            <span class="correction">
+                                                            <span class="correction" id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
                                                                 element[dynCols].oldData) : '' }}
                                                             </span>
 
-                                                            <span class="correction line-cut" id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                            <span class="correction line-cut">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
                                                                 element[dynCols].fieldData) : '' }}
                                                             </span>

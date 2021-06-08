@@ -2350,7 +2350,79 @@
           <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="importLogs" datatype="html">
+      <trans-unit id="send_via_email" datatype="html">
+        <source> Send via email</source>
+        <target> Gửi qua email </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard\dashboard.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_template" datatype="html">
+        <source> Select a template</source>
+        <target> Chọn một mẫu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\email-template\email-template.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="send" datatype="html">
+        <source> Send</source>
+        <target>Gửi</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="send_to" datatype="html">
+        <source> Send to</source>
+        <target>Gửi đến</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="subject" datatype="html">
+        <source> Subject</source>
+        <target> Môn học</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="message" datatype="html">
+        <source> Message</source>
+        <target>Thông điệp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="attachment_format" datatype="html">
+        <source> Attachment Format</source>
+        <target> Định dạng tệp đính kèm </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="template_name" datatype="html">
+        <source> Template Name</source>
+        <target>Tên mẫu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\email-template\email-template.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+       <trans-unit id="importLogs" datatype="html">
         <source>Import Logs</source>
         <target>Nhập nhật ký</target>
         <context-group purpose="location">
@@ -2396,6 +2468,50 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="download" datatype="html">
+        <source>Download</source>
+        <target>Tải xuống</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\download-execution-data\download-execution-data.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="end" datatype="html">
+        <source>End</source>
+        <target>Kết thúc</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">213</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="start" datatype="html">
+        <source>Start</source>
+        <target>Khởi đầu</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">199</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="show_selected" datatype="html">
+        <source>Show selected</source>
+        <target>Hiển thị đã chọn</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">124</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule" datatype="html">
+        <source>Rule</source>
+        <target>Qui định</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">114</context>
         </context-group>
       </trans-unit>
     </body>
