@@ -867,6 +867,7 @@ describe('SchemaDetailsComponent', () => {
     spyOn(schemaDetailService,'approveCorrectedRecords').and.returnValues(of(null));
 
     expect(component.approveRecords('inline')).toBeUndefined();
+    expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalled();
   }));
 
   it('getParentNode()', async(() => {
@@ -910,6 +911,7 @@ describe('SchemaDetailsComponent', () => {
     component.statics = {correctedCnt: 5} as SchemaStaticThresholdRes;
     spyOn(schemaDetailService,'resetCorrectionRecords').and.returnValue(of(undefined));
     expect(component.resetRec(null, 'inline')).toBeUndefined();
+    expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalled();
 
     spyOn(component, 'getData');
     component.selection.clear();
@@ -1110,6 +1112,7 @@ describe('SchemaDetailsComponent', () => {
     spyOn(schemaDetailService, 'generateCrossEntry').and.returnValue(of(undefined));
 
     expect(component.generateCrossEntry(row)).toBeUndefined();
+    expect(schemaDetailService.generateCrossEntry).toHaveBeenCalled();
   }));
 
   it('uploadCorrectedData(), navigate for upload corrected rec ', async(()=>{
@@ -1345,6 +1348,9 @@ describe('SchemaDetailsComponent', () => {
     newNode.nodeId = 'test';
     newNode.nodeType = SchemaExecutionNodeType.HEIRARCHY;
     expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+    expect(component.getNodeParentsHierarchy).toHaveBeenCalled();
+    expect(schemaDetailService.getSelectedFieldsByNodeIds).toHaveBeenCalled();
+    expect(component.selectedFieldsOb.next).toHaveBeenCalled();
 
     newNode.nodeId = '2';
     newNode.nodeType = SchemaExecutionNodeType.GRID;
