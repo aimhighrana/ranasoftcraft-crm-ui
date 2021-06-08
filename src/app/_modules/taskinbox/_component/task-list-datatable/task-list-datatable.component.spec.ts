@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { of, Subject } from 'rxjs';
@@ -26,7 +27,7 @@ describe('TaskListDatatableComponent', () => {
     // queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
     TestBed.configureTestingModule({
       declarations: [TaskListDatatableComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: ActivatedRoute,

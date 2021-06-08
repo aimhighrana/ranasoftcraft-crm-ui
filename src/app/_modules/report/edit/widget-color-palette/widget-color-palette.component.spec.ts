@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WidgetColorPaletteComponent } from './widget-color-palette.component';
@@ -26,7 +27,7 @@ describe('WidgetColorPaletteComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ WidgetColorPaletteComponent ],
-      imports:[
+      imports:[ MdoUiLibraryModule,
         AppMaterialModuleForSpec, HttpClientTestingModule, SharedModule
       ],providers: [
         {

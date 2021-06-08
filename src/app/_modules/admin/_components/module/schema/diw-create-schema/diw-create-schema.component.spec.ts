@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DiwCreateSchemaComponent } from './diw-create-schema.component';
@@ -13,7 +14,7 @@ describe('DiwCreateSchemaComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DiwCreateSchemaComponent ],
-      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule]
     })
     .compileComponents();
   }));

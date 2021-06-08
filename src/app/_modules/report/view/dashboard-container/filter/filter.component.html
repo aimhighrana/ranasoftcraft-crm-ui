@@ -1,7 +1,8 @@
 <mat-card class="mat-elevation-z0 widget">
 
   <div class="f-row breadcrum-toolbar">
-    <div class="display-heading-large">
+    <div class="display-heading-large" #displayHeading
+      [libTooltip]="widgetHeader.desc" matTooltipPosition="right" [matTooltipDisabled]="false">
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
@@ -159,12 +160,14 @@
     </ng-template>
 
     <!-- CONTROL FOR INPUT TYPE NUM -->
+    <!-- MAL-411: to bring back later
     <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
       <mat-form-field appearance="outline">
         <input matInput placeholder="Enter maximum value" [formControl]="sliderval" (input)="slidervalue($event.target)">
       </mat-form-field>
       <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
     </ng-template>
+    -->
 
     <!-- CONTROL FOR THE LOCATION HIRERACHY FILTER -->
     <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '29'">

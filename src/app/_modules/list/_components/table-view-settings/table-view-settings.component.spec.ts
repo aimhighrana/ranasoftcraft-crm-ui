@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,7 +28,7 @@ describe('TableViewSettingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TableViewSettingsComponent, FormInputComponent, SearchInputComponent ],
-      imports: [ AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
+      imports: [ MdoUiLibraryModule,  AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
       providers: [
         { provide: ActivatedRoute, useValue: { params: of(pathPrams)}}
       ]

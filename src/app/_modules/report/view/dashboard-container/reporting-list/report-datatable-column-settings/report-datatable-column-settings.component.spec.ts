@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReportDatatableColumnSettingsComponent } from './report-datatable-column-settings.component';
@@ -26,7 +27,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ReportDatatableColumnSettingsComponent, SearchInputComponent],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
     })
       .compileComponents();
       router = TestBed.inject(Router);

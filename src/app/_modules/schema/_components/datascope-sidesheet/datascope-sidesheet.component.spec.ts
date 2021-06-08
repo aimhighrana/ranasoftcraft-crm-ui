@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
@@ -36,7 +37,7 @@ describe('DatascopeSidesheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DatascopeSidesheetComponent, FormInputComponent, AddFilterMenuComponent, FilterValuesComponent, SearchInputComponent ],
-      imports: [RouterTestingModule, AppMaterialModuleForSpec, HttpClientTestingModule, SharedModule],
+      imports: [ MdoUiLibraryModule, RouterTestingModule, AppMaterialModuleForSpec, HttpClientTestingModule, SharedModule],
       providers: [
         { provide: ActivatedRoute, useValue: {
           params: of(routerMockParams)

@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
@@ -25,7 +26,7 @@ describe('DashboardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent, BreadcrumbComponent, DashboardContainerComponent],
-      imports: [AppMaterialModuleForSpec, FormsModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, SharedModule, MatDialogModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, FormsModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, SharedModule, MatDialogModule],
       providers: [
         ReportService
       ]

@@ -162,4 +162,8 @@ export class EndpointsAnalyticsService {
   public importReport(fileSno: number, replaceOld: boolean, keepCopy: boolean): string {
     return `${this.apiUrl}/report/import?fileSno=${fileSno}&replaceOld=${replaceOld}&keepCopy=${keepCopy}`;
   }
+
+  public shareReport(reportId: string) : string {
+    return `${this.apiUrl}/report/share?reportId=${reportId}`;
+  }
 }

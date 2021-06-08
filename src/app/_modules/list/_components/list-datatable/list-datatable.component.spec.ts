@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -25,7 +26,7 @@ describe('ListDatatableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ListDatatableComponent ],
-      imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
+      imports: [ MdoUiLibraryModule,  AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
       providers: [
         { provide: ActivatedRoute, useValue: { params: of(routeParams), queryParams: of(queryParams)}}
       ]
