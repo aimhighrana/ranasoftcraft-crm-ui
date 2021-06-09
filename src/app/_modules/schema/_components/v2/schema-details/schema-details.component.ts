@@ -1214,16 +1214,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Get data scopes .. or variants ...
    */
   getDataScope(activeVariantId?: string) {
-    const sub = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR');
-    const res = sub.subscribe(res => {
+    const observable = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR');
+    const sub = observable.subscribe(res => {
       this.dataScope = res;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
     }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
-    this.subscribers.push(res);
+    this.subscribers.push(sub);
 
-    return sub;
+    return observable;
   }
 
   /**
