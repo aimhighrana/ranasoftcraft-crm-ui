@@ -142,6 +142,27 @@ export class EndpointsAnalyticsService {
     return `${this.apiUrl}/report/widget/display-criteria?widgetId=${widgetId}&widgetType=${widgetType}`;
   }
 
+  /**
+   * endpoint to export report
+   */
+  public exportReport(reportId: string): string {
+    return `${this.apiUrl}/report/export-config?reportId=${reportId}`;
+  }
+
+  /**
+   * endpoint to import report to upload file
+   */
+  public importUploadReport(): string {
+    return `${this.apiUrl}/report/upload`;
+  }
+
+  /**
+   * endpoint to import report
+   */
+  public importReport(fileSno: number, replaceOld: boolean, keepCopy: boolean): string {
+    return `${this.apiUrl}/report/import?fileSno=${fileSno}&replaceOld=${replaceOld}&keepCopy=${keepCopy}`;
+  }
+
   public shareReport(reportId: string) : string {
     return `${this.apiUrl}/report/share?reportId=${reportId}`;
   }

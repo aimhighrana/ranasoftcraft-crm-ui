@@ -20,6 +20,8 @@
 							(click)="editReport()">Edit</button>
 						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
 							(click)="duplicateReport()">Duplicate</button>
+						<button mat-menu-item *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)"
+							(click)="exportReport()">Export</button>
 						<button mat-menu-item *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)"
 							(click)="delete()">Delete</button>
 						<button mat-menu-item (click)="importLog()">Import Log</button>

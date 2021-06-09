@@ -758,6 +758,10 @@
 
   //Mat-Menu
   .cdk-overlay-pane {
+    &.display-dialog {
+      display: none;
+    }
+
     .search-row {
       margin: 8px;
     }

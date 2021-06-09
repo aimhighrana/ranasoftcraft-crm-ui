@@ -597,3 +597,32 @@ export interface DuplicateReport {
     reportId: string;
     reportName: string;
 }
+
+export interface ImportReport {
+    acknowledge: boolean;
+    alreadyExits: boolean;
+    reportId: string;
+    reportName: string;
+    importedBy: string;
+    importedAt: number;
+    updatedAt: number;
+    fileSno: number;
+    logs?: ImportReportLog[];
+}
+
+export interface ImportReportLog {
+    messageId: number;
+    reportId: number;
+    category: ReportCategory;
+    message: string;
+    status: string;
+    createdAt: number;
+    updatedAt: number;
+    updatedBy: string;
+}
+
+export enum ReportCategory {
+    DUPLICATE_REPORT = 'DUPLICATE_REPORT',
+    MISSING_MODULE = 'MISSING_MODULE',
+    MISSING_FIELDS = 'MISSING_FIELDS',
+}

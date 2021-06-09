@@ -37,6 +37,8 @@ import { ImportLogComponent } from './import-log/import-log.component';
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 Chart.plugins.register(ChartDataLabels);
+import { ExportComponent } from './view/export/export.component';
+import { ImportComponent } from './view/import/import.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +71,9 @@ Chart.plugins.register(ChartDataLabels);
     DuplicateReportComponent,
     SendEmailComponent,
     EmailTemplateComponent,
-    ImportLogComponent
+    ImportLogComponent,
+    ExportComponent,
+    ImportComponent
   ],
   imports: [
     CommonModule,

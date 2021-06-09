@@ -20,6 +20,8 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CoreService } from '@services/core/core.service';
 import { ObjectType } from '@models/core/coreModel';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { MatDialog } from '@angular/material/dialog';
+import { ImportComponent } from '@modules/report/view/import/import.component';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -194,6 +196,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     private listService: ListService,
     private taskListService: TaskListService,
     private matSnackBar: MatSnackBar,
+    private matDialog: MatDialog,
     private coreService: CoreService
   ) { }
 
@@ -754,5 +757,16 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       this.dataSets = res;
       this.filteredModulesMenu = of(res);
     }, err=>{console.error(`Exception : ${err.message}`)}));
+  }
+
+  /**
+   * Open dialog for import a report
+   */
+  importReport() {
+    this.matDialog.open(ImportComponent, {
+      width: '600px',
+      minHeight: '250px',
+      disableClose: false,
+    });
   }
 }
