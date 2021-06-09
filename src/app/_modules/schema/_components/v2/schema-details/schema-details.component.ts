@@ -481,6 +481,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   getSchemaDetails() {
    const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
+      if (this.schemaInfo.variantId) {
+        setTimeout(() => {
+          this.variantChange(this.schemaInfo.variantId);
+        }, 500);
+      }
     }, error => console.error(`Error : ${error.message}`));
     this.subscribers.push(sub);
   }
