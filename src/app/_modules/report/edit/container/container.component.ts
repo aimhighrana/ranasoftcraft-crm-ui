@@ -829,7 +829,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           setColumnsError();
           return false;
         }
-        
+
         if (!widget.objectType) {
           this.snackbar.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
