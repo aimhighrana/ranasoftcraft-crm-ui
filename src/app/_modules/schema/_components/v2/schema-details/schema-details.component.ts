@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -309,11 +309,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     if (this.isRefresh && !this.isInRunning) {
       this.activeTab='error';
-      this.getDataScope();
+      const sub = this.getDataScope();
       this.getFldMetadata();
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
       this.getSchemaStatics();
-      this.getSchemaDetails();
+      forkJoin({getDataScope: sub}).subscribe((res) => {
+        if (res) {
+          this.getSchemaDetails();
+        }
+      });
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
@@ -482,9 +486,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
       if (this.schemaInfo.variantId) {
-        setTimeout(() => {
-          this.variantChange(this.schemaInfo.variantId);
-        }, 500);
+        this.variantChange(this.schemaInfo.variantId);
       }
     }, error => console.error(`Error : ${error.message}`));
     this.subscribers.push(sub);
@@ -1212,13 +1214,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Get data scopes .. or variants ...
    */
   getDataScope(activeVariantId?: string) {
-    const sub = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
+    const sub = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR');
+    const res = sub.subscribe(res => {
       this.dataScope = res;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
     }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
-    this.subscribers.push(sub);
+    this.subscribers.push(res);
+
+    return sub;
   }
 
   /**
