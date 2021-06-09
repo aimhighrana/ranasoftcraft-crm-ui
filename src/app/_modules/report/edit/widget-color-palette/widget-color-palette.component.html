@@ -1,14 +1,12 @@
 <div class="root">
+  <div class="row-spacer"></div>
   <div class="f-row breadcrum-toolbar">
-    <div class="display-heading-large">
-      Color palette {{ widgetColorPalette ? widgetColorPalette.widgetDesc : 'Unknown'}}
-    </div>
+    <lib-text-line type="leading">Color palette "{{ widgetColorPalette ? widgetColorPalette.widgetDesc : 'Unknown'}}"
+    </lib-text-line>
     <div class="f-spacer"></div>
-    <lib-button icon="times" type = "plain" (click)="close(true)"></lib-button>
-    <!-- <button mat-button (click)="close(true)">
-      <mat-icon fontSet="mdo-icons">close</mat-icon>
-    </button> -->
+    <lib-button (click)="close(true)" type="plain" icon="times"></lib-button>
   </div>
+  <div class="row-spacer"></div>
   <div class="f-col palette-list">
     <mat-list *ngIf="widgetColorPalette">
       <mat-list-item *ngFor="let color of widgetColorPalette.colorPalettes;let idx = index">
@@ -23,8 +21,8 @@
   <div class="row-spacer"></div>
   <!-- buttons -->
   <div class="f-row">
-    <button mat-flat-button color="accent" (click)="close(true)">Cancel</button>
+    <lib-button type="minor" (click)="close(true)">Cancel</lib-button>
     <span class="f-spacer"></span>
-    <button mat-flat-button color="primary" (click)="updateColorPalette()">Update</button>
+    <lib-button (click)="updateColorPalette()" type="major">Update</lib-button>
   </div>
 </div>
