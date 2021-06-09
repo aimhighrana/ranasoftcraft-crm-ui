@@ -1,14 +1,15 @@
 <mat-card class="mat-elevation-z0 check-list">
   <mat-optgroup label="Workflow">
     <mat-option>
-      <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked" [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox>
+      <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
+        [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox>
     </mat-option>
     <mat-option *ngFor="let module of dataSetWorkflow | async">
       <div class="colunm-list">
           <div class="f-row colunm-box">
-            <mat-checkbox color="primary" (change)="selectionChange(module)" [checked]="isChecked(module)">
-              {{ module.objectdesc ? module.objectdesc : 'Untitled'}}
-            </mat-checkbox>
+            <lib-checkbox label="{{ module.objectdesc ? module.objectdesc : 'Untitled'}}"
+              (valueChange)="selectionChange(module)" [checked]="isChecked(module)">
+            </lib-checkbox>
           </div>
       </div>
     </mat-option>

@@ -1,8 +1,8 @@
 <mat-card class="mat-elevation-z0 widget">
-  <div class="f-row breadcrum-toolbar">
-    <div class="display-heading-large" #displayHeading
+  <div class="f-row">
+    <div #displayHeading
       [libTooltip]="widgetHeader.desc" matTooltipPosition="right" [matTooltipDisabled]="false">
-      {{ widgetHeader.desc }}
+      <lib-text-line type="base" enableWrap="true">{{ widgetHeader.desc }}</lib-text-line>
     </div>
     <div class="f-spacer"></div>
     <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
@@ -10,7 +10,7 @@
       <lib-filter-option (click)="downloadImage()">Image download (.png)</lib-filter-option>
       <lib-filter-option (click)="downloadCSV()">Data download (.csv)</lib-filter-option>
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
-      <mat-menu #tcOptionMenu="matMenu">
+      <mat-menu #tcOptionMenu="matMenu" class="mat-elevation-z0 tooltip-fields-menu">
         <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
       <ng-template [ngIf]="permissons && permissons.isAdmin">
