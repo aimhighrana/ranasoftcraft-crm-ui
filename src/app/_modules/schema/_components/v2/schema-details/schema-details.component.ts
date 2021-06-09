@@ -341,11 +341,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
 
     this.manageStaticColumns();
-    this.dataSource.brMetadata.subscribe(res => {
-      if (res) {
-        // this.getData();
-      }
-    });
+    // this.dataSource.brMetadata.subscribe(res => {
+    //   if (res) {
+      //   // this.getData();
+      // }
+    // });
 
     // reset filter and sort order
     this.filterCriteria.next(null);
@@ -361,7 +361,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.sort.sortChange.subscribe(res => {
       if (res.direction) {
         const fldId = res.active ? res.active : '';
-        const order = res.direction ? res.direction : '';
+        const order = res.direction;
         this.sortOrder = {};
         this.sortOrder[fldId] = order;
         this.getData(this.filterCriteria.getValue(), this.sortOrder);
@@ -532,10 +532,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           fltr.values = fil.values;
 
           const dropVal: DropDownValue[] = [];
-          fltr.values.forEach(val => {
-            const dd: DropDownValue = { CODE: val, FIELDNAME: fil.fieldId } as DropDownValue;
-            dropVal.push(dd);
-          });
+          if (fltr.values) {
+            fltr.values.forEach(val => {
+              const dd: DropDownValue = { CODE: val, FIELDNAME: fil.fieldId } as DropDownValue;
+              dropVal.push(dd);
+            });
+          }
 
           fltr.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
           finalFiletr.push(fltr);
