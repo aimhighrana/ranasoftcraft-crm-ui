@@ -1,3 +1,4 @@
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
@@ -11,7 +12,7 @@ describe('GlobalSearchComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ GlobalSearchComponent],
-      imports: [ MdoUiLibraryModule , MatMenuModule]
+      imports: [ AppMaterialModuleForSpec,  MdoUiLibraryModule , MatMenuModule]
     })
     .compileComponents();
   }));

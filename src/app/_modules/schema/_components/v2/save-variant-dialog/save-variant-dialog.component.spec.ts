@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SaveVariantDialogComponent } from './save-variant-dialog.component';
@@ -31,7 +32,7 @@ describe('SaveVariantDialogComponent', () => {
         },
         SchemaVariantService
       ],
-      imports:[
+      imports:[ MdoUiLibraryModule,
         HttpClientTestingModule, RouterTestingModule, AppMaterialModuleForSpec, SharedModule
       ]
     })

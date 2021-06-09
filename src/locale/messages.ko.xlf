@@ -2346,6 +2346,78 @@
           <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="send_via_email" datatype="html">
+        <source> Send via email</source>
+        <target> 이메일로 보내기 </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard\dashboard.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_template" datatype="html">
+        <source> Select a template</source>
+        <target>템플릿 선택</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\email-template\email-template.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="send" datatype="html">
+        <source> Send</source>
+        <target>보내다</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="send_to" datatype="html">
+        <source> Send to</source>
+        <target>보내기</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="subject" datatype="html">
+        <source> Subject</source>
+        <target> 제목</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="message" datatype="html">
+        <source> Message</source>
+        <target>메시지</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="attachment_format" datatype="html">
+        <source> Attachment Format</source>
+        <target> 첨부 형식</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="template_name" datatype="html">
+        <source> Template Name</source>
+        <target> 템플릿 이름</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\email-template\email-template.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
          <trans-unit id="importLogs" datatype="html">
         <source>Import Logs</source>
         <target>로그 가져 오기</target>

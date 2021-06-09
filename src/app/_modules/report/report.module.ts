@@ -30,6 +30,8 @@ import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/work
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 import { HierarchyFilterComponent } from './view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 import { DuplicateReportComponent } from './view/duplicate-report/duplicate-report.component';
+import { SendEmailComponent } from './view/email/send-email/send-email.component';
+import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
 import { ImportLogComponent } from './import-log/import-log.component';
 
 import * as Chart from 'chart.js';
@@ -65,6 +67,8 @@ Chart.plugins.register(ChartDataLabels);
     ReportDatatableColumnSettingsComponent,
     HierarchyFilterComponent,
     DuplicateReportComponent,
+    SendEmailComponent,
+    EmailTemplateComponent,
     ImportLogComponent
   ],
   imports: [

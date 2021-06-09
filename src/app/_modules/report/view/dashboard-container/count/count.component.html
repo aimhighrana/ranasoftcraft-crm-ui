@@ -1,6 +1,9 @@
 <mat-card class="mat-elevation-z0 widget">
-    <div class="f-row">
-       <lib-text-line type="base">{{widgetHeader.widgetName}}</lib-text-line>
+    <div class="f-row breadcrum-toolbar">
+      <div #displayHeading
+        [libTooltip]="widgetHeader.widgetName" matTooltipPosition="right" [matTooltipDisabled]="false">
+        <lib-text-line type="base" enableWrap="true">{{widgetHeader.widgetName}}</lib-text-line>
+      </div>
     </div>
     <div class="row-spacer"></div>
     <mat-card-content>

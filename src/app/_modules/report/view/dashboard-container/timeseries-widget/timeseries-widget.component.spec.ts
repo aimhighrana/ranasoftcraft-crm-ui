@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimeseriesWidgetComponent } from './timeseries-widget.component';
@@ -18,7 +19,7 @@ describe('TimeseriesWidgetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TimeseriesWidgetComponent],
-      imports: [
+      imports: [ MdoUiLibraryModule,
         HttpClientTestingModule,
         AppMaterialModuleForSpec,
         SharedModule

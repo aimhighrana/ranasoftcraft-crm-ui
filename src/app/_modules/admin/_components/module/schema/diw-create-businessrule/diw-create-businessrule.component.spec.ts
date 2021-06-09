@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DiwCreateBusinessruleComponent } from './diw-create-businessrule.component';
@@ -16,7 +17,7 @@ describe('DiwCreateBusinessruleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DiwCreateBusinessruleComponent ],
-      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule],
+      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule],
       providers: [
         {
           provide: MatDialogRef,

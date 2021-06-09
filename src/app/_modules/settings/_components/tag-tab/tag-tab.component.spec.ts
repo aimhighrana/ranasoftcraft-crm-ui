@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TagTabComponent } from './tag-tab.component';
@@ -8,6 +9,7 @@ describe('TagTabComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports:[MdoUiLibraryModule],
       declarations: [ TagTabComponent ]
     })
     .compileComponents();

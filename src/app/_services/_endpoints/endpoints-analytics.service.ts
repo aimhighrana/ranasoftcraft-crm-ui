@@ -141,4 +141,8 @@ export class EndpointsAnalyticsService {
   public displayCriteria(widgetId: string, widgetType: WidgetType): string {
     return `${this.apiUrl}/report/widget/display-criteria?widgetId=${widgetId}&widgetType=${widgetType}`;
   }
+
+  public shareReport(reportId: string) : string {
+    return `${this.apiUrl}/report/share?reportId=${reportId}`;
+  }
 }

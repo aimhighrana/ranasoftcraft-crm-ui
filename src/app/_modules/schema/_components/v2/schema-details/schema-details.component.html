@@ -366,8 +366,8 @@
                                             </ng-template>
                                         </th>
 
-
-                                        <td [class.schema-header-cell]="isHeaderColumn(dynCols)" mat-cell *matCellDef="let element; let rIndex = index;" [class.editable-cell] = "isFieldEditable(dynCols)"
+                                        <!-- [class.schema-header-cell] = "isHeaderColumn(dynCols)" -->
+                                        <td class="schema-header-cell" mat-cell *matCellDef="let element; let rIndex = index;" [class.editable-cell] = "isFieldEditable(dynCols)"
                                             [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                             <div class="f-col grid-cell-editable">

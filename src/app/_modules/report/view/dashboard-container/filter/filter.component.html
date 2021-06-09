@@ -1,6 +1,10 @@
 <mat-card class="mat-elevation-z0 widget">
-  <div class="f-row filter-row">
-    <lib-text-line type="base"> {{ widgetHeader.desc }}</lib-text-line>
+  <div class="f-row">
+    <div #displayHeading
+      [libTooltip]="widgetHeader.desc" matTooltipPosition="right" [matTooltipDisabled]="false">
+      <lib-text-line type="base" enableWrap="true"> {{ widgetHeader.desc }}</lib-text-line>
+    </div>
+    
     <div class="f-spacer"></div>
     <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
     <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
@@ -12,7 +16,7 @@
       </mat-menu>
     </mat-menu>
   </div>
-
+  <div class="row-spacer"></div>
   <mat-card-content>
     <!-- CONTROL FOR DROPDOWNS -->
     <ng-template
@@ -178,8 +182,8 @@
     </ng-template>
 
     <!-- CONTROL FOR INPUT TYPE NUM -->
-    <ng-template
-      [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
+    <!-- MAL-411: to bring back later
+    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
       <mat-form-field appearance="outline">
         <input matInput placeholder="Enter maximum value" [formControl]="sliderval"
           (input)="slidervalue($event.target)">
@@ -189,6 +193,7 @@
         [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0"
         (change)="sliderValueChange($event)"></mat-slider>
     </ng-template>
+    -->
 
     <!-- CONTROL FOR THE LOCATION HIRERACHY FILTER -->
     <ng-template
