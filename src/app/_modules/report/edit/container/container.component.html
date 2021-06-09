@@ -142,7 +142,7 @@
                                         <mat-label>Data set</mat-label>
                                     </ng-template>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [formControl]="objectDesc" [matAutocomplete]="dataSetCtrl"
+                                        <input matInput [formControl]="datesetCtrl" [matAutocomplete]="dataSetCtrl"
                                             (keyup)="searchDataSet($event.target.value)">
                                         <mat-autocomplete #dataSetCtrl="matAutocomplete"
                                             [displayWith]="displayWithDataSet">
@@ -400,9 +400,9 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumn"
+                                        <input matInput [matAutocomplete]="chooseColumn" [formControl]="fieldCtrl"
                                             (keyup)="searchChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith" (opened)="removeError('fieldCtrl')">
                                             <mat-optgroup label="System fileds">
                                                 <mat-option *ngFor="let field of systemFields
                                                 " value="{{ field.fieldId }}">
