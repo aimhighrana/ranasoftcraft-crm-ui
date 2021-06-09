@@ -146,14 +146,14 @@ export class EndpointsAnalyticsService {
    * endpoint to export report
    */
   public exportReport(reportId: string): string {
-    return `${this.apiUrl}/report/export?reportId=${reportId}`;
+    return `${this.apiUrl}/report/export-config?reportId=${reportId}`;
   }
 
   /**
    * endpoint to import report to upload file
    */
-  public importUploadReport(file: File): string {
-    return `${this.apiUrl}/report/upload?file=${file}`;
+  public importUploadReport(): string {
+    return `${this.apiUrl}/report/upload`;
   }
 
   /**

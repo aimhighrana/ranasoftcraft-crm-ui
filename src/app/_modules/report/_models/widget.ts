@@ -624,4 +624,5 @@ export interface ImportReportLog {
 export enum ReportCategory {
     DUPLICATE_REPORT = 'DUPLICATE_REPORT',
     MISSING_MODULE = 'MISSING_MODULE',
+    MISSING_FIELDS = 'MISSING_FIELDS',
 }

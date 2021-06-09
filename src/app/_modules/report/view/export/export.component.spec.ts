@@ -61,7 +61,7 @@ describe('ExportComponent', () => {
 
   it('onConfirm(),should close when no error',async(()=>{
     spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValue(of({errorMsg:''}));
-    component.data = { reportId:'1234'};
+    component.data = { reportId:'1234', reportName:'test report'};
     component.onConfirm();
     expect(component.errorMsg).toBeUndefined();
     expect(mockDialogRef.close).toHaveBeenCalled();

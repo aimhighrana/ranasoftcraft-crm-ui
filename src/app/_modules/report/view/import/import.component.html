@@ -44,6 +44,9 @@
                         <span *ngSwitchCase="ReportCategory.MISSING_MODULE" i18n="@@missing_module">
                             Missing module
                         </span>
+                        <span *ngSwitchCase="ReportCategory.MISSING_FIELDS" i18n="@@missing_module">
+                            Missing Fields
+                        </span>
                         <span *ngSwitchDefault>
                             {{element.category}}
                         </span>

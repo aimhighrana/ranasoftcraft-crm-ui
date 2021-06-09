@@ -83,6 +83,8 @@ export class ImportComponent implements OnInit {
           this.warningMessage = `An existing report shares the name ${this.seletedFile.name} . Duplicate or Replace`;
         } else if (this.importData.logs.some(s => s.category === ReportCategory.MISSING_MODULE)) {
           this.isMissingModule = true;
+        } else if (this.importData.logs.some(s => s.category === ReportCategory.MISSING_FIELDS)) {
+          this.isMissingModule = true;
         }
       } else {
         this.errorMsg = 'Error while importing file';
@@ -101,6 +103,7 @@ export class ImportComponent implements OnInit {
     this.isDuplicate = false;
     this.isMissingModule = false;
     this.errorMsg = '';
+    this.dialogRef.disableClose = false;
   }
 
   /**

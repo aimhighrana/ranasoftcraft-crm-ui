@@ -151,7 +151,7 @@ describe('WidgetService', () => {
     });
 
     const req = httpTestingController.expectOne(`${testurl}`);
-    expect(req.request.method).toEqual('GET');
+    expect(req.request.method).toEqual('POST');
     req.flush(mockhttpData);
     httpTestingController.verify();
   }));
@@ -170,7 +170,7 @@ describe('WidgetService', () => {
     });
 
     const req = httpTestingController.expectOne(`${testurl}`);
-    expect(req.request.method).toEqual('GET');
+    expect(req.request.method).toEqual('POST');
     req.flush(mockhttpData);
     httpTestingController.verify();
   }));

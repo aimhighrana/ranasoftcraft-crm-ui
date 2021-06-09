@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3,WidgetColorPalette, DuplicateReport, DisplayCriteria, WidgetType, ImportReport } from 'src/app/_modules/report/_models/widget';
 import { TreeModel } from '@modules/report/view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
@@ -167,20 +167,25 @@ export class WidgetService {
    * Call http to export a report
    */
    public exportReport(reportId: string) : Observable<any> {
-    return this.http.get<any>(this.endpointAnalyticService.exportReport(reportId));
+    const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+    return this.http.get(this.endpointAnalyticService.exportReport(reportId),{headers, responseType: 'text'});
   }
 
   /**
    * Call http to import a report to upload file
    */
    public importUploadReport(file: File) : Observable<ImportReport> {
-    return this.http.get<ImportReport>(this.endpointAnalyticService.importUploadReport(file));
+     /* Form Data */
+     const formData = new FormData();
+     // Store form name as "file" with file data
+     formData.append('file', file, file.name);
+    return this.http.post<ImportReport>(this.endpointAnalyticService.importUploadReport(),formData);
   }
 
   /**
    * Call http to import a report to upload file
    */
    public importReport(fileSno: number, replaceOld: boolean, keepCopy: boolean) : Observable<ImportReport> {
-    return this.http.get<ImportReport>(this.endpointAnalyticService.importReport(fileSno, replaceOld, keepCopy));
+    return this.http.post<ImportReport>(this.endpointAnalyticService.importReport(fileSno, replaceOld, keepCopy),{});
   }
 }

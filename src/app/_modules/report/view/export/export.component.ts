@@ -23,10 +23,15 @@ export class ExportComponent implements OnInit {
   }
 
   onConfirm() {
+
+
     this.widgetService.exportReport(this.data.reportId).subscribe(res => {
-      if (res.errorMsg) {
+      if (res?.errorMsg) {
         this.errorMsg = `Unable to complete export: (${res.errorMsg})`;
       } else {
+        if(res){
+          this.downloadMDOReport(res,this.data.reportName);
+        }
         this.dialogRef.close();
       }
     }, error => {
@@ -45,5 +50,16 @@ export class ExportComponent implements OnInit {
    */
    close() {
     this.dialogRef.close();
+  }
+
+  private downloadMDOReport(response: any, reportName:string){
+    const binaryData = [];
+    const fileName = reportName.replace(/\s/g, '_')
+    binaryData.push(response);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: '.mdopage'}));
+    downloadLink.setAttribute('download', fileName +'.mdopage');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
   }
 }

@@ -188,6 +188,16 @@ describe('ImportComponent', () => {
           createdAt: 166877799002,
           updatedAt: 167998989903,
           updatedBy: '${import_by_userid}'
+        },
+        {
+          category: ReportCategory.MISSING_FIELDS,
+          createdAt: 1623240163583,
+          message: 'fieldnull Not availiable on TargetServer',
+          messageId: 696560763677809300,
+          reportId: 956793189672808400,
+          status: 'OPEN',
+          updatedAt: 1623240163583,
+          updatedBy: 'INITIATOR'
         }
       ]
     };
@@ -201,6 +211,62 @@ describe('ImportComponent', () => {
     expect(component.isDuplicate).toBeFalsy();
     expect(component.isMissingModule).toBeTruthy();
   }));
+
+
+  it('importUploadReport(), should have Missing Fields only', async(() => {
+    component.seletedFile = new File([''], 'filename', { type: 'application/json' });    const mockRes = {
+      acknowledge: false,
+      alreadyExits: true,
+      reportId: '87347237573',
+      reportName: 'Inprogress tickets',
+      importedBy: '${current_userid_who_imported}',
+      importedAt: 16887879908,
+      updatedAt: 16887879908,
+      fileSno: 872234723674,
+      logs: [
+        {
+          messageId: 236823642,
+          reportId: 87347237573,
+          category: ReportCategory.MISSING_FIELDS,
+          message: 'Material module not available on target server',
+          status: 'OPEN',
+          createdAt: 166877799002,
+          updatedAt: 167998989903,
+          updatedBy: '${import_by_userid}'
+        },
+        {
+          messageId: 7354523232,
+          reportId: 87347237573,
+          category: ReportCategory.MISSING_FIELDS,
+          message: 'Customer module not available on target server',
+          status: 'OPEN',
+          createdAt: 166877799002,
+          updatedAt: 167998989903,
+          updatedBy: '${import_by_userid}'
+        },
+        {
+          category: ReportCategory.MISSING_FIELDS,
+          createdAt: 1623240163583,
+          message: 'fieldnull Not availiable on TargetServer',
+          messageId: 696560763677809300,
+          reportId: 956793189672808400,
+          status: 'OPEN',
+          updatedAt: 1623240163583,
+          updatedBy: 'INITIATOR'
+        }
+      ]
+    };
+    spyOn(WidgetServiceSpy, 'importUploadReport').withArgs(component.seletedFile).and.returnValue(throwError({ error: mockRes }));
+    component.importReport();
+    expect(WidgetServiceSpy.importUploadReport).toHaveBeenCalledWith(component.seletedFile);
+    fixture.detectChanges();
+    expect(component.importData).toEqual(mockRes);
+    expect(component.dataSource).toEqual(undefined);
+    expect(component.successful).toEqual(undefined);
+    expect(component.isDuplicate).toBeFalsy();
+    expect(component.isMissingModule).toBeTruthy();
+  }));
+
 
   it('addReport(),should add report',async(()=>{
     const mockImportData = { alreadyExits: false, acknowledge: true, reportId: 'extract_from_file', reportName: 'extract_from_file', importedBy: '${current_userid_who_imported}', importedAt: 16887879908, updatedAt: 16887879908, fileSno: 872234723674 };
