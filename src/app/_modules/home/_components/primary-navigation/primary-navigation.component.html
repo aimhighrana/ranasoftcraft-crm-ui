@@ -14,7 +14,7 @@
                 (click)="sendToParent('welcome')" i18n="@@home">
                 Home
             </mat-list-item>
-            <mat-list-item *ngIf="false" class="link-items" [class.selected]="isNavSelected==='list'" (click)="sendToParent('list')"
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='list'" (click)="sendToParent('list')"
                 i18n="@@data">Data</mat-list-item>
             <mat-list-item class="link-items" [class.selected]="isNavSelected==='schema'"
                 (click)="sendToParent('schema')" i18n="@@schema">
