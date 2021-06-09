@@ -307,13 +307,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.isRefresh = true;
     }
 
+    this.getSchemaDetails();
     if (this.isRefresh && !this.isInRunning) {
       this.activeTab='error';
       this.getDataScope();
       this.getFldMetadata();
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
       this.getSchemaStatics();
-      this.getSchemaDetails();
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
