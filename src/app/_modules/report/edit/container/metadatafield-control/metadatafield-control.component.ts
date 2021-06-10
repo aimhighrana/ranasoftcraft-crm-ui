@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnChanges, OnDestroy, ViewChild } from '@angular/core';
 import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
 import { Observable, of, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormControl } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 export interface Metadata {
   fieldId: string;
@@ -18,6 +19,9 @@ export interface Metadata {
   styleUrls: ['./metadatafield-control.component.scss']
 })
 export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestroy {
+
+  @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger })
+  autoComplete: MatAutocompleteTrigger;
 
   @Input()
   moduleId: string;
@@ -196,6 +200,15 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
         }
       }
     })
+  }
+
+  /**
+   * Reopen when user scroll on the outside of the autoComplete box
+   */
+  openPanel() {
+    if (!this.autoComplete.panelOpen) {
+      this.autoComplete.openPanel();
+    }
   }
 
   /**

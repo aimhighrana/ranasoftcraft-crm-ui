@@ -1,16 +1,15 @@
-import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
 import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { ObjectTypeResponse, WorkflowResponse, WorkflowPath } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import * as moment from 'moment';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -18,6 +17,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-container',
@@ -134,7 +134,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   workflowPath: WorkflowPath[];
   workflowPathOb: Observable<WorkflowPath[]> = of([]);
 
-  objectDesc: FormControl = new FormControl('');
+  datasetCtrl: FormControl = new FormControl('');
+  fieldCtrl: FormControl = new FormControl('');
 
   /** system fields for Transactional module dataset */
   systemFields = [
@@ -164,13 +165,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
-    private snackbar: MatSnackBar,
+    private toasterService: TransientService,
     private activatedRouter: ActivatedRoute,
     private elementRef: ElementRef,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
-    private userService: UserService
+    private userService: UserService,
+    private ref: ChangeDetectorRef
   ) { }
 
 
@@ -514,6 +516,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showStyle(data: Widget) {
     if (data) {
+      this.removeError('fieldCtrl');
+      this.removeError('datasetCtrl');
       this.selStyleWid = data;
       if (this.styleCtrlGrp) {
         // convert miliis to date
@@ -592,17 +596,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
-      this.objectDesc.setValue('');
+      this.datasetCtrl.setValue('');
       // make while edit widget ..
       if (!data.isWorkflowdataSet && !data.isCustomdataSet && data.objectType) {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          this.objectDesc.setValue(hasObj);
+          this.datasetCtrl.setValue(hasObj);
         }
       } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          this.objectDesc.setValue(hasObj);
+          this.datasetCtrl.setValue(hasObj);
         }
       }
     }
@@ -642,7 +646,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         }, error => console.error(`Error : ${error}`));
         this.subscriptions.push(uploadUpdateFile);
       } else {
-        this.snackbar.open(`Only image type file supported`, `Close`, { duration: 2000 });
+        this.toasterService.open(`Only image type file supported`, `Close`, { duration: 2000 });
       }
 
     }
@@ -797,13 +801,51 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.reportName.markAsTouched()
     if (this.reportName.value === undefined || this.reportName.value.trim() === '') {
       this.reportName.markAllAsTouched()
-      this.snackbar.open(`Report name can't be empty`, 'Close', { duration: 2000 });
+      this.toasterService.open(`Report name can't be empty`, 'Close', { duration: 2000 });
       return false;
     }
 
     if (this.widgetList.length <= 0) {
-      this.snackbar.open(`Please configure at least one widget`, 'Close', { duration: 2000 });
+      this.toasterService.open(`Please configure at least one widget`, 'Close', { duration: 2000 });
       return false;
+    }
+
+    for (const widget of this.widgetList) {
+      if (widget.widgetType === WidgetType.TABLE_LIST) {
+        const setDatesetError = () => {
+          this.datasetCtrl.setErrors(Validators.required);
+          this.datasetCtrl.markAsTouched({ onlySelf: true });
+        };
+        const setColumnsError = () => {
+          this.fieldCtrl.setErrors(Validators.required);
+          this.fieldCtrl.markAsTouched({ onlySelf: true });
+        };
+
+        if (!widget.objectType && (!widget.widgetTableFields || widget.widgetTableFields.length === 0)) {
+          this.toasterService.open(`Fields to be highlighted :  Data set, Choose columns.`, 'Close', { duration: 2000 });
+          this.showStyle(widget);
+          this.ref.detectChanges(); // This is needed if the right sidebar is close
+          setDatesetError();
+          setColumnsError();
+          return false;
+        }
+
+        if (!widget.objectType) {
+          this.toasterService.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
+          this.showStyle(widget);
+          this.ref.detectChanges(); // This is needed if the right sidebar is close
+          setDatesetError();
+          return false;
+        }
+
+        if (!widget.widgetTableFields || widget.widgetTableFields.length === 0) {
+          this.toasterService.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
+          this.showStyle(widget);
+          this.ref.detectChanges(); // This is needed if the right sidebar is close
+          setColumnsError();
+          return false;
+        }
+      }
     }
 
     const request: ReportDashboardReq = new ReportDashboardReq();
@@ -815,13 +857,38 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       const createUpdateSub = this.reportService.createUpdateReport(request, user.plantCode).subscribe(res => {
         this.reportId = res;
         this.sharedService.setReportListData();
-        this.snackbar.open(`Successfully saved change(s)`, 'Close', { duration: 3000 });
+        this.toasterService.open(`Successfully saved change(s)`, 'Close', { duration: 3000 });
       }, errro => {
-        this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });
+        this.toasterService.open(`Something went wrong`, 'Close', { duration: 5000 });
       });
       this.subscriptions.push(createUpdateSub);
     });
     this.subscriptions.push(userSub);
+  }
+
+  /**
+   * Remove Validators.required error form FormControl
+   */
+  removeError(value: 'fieldCtrl' | 'datasetCtrl') {
+    switch (value) {
+      case 'fieldCtrl':
+        this.fieldCtrl = new FormControl('');
+        break;
+      case 'datasetCtrl':
+        this.datasetCtrl = new FormControl(this.datasetCtrl.value);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Reopen when user scroll on the outside of the autoComplete box
+   */
+  openAutoComplete(autoComplete: MatAutocompleteTrigger) {
+    if (!autoComplete.panelOpen) {
+      autoComplete.openPanel();
+    }
   }
 
   get possibleOperators(): ConditionalOperator[] {
@@ -885,7 +952,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
-    this.objectDesc.setValue('');
+    this.datasetCtrl.setValue('');
   }
 
   /**

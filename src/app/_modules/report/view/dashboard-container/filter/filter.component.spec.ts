@@ -312,7 +312,7 @@ describe('FilterComponent', () => {
    component.searchString = '';
    component.searchAfter = '82734883';
    const filter = [{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'}]as DropDownValues[];
-   component.filteredOptions = of(filter);
+   component.filteredOptionsSubject.next(filter);
    spyOn(component,'loadAlldropData');
    component.onfocus();
 
