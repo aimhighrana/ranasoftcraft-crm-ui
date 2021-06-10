@@ -288,6 +288,11 @@ export class BrruleSideSheetComponent implements OnInit {
     const searchStr = this.searchRegexFunctionStr?.toLowerCase();
     return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
+
+  get isFormLoading() {
+    return Boolean(this.moduleId && !this.metataData);
+  }
+
   /**
    * Angular hook
    */
