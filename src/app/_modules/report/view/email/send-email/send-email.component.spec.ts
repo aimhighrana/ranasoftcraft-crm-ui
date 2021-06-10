@@ -124,8 +124,8 @@ describe('SendEmailComponent', () => {
     const templates: EmailTemplate[] =  [{ templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }];
    reportService.selectedTemplate = new BehaviorSubject<EmailTemplate>(templates[0]);
     component.getSelectedTemplate();
-    expect(component.emailFormGrp.controls.subject.valid).toBeTrue();
-    expect(component.emailFormGrp.controls.message.valid).toBeTrue();
+    expect(component.emailFormGrp.controls.subject.value).toEqual(templates[0].subject);
+    expect(component.emailFormGrp.controls.message.value).toEqual(templates[0].message);
 
   });
 

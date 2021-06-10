@@ -67,9 +67,9 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   /* Set Email Form group fields */
   setEmailFormGroup() {
     this.emailFormGrp = this.formBuilder.group({
-      subject: new FormControl('', [Validators.required]),
+      subject: new FormControl({value:'', disabled:true}, [Validators.required]),
       message: new FormControl('', [Validators.required]),
-      to: new FormControl([''], [Validators.email, Validators.required]),
+      to: new FormControl([''], [Validators.required]),
       attachmentType: new FormControl(['']),
     });
   }
@@ -84,7 +84,10 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.emailFormGrp.patchValue({to: this.emailRecipients})
     if (this.emailFormGrp.invalid) {
       (Object).values(this.emailFormGrp.controls).forEach(control => {
-        if (control.invalid) {
+        if(control.disabled === true && control.value === '') {
+          control.setErrors({required: true});
+        }
+        if (control.invalid || (control.disabled === true && control.value === '')) {
           control.markAsTouched()
         }
       });

@@ -15,7 +15,7 @@ import { MatAutocomplete,MatAutocompleteSelectedEvent } from '@angular/material/
 export class EmailTemplateComponent implements OnInit {
 
   /* Templates list */
-  templates: EmailTemplate[] = [{ templateName: 'No', subject: '', message: '' }, { templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }]
+  templates: EmailTemplate[] = [{ templateName: 'No', subject: '', message: '' }, { templateName: 'Template 1', subject: 'Subject - Template 1', message: '<b>Template 2</b>' }]
   /* Form group for the language settings */
   templateFormGrp: FormGroup;
   /*  holds the list of filtered options */
