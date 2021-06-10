@@ -7,7 +7,7 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { ModuleInfo, SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
@@ -528,7 +528,8 @@ describe('SchemaDetailsComponent', () => {
       }
     } as SimpleChanges;
 
-    spyOn(component, 'getDataScope');
+    const sub: any = new Observable();
+    spyOn(component, 'getDataScope').and.returnValue(of(sub));
     spyOn(component, 'getFldMetadata');
     spyOn(component, 'getSchemaStatics');
     spyOn(component, 'getSchemaDetails');
