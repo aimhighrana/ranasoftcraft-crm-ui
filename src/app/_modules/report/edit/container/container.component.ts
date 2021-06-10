@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ObjectTypeResponse, WorkflowResponse, WorkflowPath } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import * as moment from 'moment';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -134,7 +134,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   workflowPath: WorkflowPath[];
   workflowPathOb: Observable<WorkflowPath[]> = of([]);
 
-  datesetCtrl: FormControl = new FormControl('');
+  datasetCtrl: FormControl = new FormControl('');
   fieldCtrl: FormControl = new FormControl('');
 
   /** system fields for Transactional module dataset */
@@ -517,7 +517,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   showStyle(data: Widget) {
     if (data) {
       this.removeError('fieldCtrl');
-      this.removeError('datesetCtrl');
+      this.removeError('datasetCtrl');
       this.selStyleWid = data;
       if (this.styleCtrlGrp) {
         // convert miliis to date
@@ -596,17 +596,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
-      this.datesetCtrl.setValue('');
+      this.datasetCtrl.setValue('');
       // make while edit widget ..
       if (!data.isWorkflowdataSet && !data.isCustomdataSet && data.objectType) {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          this.datesetCtrl.setValue(hasObj);
+          this.datasetCtrl.setValue(hasObj);
         }
       } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
-          this.datesetCtrl.setValue(hasObj);
+          this.datasetCtrl.setValue(hasObj);
         }
       }
     }
@@ -813,8 +813,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     for (const widget of this.widgetList) {
       if (widget.widgetType === WidgetType.TABLE_LIST) {
         const setDatesetError = () => {
-          this.datesetCtrl.setErrors(Validators.required);
-          this.datesetCtrl.markAsTouched({ onlySelf: true });
+          this.datasetCtrl.setErrors(Validators.required);
+          this.datasetCtrl.markAsTouched({ onlySelf: true });
         };
         const setColumnsError = () => {
           this.fieldCtrl.setErrors(Validators.required);
@@ -824,7 +824,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!widget.objectType && (!widget.widgetTableFields || widget.widgetTableFields.length === 0)) {
           this.snackbar.open(`Fields to be highlighted :  Data set, Choose columns.`, 'Close', { duration: 2000 });
           this.showStyle(widget);
-          this.ref.detectChanges(); // This is need if the right sidebar is close
+          this.ref.detectChanges(); // This is needed if the right sidebar is close
           setDatesetError();
           setColumnsError();
           return false;
@@ -833,7 +833,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!widget.objectType) {
           this.snackbar.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
-          this.ref.detectChanges(); // This is need if the right sidebar is close
+          this.ref.detectChanges(); // This is needed if the right sidebar is close
           setDatesetError();
           return false;
         }
@@ -841,7 +841,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!widget.widgetTableFields || widget.widgetTableFields.length === 0) {
           this.snackbar.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
-          this.ref.detectChanges(); // This is need if the right sidebar is close
+          this.ref.detectChanges(); // This is needed if the right sidebar is close
           setColumnsError();
           return false;
         }
@@ -869,16 +869,25 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Remove Validators.required error form FormControl
    */
-  removeError(value: 'fieldCtrl' | 'datesetCtrl') {
+  removeError(value: 'fieldCtrl' | 'datasetCtrl') {
     switch (value) {
       case 'fieldCtrl':
         this.fieldCtrl = new FormControl('');
         break;
-      case 'datesetCtrl':
-        this.datesetCtrl = new FormControl(this.datesetCtrl.value);
+      case 'datasetCtrl':
+        this.datasetCtrl = new FormControl(this.datasetCtrl.value);
         break;
       default:
         break;
+    }
+  }
+
+  /**
+   * Reopen when user scroll on the outside of the autoComplete box
+   */
+  openAutoComplete(autoComplete: MatAutocompleteTrigger) {
+    if (!autoComplete.panelOpen) {
+      autoComplete.openPanel();
     }
   }
 
@@ -943,7 +952,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
-    this.datesetCtrl.setValue('');
+    this.datasetCtrl.setValue('');
   }
 
   /**
