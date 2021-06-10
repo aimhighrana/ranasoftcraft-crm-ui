@@ -307,17 +307,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.isRefresh = true;
     }
 
+    const sub = this.getDataScope();
+    forkJoin({getDataScope: sub}).subscribe((res) => {
+      if (res) {
+        this.getSchemaDetails();
+      }
+    });
     if (this.isRefresh && !this.isInRunning) {
       this.activeTab='error';
-      const sub = this.getDataScope();
       this.getFldMetadata();
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
       this.getSchemaStatics();
-      forkJoin({getDataScope: sub}).subscribe((res) => {
-        if (res) {
-          this.getSchemaDetails();
-        }
-      });
+
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
