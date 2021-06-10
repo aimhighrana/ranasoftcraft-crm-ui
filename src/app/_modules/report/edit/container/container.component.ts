@@ -5,7 +5,6 @@ import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
 import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { ObjectTypeResponse, WorkflowResponse, WorkflowPath } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
@@ -18,6 +17,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-container',
@@ -165,7 +165,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
-    private snackbar: MatSnackBar,
+    private toasterService: TransientService,
     private activatedRouter: ActivatedRoute,
     private elementRef: ElementRef,
     private schemaService: SchemaService,
@@ -646,7 +646,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         }, error => console.error(`Error : ${error}`));
         this.subscriptions.push(uploadUpdateFile);
       } else {
-        this.snackbar.open(`Only image type file supported`, `Close`, { duration: 2000 });
+        this.toasterService.open(`Only image type file supported`, `Close`, { duration: 2000 });
       }
 
     }
@@ -801,12 +801,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.reportName.markAsTouched()
     if (this.reportName.value === undefined || this.reportName.value.trim() === '') {
       this.reportName.markAllAsTouched()
-      this.snackbar.open(`Report name can't be empty`, 'Close', { duration: 2000 });
+      this.toasterService.open(`Report name can't be empty`, 'Close', { duration: 2000 });
       return false;
     }
 
     if (this.widgetList.length <= 0) {
-      this.snackbar.open(`Please configure at least one widget`, 'Close', { duration: 2000 });
+      this.toasterService.open(`Please configure at least one widget`, 'Close', { duration: 2000 });
       return false;
     }
 
@@ -822,7 +822,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         };
 
         if (!widget.objectType && (!widget.widgetTableFields || widget.widgetTableFields.length === 0)) {
-          this.snackbar.open(`Fields to be highlighted :  Data set, Choose columns.`, 'Close', { duration: 2000 });
+          this.toasterService.open(`Fields to be highlighted :  Data set, Choose columns.`, 'Close', { duration: 2000 });
           this.showStyle(widget);
           this.ref.detectChanges(); // This is needed if the right sidebar is close
           setDatesetError();
@@ -831,7 +831,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (!widget.objectType) {
-          this.snackbar.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
+          this.toasterService.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
           this.ref.detectChanges(); // This is needed if the right sidebar is close
           setDatesetError();
@@ -839,7 +839,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if (!widget.widgetTableFields || widget.widgetTableFields.length === 0) {
-          this.snackbar.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
+          this.toasterService.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
           this.ref.detectChanges(); // This is needed if the right sidebar is close
           setColumnsError();
@@ -857,9 +857,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       const createUpdateSub = this.reportService.createUpdateReport(request, user.plantCode).subscribe(res => {
         this.reportId = res;
         this.sharedService.setReportListData();
-        this.snackbar.open(`Successfully saved change(s)`, 'Close', { duration: 3000 });
+        this.toasterService.open(`Successfully saved change(s)`, 'Close', { duration: 3000 });
       }, errro => {
-        this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });
+        this.toasterService.open(`Something went wrong`, 'Close', { duration: 5000 });
       });
       this.subscriptions.push(createUpdateSub);
     });

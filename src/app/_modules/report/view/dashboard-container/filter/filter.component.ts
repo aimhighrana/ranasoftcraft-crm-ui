@@ -9,7 +9,8 @@ import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { debounceTime } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TransientService } from 'mdo-ui-library';
+
 @Component({
   selector: 'pros-filter',
   templateUrl: './filter.component.html',
@@ -110,7 +111,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   constructor(
     private widgetService : WidgetService,
-    private snackBar: MatSnackBar,
+    private toasterService: TransientService,
     @Inject(LOCALE_ID) public locale: string
   ) {
     super();
@@ -805,7 +806,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       }
     }, error => {
       console.error(`Error : ${error}`);
-      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
+      this.toasterService.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria);
   }
