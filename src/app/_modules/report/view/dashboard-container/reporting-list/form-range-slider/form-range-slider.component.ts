@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter,  ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
@@ -83,14 +83,16 @@ export class FormRangeSliderComponent implements OnInit {
    * method called on apply button emits the value change event on parent class
    */
   applyFilter() {
-    if (!this.control.value && (this.minValue && this.maxValue)) {
-      this.control.setValue({ min: this.minValue, max: this.maxValue });
+    if (this.control.valid && this.minValue < this.maxValue) {
+      if (!this.control.value && (this.minValue && this.maxValue)) {
+        this.control.setValue({ min: this.minValue, max: this.maxValue });
+      }
+      const response = {
+        formFieldId: this.formFieldId,
+        value: this.control.value
+      }
+      this.valueChange.emit(response);
     }
-    const response = {
-      formFieldId: this.formFieldId,
-      value: this.control.value
-    }
-    this.valueChange.emit(response);
   }
 
 

@@ -35,11 +35,11 @@ export class FormMultiselectComponent implements OnInit {
    */
   @Output() valueChange = new EventEmitter<Object>();
 
-  @Input() value: DropDownValues[];
+  @Input() value: [] = [];
 
   @Input() formFieldId: string;
 
-  @Input() selectedMultiSelectData = [];
+  selectedMultiSelectData = [];
 
   optionList: DropDownValues[] = [];
 
@@ -53,7 +53,7 @@ export class FormMultiselectComponent implements OnInit {
       this.control = new FormControl();
     }
     this.control.valueChanges.pipe(startWith(''), debounceTime(500)).subscribe(res => {
-      if (typeof (res) === 'string' || res === null) {
+      if (typeof (res) === 'string') {
         this.getDropDownValue(res);
       }
     })
@@ -66,15 +66,19 @@ export class FormMultiselectComponent implements OnInit {
  */
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.value && changes.value.previousValue !== changes.value.currentValue && changes.value.currentValue.length) {
+    if (changes.value && changes.value.previousValue !== changes.value.currentValue) {
       this.selectedMultiSelectData = [];
-      changes.value.currentValue.forEach(item => {
-        if (typeof (item) === 'string') {
-          this.selectedMultiSelectData.push({ [item]: null });
-        } else {
-          this.selectedMultiSelectData.push({ [item.CODE]: item.TEXT })
-        }
-      })
+      if (changes.value.currentValue.length) {
+        changes.value.currentValue.forEach(item => {
+          if (typeof (item) === 'string') {
+            this.selectedMultiSelectData.push({ [item]: null });
+          } else {
+            this.selectedMultiSelectData.push({ [item.CODE]: item.TEXT })
+          }
+        })
+      } else{
+        this.displayMultiselectedText();
+      }
     }
 
   }
@@ -86,12 +90,12 @@ export class FormMultiselectComponent implements OnInit {
   getDropDownValue(searchText?) {
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
       this.optionList = res;
-      if(this.isTableFilter && this.selectedMultiSelectData.length) {
-        this.selectedMultiSelectData.forEach(item=>{
+      if (this.isTableFilter && this.selectedMultiSelectData.length) {
+        this.selectedMultiSelectData.forEach(item => {
           const value = Object.values(item)[0];
-          if(value === null) {
+          if (value === null) {
             const key = Object.keys(item)[0];
-            const selectedValue = this.optionList.find(el=>el.CODE === key);
+            const selectedValue = this.optionList.find(el => el.CODE === key);
             item[key] = selectedValue.TEXT;
           }
         })
@@ -222,7 +226,8 @@ export class FormMultiselectComponent implements OnInit {
     this.selectedMultiSelectData.forEach(el => {
       const code = Object.keys(el)[0]
       const selectedData = this.optionList.find(item => item.CODE === code);
-      selectedDataList.push(selectedData);
+      const data = { CODE: selectedData.CODE, TEXT: selectedData.TEXT }
+      selectedDataList.push(data);
     })
     return selectedDataList;
   }

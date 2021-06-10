@@ -1,7 +1,7 @@
 <mat-card class="mat-elevation-z0 widget">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large" #displayHeading
-            [libTooltip]="widgetHeader.desc" matTooltipPosition="right" [matTooltipDisabled]="false">
+        <div class="display-heading-large" #displayHeading [libTooltip]="widgetHeader.desc" matTooltipPosition="right"
+            [matTooltipDisabled]="false">
             {{ widgetHeader.widgetName }}
         </div>
         <div class="f-spacer"></div>
@@ -65,43 +65,52 @@
                         <th mat-header-cell *matHeaderCellDef [style.text-align]="center">
                             <!-- For input text -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'text'">
-                                <lib-input [formControlName]="displayedColumnsId[i]" placeholder="Enter Name">
+                                <lib-input [formControlName]="displayedColumnsId[i]" [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]">
                                 </lib-input>
                             </ng-template>
 
                             <!--for slider range picker-->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'number'">
                                 <pros-form-range-slider [control]="reportingListFilterForm.get(displayedColumnsId[i])"
-                                    placeholder="X-XX"
-                                    (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
-                                    [maxValue]="reportingListFilterForm.controls[displayedColumnsId[i]].value?.max" [minValue]="reportingListFilterForm.controls[displayedColumnsId[i]].value?.min">
+                                    placeholder="X-XX" (valueChange)="setFilter($event)"
+                                    [formFieldId]="displayedColumnsId[i]"
+                                    [maxValue]="reportingListFilterForm.controls[displayedColumnsId[i]].value?.max"
+                                    [minValue]="reportingListFilterForm.controls[displayedColumnsId[i]].value?.min">
                                 </pros-form-range-slider>
                             </ng-template>
                             <!-- Single select drop down -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'dropdown'">
                                 <pros-form-single-select [control]="reportingListFilterForm.get(displayedColumnsId[i])"
-                                    placeholder="Enter Name"
+                                    [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"
                                     [displayCriteria]="getColumnDisplayCriteria(displayedColumnsId[i])"
-                                    (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]" [value]="reportingListFilterForm.controls[displayedColumnsId[i]].value">
+                                    (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
+                                    [value]="reportingListFilterForm.controls[displayedColumnsId[i]].value">
                                 </pros-form-single-select>
                             </ng-template>
 
                             <!-- For multi select drop down-->
-                            <ng-template
-                                [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'multiselectDropdown' || getFormFieldType(displayedColumnsId[i]) === 'checkbox'">
+                            <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'multiselectDropdown'">
                                 <pros-form-multiselect [control]="reportingListFilterForm.get(displayedColumnsId[i])"
-                                    placeholder="Enter Name"
+                                    [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"
                                     [displayCriteria]="getColumnDisplayCriteria(displayedColumnsId[i])"
                                     (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
                                     isTableFilter="true" [value]="selectedMultiSelectData[displayedColumnsId[i]]">
                                 </pros-form-multiselect>
                             </ng-template>
 
+                            <!-- For checkbox-->
+                            <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'checkbox'">
+                                <pros-form-checkbox [control]="reportingListFilterForm.get(displayedColumnsId[i])"
+                                    [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]" (valueChange)="setFilter($event)"
+                                    [formFieldId]="displayedColumnsId[i]" isTableFilter="true" [label]="columnDescs[displayedColumnsId[i]]">
+                                </pros-form-checkbox>
+                            </ng-template>
+
                             <!-- radio button group -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'radio'">
                                 <pros-form-radio-button-group
                                     [control]="reportingListFilterForm.get(displayedColumnsId[i])"
-                                    placeholder="Enter Name"
+                                    [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"
                                     [displayCriteria]="getColumnDisplayCriteria(displayedColumnsId[i])"
                                     (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
                                     isTableFilter="true">
@@ -109,25 +118,26 @@
                             </ng-template>
 
                             <!-- For text area -->
-                            <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'textarea'">
-                                <lib-textarea [formControlName]="displayedColumnsId[i]"></lib-textarea>
+                            <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'textarea'">                       <lib-textarea [formControlName]="displayedColumnsId[i]" [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"></lib-textarea>
                             </ng-template>
 
                             <!-- For date type -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'date'">
-                                <lib-date-range-picker [formControlName]="displayedColumnsId[i]">
+                                <lib-date-range-picker [formControlName]="displayedColumnsId[i]" [emitDateOnSave]="true"
+                                    (valueChange)="setFilter($event)" [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]">
                                 </lib-date-range-picker>
                             </ng-template>
 
                             <!-- For date time picker -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'dateTime'">
-                                <lib-date-time-range-picker [formControlName]="displayedColumnsId[i]">
+                                <lib-date-time-range-picker [formControlName]="displayedColumnsId[i]"
+                                    [emitDateOnSave]="true" (valueChange)="setFilter($event)" [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]">
                                 </lib-date-time-range-picker>
                             </ng-template>
 
                             <!-- For time picker -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'time'">
-                                <!-- <lib-time-picker [formControlName]="displayedColumnsId[i]"></lib-time-picker> -->
+                                <lib-time-range-picker  [enableTimeInput]="true" [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"></lib-time-range-picker>
                             </ng-template>
                         </th>
                     </ng-container>

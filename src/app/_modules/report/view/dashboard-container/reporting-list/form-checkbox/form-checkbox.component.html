@@ -1,0 +1,23 @@
+<div>
+    <div class="f-col mdo-field" [matMenuTriggerFor]="datasearch"
+        #trigger="matMenuTrigger">
+            <lib-input [formControl]="control" [placeholder]="placeholder"></lib-input>
+    </div>
+    <mat-menu #datasearch="matMenu">
+        <lib-filter-dropdown prosClickStopPropagation>
+            <div class="dropdown-options-wrapper f-col">
+                <div class="dropdown-options-inner-container">
+                    <lib-filter-option>
+                        <lib-checkbox
+                            [label]="label">
+                        </lib-checkbox>
+                    </lib-filter-option>
+                </div>
+                <div class="filter-button-wrapper">
+                    <lib-button type="minor" (click)="trigger.closeMenu();applyFilter()"
+                        i18n="@@apply">Apply</lib-button>
+                </div>
+            </div>
+        </lib-filter-dropdown>
+    </mat-menu>
+</div>

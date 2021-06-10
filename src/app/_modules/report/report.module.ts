@@ -38,6 +38,7 @@ import { FormSingleSelectComponent } from './view/dashboard-container/reporting-
 import { FormMultiselectComponent } from './view/dashboard-container/reporting-list/form-multiselect/form-multiselect.component';
 import { FormRadioButtonGroupComponent } from './view/dashboard-container/reporting-list/form-radio-button-group/form-radio-button-group.component';
 import { FormRangeSliderComponent } from './view/dashboard-container/reporting-list/form-range-slider/form-range-slider.component';
+import { FormCheckboxComponent } from './view/dashboard-container/reporting-list/form-checkbox/form-checkbox.component';
 
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -79,7 +80,9 @@ Chart.plugins.register(ChartDataLabels);
     FormRadioButtonGroupComponent,
     FormRangeSliderComponent,
     EmailTemplateComponent,
-    ImportLogComponent
+    ImportLogComponent,
+    FormCheckboxComponent,
+    SendEmailComponent
   ],
   imports: [
     CommonModule,

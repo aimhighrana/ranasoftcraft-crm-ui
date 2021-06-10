@@ -14,7 +14,7 @@
     <mat-menu #datasearch="matMenu">
         <lib-filter-dropdown prosClickStopPropagation>
             <div class="dropdown-search-wrapper" *ngIf="isTableFilter">
-                <lib-search [formControl]="control" placeholder="search..."></lib-search>
+                <lib-search [formControl]="control" [placeholder]="placeholder"></lib-search>
             </div>
             <div class="dropdown-options-wrapper f-col">
                 <div class="dropdown-options-inner-container">

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter,ChangeDetectionStrategy } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
-import { Criteria, DisplayCriteria, DropDownValues } from '@modules/report/_models/widget';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import {  FormControl } from '@angular/forms';
+import { Criteria, DropDownValues } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
@@ -48,10 +48,10 @@ export class FormRadioButtonGroupComponent implements OnInit {
    *
    */
   ngOnInit(): void {
-    if(!this.control) {
+    if (!this.control) {
       this.control = new FormControl();
     }
-    this.fltrCtrl.valueChanges.pipe(startWith(''),debounceTime(500)).subscribe(res => {
+    this.fltrCtrl.valueChanges.pipe(startWith(''), debounceTime(500)).subscribe(res => {
       this.getDropDownValue(res);
     })
   }
@@ -72,7 +72,7 @@ export class FormRadioButtonGroupComponent implements OnInit {
   applyFilter() {
     const response = {
       formFieldId: this.formFieldId,
-      value: this.control.value
+      value: { CODE: this.control.value.key, TEXT: this.control.value.value }
     }
     this.valueChange.emit(response);
   }

@@ -1,12 +1,12 @@
 <div class="f-col mdo-field" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
     <lib-input disabled="true" *ngIf="isTableFilter">
     </lib-input>
-    <lib-search [formControl]="fltrCtrl" placeholder="search..." *ngIf="!isTableFilter"></lib-search>
+    <lib-search [formControl]="fltrCtrl" [placeholder]="placeholder" *ngIf="!isTableFilter"></lib-search>
 </div>
 <mat-menu #datasearch="matMenu">
     <lib-filter-dropdown prosClickStopPropagation>
         <div class="dropdown-search-wrapper" *ngIf="isTableFilter">
-            <lib-search [formControl]="fltrCtrl" placeholder="search..."></lib-search>
+            <lib-search [formControl]="fltrCtrl" [placeholder]="placeholder"></lib-search>
         </div>
         <div class="dropdown-options-wrapper f-col">
             <div class="dropdown-options-inner-container">

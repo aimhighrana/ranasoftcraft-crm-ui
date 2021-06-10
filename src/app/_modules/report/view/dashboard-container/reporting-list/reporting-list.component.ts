@@ -67,6 +67,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   filteredDropDownValues = {};
   selectedMultiSelectData = {};
   localFilterCriteria: Criteria[] = [];
+  filteredList = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -139,36 +140,47 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.reportService.sideSheetStatusChange().subscribe(res => {
       if (res && Object.keys(this.reportingListFilterForm.controls).length) {
         this.reportingListFilterForm.reset();
-        this.localFilterCriteria = this.reportService.getFilterCriteria();
+        this.localFilterCriteria = [];
+        this.filteredList = this.reportService.getFilterCriteria();
+        const filteredResponse = this.filteredList.filter(item => item.conditionFieldValue || (item.conditionFieldStartValue || item.conditionFieldEndValue));
+        filteredResponse.forEach(item => {
+          const value = new Criteria();
+          value.conditionFieldId = item.conditionFieldId;
+          value.conditionOperator = item.conditionOperator;
+          value.blockType = item.blockType;
+          value.fieldId = item.fieldId;
+          if (item.conditionFieldValue) {
+            value.conditionFieldValue = item.conditionFieldValue;
+          } else if (item.conditionFieldStartValue || item.conditionFieldEndValue) {
+            value.conditionFieldStartValue = item.conditionFieldStartValue;
+            value.conditionFieldEndValue = item.conditionFieldEndValue;
+          }
+          this.localFilterCriteria.push(item);
+        })
         this.tableColumnMetaData = this.reportService.getColumnMetaData();
         this.selectedMultiSelectData = {};
         this.localFilterCriteria.forEach(item => {
           const type = this.getFormFieldType(item.fieldId);
-          if (type == FormControlType.TEXT || type == FormControlType.TEXTAREA && item.conditionOperator !== ConditionOperator.RANGE) {
+          if (type == FormControlType.TEXT || type == FormControlType.TEXTAREA) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
           } else if (type === FormControlType.DROP_DOWN) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
-          } 
-          else if (type === FormControlType.MULTI_SELECT || type === FormControlType.CHECKBOX) {
-            if(!this.selectedMultiSelectData[item.fieldId]) {
+          } else if (type === FormControlType.MULTI_SELECT) {
+            if (!this.selectedMultiSelectData[item.fieldId]) {
               this.selectedMultiSelectData[item.fieldId] = [];
             }
-              this.selectedMultiSelectData[item.fieldId].push(item.conditionFieldValue)
-          } else if (item.conditionOperator === ConditionOperator.RANGE) {
-            if (type === FormControlType.DATE) {
-              this.reportingListFilterForm.controls[item.fieldId].setValue({ start: moment(item.conditionFieldStartValue).format('DD-MM-YYYY'), end: moment(item.conditionFieldEndValue).format('DD-MM-YYYY') });
-            } else if (type === FormControlType.DATE_TIME) {
-              this.reportingListFilterForm.controls[item.fieldId].setValue({ start: moment(item.conditionFieldStartValue).format('DD-MM-YYYY'), end: moment(item.conditionFieldEndValue).format('DD-MM-YYYY HH:mm') });
-            } else {
-              // this.reportingListFilterForm.controls[item.fieldId].setValue({start:moment(item.conditionFieldStartValue).format('DD-MM-YYYY'),end:moment(item.conditionFieldEndValue).format('DD-MM-YYYY HH:mm')});
-            }
+            this.selectedMultiSelectData[item.fieldId].push(item.conditionFieldValue)
+          } else if (type === FormControlType.DATE) {
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: moment(item.conditionFieldStartValue).format('DD-MM-YYYY'), end: moment(item.conditionFieldEndValue).format('DD-MM-YYYY') });
+          } else if (type === FormControlType.DATE_TIME) {
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: moment(item.conditionFieldStartValue).format('DD-MM-YYYY'), end: moment(item.conditionFieldEndValue).format('DD-MM-YYYY HH:mm') });
+          } else if (type === FormControlType.TIME) {
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: item.conditionFieldStartValue, end: item.conditionFieldEndValue });
+          } else if (type === FormControlType.RADIO) {
+            this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
+          } else if (type === FormControlType.NUMBER) {
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ min: item.conditionFieldStartValue, max: item.conditionFieldEndValue });
           }
-          //  else if (type === FormControlType.RADIO) {
-          //   if (this.filteredDropDownValues[item.fieldId]) {
-          //     const value = this.filteredDropDownValues[item.fieldId].find(el => el.key === item.conditionFieldValue);
-          //     this.reportingListFilterForm.controls[item.fieldId].setValue(value);
-          //   }
-          // }
         })
         if (Object.keys(this.reportingListFilterForm.controls).length)
           this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, [...this.filterCriteria, ...this.localFilterCriteria], this.activeSorts);
@@ -301,8 +313,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       const source = element.sourceAsMap;
       let objectNumber = source.id ? source.id : source.staticFields && source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc ? source.staticFields.OBJECT_NUMBER.vc[0].c : element.id;
 
-    if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined){
-        objectNumber = source.staticFields.OBJECTID  && source.staticFields.OBJECTID .vc !== undefined ?source.staticFields.OBJECTID .vc[0].c:objectNumber;
+      if (source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined) {
+        objectNumber = source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc !== undefined ? source.staticFields.OBJECTID.vc[0].c : objectNumber;
       }
       const obj = { objectNumber };
       const status = source ? source.stat : '';
@@ -550,99 +562,86 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   onFilterApplied(fieldId: string, formControlType, value?: DropDownValue[]) {
     const ind = this.localFilterCriteria.findIndex(item => item.fieldId === fieldId)
-    if (ind > -1 && formControlType !== FormControlType.MULTI_SELECT && formControlType !== FormControlType.CHECKBOX) {
-      if (this.localFilterCriteria[ind].conditionOperator === ConditionOperator.RANGE) {
-        if (formControlType === FormControlType.NUMBER) {
-          this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
-          this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
-        } else {
-          if (formControlType === FormControlType.DATE) {
-            this.localFilterCriteria[ind].conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
-            this.localFilterCriteria[ind].conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).endOf('day').valueOf().toString();
-          } else if (formControlType === FormControlType.DATE_TIME) {
-            this.localFilterCriteria[ind].conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
-            this.localFilterCriteria[ind].conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).valueOf().toString();
-          } else {
-            this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value;
-          }
-        }
-      } else if (this.localFilterCriteria[ind].conditionOperator !== ConditionOperator.RANGE) {
-        if (this.reportingListFilterForm.controls[fieldId].value) {
-          if (formControlType === FormControlType.DROP_DOWN && typeof (this.reportingListFilterForm.controls[fieldId].value) === 'object') {
-            this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
-          } else if (formControlType !== FormControlType.DROP_DOWN) {
-            this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value ? formControlType === FormControlType.RADIO ? this.reportingListFilterForm.controls[fieldId].value.key : this.reportingListFilterForm.controls[fieldId].value : null;
-          }
-        } else {
-          this.localFilterCriteria.splice(ind, 1);
-        }
-      }
-    } else {
-      if (formControlType === FormControlType.TEXT || formControlType === FormControlType.TEXTAREA || formControlType === FormControlType.DROP_DOWN || formControlType === FormControlType.RADIO) {
-        const filterCriteria = new Criteria();
-        filterCriteria.fieldId = fieldId;
-        filterCriteria.conditionFieldId = fieldId;
-        filterCriteria.blockType = BlockType.COND;
-        filterCriteria.widgetType = WidgetType.TABLE_LIST;
-        filterCriteria.conditionOperator = ConditionOperator.EQUAL;
-
-        if (formControlType === FormControlType.RADIO) {
-          filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
-        } else if (formControlType === FormControlType.DROP_DOWN) {
-          filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
-        } else {
-          filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
-        }
-        this.localFilterCriteria.push(filterCriteria);
-      } else if (formControlType === FormControlType.DATE || formControlType === FormControlType.TIME || formControlType === FormControlType.DATE_TIME || formControlType === FormControlType.NUMBER) {
-        const filterCriteria = new Criteria();
-        filterCriteria.fieldId = fieldId;
-        filterCriteria.conditionFieldId = fieldId;
-        filterCriteria.blockType = BlockType.COND;
-        filterCriteria.widgetType = WidgetType.TABLE_LIST;
-        filterCriteria.conditionOperator = ConditionOperator.RANGE;
-        this.localFilterCriteria.push(filterCriteria);
-        if (formControlType === FormControlType.DATE || formControlType === FormControlType.DATE_TIME) {
-          const startDate = this.reportingListFilterForm.controls[fieldId].value.start;
-          const endDate = this.reportingListFilterForm.controls[fieldId].value.end;
-          if (startDate && endDate) {
-            filterCriteria['conditionFieldStartValue'] = moment(startDate).valueOf().toString();
-            filterCriteria['conditionFieldEndValue'] = formControlType === FormControlType.DATE ? moment(endDate).endOf('day').valueOf().toString() : moment(endDate).valueOf().toString();
-          }
-          else return;
-        }
-        else if (formControlType === FormControlType.NUMBER) {
-          filterCriteria['conditionFieldStartValue'] = this.reportingListFilterForm.controls[fieldId].value.min;
-          filterCriteria['conditionFieldEndValue'] = this.reportingListFilterForm.controls[fieldId].value.max;
-        }
-        this.localFilterCriteria.push(filterCriteria);
+    if (ind > -1 && formControlType !== FormControlType.MULTI_SELECT) {
+      if (formControlType === FormControlType.NUMBER) {
+        this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
+        this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
+      } else if (formControlType === FormControlType.DATE) {
+        this.localFilterCriteria[ind].conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
+        this.localFilterCriteria[ind].conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).endOf('day').valueOf().toString();
+      } else if (formControlType === FormControlType.DATE_TIME) {
+        this.localFilterCriteria[ind].conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
+        this.localFilterCriteria[ind].conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).valueOf().toString();
+      } else if (formControlType === FormControlType.TIME) {
+        this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.start;
+        this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.end;
+      } else if (formControlType === FormControlType.DROP_DOWN && typeof (this.reportingListFilterForm.controls[fieldId].value) === 'object') {
+        this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
+      } else if (formControlType === FormControlType.RADIO) {
+        this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
+      } else if (this.reportingListFilterForm.controls[fieldId].value === '') {
+        this.localFilterCriteria.splice(ind, 1);
       } else {
-        if (value) {
-          value.forEach(item => {
-            const selectedValue = item.CODE;
-            let operator;
-            const ind = this.localFilterCriteria.findIndex(data => {
-              if (fieldId == data.fieldId) {
-                operator = data.conditionOperator
-              }
-              return data.fieldId == fieldId && data.conditionFieldValue == selectedValue && (data.widgetType == WidgetType.TABLE_LIST)
-            })
-            if (ind === -1) {
-              let filterCriteria = new Criteria();
-              filterCriteria.fieldId = fieldId;
-              filterCriteria.conditionFieldId = fieldId;
-              filterCriteria.conditionFieldValue = selectedValue;
-              filterCriteria.blockType = BlockType.COND;
-              filterCriteria.widgetType = WidgetType.TABLE_LIST;
-              filterCriteria.conditionOperator = operator ? operator : ConditionOperator.EQUAL;
-              this.localFilterCriteria.push(filterCriteria);
-            }
-          })
-        }
+        this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
+      }
+    } else if (ind === -1 && formControlType !== FormControlType.MULTI_SELECT) {
+      let selectedText;
+      let conditionOperator;
+      const selectedDataIndex = this.filteredList.findIndex(item => item.fieldId === fieldId);
+      if (selectedDataIndex > -1) {
+        conditionOperator = this.filteredList[selectedDataIndex]['conditionOperator'];
+      }
+      const filterCriteria = new Criteria();
+      filterCriteria.fieldId = fieldId;
+      filterCriteria.conditionFieldId = fieldId;
+      filterCriteria.blockType = BlockType.COND;
+      filterCriteria.widgetType = WidgetType.TABLE_LIST;
+      filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
+      if (formControlType === FormControlType.NUMBER) {
+        filterCriteria.conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
+        filterCriteria.conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
+      } else if (formControlType === FormControlType.DATE) {
+        filterCriteria.conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
+        filterCriteria.conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).endOf('day').valueOf().toString();
+      } else if (formControlType === FormControlType.DATE_TIME) {
+        filterCriteria.conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
+        filterCriteria.conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).valueOf().toString();
+      } else if (formControlType === FormControlType.TIME) {
+        filterCriteria.conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.start;
+        filterCriteria.conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.end;
+      } else if (formControlType === FormControlType.DROP_DOWN && typeof (this.reportingListFilterForm.controls[fieldId].value) === 'object') {
+        filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
+        selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
+      } else if (formControlType === FormControlType.RADIO) {
+        filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
+        selectedText = this.reportingListFilterForm.controls[fieldId].value.value;
+      } else {
+        filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
+      }
+      this.localFilterCriteria.push(filterCriteria);
+      filterCriteria['conditionFieldText'] = selectedText;
+      if (selectedDataIndex > -1) this.filteredList[selectedDataIndex] = filterCriteria;
+      else this.filteredList.push(filterCriteria);
+    } else {
+      if (value) {
+        const selectedData = this.filteredList.find(item => item.fieldId === fieldId);
+        this.filteredList = this.filteredList.filter(item => item.fieldId !== fieldId);
+        value.forEach(item => {
+          const selectedValue = item.CODE;
+          let filterCriteria = new Criteria();
+          filterCriteria.fieldId = fieldId;
+          filterCriteria.conditionFieldId = fieldId;
+          filterCriteria.conditionFieldValue = selectedValue;
+          filterCriteria.blockType = BlockType.COND;
+          filterCriteria.widgetType = WidgetType.TABLE_LIST;
+          filterCriteria.conditionOperator = selectedData && selectedData['conditionOperator'] ? selectedData['conditionOperator'] : ConditionOperator.EQUAL;
+          this.localFilterCriteria.push(filterCriteria);
+          filterCriteria['conditionFieldText'] = item.TEXT;
+          this.filteredList.push(filterCriteria);
+        })
       }
     }
-
-    this.reportService.setFilterCriteria(this.localFilterCriteria);
+    this.reportService.setFilterCriteria(this.filteredList);
     const sub = this.widgetService.getListdata(String(this.pageSize), String(this.pageIndex), String(this.widgetId), [...this.filterCriteria, ...this.localFilterCriteria], this.activeSorts).subscribe(returndata => {
       this.returndata = returndata;
       this.updateTable(this.returndata);
@@ -657,8 +656,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   clearFilter(isLocalClear: boolean) {
     this.reportingListFilterForm.reset();
-    this.selectedMultiSelectData = {};
+    Object.keys(this.selectedMultiSelectData).forEach(item=>{
+      this.selectedMultiSelectData[item] = [];
+    })
     this.localFilterCriteria = [];
+    this.filteredList = [];
+    this.reportService.setFilterCriteria([]);
     if (isLocalClear) {
       this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
     }
@@ -702,8 +705,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const column = event.formFieldId;
     const value = event.value;
     const type = this.getFormFieldType(column);
-    if (type !== FormControlType.MULTI_SELECT && type !== FormControlType.CHECKBOX)
+    if (type !== FormControlType.MULTI_SELECT) {
       this.reportingListFilterForm.controls[column].setValue(value);
+    }
+    else {
+      this.selectedMultiSelectData[event.formFieldId] = [...value];
+    }
     this.onFilterApplied(column, type, value);
   }
 

@@ -77,16 +77,18 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
       if (value) {
         this.control.patchValue(value);
       }
-    } 
+    }
+    if (changes.displayCriteria && changes.displayCriteria.previousValue !== undefined && changes.displayCriteria.previousValue !== changes.displayCriteria.currentValue) {
+      this.displayCriteria = changes.displayCriteria.currentValue;
+    }
+    if (changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
+      this.getDropDownValue();
+    }
   }
 
   getDropDownValue(searchText?): string | boolean | void {
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
       this.optionList = res;
-      if (this.value) {
-        const selectedValue = this.optionList.find(item => item.CODE === this.value);
-        this.control.setValue(selectedValue);
-      }
     })
     this.subscription.push(sub);
   }
