@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, LOCALE_ID, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType, DisplayCriteria } from '../../../_models/widget';
@@ -34,7 +34,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   displayCriteriaOption = this.displayCriteriaOptions[0];
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
-  filteredOptions: Observable<DropDownValues[]> = of([]);
+  filteredOptionsSubject: BehaviorSubject<DropDownValues[]> = new BehaviorSubject([]);
+  public get filteredOptions() : Observable<DropDownValues[]> {
+    return this.filteredOptionsSubject.asObservable();
+  }
   filterFormControl = new FormControl();
   widgetHeader: WidgetHeader = new WidgetHeader();
   selectedDropVals: DropDownValues[] = [];
@@ -117,6 +120,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.subscriptions.forEach(sub => {
       sub.unsubscribe();
     });
+    this.filteredOptionsSubject.complete();
+    this.filteredOptionsSubject.unsubscribe();
   }
 
   /**
@@ -131,7 +136,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
       if (this.filterWidget && this.filterWidget.value && !this.widgetHeader.isEnableGlobalFilter) {
-        this.filteredOptions = of([]);
         this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '');
       }
     }
@@ -143,18 +147,17 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
     this.filterFormControl.valueChanges.pipe(debounceTime(1000)).subscribe(val=>{
       if(typeof val === 'string') {
-        this.filteredOptions = of([]);
         this.searchString = val;
         this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, val);
       }else {
         this.searchString = '';
-        this.filteredOptions = of(this.values);
+        this.filteredOptionsSubject.next(this.values);
         if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
           this.removeSingleSelectedVal(false);
         }
       }
     });
-    const filterWid = this.filterWidget.subscribe(widget=>{
+    const filterWid = this.filterWidget.subscribe(widget => {
       if(widget) {
         this.loadAlldropData(widget.fieldId, this.filterCriteria);
       }
@@ -209,10 +212,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.values[index] = valOld[0];
         }
     });
-    this.filteredOptions.subscribe(sub=>{
-    sub.push(...this.values);
-      this.filteredOptions = of(sub);
-    });
+    this.filteredOptionsSubject.next(this.values);
+
   }
 
   updateObjRefDescription(buckets:any[], fieldId: string) {
@@ -255,10 +256,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
     });
 
-    this.filteredOptions.subscribe(sub=>{
-      sub.push(...this.values);
-        this.filteredOptions = of(sub);
-      });
+    this.filteredOptionsSubject.next(this.values);
   }
 
   public getHeaderMetaData():void{
@@ -406,10 +404,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       } else if(this.filterWidget.getValue().metaData.picklist === '30'){
         this.updateObjRefDescription(buckets, fieldId);
       } else {
-        this.filteredOptions.subscribe(sub=>{
-          sub.push(...this.values);
-            this.filteredOptions = of(sub);
-          });
+        this.filteredOptionsSubject.next(this.values);
       }
     } else if(this.filterWidget.getValue().metaData && (this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC')) {
       // static data  TODO
@@ -759,9 +754,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   onfocus() {
-    this.filteredOptions.subscribe(sub=> { this.filteredArray = sub.length});
+    this.filteredArray = this.filteredOptionsSubject.value.length;
     if(this.searchAfter && this.filteredArray > 10) {
-    this.filteredOptions = of([]);
     this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '', '');
     }
   }
@@ -788,30 +782,24 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   saveDisplayCriteria() {
     const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
-      this.filteredOptions.subscribe(sub=>{
-        sub.forEach(v => {
-          v.display = this.setDisplayCriteria(v.CODE, v.TEXT);
-        });
+      this.filteredOptionsSubject.value.forEach(v => {
+        v.display = this.setDisplayCriteria(v.CODE, v.TEXT);
       });
       // Update filterFormControl with updated values
       if (this.filterFormControl.value) {
-        this.filteredOptions.subscribe(sub=>{
-          sub.forEach(v => {
-            if (v.CODE === this.filterFormControl.value.CODE) {
-              this.filterFormControl.setValue(v);
-            }
-          });
+        this.filteredOptionsSubject.value.forEach(v => {
+          if (v.CODE === this.filterFormControl.value.CODE) {
+            this.filterFormControl.setValue(v);
+          }
         });
       }
       // Update selectedDropVals with updated values
       if (this.selectedDropVals && this.selectedDropVals.length > 0) {
-        this.filteredOptions.subscribe(sub=>{
-          this.selectedDropVals.forEach(item => {
-            sub.forEach(v => {
-              if (v.CODE === item.CODE) {
-                item.display = v.display;
-              }
-            });
+        this.selectedDropVals.forEach(item => {
+          this.filteredOptionsSubject.value.forEach(v => {
+            if (v.CODE === item.CODE) {
+              item.display = v.display;
+            }
           });
         });
       }
