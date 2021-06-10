@@ -150,7 +150,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(typeof val === 'string') {
         this.searchString = val;
         this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, val);
-      }else {
+      } else {
         this.searchString = '';
         this.filteredOptionsSubject.next(this.values);
         if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
