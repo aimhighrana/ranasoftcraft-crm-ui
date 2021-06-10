@@ -76,7 +76,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   /**
    * Date filter quick selection..
    */
-  dateFilterQuickSelect: DateFilterQuickSelect[] =[
+  dateFilterQuickSelect: DateFilterQuickSelect[] = [
     {
       code: 'TODAY',
       isSelected: false,
