@@ -127,7 +127,9 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   /* Unsubscribe subscriptions */
   ngOnDestroy(){
-    this.reportService.selectedTemplate.unsubscribe();
+    if(this.reportService.selectedTemplate) {
+      this.reportService.selectedTemplate.unsubscribe();
+    }
   }
 
   //#region Subscription
