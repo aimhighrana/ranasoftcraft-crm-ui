@@ -2610,6 +2610,82 @@
           <context context-type="linenumber">114</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="equal" datatype="html">
+        <source>Equal</source>
+        <target>Равный</target>
+      </trans-unit>
+      <trans-unit id="not_equal" datatype="html">
+        <source>Not Equal</source>
+        <target>Не равный</target>
+      </trans-unit>
+      <trans-unit id="starts_with" datatype="html">
+        <source>Starts With</source>
+        <target>Начинается с</target>
+      </trans-unit>
+      <trans-unit id="ends_with" datatype="html">
+        <source>Ends With</source>
+        <target>Заканчивается на</target>
+      </trans-unit>
+      <trans-unit id="contains" datatype="html">
+        <source>Contains</source>
+        <target>Содержит</target>
+      </trans-unit>
+      <trans-unit id="empty" datatype="html">
+        <source>Empty</source>
+        <target>Пустой</target>
+      </trans-unit>
+      <trans-unit id="not_empty" datatype="html">
+        <source>Not Empty</source>
+        <target>Не пустой</target>
+      </trans-unit>
+      <trans-unit id="less_than" datatype="html">
+        <source>Less Than</source>
+        <target>Меньше, чем</target>
+      </trans-unit>
+      <trans-unit id="less_than_equal_to" datatype="html">
+        <source>Less Than Equal To</source>
+        <target>Меньше, чем равно</target>
+      </trans-unit>
+      <trans-unit id="greater_than" datatype="html">
+        <source>Greater Than</source>
+        <target>Больше чем</target>
+      </trans-unit>
+      <trans-unit id="Greater_than_equal_to" datatype="html">
+        <source>Greater Than Equal To</source>
+        <target>Больше, чем равно</target>
+      </trans-unit>
+      <trans-unit id="regex" datatype="html">
+        <source>Regex</source>
+        <target>Регулярное выражение</target>
+      </trans-unit>
+      <trans-unit id="field_to_field" datatype="html">
+        <source>Field To Field</source>
+        <target>Поле в поле</target>
+      </trans-unit>
+      <trans-unit id="location" datatype="html">
+        <source>Location</source>
+        <target>Место расположения</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_equal" datatype="html">
+        <source>Field To Field Equal</source>
+        <target>Поле равное полю</target>
+      </trans-unit>
+      <trans-unit id="Field_to_field_greater_than_equal" datatype="html">
+        <source>Field To Field Greater Than Equal</source>
+        <target>Поле в поле больше, чем равно</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_greater_than" datatype="html">
+        <source>Field To Field Greater Than</source>
+        <target>Поле в поле больше, чем</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than" datatype="html">
+        <source>Field To Field Less Than</source>
+        <target>От поля до поля меньше, чем</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than_equal" datatype="html">
+        <source>Field To Field Less Than Equal</source>
+        <target>Из поля в поле меньше, чем равно</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
