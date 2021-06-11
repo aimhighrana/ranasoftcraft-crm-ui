@@ -6,7 +6,7 @@ import { Userdetails } from '@models/userdetails';
 import { UserMdoModel } from '@models/collaborator';
 import { ReportService } from '../../../_service/report.service'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
@@ -39,6 +39,10 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     { label: 'PDF', value: 'PDF' },
     { label: 'PPT', value: 'PPT' }
   ]
+
+
+  /* Template subscription */
+  templateSubscription: Subscription;
 
   constructor(private router: Router,
     private formBuilder: FormBuilder,
@@ -127,16 +131,16 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   /* Unsubscribe subscriptions */
   ngOnDestroy(){
-    if(this.reportService.selectedTemplate) {
-      this.reportService.selectedTemplate.unsubscribe();
+    if(this.templateSubscription) {
+      this.templateSubscription.unsubscribe();
     }
   }
 
   //#region Subscription
   getSelectedTemplate() {
-    this.reportService.selectedTemplate.subscribe(res => {
+    this.templateSubscription =  this.reportService.selectedTemplate.subscribe(res => {
       if (res) {
-        this.emailFormGrp.patchValue({ subject: res.subject, message: res.message });
+        this.emailFormGrp.patchValue({ subject: res.emailSub, message: res.emailText });
       }
     })
   }

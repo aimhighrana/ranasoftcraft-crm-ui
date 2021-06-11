@@ -8,13 +8,13 @@ import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoint
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { BehaviorSubject } from 'rxjs';
-import { EmailTemplate } from '../_models/email';
+import { EmailTemplateBody } from '../_models/email';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
-  selectedTemplate: BehaviorSubject<EmailTemplate> = new BehaviorSubject(null);
+  selectedTemplate: BehaviorSubject<EmailTemplateBody> = new BehaviorSubject(null);
 
   constructor(
     private http: HttpClient,

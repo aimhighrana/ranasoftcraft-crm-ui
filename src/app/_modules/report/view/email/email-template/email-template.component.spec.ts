@@ -45,7 +45,7 @@ describe('EmailTemplateComponent', () => {
 
   it('updateTemplate(), should update the selected template' , () => {
     const event = {option:{ viewValue: 'Template Test' }} as MatAutocompleteSelectedEvent;
-    const templates: EmailTemplate[] =  [{ templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }];
+    const templates: EmailTemplate[] =  [{ _id: 'Template 1', desc: 'Subject - Template 1'}];
     spyOn(router, 'navigate');
     spyOnProperty(reportService.selectedTemplate, 'value', 'get').and.returnValue(templates[0]);
     component.updateTemplate(event);
@@ -59,9 +59,9 @@ describe('EmailTemplateComponent', () => {
     expect(returnedPosition).toEqual('chevron-up');
   });
 
-  it('setupFilteredList(), should filter templates based on name' , () => {
-    component.templates = [{ templateName: 'No', subject: '', message: '' }];
-    component.templateFormGrp.controls.templateName.setValue(component.templates[0].templateName);
+  it('setupFilteredList(), should filter templates based on id' , () => {
+    component.templates = [{ _id: 'Template 1', desc: 'Subject - Template 1'}]
+    component.templateFormGrp.controls.templateName.setValue(component.templates[0].desc);
     component.setupFilteredList();
     expect(component.filteredTemplates).toBeTruthy();
   });

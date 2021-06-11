@@ -9,9 +9,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { Userdetails } from '@models/userdetails';
 import { PermissionOn } from '../../../../../_models/collaborator'
-import { EmailTemplate } from '../../../_models/email';
+import { EmailTemplateBody } from '../../../_models/email';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 
 describe('SendEmailComponent', () => {
   let component: SendEmailComponent;
@@ -101,7 +101,10 @@ describe('SendEmailComponent', () => {
       email: 'nikhil@prospecta.com',
     } as Userdetails
 
-    spyOn(userService, 'getUserDetails').and.returnValue(of(userDetails));
+    spyOn(userService, 'getUserDetails').and.returnValues(of(userDetails),throwError('Error'));
+    component.addMyself();
+    expect(component.emailRecipients.length).toEqual(1);
+
     component.addMyself();
     expect(component.emailRecipients.length).toEqual(1);
   });
@@ -114,6 +117,13 @@ describe('SendEmailComponent', () => {
     expect(component.users).toBeDefined();
   });
 
+  it('getCollaboratorPermission(), On click of getCollaboratorPermission error should be handled' , () => {
+    spyOn(reportService,'getCollaboratorPermission').and.returnValue(throwError('Error'));
+
+    component.getCollaboratorPermission(null,null);
+    expect(component.users).toBeDefined();
+  });
+
   it('remove(),should remove user from recipients list ',()=>{
     component.emailRecipients = ['testuser']
     component.remove('testuser');
@@ -121,11 +131,11 @@ describe('SendEmailComponent', () => {
   });
 
   it('getSelectedTemplate(),should set template subject and message ',()=>{
-    const templates: EmailTemplate[] =  [{ templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }];
-   reportService.selectedTemplate = new BehaviorSubject<EmailTemplate>(templates[0]);
+    const templates: EmailTemplateBody = {subType: 'Dashboard', emailSub: 'Subject', emailText: `<b>Test Template</b>`}
+    reportService.selectedTemplate = new BehaviorSubject<EmailTemplateBody>(templates);
     component.getSelectedTemplate();
-    expect(component.emailFormGrp.controls.subject.value).toEqual(templates[0].subject);
-    expect(component.emailFormGrp.controls.message.value).toEqual(templates[0].message);
+    expect(component.emailFormGrp.controls.subject.value).toEqual(templates.emailSub);
+    expect(component.emailFormGrp.controls.message.value).toEqual(templates.emailText);
 
   });
 

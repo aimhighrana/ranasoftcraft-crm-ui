@@ -5,7 +5,12 @@ export interface Email {
 }
 
 export interface EmailTemplate {
-    templateName: string
-    subject: string;
-    message: string;
+    _id: string
+    desc: string
+}
+
+export interface EmailTemplateBody {
+  emailSub: string,
+  subType: string,
+  emailText: string
 }
