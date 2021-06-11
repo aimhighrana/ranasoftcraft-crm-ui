@@ -233,7 +233,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       };
       if (this.barWidget.getValue().datalabelsPosition === AlignPosition.END) {
         // Datalabel was being cut off the screen when the height was small.
-        this.barChartOptions.plugins.datalabels.offset = 0;
+        this.barChartOptions.plugins.datalabels.offset = -4;
         this.barChartOptions.plugins.datalabels.padding = 0;
       }
       if (this.chart) {

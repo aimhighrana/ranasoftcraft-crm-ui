@@ -1,36 +1,41 @@
 <mat-card class="mat-elevation-z0 widget">
-  <div class="f-row breadcrum-toolbar">
-    <div class="display-heading-large" #displayHeading
+  <div class="f-row">
+    <div #displayHeading
       [libTooltip]="widgetHeader.desc" matTooltipPosition="right" [matTooltipDisabled]="false">
-      {{ widgetHeader.desc }}
+      <lib-text-line enableWrap="true" type="base">{{ widgetHeader.desc }}</lib-text-line>
     </div>
     <div class="f-spacer"></div>
-   
+
     <lib-button (click)="zoomIn()" type="plain" icon="search-plus"></lib-button>
     <lib-button (click)="zoomOut()" type="plain" icon="search-minus"></lib-button>
-    
-    
+
+
     <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
     <mat-menu #menu="matMenu" class="navigation-menu">
       <lib-filter-option (click)="downloadImage()">Image download (.png)</lib-filter-option>
       <lib-filter-option (click)="downloadCSV()">Data download (.csv)</lib-filter-option>
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
-      <mat-menu #tcOptionMenu="matMenu">
-        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
+      <mat-menu #tcOptionMenu="matMenu" class="mat-elevation-z0 tooltip-fields-menu">
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions"
+          (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
       <ng-template [ngIf]="permissons && permissons.isAdmin">
         <button mat-menu-item (click)="openColorPalette()">Color palette</button>
       </ng-template>
     </mat-menu>
- </div>
- <div class="row-spacer"></div>
- <mat-card-content>
-   <div [ngStyle]="{'width.px': (widgetInfo.width * boxSize - 35), 'height.px': orientation === 'bar' ? '100%' : (computedSize.height * boxSize), 'position' : 'relative'}" class="bar-height"> 
-     <div [ngStyle]="{'width' : orientation === 'bar' ? (computedSize.width * boxSize - 20) + 'px' : '100%', 'position' : 'relative'}" class="bar-height bar-width">
-       <canvas class="bar-height" baseChart
-         [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions" [chartType]="orientation">
-       </canvas>
-     </div>
-   </div>
-</mat-card-content>
+  </div>
+  <div class="row-spacer"></div>
+  <mat-card-content>
+    <div
+      [ngStyle]="{'width.px': (widgetInfo.width * boxSize - 35), 'height.px': orientation === 'bar' ? '100%' : (computedSize.height * boxSize), 'position' : 'relative'}"
+      class="bar-height">
+      <div
+        [ngStyle]="{'width' : orientation === 'bar' ? (computedSize.width * boxSize - 20) + 'px' : '100%', 'position' : 'relative'}"
+        class="bar-height bar-width">
+        <canvas class="bar-height" baseChart [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions"
+          [chartType]="orientation">
+        </canvas>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>

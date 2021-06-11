@@ -5,7 +5,7 @@ import {
     MAT_DIALOG_DATA
 } from '@angular/material/dialog';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData, LookupFields } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
@@ -17,6 +17,11 @@ import { BlockType } from '@modules/report/_models/widget';
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 import { ValidationError } from '@models/schema/schema';
+
+class ConditionalOperator {
+    desc: string;
+    childs: string[];
+}
 
 @Component({
     selector: 'pros-new-business-rules',
@@ -243,6 +248,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * Angular hook
      */
     ngOnInit(): void {
+        this.filterRuleTypes();
         // initialize form Object
         this.initializeForm();
 
@@ -339,6 +345,14 @@ export class NewBusinessRulesComponent implements OnInit {
         this.initiateAutocomplete();
 
         this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
+    }
+
+    /**
+     * Removes untested rule types
+     */
+    filterRuleTypes() {
+        const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT'];
+        this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
     }
 
     /**

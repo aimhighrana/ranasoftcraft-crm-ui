@@ -7,15 +7,15 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { ModuleInfo, SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
-import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
+import { FilterCriteria, Heirarchy, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
-import { Router } from '@angular/router';
+import { ParamMap, Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Userdetails } from '@models/userdetails';
@@ -72,7 +72,7 @@ describe('SchemaDetailsComponent', () => {
     component.dataSource = new SchemaDataSource(schemaDetailService, endpointService, '274751');
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
 
-    // fixture.detectChanges();
+    // fixture.detectChanges();...
 
     component.schemaId = '274751';
     component.variantId = '0';
@@ -82,6 +82,19 @@ describe('SchemaDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('ngOnInit()', async(() => {
+    component.isRefresh = true;
+    component.ngOnInit();
+    spyOn(schemaDetailService, 'updateSchemaTableView').and.returnValue(throwError(null));
+    component.selectedFieldsOb.next(true);
+    expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalled();
+  }));
+
+  it('selectedNodeChange()', async(() => {
+    const params: ParamMap = component.activatedRouter.snapshot.queryParamMap;
+    expect(component.selectedNodeChange(params)).toBeUndefined();
+  }));
 
   it('getSchemaDetails(), get schema details ', async(()=>{
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId)
@@ -131,6 +144,45 @@ describe('SchemaDetailsComponent', () => {
     spyOn(console, 'error');
     component.getVariantDetails();
     expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('getVariantDetails(), get variant detaails ', async(()=>{
+    component.userDetails = {
+      currentRoleId: 'AD',
+      userName: 'harshit',
+      plantCode: '0'
+    } as Userdetails
+
+    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName)
+      .and.returnValues(of({
+      schemaId: component.schemaId,
+      filterCriteria: []
+    } as SchemaVariantsModel), of(null), throwError({message: 'api error'}));
+
+    component.getVariantDetails();
+
+    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName);
+  }));
+
+  it('getVariantDetails(), get variant detaails ', async(()=>{
+    component.userDetails = {
+      currentRoleId: 'AD',
+      userName: 'harshit',
+      plantCode: '0'
+    } as Userdetails
+
+    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName)
+      .and.returnValues(of({
+      schemaId: component.schemaId,
+      filterCriteria: [
+        { fieldId: 'MATL_TYPE', type: 'DROPDOWN', values: [] },
+        { fieldId: 'id', type: 'INLINE' }
+      ]
+    } as SchemaVariantsModel), of(null), throwError({message: 'api error'}));
+
+    component.getVariantDetails();
+
+    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName);
   }));
 
   it('getFldMetadata(), get field metadata ', async(()=>{
@@ -191,6 +243,10 @@ describe('SchemaDetailsComponent', () => {
 
     expect(res.values.length).toEqual(0);
 
+    expect(component.updateFilterCriteria(null)).toBeUndefined();
+
+    component.filterCriteria.next(null);
+    expect(component.updateFilterCriteria(null)).toBeUndefined();
   }));
 
   /* it('should format date to MM/DD/YYYY', () => {
@@ -332,6 +388,16 @@ describe('SchemaDetailsComponent', () => {
     expect(component.filterCriteria.next).toHaveBeenCalledTimes(1);
   });
 
+  it('removeAppliedFilter() should remove an applied filter', async(() => {
+    const filterCriteria = {
+      fieldId: 'id',
+      type: 'INLINE'
+    } as FilterCriteria ;
+    component.filterCriteria.next(null);
+
+    expect(component.removeAppliedFilter(filterCriteria)).toBeUndefined();
+  }));
+
   it('should reset applied filter', () => {
 
     component.inlineSearch('material');
@@ -462,7 +528,8 @@ describe('SchemaDetailsComponent', () => {
       }
     } as SimpleChanges;
 
-    spyOn(component, 'getDataScope');
+    const sub: any = new Observable();
+    spyOn(component, 'getDataScope').and.returnValue(of(sub));
     spyOn(component, 'getFldMetadata');
     spyOn(component, 'getSchemaStatics');
     spyOn(component, 'getSchemaDetails');
@@ -718,6 +785,36 @@ describe('SchemaDetailsComponent', () => {
     });
   }));
 
+  it('ngOnChanges()', async(() => {
+    const changes = {
+      variantId: {
+        currentValue:'0',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue: '1'
+      },
+      isInRunning: {
+        currentValue: false,
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue: true
+      },
+      activeTab: {
+        currentValue: '0',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue: '1'
+      }
+    } as SimpleChanges;
+
+    component.ngOnChanges(changes);
+    expect(component.isRefresh).toBeTrue();
+
+    const changes1 = {} as SimpleChanges;
+    component.ngOnChanges(changes1);
+    expect(component.isRefresh).toBeFalse();
+  }));
+
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
@@ -762,7 +859,21 @@ describe('SchemaDetailsComponent', () => {
     component.selection.select(row);
     component.approveRecords('all');
     expect(console.error).toHaveBeenCalled();
+  }));
 
+  it(`approveRecords(), approve corrected records `, async(() => {
+    // mock data
+    component.schemaId = '246726532';
+    component.userDetails  = {currentRoleId:'123'} as Userdetails;
+    spyOn(schemaDetailService,'approveCorrectedRecords').and.returnValues(of(null));
+
+    expect(component.approveRecords('inline')).toBeUndefined();
+    expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalled();
+  }));
+
+  it('getParentNode()', async(() => {
+    spyOn(component, 'getExectionArray').and.returnValue(undefined);
+    expect(component.getParentNode('header')).toEqual(null);
   }));
 
   it(`resetRec(), reset corrected records `, async(()=>{
@@ -793,6 +904,19 @@ describe('SchemaDetailsComponent', () => {
     component.resetRec('', 'all');
     expect(console.error).toHaveBeenCalled();
 
+  }));
+
+  it(`resetRec(), reset corrected records `, async(() => {
+    component.schemaId = '246726532';
+    component.schemaInfo  = {runId:'889321'} as SchemaListDetails;
+    component.statics = {correctedCnt: 5} as SchemaStaticThresholdRes;
+    spyOn(schemaDetailService,'resetCorrectionRecords').and.returnValue(of(undefined));
+    expect(component.resetRec(null, 'inline')).toBeUndefined();
+    expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalled();
+
+    spyOn(component, 'getData');
+    component.selection.clear();
+    expect(component.resetRec(null, 'inlin')).toBeUndefined();
   }));
 
   it('openExecutionTrendSideSheet ', async(() => {
@@ -975,6 +1099,21 @@ describe('SchemaDetailsComponent', () => {
     // error api resp
     component.generateCrossEntry(row);
     expect(console.error).toHaveBeenCalled();
+  }));
+
+  it('generateCrossEntry() , generate cross module / create cross module ', async(()=>{
+    // mock data
+    const row = {
+      OBJECTNUMBER:{
+        fieldData:'TMP001'
+      }
+    };
+    component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
+    component.dataSource.targetField = 'MATL_GRP';
+    spyOn(schemaDetailService, 'generateCrossEntry').and.returnValue(of(undefined));
+
+    expect(component.generateCrossEntry(row)).toBeUndefined();
+    expect(schemaDetailService.generateCrossEntry).toHaveBeenCalled();
   }));
 
   it('uploadCorrectedData(), navigate for upload corrected rec ', async(()=>{
@@ -1171,6 +1310,138 @@ describe('SchemaDetailsComponent', () => {
     expect(console.error).toHaveBeenCalled();
   }));
 
+  it('updateColumnBasedOnNodeSelection()', async(()=>{
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY},
+        {nodeId: '2', nodeType: SchemaExecutionNodeType.GRID}
+      ]
+    } as SchemaExecutionTree;
+    component.activeNode = component.executionTreeHierarchy;
+
+    component.metadata.next(
+      {
+        headers: ['test1', 'test2'],
+        hierarchyFields: {
+          MTL_DESC: {fieldId:'MTL_DESC'},
+          1: 'test'
+        },
+        gridFields: {
+          region: {fieldId: 'region'},
+          2: 'test'
+        }
+      } as MetadataModeleResponse
+    );
+
+    const response = [
+      {nodeId: 'header', nodeType:'HEADER', fieldsList: [{fieldId:'MTL_TYPE'}, {fieldId:'MTL_TYPE'}]},
+      {nodeId: '1', nodeType:'HEIRARCHY', fieldsList: []},
+      {nodeId: '2', nodeType:'GRID', fieldsList: []}
+    ];
+
+    spyOn(component.selectedFieldsOb, 'next');
+    spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of(response), throwError({message: 'api error'}));
+
+    const newNode = new SchemaExecutionTree();
+    newNode.nodeId = 'test';
+    newNode.nodeType = SchemaExecutionNodeType.HEIRARCHY;
+    expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+    expect(component.getNodeParentsHierarchy).toHaveBeenCalled();
+    expect(schemaDetailService.getSelectedFieldsByNodeIds).toHaveBeenCalled();
+    expect(component.selectedFieldsOb.next).toHaveBeenCalled();
+
+    newNode.nodeId = '2';
+    newNode.nodeType = SchemaExecutionNodeType.GRID;
+    expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+  }));
+
+  it('updateColumnBasedOnNodeSelection()', async(()=>{
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY},
+        {nodeId: '2', nodeType: SchemaExecutionNodeType.GRID}
+      ]
+    } as SchemaExecutionTree;
+    component.activeNode = component.executionTreeHierarchy;
+
+    component.metadata.next(
+      {
+        headers: ['test1', 'test2'],
+        hierarchyFields: {
+          MTL_DESC: {fieldId:'MTL_DESC'},
+          1: 'test'
+        },
+        gridFields: {
+          region: {fieldId: 'region'},
+          2: 'test'
+        }
+      } as MetadataModeleResponse
+    );
+
+    const response = [
+      {nodeId: 'header', nodeType:'HEADER', fieldsList: []},
+      {nodeId: '1', nodeType:'HEIRARCHY', fieldsList: []},
+      {nodeId: '2', nodeType:'GRID', fieldsList: []}
+    ];
+
+    spyOn(component.selectedFieldsOb, 'next');
+    spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of(response), throwError({message: 'api error'}));
+
+    const newNode = new SchemaExecutionTree();
+    newNode.nodeId = 'header';
+    newNode.nodeType = SchemaExecutionNodeType.HEADER;
+    expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+
+    component.metadata.next(null);
+    newNode.nodeId = 'header';
+    newNode.nodeType = SchemaExecutionNodeType.HEADER;
+    expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+  }));
+
+  it('updateColumnBasedOnNodeSelection()', async(()=>{
+    component.executionTreeHierarchy = {
+      nodeId: 'header',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [
+        {nodeId: '1', nodeType: SchemaExecutionNodeType.HEIRARCHY},
+        {nodeId: '2', nodeType: SchemaExecutionNodeType.GRID}
+      ]
+    } as SchemaExecutionTree;
+    component.activeNode = component.executionTreeHierarchy;
+
+    component.metadata.next(null);
+
+    const response = [
+      {nodeId: 'header', nodeType:'HEADER', fieldsList: []},
+      {nodeId: '1', nodeType:'HEIRARCHY', fieldsList: []},
+      {nodeId: '2', nodeType:'GRID', fieldsList: []}
+    ];
+
+    spyOn(component.selectedFieldsOb, 'next');
+    spyOn(component, 'getNodeParentsHierarchy').and.returnValue(['header'])
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of(response), throwError({message: 'api error'}));
+
+    const newNode = new SchemaExecutionTree();
+    newNode.nodeId = 'header';
+    newNode.nodeType = SchemaExecutionNodeType.HEADER;
+    expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+  }));
+
+  it('updateColumnBasedOnNodeSelection()', async(()=>{
+    spyOn(schemaDetailService,'getSelectedFieldsByNodeIds').and.returnValues(of([]), throwError({message: 'api error'}));
+
+    const newNode = new SchemaExecutionTree();
+    newNode.nodeId = '1';
+    newNode.nodeType = SchemaExecutionNodeType.HEIRARCHY;
+    expect(component.updateColumnBasedOnNodeSelection(newNode.nodeId, newNode.nodeType)).toBeUndefined();
+  }));
+
   it('getExectionArray()', async(()=>{
 
     component.activeNode = {
@@ -1205,6 +1476,10 @@ describe('SchemaDetailsComponent', () => {
 
   it('uploadCorrectedDataCsv(), should open files', async(() => {
     expect(component.uploadCorrectedDataCsv()).toBeTruthy();
+
+    const el = document.getElementById('uploadFileCtrl');
+    el.remove();
+    expect(component.uploadCorrectedDataCsv()).toBeTruthy();
   }));
 
   it('fileUploaded(), should close upload progress', async(() => {
@@ -1231,6 +1506,102 @@ describe('SchemaDetailsComponent', () => {
     expect(console.error).toHaveBeenCalled();
   }));
 
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    const resFile: File = new File([], 'test');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: '', file: resFile});
+    spyOn(schemaDetailService, 'uploadCsvFileData').and.returnValue(of(['12345']));
+    component.activeNode = {
+      nodeId: 'header',
+      nodeDesc: '',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [],
+      docCount: 0
+    };
+    component.moduleInfo = {
+      moduleDesc: 'test',
+      moduleId: '0'
+    };
+    expect(component.fileChange(ev)).toBeUndefined();
+
+    component.activeNode.nodeId = '';
+    component.activeNode.nodeType = undefined;
+    component.moduleInfo.moduleDesc = '';
+    expect(component.fileChange(ev)).toBeUndefined();
+  }));
+
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    const resFile: File = new File([], 'test');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: '', file: resFile});
+    spyOn(schemaDetailService, 'uploadCsvFileData').and.returnValues(of(undefined), throwError({message: 'error'}));
+    component.activeNode = {
+      nodeId: 'header',
+      nodeDesc: '',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [],
+      docCount: 0
+    };
+    component.moduleInfo = {
+      moduleDesc: 'test',
+      moduleId: '0'
+    };
+    expect(component.fileChange(ev)).toBeUndefined();
+  }));
+
+  it('fileChange(), upload csv file', async(() => {
+    const ev: Event = new Event('file');
+    const resFile: File = new File([], 'test');
+    spyOn(component, 'checkForValidFile').withArgs(ev).and.returnValue({errMsg: '', file: resFile});
+    spyOn(schemaDetailService, 'uploadCsvFileData').and.returnValue(throwError({message: 'error'}));
+    component.activeNode = {
+      nodeId: 'header',
+      nodeDesc: '',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [],
+      docCount: 0
+    };
+    component.moduleInfo = {
+      moduleDesc: 'test',
+      moduleId: '0'
+    };
+    expect(component.fileChange(ev)).toBeUndefined();
+  }));
+
+  it('checkForValidFile()', async(() => {
+    let ev: Event = new Event('file');
+    ev = undefined;
+    const res: any = component.checkForValidFile(ev);
+
+    expect(res.file).toEqual(null);
+
+    const event: any = {
+      target: {
+        files: [
+          {
+            name: 'test.xlsx',
+            size: 12345
+          }
+        ]
+      }
+    };
+
+    const res1 = component.checkForValidFile(event);
+    expect(res1.errMsg).toEqual('');
+
+    event.target.files.push({name: 'test', size: 12345});
+    const res2 = component.checkForValidFile(event);
+    expect(res2.errMsg).toEqual('Cannot use multiple files');
+
+    event.target.files = [{name: 'test.xls', size: 1000000000}];
+    const res3 = component.checkForValidFile(event);
+    expect(res3.errMsg).toEqual('File size too large , upload less then 10 MB');
+
+    event.target.files = [{name: 'test.png', size: 100}];
+    const res4 = component.checkForValidFile(event);
+    expect(res4.errMsg).toEqual('Unsupported file format, allowed file formats are .xlsx, .xls and .csv');
+  }));
+
   it('getModuleInfo(), should get module info', async(() => {
     spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
     component.getModuleInfo('');
@@ -1242,6 +1613,12 @@ describe('SchemaDetailsComponent', () => {
     spyOn(schemaService,'getModuleInfoByModuleId').withArgs('12345').and.returnValues(of([moduleInfo]), throwError({message: 'api error'}));
     component.getModuleInfo('12345');
     expect(component.moduleInfo).toBeDefined();
+  }));
+
+  it('getModuleInfo(), should get module info', async(() => {
+    spyOn(schemaService,'getModuleInfoByModuleId').withArgs('12345').and.returnValue(throwError({message: 'api error'}));
+    component.getModuleInfo('12345');
+    expect(component.moduleInfo).toBeUndefined();
   }));
 
   it('enableIcon(), enable collapsiable icon ', async(()=>{
@@ -1278,6 +1655,11 @@ describe('SchemaDetailsComponent', () => {
     component.displayedFields.next(['selected','___header__collapsible','MAT_TYPE', 'MAT_GRP']);
     component.columns.header = ['MAT_TYPE','MAT_GRP','TEST'];
 
+    component.nodeId = 'header';
+    component.doColumnsCollapsible(null, 'open', '___header__collapsible');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeId = 'grid';
     component.doColumnsCollapsible(null, 'open', '___header__collapsible');
     expect(component.displayedFields.getValue()).toBeTruthy();
 
@@ -1304,6 +1686,31 @@ describe('SchemaDetailsComponent', () => {
     component.doColumnsCollapsible(null, 'close', 'MAT_TYPE');
     expect(component.displayedFields.getValue()).toBeTruthy();
 
+    component.columns = {
+      header: 'MAT_TYP'
+    };
+    component.doColumnsCollapsible(null, 'close', 'MAT_TYPE');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+  }));
+
+  it('doColumnsCollapsible(), do the column collapsible', async(()=>{
+    // mock data
+    component.displayedFields.next(['selected','___header__collapsible','MAT_TYPE', 'MAT_GRP']);
+    component.columns.header = ['MAT_TYPE','MAT_GRP','TEST'];
+    component.columns.grid = ['TEST1'];
+
+    // for close state ....
+    component.nodeType = 'GRID';
+    component.doColumnsCollapsible(null, 'close', 'TEST');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeType = 'GRID';
+    component.doColumnsCollapsible(null, 'close', 'TEST1');
+    expect(component.displayedFields.getValue()).toBeTruthy();
+
+    component.nodeType = 'HEIRARCHY';
+    component.doColumnsCollapsible(null, 'close', 'TEST1');
+    expect(component.displayedFields.getValue()).toBeTruthy();
   }));
 
   it('getNodeTypeById()', async(()=>{
@@ -1330,6 +1737,10 @@ describe('SchemaDetailsComponent', () => {
     const res1 = component.isHeaderColumn('MATL_TYP3');
     expect(res1).toBeFalse();
 
+    component.columns = {};
+    const res2 = component.isHeaderColumn('Test');
+    expect(res2).toBeUndefined();
+
   }));
 
   it('isFieldEditable(), check if field is editable', async(() => {
@@ -1354,6 +1765,41 @@ describe('SchemaDetailsComponent', () => {
 
   it('opnDialogSaveVariant()', async(() => {
     expect(component.opnDialogSaveVariant()).toBeUndefined();
+  }));
+
+  it('getAllNodeFields()', async(() => {
+    const node: SchemaExecutionTree = {
+      nodeId: 'headers',
+      nodeDesc: '',
+      nodeType: SchemaExecutionNodeType.HEADER,
+      childs: [],
+      docCount: 0
+    };
+    expect(component.getAllNodeFields(node)).toBeTruthy();
+
+    node.nodeType = SchemaExecutionNodeType.HEIRARCHY;
+    expect(component.getAllNodeFields(node)).toBeTruthy();
+
+    node.nodeType = SchemaExecutionNodeType.GRID;
+    expect(component.getAllNodeFields(node)).toBeTruthy();
+
+    const res: MetadataModeleResponse = {
+      headers: undefined,
+      grids:{ LANGUAGE_GRID:{fieldId:'LANGUAGE_GRID'}},
+      gridFields:{ LANGUAGE_GRID:{LANGUAGE:{ieldId:'LANGUAGE'}}},
+      hierarchy:[{heirarchyId:'1', heirarchyText:'Plant'} as Heirarchy],
+      hierarchyFields:{1:{PLANT:{fieldId:'PLANT'}}}
+    };
+    component.metadata.next(res);
+
+    node.nodeType = SchemaExecutionNodeType.HEADER;
+    expect(component.getAllNodeFields(node)).toBeTruthy();
+
+    node.nodeType = SchemaExecutionNodeType.HEIRARCHY;
+    expect(component.getAllNodeFields(node)).toBeTruthy();
+
+    node.nodeType = SchemaExecutionNodeType.GRID;
+    expect(component.getAllNodeFields(node)).toBeTruthy();
   }));
 
 });

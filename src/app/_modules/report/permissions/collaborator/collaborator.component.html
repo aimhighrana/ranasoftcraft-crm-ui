@@ -6,40 +6,34 @@
                 <ng-template [ngIf]="collaborator && collaborator.permissionType === 'USER'">
                     <mat-icon mat-list-icon matTooltip="User" class="icon-user">person</mat-icon>
                     <div class="f-col">
-                        <div mat-line>{{ collaborator.userMdoModel ? collaborator.userMdoModel.fullName : 'Unknown' }}
-                        </div>
-                        <div mat-line>{{ collaborator.userMdoModel ? collaborator.userMdoModel.email : 'Unknown' }}
-                        </div>
+                        <lib-text-line type="base">{{ collaborator.userMdoModel ? collaborator.userMdoModel.fullName : 'Unknown' }}</lib-text-line>
+                        <lib-text-line type="base">{{ collaborator.userMdoModel ? collaborator.userMdoModel.email : 'Unknown' }}</lib-text-line>
                     </div>
                 </ng-template>
 
                 <ng-template [ngIf]="collaborator && collaborator.permissionType === 'GROUP'">
                     <mat-icon mat-list-icon matTooltip="Group" class="icon-group">group</mat-icon>
                     <div class="f-col">
-                        <div mat-line>{{ collaborator.groupId }}</div>
-                        <div mat-line>
-                            {{ collaborator.groupHeaderModel ? collaborator.groupHeaderModel.description : 'Undescribe' }}
-                        </div>
+                        <lib-text-line type="base">{{ collaborator.groupId }}</lib-text-line>
+                        <lib-text-line type="base">{{ collaborator.groupHeaderModel ? collaborator.groupHeaderModel.description : 'Undescribe' }}</lib-text-line>
                     </div>
                 </ng-template>
 
                 <ng-template [ngIf]="collaborator && collaborator.permissionType === 'ROLE'">
                     <mat-icon mat-list-icon matTooltip="Role" class="icon-role">how_to_reg</mat-icon>
                     <div class="f-col">
-                        <div mat-line> {{ collaborator.roleId }}</div>
-                        <div mat-line>{{ collaborator.rolesModel ? collaborator.rolesModel.roleDesc : 'Unknown' }}</div>
+                        <lib-text-line type="base">{{ collaborator.roleId }}</lib-text-line>
+                        <lib-text-line type="base">{{ collaborator.rolesModel ? collaborator.rolesModel.roleDesc : 'Unknown' }}</lib-text-line>
                     </div>
                 </ng-template>
                 <div class="f-spacer"></div>
-                <!-- <button mat-button (click)="updateEmit()">
-                    <mat-icon>save</mat-icon>
-                </button> -->
-                <lib-button (click)="updateEmit()" icon="save"></lib-button>
+                <lib-button (click)="updateEmit()">Save</lib-button>
             </div>
             <div class="f-row permissions" [formGroup]="permissionFrmGrp">
-                <mat-slide-toggle color="primary" formControlName="isViewable">Can View</mat-slide-toggle>
-                <mat-slide-toggle color="primary" formControlName="isEditable">Can Edit</mat-slide-toggle>
-                <mat-slide-toggle color="primary" formControlName="isDeleteable">Can Delete</mat-slide-toggle>
+                <lib-slide-toggle  formControlName="isViewable"  labelposition="before" label="Can view" theme="primary"></lib-slide-toggle>
+                <lib-slide-toggle formControlName="isEditable" labelposition="before" label="Can edit" theme="primary"></lib-slide-toggle>  
+                <lib-slide-toggle formControlName="isDeleteable" labelposition="before" label="Can delete" theme="primary"></lib-slide-toggle>
+        
             </div>
         </div>
     </mat-list-item>
@@ -51,28 +45,24 @@
                 <ng-template [ngIf]="collaborator && collaborator.permissionType === 'USER'">
                     <mat-icon mat-list-icon matTooltip="User" class="icon-user">person</mat-icon>
                     <div class="f-col">
-                        <div mat-line>{{ collaborator.userMdoModel ? collaborator.userMdoModel.fullName : 'Unknown' }}
-                        </div>
-                        <div mat-line>{{ collaborator.userMdoModel ? collaborator.userMdoModel.email : 'Unknown' }}
-                        </div>
+                        <lib-text-line type="base">{{ collaborator.userMdoModel ? collaborator.userMdoModel.fullName : 'Unknown' }}</lib-text-line>
+                        <lib-text-line type="base">{{ collaborator.userMdoModel ? collaborator.userMdoModel.email : 'Unknown' }}</lib-text-line>
                     </div>
                 </ng-template>
 
                 <ng-template [ngIf]="collaborator && collaborator.permissionType === 'GROUP'">
                     <mat-icon mat-list-icon matTooltip="Group" class="icon-group">group</mat-icon>
                     <div class="f-col">
-                        <div mat-line>{{ collaborator.groupId }}</div>
-                        <div mat-line>
-                            {{ collaborator.groupHeaderModel ? collaborator.groupHeaderModel.description : 'Undescribe' }}
-                        </div>
+                        <lib-text-line type="base">{{ collaborator.groupId }}</lib-text-line>
+                        <lib-text-line type="base">{{ collaborator.groupHeaderModel ? collaborator.groupHeaderModel.description : 'Undescribe' }}</lib-text-line>
                     </div>
                 </ng-template>
 
                 <ng-template [ngIf]="collaborator && collaborator.permissionType === 'ROLE'">
                     <mat-icon mat-list-icon matTooltip="Role" class="icon-role">how_to_reg</mat-icon>
                     <div class="f-col">
-                        <div mat-line>{{ collaborator.roleId }}</div>
-                        <div mat-line>{{ collaborator.rolesModel ? collaborator.rolesModel.roleDesc : 'Unknown' }}</div>
+                        <lib-text-line type="base">{{ collaborator.roleId }}</lib-text-line>
+                        <lib-text-line type="base">{{ collaborator.rolesModel ? collaborator.rolesModel.roleDesc : 'Unknown' }}</lib-text-line>
                     </div>
                 </ng-template>
                 <div class="f-spacer"></div>

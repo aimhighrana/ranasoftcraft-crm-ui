@@ -857,6 +857,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
           <context context-type="linenumber">463</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Home</source>
@@ -1089,6 +1093,10 @@
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="retry" datatype="html">
         <source>Retry</source>
@@ -1104,6 +1112,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="check" datatype="html">
@@ -2486,50 +2498,237 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="download" datatype="html">
-        <source>Download</source>
-        <target>Herunterladen</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\download-execution-data\download-execution-data.component.html</context>
-          <context context-type="linenumber">56</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="end" datatype="html">
-        <source>End</source>
-        <target>Ende</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
-          <context context-type="linenumber">213</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="start" datatype="html">
-        <source>Start</source>
-        <target>Start</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
-          <context context-type="linenumber">199</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="show_selected" datatype="html">
-        <source>Show selected</source>
-        <target>Ausgewählte anzeigen</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
-          <context context-type="linenumber">124</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="rule" datatype="html">
-        <source>Rule</source>
-        <target>Regel</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
-          <context context-type="linenumber">96</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
-          <context context-type="linenumber">114</context>
-        </context-group>
-      </trans-unit>
-    </body>
-  </file>
+      <source>Updated</source>
+      <target>Aktualisiert</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+        <context context-type="linenumber">40</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="import_report" datatype="html">
+      <source>Import Report</source>
+      <target>Bericht importieren</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">3</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="upload_file" datatype="html">
+      <source>Upload a file</source>
+      <target>Datei hochladen</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">11</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="upload_mdoreport" datatype="html">
+      <source>Upload a .mdopage report file</source>
+      <target>Hochladen einer .mdopage-Berichtsdatei</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">11</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="replace_existing" datatype="html">
+      <source>Replace existing</source>
+      <target>Vorhandenen ersetzen</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">58</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="duplicate_report" datatype="html">
+      <source>Duplicate report</source>
+      <target>Bericht duplizieren</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">59</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="add_report" datatype="html">
+      <source>Add report</source>
+      <target>Bericht hinzufügen</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">60</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="import" datatype="html">
+      <source>Import</source>
+      <target> Importieren </target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">61</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="description" datatype="html">
+      <source>Description</source>
+      <target> Beschreibung </target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">19</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="import_date" datatype="html">
+      <source>Import date</source>
+      <target> Importdatum </target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">23</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="category" datatype="html">
+      <source>Category</source>
+      <target> Kategorie</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">35</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="duplicate_report_name" datatype="html">
+      <source> Duplicate report name</source>
+      <target>Name des Berichts duplizieren</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">38</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="missing_module" datatype="html">
+      <source>Missing module</source>
+      <target>fehlendes Modul</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+        <context context-type="linenumber">41</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="export_report" datatype="html">
+      <source> Export report </source>
+      <target> Liste exportieren </target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+        <context context-type="linenumber">3</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="download" datatype="html">
+      <source>Download</source>
+      <target>Herunterladen</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\schema\_components\v2\download-execution-data\download-execution-data.component.html</context>
+        <context context-type="linenumber">56</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="end" datatype="html">
+      <source>End</source>
+      <target>Ende</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+        <context context-type="linenumber">213</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="start" datatype="html">
+      <source>Start</source>
+      <target>Start</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+        <context context-type="linenumber">199</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="show_selected" datatype="html">
+      <source>Show selected</source>
+      <target>Ausgewählte anzeigen</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+        <context context-type="linenumber">124</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="rule" datatype="html">
+      <source>Rule</source>
+      <target>Regel</target>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+        <context context-type="linenumber">96</context>
+      </context-group>
+      <context-group purpose="location">
+        <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+        <context context-type="linenumber">114</context>
+      </context-group>
+    </trans-unit>
+    <trans-unit id="equal" datatype="html">
+      <source>Equal</source>
+      <target>Gleich</target>
+    </trans-unit>
+    <trans-unit id="not_equal" datatype="html">
+      <source>Not Equal</source>
+      <target>Nicht gleich</target>
+    </trans-unit>
+    <trans-unit id="starts_with" datatype="html">
+      <source>Starts With</source>
+      <target>Beginnt mit</target>
+    </trans-unit>
+    <trans-unit id="ends_with" datatype="html">
+      <source>Ends With</source>
+      <target>Endet mit</target>
+    </trans-unit>
+    <trans-unit id="contains" datatype="html">
+      <source>Contains</source>
+      <target>Enthält</target>
+    </trans-unit>
+    <trans-unit id="empty" datatype="html">
+      <source>Empty</source>
+      <target>Leer</target>
+    </trans-unit>
+    <trans-unit id="not_empty" datatype="html">
+      <source>Not Empty</source>
+      <target>Nicht leer</target>
+    </trans-unit>
+    <trans-unit id="less_than" datatype="html">
+      <source>Less Than</source>
+      <target>Weniger als</target>
+    </trans-unit>
+    <trans-unit id="less_than_equal_to" datatype="html">
+      <source>Less Than Equal To</source>
+      <target>Weniger als gleich</target>
+    </trans-unit>
+    <trans-unit id="greater_than" datatype="html">
+      <source>Greater Than</source>
+      <target>Größer als</target>
+    </trans-unit>
+    <trans-unit id="Greater_than_equal_to" datatype="html">
+      <source>Greater Than Equal To</source>
+      <target>Größer als gleich</target>
+    </trans-unit>
+    <trans-unit id="regex" datatype="html">
+      <source>Regex</source>
+      <target>Regex</target>
+    </trans-unit>
+    <trans-unit id="field_to_field" datatype="html">
+      <source>Field To Field</source>
+      <target>Feld zu Feld</target>
+    </trans-unit>
+    <trans-unit id="location" datatype="html">
+      <source>Location</source>
+      <target>Ort</target>
+    </trans-unit>
+    <trans-unit id="field_to_field_equal" datatype="html">
+      <source>Field To Field Equal</source>
+      <target>Feld zu Feld gleich</target>
+    </trans-unit>
+    <trans-unit id="Field_to_field_greater_than_equal" datatype="html">
+      <source>Field To Field Greater Than Equal</source>
+      <target>Feld zu Feld größer als gleich</target>
+    </trans-unit>
+    <trans-unit id="field_to_field_greater_than" datatype="html">
+      <source>Field To Field Greater Than</source>
+      <target>Feld zu Feld größer als</target>
+    </trans-unit>
+    <trans-unit id="field_to_field_less_than" datatype="html">
+      <source>Field To Field Less Than</source>
+      <target>Feld zu Feld weniger als</target>
+    </trans-unit>
+    <trans-unit id="field_to_field_less_than_equal" datatype="html">
+      <source>Field To Field Less Than Equal</source>
+      <target>Halbbild zu Halbbild kleiner als gleich</target>
+    </trans-unit>
+  </body>
+</file>
 </xliff>

@@ -19,6 +19,8 @@ import { Userdetails } from '@models/userdetails';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { ReportList } from '@modules/report/report-list/report-list.component';
+import { ImportComponent } from '@modules/report/view/import/import.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 describe('SecondaryNavbarComponent', () => {
@@ -31,6 +33,8 @@ describe('SecondaryNavbarComponent', () => {
   let sharedService: SharedServiceService;
   let taskListService: TaskListService;
   let router: Router;
+  let dialogSpy: jasmine.Spy;
+  const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: of({}), close: null });
   const moduleList = [
     {
       moduleId: '1005',
@@ -55,6 +59,7 @@ describe('SecondaryNavbarComponent', () => {
     reportService = fixture.debugElement.injector.get(ReportService);
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
     taskListService = fixture.debugElement.injector.get(TaskListService);
+    dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpyObj);
     // fixture.detectChanges();
   });
 
@@ -502,4 +507,10 @@ describe('SecondaryNavbarComponent', () => {
       expect(component.taskList).toEqual(nodeCount);
     });
   }));
+
+  it('importReport(), open dialog', () => {
+    component.importReport();
+    expect(dialogSpy).toHaveBeenCalled();
+    expect(dialogSpy).toHaveBeenCalledWith(ImportComponent, { disableClose: false, width: '600px', minHeight: '250px' });
+  });
 });

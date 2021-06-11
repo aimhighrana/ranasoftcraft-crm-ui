@@ -9,7 +9,7 @@ import { SetupDuplicateRuleComponent } from './duplicate-rule-config/setup-dupli
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
-import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -145,7 +145,7 @@ describe('BrruleSideSheetComponent', () => {
   }));
 
   it('possibleOperators(), sould return array of all possible operators', (() => {
-    const operators: ConditionalOperator[] = component.possibleOperators();
+    const operators = component.possibleOperators();
     expect(operators.length).toEqual(3);
   }));
 
