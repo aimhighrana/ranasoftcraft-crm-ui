@@ -1,23 +1,29 @@
 <div>
-    <div class="f-col mdo-field" [matMenuTriggerFor]="datasearch"
-        #trigger="matMenuTrigger">
-            <lib-input [formControl]="control" [placeholder]="placeholder"></lib-input>
+<ng-template [ngIf]="isTableFilter === 'true'">
+    <div class="f-col mdo-field" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
+        <!-- <div class="mdo-field-input"> -->
+            <lib-input [placeholder]="placeholder" disabled></lib-input>
+        <!-- </div> -->
     </div>
     <mat-menu #datasearch="matMenu">
         <lib-filter-dropdown prosClickStopPropagation>
             <div class="dropdown-options-wrapper f-col">
                 <div class="dropdown-options-inner-container">
                     <lib-filter-option>
-                        <lib-checkbox
-                            [label]="label">
+                        <lib-checkbox [label]="label" [checked]="isChecked()" [formControl]="control">
                         </lib-checkbox>
                     </lib-filter-option>
                 </div>
                 <div class="filter-button-wrapper">
-                    <lib-button type="minor" (click)="trigger.closeMenu();applyFilter()"
-                        i18n="@@apply">Apply</lib-button>
+                    <lib-button type="minor" (click)="trigger.closeMenu();applyFilter()" i18n="@@apply">Apply
+                    </lib-button>
                 </div>
             </div>
         </lib-filter-dropdown>
     </mat-menu>
+</ng-template>
+<ng-template [ngIf]="isTableFilter !== 'true'">
+    <lib-checkbox [label]="label" [checked]="isChecked()" [formControl]="control">
+    </lib-checkbox>
+</ng-template>
 </div>

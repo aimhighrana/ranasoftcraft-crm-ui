@@ -1,8 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ReportService } from '@modules/report/_service/report.service';
-import { Subscription } from 'rxjs';
-import { debounceTime, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-form-checkbox',
@@ -12,7 +9,7 @@ import { debounceTime, startWith } from 'rxjs/operators';
 })
 export class FormCheckboxComponent implements OnInit {
 
-  constructor(private reportService: ReportService) { }
+  constructor() { }
 
 
   /**
@@ -25,7 +22,7 @@ export class FormCheckboxComponent implements OnInit {
    */
   @Input() placeholder: string;
 
-  @Input() isTableFilter: boolean = false;
+  @Input() isTableFilter: string;
 
   /**
    * To emit value change of input to parent
@@ -38,7 +35,6 @@ export class FormCheckboxComponent implements OnInit {
 
   @Input() label : string;
 
-  subscription: Subscription[] = [];
 
 
   /**
@@ -58,6 +54,9 @@ export class FormCheckboxComponent implements OnInit {
  */
 
   ngOnChanges(changes: SimpleChanges) {
+    if(changes.controls && changes.controls.previousValue !== undefined && changes.controls.previousValue !== changes.controls.currentValue) {
+      this.control.setValue(changes.controls.currentValue);
+    }
   }
 
   /**
@@ -71,11 +70,9 @@ export class FormCheckboxComponent implements OnInit {
     this.valueChange.emit(response);
   }
 
-
-  ngOnDestroy() {
-    this.subscription.forEach(sub => {
-      sub.unsubscribe();
-    })
+  isChecked() {
+    if(this.control.value) {
+      return true;
+    }
   }
-
 }

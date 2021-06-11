@@ -68,7 +68,7 @@ export class FormMultiselectComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.value && changes.value.previousValue !== changes.value.currentValue) {
       this.selectedMultiSelectData = [];
-      if (changes.value.currentValue.length) {
+      if (changes.value.currentValue && changes.value.currentValue.length) {
         changes.value.currentValue.forEach(item => {
           if (typeof (item) === 'string') {
             this.selectedMultiSelectData.push({ [item]: null });

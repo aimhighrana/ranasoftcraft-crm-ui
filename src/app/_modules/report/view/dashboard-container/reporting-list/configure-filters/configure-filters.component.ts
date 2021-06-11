@@ -77,7 +77,7 @@ export class ConfigureFiltersComponent implements OnInit {
     this.tableColumnMetaData.forEach(item => {
       const index = this.filterCriteria.findIndex(el => el.fieldId === item.fields);
       if (index === -1) {
-        this.filterCriteria.push({ fieldId: item.fields})
+        this.filterCriteria.push({ fieldId: item.fields })
       }
     })
     this.filterCriteria.forEach((item, index) => {
@@ -93,10 +93,12 @@ export class ConfigureFiltersComponent implements OnInit {
       this.selectedFilter = this.filterCriteria[0];
       this.configurationFilterForm.addControl(this.selectedFilter.fieldId, new FormControl());
       const type = this.getFormFieldType(this.selectedFilter.fieldId);
-      if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA ) {
+      if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue(this.selectedFilter.conditionFieldValue);
-      } else if(type === FormControlType.NUMBER) {
-        this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({min:this.selectedFilter.conditionFieldStartValue, max: this.selectedFilter.conditionFieldEndValue})
+      } else if (type === FormControlType.NUMBER) {
+        this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ min: this.selectedFilter.conditionFieldStartValue, max: this.selectedFilter.conditionFieldEndValue })
+      } else if (type === FormControlType.DATE || type === FormControlType.DATE_TIME || type === FormControlType.TIME) {
+        this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ end: new Date(Number(this.selectedFilter.conditionFieldEndValue)), start: new Date(Number(this.selectedFilter.conditionFieldStartValue)) });
       }
     }
     const index = this.tableColumnMetaData.findIndex(item => item.fields === this.selectedFilter.fieldId);
@@ -117,7 +119,7 @@ export class ConfigureFiltersComponent implements OnInit {
     if (!this.configurationFilterForm.controls[filter.fieldId]) {
       this.configurationFilterForm.addControl(filter.fieldId, new FormControl());
       const formFieldType = this.getFormFieldType(filter.fieldId);
-      if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA) && filter.conditionFieldValue) {
+      if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX) && filter.conditionFieldValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue(filter.conditionFieldValue);
       }
     }
@@ -136,7 +138,7 @@ export class ConfigureFiltersComponent implements OnInit {
       } else {
         const selectedChk = this.filterApplied[this.selectedFilter.fieldId].find(fil => fil.CODE === value.CODE);
         if (!selectedChk) {
-          this.filterApplied[this.selectedFilter.fieldId] = [{...value}];
+          this.filterApplied[this.selectedFilter.fieldId] = [{ ...value }];
         }
       }
     }
@@ -156,8 +158,8 @@ export class ConfigureFiltersComponent implements OnInit {
       this.filterCriteria[index].conditionFieldValue = [];
       this.filterCriteria[index].conditionFieldText = [];
       this.filterApplied[this.selectedFilter.fieldId].forEach(item => {
-          this.filterCriteria[index].conditionFieldValue.push(item.CODE);
-          this.filterCriteria[index].conditionFieldText.push(item.TEXT);
+        this.filterCriteria[index].conditionFieldValue.push(item.CODE);
+        this.filterCriteria[index].conditionFieldText.push(item.TEXT);
       })
     }
     else if (formFieldType === FormControlType.DROP_DOWN || formFieldType === FormControlType.RADIO) {
@@ -179,7 +181,7 @@ export class ConfigureFiltersComponent implements OnInit {
       filteredCriteria.conditionFieldValue = value;
       filteredCriteria.blockType = BlockType.COND;
       filteredCriteria.conditionOperator = this.selectedFilter.conditionOperator ? this.selectedFilter.conditionOperator : ConditionOperator.EQUAL;
-      this.filterCriteria[filterCriteriaIndex] = { ...filteredCriteria }; 
+      this.filterCriteria[filterCriteriaIndex] = { ...filteredCriteria };
     }
   }
 
@@ -304,7 +306,7 @@ export class ConfigureFiltersComponent implements OnInit {
           filteredCriteria.conditionFieldId = item.fieldId;
           filteredCriteria.blockType = BlockType.COND;
           filteredCriteria.conditionOperator = item.conditionOperator;
-          if (formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA) {
+          if (formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
           } else if (formFieldType === FormControlType.DROP_DOWN) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
@@ -419,5 +421,12 @@ export class ConfigureFiltersComponent implements OnInit {
       return +fieldData.fldMetaData.maxChar;
   }
 
+  getSelectedDateValue() {
+    return { start: new Date(Number(this.selectedFilter.conditionFieldStartValue)), end: new Date(Number(this.selectedFilter.conditionFieldEndValue)) };
+  }
+
+  getSelectedTimeValue() {
+    return { start: this.selectedFilter.conditionFieldStartValue, end: this.selectedFilter.conditionFieldEndValue }
+  }
 
 }

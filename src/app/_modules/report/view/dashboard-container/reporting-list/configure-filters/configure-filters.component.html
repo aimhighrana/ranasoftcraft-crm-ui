@@ -21,17 +21,20 @@
                     <div>{{ columnDescs[filter.fieldId] }}</div>
                     <div class="selected-values" *ngIf="filter.conditionFieldValue || filter.conditionFieldStartValue">
                         <ng-template
-                            [ngIf]=" getFormFieldType(filter.fieldId) === 'text' || getFormFieldType(filter.fieldId) === 'textarea'">
+                            [ngIf]=" getFormFieldType(filter.fieldId) === 'text' || getFormFieldType(filter.fieldId) === 'textarea' || getFormFieldType(filter.fieldId) === 'checkbox'">
                             {{filter.conditionFieldValue}}
                         </ng-template>
-                        <ng-template
-                            [ngIf]="getFormFieldType(filter.fieldId) === 'number' || getFormFieldType(filter.fieldId) === 'time'">
+                        <ng-template [ngIf]="getFormFieldType(filter.fieldId) === 'number'">
                             {{filter.conditionFieldStartValue}} - {{filter.conditionFieldEndValue}}
+                        </ng-template>
+                        <ng-template [ngIf]="getFormFieldType(filter.fieldId) === 'time'">
+                            {{filter.conditionFieldStartValue.hours}}:{{filter.conditionFieldStartValue.minutes}} -
+                            {{filter.conditionFieldEndValue.hours}}:{{filter.conditionFieldEndValue.minutes}}
                         </ng-template>
                         <ng-template
                             [ngIf]="(getFormFieldType(filter.fieldId) === 'date' || getFormFieldType(filter.fieldId) === 'dateTime')">
-                            {{getDateTypeValue(filter.conditionFieldEndValue)|dateFormatPipe:dateFormat}} -
-                            {{getDateTypeValue(filter.conditionFieldStartValue)|dateFormatPipe:dateFormat}}
+                            {{getDateTypeValue(filter.conditionFieldStartValue)|dateFormatPipe:dateFormat}} -
+                            {{getDateTypeValue(filter.conditionFieldEndValue)|dateFormatPipe:dateFormat}}
                         </ng-template>
                         <ng-template
                             [ngIf]="getFormFieldType(filter.fieldId) === 'multiselectDropdown' || getFormFieldType(filter.fieldId) === 'checkbox' || getFormFieldType(filter.fieldId) === 'dropdown'|| getFormFieldType(filter.fieldId) === 'radio'">
@@ -76,7 +79,7 @@
             <mat-divider></mat-divider>
             <div class="row-spacer"></div>
             <div class="f-row"
-                *ngIf="getFormFieldType(selectedFilter.fieldId) === 'multiselectDropdown' || getFormFieldType(selectedFilter.fieldId) === 'checkbox' || getFormFieldType(selectedFilter.fieldId) === 'radio' || getFormFieldType(selectedFilter.fieldId) === 'dropdown'">
+                *ngIf="getFormFieldType(selectedFilter.fieldId) === 'multiselectDropdown' || getFormFieldType(selectedFilter.fieldId) === 'radio' || getFormFieldType(selectedFilter.fieldId) === 'dropdown'">
                 <div class="f-col" *ngFor="let selected of filterApplied[this.selectedFilter.fieldId];let i = index">
                     <lib-chip [selectable]="true" [removable]="true" (removed)="removedSelectedFilter(selected.CODE,i)">
                         {{
@@ -86,18 +89,26 @@
             <div class="row-spacer"></div>
 
             <!--multi select dropdown-->
-            <ng-container
-                *ngIf="getFormFieldType(selectedFilter.fieldId) === 'multiselectDropdown' || getFormFieldType(selectedFilter.fieldId) === 'checkbox'">
-                <pros-form-multiselect placeholder="Enter Name"
+            <ng-container *ngIf="getFormFieldType(selectedFilter.fieldId) === 'multiselectDropdown'">
+                <pros-form-multiselect [placeholder]="'Enter ' +columnDescs[selectedFilter.fieldId]"
                     [displayCriteria]="selectedFieldMetaData.displayCriteria" (valueChange)="onChange($event.value)"
                     [formFieldId]="selectedFilter.fieldId" isTableFilter="false"
                     [control]="configurationFilterForm.get(selectedFilter.fieldId)"
                     [value]="filterApplied[selectedFilter.fieldId]">
                 </pros-form-multiselect>
             </ng-container>
+
+            <!--for checkbox -->
+            <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'checkbox'">
+                <pros-form-checkbox [control]="configurationFilterForm.get(selectedFilter.fieldId)"
+                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
+                    (valueChange)="onInputValueChange($event.value)" [formFieldId]="selectedFilter.fieldI"
+                    [label]="columnDescs[selectedFilter.fieldId]" isTableFilter="false">
+                </pros-form-checkbox>
+            </ng-template>
             <!--Single select drop down-->
             <ng-container *ngIf="getFormFieldType(selectedFilter.fieldId)==='dropdown'">
-                <pros-form-single-select placeholder="Type to search"
+                <pros-form-single-select [placeholder]="'Enter ' + columnDescs[selectedFilter.fieldId]"
                     [displayCriteria]="selectedFieldMetaData.displayCriteria" (valueChange)="onChange($event.value)"
                     [formFieldId]="selectedFilter.fieldId"
                     [control]="configurationFilterForm.get(selectedFilter.fieldId)">
@@ -105,7 +116,7 @@
             </ng-container>
             <!-- radio button group -->
             <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'radio'">
-                <pros-form-radio-button-group placeholder="Enter Name"
+                <pros-form-radio-button-group [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
                     [displayCriteria]="selectedFieldMetaData.displayCriteria" (valueChange)="onChange($event.value)"
                     [formFieldId]="selectedFilter.fieldId"
                     [control]="configurationFilterForm.get(selectedFilter.fieldId)">
@@ -113,15 +124,18 @@
             </ng-template>
 
             <!--input type -->
-            <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'text'">
-                <lib-input placeholder="Enter Name" (change)="onInputValueChange($event.target.value)"
+            <ng-template
+                [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'text' || getFormFieldType(selectedFilter.fieldId) === false">
+                <lib-input [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
+                    (change)="onInputValueChange($event.target.value)"
                     [formControl]="configurationFilterForm.get(selectedFilter.fieldId)">
                 </lib-input>
             </ng-template>
 
             <!-- For text area -->
             <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'textarea'">
-                <lib-textarea [formControl]="configurationFilterForm.get(selectedFilter.fieldId)"></lib-textarea>
+                <lib-textarea [formControl]="configurationFilterForm.get(selectedFilter.fieldId)"
+                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"></lib-textarea>
             </ng-template>
 
             <!--for slider range picker-->
@@ -136,21 +150,27 @@
             <!-- For date type -->
             <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'date'">
                 <lib-date-range-picker [formControl]="configurationFilterForm.get(selectedFilter.fieldId)"
-                    (valueChange)="rangeTypeValueChange($event)">
+                    (valueChange)="rangeTypeValueChange($event)" [emitDateOnSave]="true"
+                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
+                    [selectedDate]="getSelectedDateValue()">
                 </lib-date-range-picker>
             </ng-template>
 
             <!-- For date time picker -->
             <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'dateTime'">
                 <lib-date-time-range-picker [formControl]="configurationFilterForm.get(selectedFilter.fieldId)"
-                    (valueChange)="rangeTypeValueChange($event)">
+                    (valueChange)="rangeTypeValueChange($event)" [emitDateOnSave]="true"
+                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
+                    [selectedDate]="getSelectedDateValue()">
                 </lib-date-time-range-picker>
             </ng-template>
 
             <!-- For time picker -->
-            <!-- <ng-template [ngIf]="getFormFieldType() === 'time'"> -->
-            <!-- <lib-time-picker [formControlName]="displayedColumnsId[i]"></lib-time-picker> -->
-            <!-- </ng-template> -->
+            <ng-template [ngIf]="getFormFieldType() === 'time'">
+                <lib-time-picker [formControlName]="displayedColumnsId[i]" [emitDateOnSave]="true"
+                    (valueChange)="rangeTypeValueChange($event)" [selected]="getSelectedTimeValue()"
+                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"></lib-time-picker>
+            </ng-template>
         </div>
         <div class="col-spacer"></div>
         <div class="col-spacer"></div>
