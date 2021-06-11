@@ -61,7 +61,7 @@
                 <div class="f-col mdo-form-field">
                     <mat-label i18n="@@threshold">Threshold</mat-label>
                     <div class="f-row slider-row">
-                    <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
+                    <lib-range-slider class="lib-slider" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
                     <span class="f-col-spacer-half"></span>
                     <div>{{schemaThresholdControl.value}}%</div>
                     </div>
@@ -204,7 +204,7 @@
                                 <div class="col col-x8"><strong i18n="@@subscriber">Subscriber</strong></div>
                                 <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
                                 <div class="col col-x16"></div>
-                                <div class="col col-x16" *ngIf="false"><strong i18n="@@data_allocation">Data allocation</strong></div>
+                                <div class="col col-x16"><strong i18n="@@data_allocation">Data allocation</strong></div>
                                 <div class="col">
                                 </div>
                             </div>
@@ -273,7 +273,7 @@
                                     </mat-menu>
         
                                     <div class="col col-x16"></div>
-                                    <div class="col col-x16" *ngIf="false">
+                                    <div class="col col-x16">
                                         <mat-chip-list>
                                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
         
