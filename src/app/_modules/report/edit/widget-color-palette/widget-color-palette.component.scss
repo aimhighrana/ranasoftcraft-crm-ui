@@ -3,18 +3,6 @@ div.root {
   user-select: none;
   padding: 0;
 
-  .breadcrum-toolbar {
-    align-items: center;
-    padding: 16px 0;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
-
   .palette-list {
     height: calc(100% - 36px - 16px * 4 - 36px);
     overflow: auto;

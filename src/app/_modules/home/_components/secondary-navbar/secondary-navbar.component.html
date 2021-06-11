@@ -4,7 +4,16 @@
     <div class="f-row secondary-padd-lr header">
       <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
       <span class="f-spacer"></span>
-      <lib-button type="plain" iconFontType="light" icon="plus" *ngIf="(activatedPrimaryNav !== 'welcome' && activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
+      <ng-container *ngIf="activatedPrimaryNav === 'report'; else singleButton">
+        <lib-button type="plain" iconFontType="light" icon="plus" [matMenuTriggerFor]="plusMenu"></lib-button>
+        <mat-menu #plusMenu="matMenu" class="navigation-menu"> 
+          <lib-filter-option (click)="importReport()">Import...</lib-filter-option>
+          <lib-filter-option (click)="globalCreate()">Create new</lib-filter-option>
+        </mat-menu>
+      </ng-container>
+      <ng-template #singleButton>
+        <lib-button type="plain" iconFontType="light" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
+      </ng-template>
       <ng-template #isSchema>
         <lib-button type="plain" iconFontType="light" icon="plus" [matMenuTriggerFor]="moduleMenu"
           *ngIf="activatedPrimaryNav !== 'list' && activatedPrimaryNav !== 'welcome'"></lib-button>

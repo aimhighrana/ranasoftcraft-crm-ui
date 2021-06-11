@@ -1,7 +1,5 @@
-<h1 mat-dialog-title i18n="@@duplicateReport">
-    Duplicate report
-</h1>
-
+<div class="f-row-spacer-half"></div>
+<lib-text-line type="leading" i18n="@@duplicateReport">Duplicate report</lib-text-line>
 <mat-dialog-content>
     <lib-banner *ngIf="errorMsg" status="error" [text]="errorMsg"></lib-banner>
     <lib-banner *ngIf="reportNameCtrl.errors?.required" status="error" text="Please enter a report name"></lib-banner>

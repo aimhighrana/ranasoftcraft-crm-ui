@@ -9,7 +9,7 @@ import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { DuplicateReportComponent } from '../duplicate-report/duplicate-report.component';
 import { MatDialog } from '@angular/material/dialog';
-
+import { ExportComponent } from '../export/export.component';
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -32,6 +32,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isFromMsteam = false;
 
   subscriptions: Subscription[] = [];
+
+  private readonly dialofConfig = {
+    disableClose: true,
+    width: '600px',
+    minHeight: '250px'
+  };
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -118,10 +124,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
         reportName: this.reportName,
         reportId: this.reportId
       },
-      disableClose: true,
-      width: '600px',
-      height: '250px'
+      ...this.dialofConfig
     });
+  }
+
+  exportReport() {
+    this.matDialog.open(ExportComponent, {
+      data: {
+        reportName: this.reportName,
+        reportId: this.reportId
+      },
+      ...this.dialofConfig,
+      minHeight: '150px'
+    });
+  }
+
+  /*
+    Open Sidesheet for Send email
+  */
+  openSendEmailSideSheet(){
+     this.router.navigate([{ outlets: { sb: `sb/report/send-email`}}]);
   }
 
   /**

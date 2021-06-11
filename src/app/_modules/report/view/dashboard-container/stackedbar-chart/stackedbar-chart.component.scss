@@ -3,18 +3,6 @@ mat-card.widget {
   padding: 8px;
   height: 100%;
 
-  .breadcrum-toolbar {
-    align-items: center;
-
-    .display-heading-large {
-      font-size: 1rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 36px;
-    }
-  }
-
   mat-card-content {
     height: calc(100% - 36px - 16px);
     overflow: auto;

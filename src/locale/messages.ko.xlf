@@ -853,6 +853,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
           <context context-type="linenumber">463</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Home</source>
@@ -1085,6 +1089,10 @@
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="retry" datatype="html">
         <source>Retry</source>
@@ -1100,6 +1108,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="check" datatype="html">
@@ -2346,6 +2358,78 @@
           <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="send_via_email" datatype="html">
+        <source> Send via email</source>
+        <target> 이메일로 보내기 </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard\dashboard.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_template" datatype="html">
+        <source> Select a template</source>
+        <target>템플릿 선택</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\email-template\email-template.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="send" datatype="html">
+        <source> Send</source>
+        <target>보내다</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="send_to" datatype="html">
+        <source> Send to</source>
+        <target>보내기</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="subject" datatype="html">
+        <source> Subject</source>
+        <target> 제목</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="message" datatype="html">
+        <source> Message</source>
+        <target>메시지</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="attachment_format" datatype="html">
+        <source> Attachment Format</source>
+        <target> 첨부 형식</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\send-email\send-email.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="template_name" datatype="html">
+        <source> Template Name</source>
+        <target> 템플릿 이름</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\email\email-template\email-template.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
          <trans-unit id="importLogs" datatype="html">
         <source>Import Logs</source>
         <target>로그 가져 오기</target>
@@ -2376,6 +2460,110 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
           <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+       <trans-unit id="import_report" datatype="html">
+        <source>Import Report</source>
+        <target>보고서 가져 오기</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_file" datatype="html">
+        <source>Upload a file</source>
+        <target>파일 업로드</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_mdoreport" datatype="html">
+          <source>Upload a .mdopage report file</source>
+        <target>.mdopage 보고서 파일 업로드</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+            <context context-type="linenumber">11</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="replace_existing" datatype="html">
+        <source>Replace existing</source>
+        <target>기존 파일 바꾸기</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report" datatype="html">
+        <source>Duplicate report</source>
+        <target>보고서 중복</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_report" datatype="html">
+        <source>Add report</source>
+        <target>보고서 추가</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="import" datatype="html">
+        <source>Import</source>
+        <target>가져 오기</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="description" datatype="html">
+          <source>Description</source>
+        <target>설명</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+            <context context-type="linenumber">19</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="import_date" datatype="html">
+        <source>Import date</source>
+        <target>가져 오기 날짜</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category" datatype="html">
+        <source>Category</source>
+        <target>분류</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report_name" datatype="html">
+        <source> Duplicate report name</source>
+        <target>중복 된 보고서 이름</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="missing_module" datatype="html">
+        <source>Missing module</source>
+        <target>누락 된 모듈</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="export_report" datatype="html">
+        <source> Export report </source>
+        <target> 수출 보고서 </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="download" datatype="html">

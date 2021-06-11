@@ -318,7 +318,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getFldMetadata();
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
       this.getSchemaStatics();
-
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();

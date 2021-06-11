@@ -25,7 +25,7 @@ export class SvgIconComponent implements OnInit {
     'P_BR_EXTERNALVALIDATION_RULE',
     'P_BR_REGEX_RULE',
     'MDO_LOGO',
-    'BORDER_COLOR'
+    'BORDER_COLOR',
   ];
 
   @Input()
