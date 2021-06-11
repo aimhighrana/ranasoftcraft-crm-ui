@@ -327,13 +327,15 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * function to select all or unselect all checkbox.
    */
   selectAllCheckboxes(){
-    if(this.allCheckboxSelected){
+    if(!this.allCheckboxSelected){
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
       this.data.selectedColumns = this.headers;
+      this.allCheckboxSelected = true;
     }else{
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
+      this.allCheckboxSelected = false;
     }
   }
 

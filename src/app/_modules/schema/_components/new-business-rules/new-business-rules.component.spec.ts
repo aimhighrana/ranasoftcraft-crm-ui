@@ -7,7 +7,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { CategoryInfo, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
-import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, PRE_DEFINED_REGEX, TransformationModel, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, PRE_DEFINED_REGEX, TransformationModel, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SharedModule } from '@modules/shared/shared.module';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
@@ -139,7 +139,7 @@ describe('NewBusinessRulesComponent', () => {
     }));
 
     it('possibleOperators(), sould return array of all possible operators', (() => {
-        const operators: ConditionalOperator[] = component.possibleOperators();
+        const operators = component.possibleOperators();
         expect(operators.length).toEqual(3);
     }));
 

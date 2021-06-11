@@ -14,6 +14,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { DuplicateReportComponent } from '../duplicate-report/duplicate-report.component';
 import { Router } from '@angular/router';
+import { ExportComponent } from '../export/export.component';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -75,7 +76,7 @@ describe('DashboardComponent', () => {
     component.reportName = 'Test';
     component.duplicateReport();
     expect(dialogSpy).toHaveBeenCalled();
-    expect(dialogSpy).toHaveBeenCalledWith(DuplicateReportComponent, { data: { reportName: 'Test', reportId: 222 }, disableClose: true, width: '600px', height: '250px' });
+    expect(dialogSpy).toHaveBeenCalledWith(DuplicateReportComponent, { data: { reportName: 'Test', reportId: 222 }, disableClose: true, width: '600px', minHeight: '250px' });
   });
 
   it('showClearBtnEmit(), should enable Clear filter(s) button', () => {
@@ -90,5 +91,13 @@ describe('DashboardComponent', () => {
     component.showClearBtnEmit(false);
     expect(component.showClearFilterBtn).toEqual(false);
     expect(component.emitClearBtnEvent).toEqual(true);
+  });
+
+  it('exportReport(), open dialog', () => {
+    component.reportId = 222;
+    component.reportName = 'Test';
+    component.exportReport();
+    expect(dialogSpy).toHaveBeenCalled();
+    expect(dialogSpy).toHaveBeenCalledWith(ExportComponent, { data: { reportName: 'Test', reportId: 222 }, disableClose: true, width: '600px', minHeight: '150px' });
   });
 });

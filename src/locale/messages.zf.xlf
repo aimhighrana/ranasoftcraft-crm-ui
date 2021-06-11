@@ -853,6 +853,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
           <context context-type="linenumber">463</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Home</source>
@@ -1085,6 +1089,10 @@
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="retry" datatype="html">
         <source>Retry</source>
@@ -1100,6 +1108,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="check" datatype="html">
@@ -2482,6 +2494,110 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="import_report" datatype="html">
+        <source>Import Report</source>
+        <target>导入报告</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_file" datatype="html">
+        <source>Upload a file</source>
+        <target>上传文件</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_mdoreport" datatype="html">
+        <source>Upload a .mdopage report file</source>
+        <target>上传.mdopage报告文件</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="replace_existing" datatype="html">
+        <source>Replace existing</source>
+        <target>替换现有文件</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report" datatype="html">
+        <source>Duplicate report</source>
+        <target>重复报告</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_report" datatype="html">
+        <source>Add report</source>
+        <target>添加报告</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="import" datatype="html">
+        <source>Import</source>
+        <target>导入</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="description" datatype="html">
+        <source>Description</source>
+        <target>描述</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="import_date" datatype="html">
+        <source>Import date</source>
+        <target>导入日期</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category" datatype="html">
+        <source>Category</source>
+        <target>类别</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report_name" datatype="html">
+        <source> Duplicate report name</source>
+        <target> 重复的报告名称 </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="missing_module" datatype="html">
+        <source>Missing module</source>
+        <target> 缺少的模块 </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="export_report" datatype="html">
+        <source> Export report </source>
+        <target> 出口报告 </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="download" datatype="html">
         <source>Download</source>
         <target>下载</target>
@@ -2525,6 +2641,82 @@
           <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
           <context context-type="linenumber">114</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="equal" datatype="html">
+        <source>Equal</source>
+        <target>平等的</target>
+      </trans-unit>
+      <trans-unit id="not_equal" datatype="html">
+        <source>Not Equal</source>
+        <target>不相等</target>
+      </trans-unit>
+      <trans-unit id="starts_with" datatype="html">
+        <source>Starts With</source>
+        <target>以。。开始</target>
+      </trans-unit>
+      <trans-unit id="ends_with" datatype="html">
+        <source>Ends With</source>
+        <target>以。。结束</target>
+      </trans-unit>
+      <trans-unit id="contains" datatype="html">
+        <source>Contains</source>
+        <target>包含</target>
+      </trans-unit>
+      <trans-unit id="empty" datatype="html">
+        <source>Empty</source>
+        <target>空的</target>
+      </trans-unit>
+      <trans-unit id="not_empty" datatype="html">
+        <source>Not Empty</source>
+        <target>不是空的</target>
+      </trans-unit>
+      <trans-unit id="less_than" datatype="html">
+        <source>Less Than</source>
+        <target>少于</target>
+      </trans-unit>
+      <trans-unit id="less_than_equal_to" datatype="html">
+        <source>Less Than Equal To</source>
+        <target>小于等于</target>
+      </trans-unit>
+      <trans-unit id="greater_than" datatype="html">
+        <source>Greater Than</source>
+        <target>比...更棒</target>
+      </trans-unit>
+      <trans-unit id="Greater_than_equal_to" datatype="html">
+        <source>Greater Than Equal To</source>
+        <target>大于等于</target>
+      </trans-unit>
+      <trans-unit id="regex" datatype="html">
+        <source>Regex</source>
+        <target>正则表达式</target>
+      </trans-unit>
+      <trans-unit id="field_to_field" datatype="html">
+        <source>Field To Field</source>
+        <target>场到场</target>
+      </trans-unit>
+      <trans-unit id="location" datatype="html">
+        <source>Location</source>
+        <target>地点</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_equal" datatype="html">
+        <source>Field To Field Equal</source>
+        <target>字段对字段相等</target>
+      </trans-unit>
+      <trans-unit id="Field_to_field_greater_than_equal" datatype="html">
+        <source>Field To Field Greater Than Equal</source>
+        <target>场到场大于等于</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_greater_than" datatype="html">
+        <source>Field To Field Greater Than</source>
+        <target>场到场大于</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than" datatype="html">
+        <source>Field To Field Less Than</source>
+        <target>场到场小于</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than_equal" datatype="html">
+        <source>Field To Field Less Than Equal</source>
+        <target>字段到字段小于等于</target>
       </trans-unit>
     </body>
   </file>

@@ -2,7 +2,7 @@
     <div class="f-row breadcrum-toolbar">
         <lib-button type="plain" (click)="close()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
-        <div class="f-col mdo-constrained-right">
+        <div [hidden]="isFormLoading" [class.f-col]="!isFormLoading" class="mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div i18n="@@business_rule" class="display-heading-large">Business rule</div>
                 <span class="f-col-spacer-half"></span>
@@ -10,9 +10,24 @@
                 <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
             </div>
         </div>
+        <div *ngIf="isFormLoading" class="f-row skeleton-loading">
+            <div>
+                <lib-skeleton type="line-half"></lib-skeleton>
+            </div>
+            <span class="f-spacer"></span>
+            <lib-skeleton type="button"></lib-skeleton>
+        </div>
     </div>
-
-    <div class="f-col sidesheetcontent-listing">
+    <div *ngIf="isFormLoading" class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify">
+            <div class="f-col mdo-form-field" *ngFor="let a of [].constructor(5)">
+                <lib-skeleton type="line"></lib-skeleton>
+                <lib-skeleton type="line"></lib-skeleton>
+                <lib-skeleton type="line-half"></lib-skeleton>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="isFormLoading" class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
 
             <lib-banner *ngIf="validationError.status" status="error" [text]="validationError.message"></lib-banner>
@@ -279,12 +294,6 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <!-- <mat-select formControlName="conditionFieldId" placeholder="Select field">
-                                                        <mat-option *ngFor="let fieldItem of fieldsList"
-                                                            [value]="fieldItem.fieldId">
-                                                            {{fieldItem.fieldDescri}}
-                                                        </mat-option>
-                                                    </mat-select> -->
                                                     <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(chldNode.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
                                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>

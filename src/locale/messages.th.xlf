@@ -857,6 +857,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
           <context context-type="linenumber">463</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Home</source>
@@ -1089,6 +1093,10 @@
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="retry" datatype="html">
         <source>Retry</source>
@@ -1104,6 +1112,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="check" datatype="html">
@@ -2470,6 +2482,110 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
+       <trans-unit id="import_report" datatype="html">
+        <source>Import Report</source>
+        <target>รายงานการนำเข้า</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_file" datatype="html">
+        <source>Upload a file</source>
+        <target>อัปโหลดไฟล์</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload_mdoreport" datatype="html">
+          <source>Upload a .mdopage report file</source>
+        <target>อัปโหลดไฟล์รายงาน. mdopage</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+            <context context-type="linenumber">11</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="replace_existing" datatype="html">
+        <source>Replace existing</source>
+        <target>แทนที่ที่มีอยู่</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report" datatype="html">
+        <source>Duplicate report</source>
+        <target>รายงานซ้ำ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_report" datatype="html">
+        <source>Add report</source>
+        <target>เพิ่มรายงาน</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="import" datatype="html">
+        <source>Import</source>
+        <target>นำเข้า</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="description" datatype="html">
+          <source>Description</source>
+        <target>รายละเอียด</target>
+          <context-group purpose="location">
+            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+            <context context-type="linenumber">19</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="import_date" datatype="html">
+        <source>Import date</source>
+	      <target>วันที่นำเข้า</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category" datatype="html">
+        <source>Category</source>
+	      <target>หมวดหมู่</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="duplicate_report_name" datatype="html">
+        <source> Duplicate report name</source>
+        <target> ชื่อรายงานที่ซ้ำกัน</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="missing_module" datatype="html">
+        <source>Missing module</source>
+        <target>โมดูลที่ขาดหายไป </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="export_report" datatype="html">
+        <source> Export report </source>
+        <target> รายงานการส่งออก </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\export\export.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="download" datatype="html">
         <source>Download</source>
         <target>ดาวน์โหลด</target>
@@ -2513,6 +2629,82 @@
           <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
           <context context-type="linenumber">114</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="equal" datatype="html">
+        <source>Equal</source>
+        <target>เท่ากัน</target>
+      </trans-unit>
+      <trans-unit id="not_equal" datatype="html">
+        <source>Not Equal</source>
+        <target>ไม่เท่ากับ</target>
+      </trans-unit>
+      <trans-unit id="starts_with" datatype="html">
+        <source>Starts With</source>
+        <target>เริ่มต้นด้วย</target>
+      </trans-unit>
+      <trans-unit id="ends_with" datatype="html">
+        <source>Ends With</source>
+        <target>ลงท้ายด้วย</target>
+      </trans-unit>
+      <trans-unit id="contains" datatype="html">
+        <source>Contains</source>
+        <target>ประกอบด้วย</target>
+      </trans-unit>
+      <trans-unit id="empty" datatype="html">
+        <source>Empty</source>
+        <target>ว่างเปล่า</target>
+      </trans-unit>
+      <trans-unit id="not_empty" datatype="html">
+        <source>Not Empty</source>
+        <target>ไม่ว่าง</target>
+      </trans-unit>
+      <trans-unit id="less_than" datatype="html">
+        <source>Less Than</source>
+        <target>น้อยกว่า</target>
+      </trans-unit>
+      <trans-unit id="less_than_equal_to" datatype="html">
+        <source>Less Than Equal To</source>
+        <target>น้อยกว่าเท่ากับ</target>
+      </trans-unit>
+      <trans-unit id="greater_than" datatype="html">
+        <source>Greater Than</source>
+        <target>มากกว่า</target>
+      </trans-unit>
+      <trans-unit id="Greater_than_equal_to" datatype="html">
+        <source>Greater Than Equal To</source>
+        <target>มากกว่าเท่ากับ</target>
+      </trans-unit>
+      <trans-unit id="regex" datatype="html">
+        <source>Regex</source>
+        <target>Regex</target>
+      </trans-unit>
+      <trans-unit id="field_to_field" datatype="html">
+        <source>Field To Field</source>
+        <target>สนามสู่สนาม</target>
+      </trans-unit>
+      <trans-unit id="location" datatype="html">
+        <source>Location</source>
+        <target>ที่ตั้ง</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_equal" datatype="html">
+        <source>Field To Field Equal</source>
+        <target>สนามสู่สนามเท่ากับ E</target>
+      </trans-unit>
+      <trans-unit id="Field_to_field_greater_than_equal" datatype="html">
+        <source>Field To Field Greater Than Equal</source>
+        <target>สนามสู่สนามมากกว่าเท่าเทียม</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_greater_than" datatype="html">
+        <source>Field To Field Greater Than</source>
+        <target>ทุ่งสู่ทุ่งมากกว่า Great</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than" datatype="html">
+        <source>Field To Field Less Than</source>
+        <target>สนามสู่สนามน้อยกว่า</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than_equal" datatype="html">
+        <source>Field To Field Less Than Equal</source>
+        <target>ฟิลด์ต่อฟิลด์น้อยกว่าเท่ากัน</target>
       </trans-unit>
     </body>
   </file>

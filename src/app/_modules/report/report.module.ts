@@ -43,6 +43,8 @@ import { FormCheckboxComponent } from './view/dashboard-container/reporting-list
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 Chart.plugins.register(ChartDataLabels);
+import { ExportComponent } from './view/export/export.component';
+import { ImportComponent } from './view/import/import.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +84,9 @@ Chart.plugins.register(ChartDataLabels);
     EmailTemplateComponent,
     ImportLogComponent,
     FormCheckboxComponent,
-    SendEmailComponent
+    SendEmailComponent,
+    ExportComponent,
+    ImportComponent
   ],
   imports: [
     CommonModule,
