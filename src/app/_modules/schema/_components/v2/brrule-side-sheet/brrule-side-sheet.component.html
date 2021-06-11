@@ -294,12 +294,6 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <!-- <mat-select formControlName="conditionFieldId" placeholder="Select field">
-                                                        <mat-option *ngFor="let fieldItem of fieldsList"
-                                                            [value]="fieldItem.fieldId">
-                                                            {{fieldItem.fieldDescri}}
-                                                        </mat-option>
-                                                    </mat-select> -->
                                                     <pros-generic-field-control class="pros-generic-field-control" [class.has-error]="submitted && !(chldNode.controls.conditionFieldId?.value)" [moduleId]="moduleId" [metataData]="metataData" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
                                                     [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
