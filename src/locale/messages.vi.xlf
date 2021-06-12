@@ -2610,6 +2610,82 @@
           <context context-type="linenumber">114</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="equal" datatype="html">
+        <source>Equal</source>
+        <target>Công bằng</target>
+      </trans-unit>
+      <trans-unit id="not_equal" datatype="html">
+        <source>Not Equal</source>
+        <target>Không công bằng</target>
+      </trans-unit>
+      <trans-unit id="starts_with" datatype="html">
+        <source>Starts With</source>
+        <target>Bắt đầu với</target>
+      </trans-unit>
+      <trans-unit id="ends_with" datatype="html">
+        <source>Ends With</source>
+        <target>Kết thúc với</target>
+      </trans-unit>
+      <trans-unit id="contains" datatype="html">
+        <source>Contains</source>
+        <target>Chứa đựng</target>
+      </trans-unit>
+      <trans-unit id="empty" datatype="html">
+        <source>Empty</source>
+        <target>Trống</target>
+      </trans-unit>
+      <trans-unit id="not_empty" datatype="html">
+        <source>Not Empty</source>
+        <target>Không rỗng</target>
+      </trans-unit>
+      <trans-unit id="less_than" datatype="html">
+        <source>Less Than</source>
+        <target>Ít hơn</target>
+      </trans-unit>
+      <trans-unit id="less_than_equal_to" datatype="html">
+        <source>Less Than Equal To</source>
+        <target>Nhỏ hơn bằng</target>
+      </trans-unit>
+      <trans-unit id="greater_than" datatype="html">
+        <source>Greater Than</source>
+        <target>Lớn hơn</target>
+      </trans-unit>
+      <trans-unit id="Greater_than_equal_to" datatype="html">
+        <source>Greater Than Equal To</source>
+        <target>Lớn hơn bằng</target>
+      </trans-unit>
+      <trans-unit id="regex" datatype="html">
+        <source>Regex</source>
+        <target>Regex</target>
+      </trans-unit>
+      <trans-unit id="field_to_field" datatype="html">
+        <source>Field To Field</source>
+        <target>Trường Đến Trường</target>
+      </trans-unit>
+      <trans-unit id="location" datatype="html">
+        <source>Location</source>
+        <target>Vị trí</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_equal" datatype="html">
+        <source>Field To Field Equal</source>
+        <target>Trường để Trường bằng</target>
+      </trans-unit>
+      <trans-unit id="Field_to_field_greater_than_equal" datatype="html">
+        <source>Field To Field Greater Than Equal</source>
+        <target>Trường để Trường Lớn hơn Bằng</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_greater_than" datatype="html">
+        <source>Field To Field Greater Than</source>
+        <target>Trường Đến Trường Lớn hơn</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than" datatype="html">
+        <source>Field To Field Less Than</source>
+        <target>Trường Đến Trường Ít hơn</target>
+      </trans-unit>
+      <trans-unit id="field_to_field_less_than_equal" datatype="html">
+        <source>Field To Field Less Than Equal</source>
+        <target>Trường Đến Trường Nhỏ hơn Bằng</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

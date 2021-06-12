@@ -6,6 +6,14 @@
     height: 0;
   }
 
+  .header {
+    height: 36px;
+  }
+
+  .header-row-spacer {
+    height: 7px;
+  }
+
   .tasks-list-drag-el {
     .expand-title {
       width: calc(100% - 50px);

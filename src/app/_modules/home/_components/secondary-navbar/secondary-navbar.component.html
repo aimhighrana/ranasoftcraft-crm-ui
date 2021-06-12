@@ -1,7 +1,7 @@
 <div class="root">
   <mat-card class="secondary-card mat-elevation-z0">
     <div class="f-row-spacer-half"></div>
-    <div class="f-row secondary-padd-lr">
+    <div class="f-row secondary-padd-lr header">
       <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
       <span class="f-spacer"></span>
       <ng-container *ngIf="activatedPrimaryNav === 'report'; else singleButton">
@@ -28,7 +28,7 @@
       </ng-template>
     </div>
 
-    <div class="row-spacer"></div>
+    <div class="header-row-spacer"></div>
     <div class="secondary-padd-lr">
       <lib-search  placeholder="Search" #schemaSearchInput (valueChange)=(searchSchema($event))></lib-search>
     <!-- placeholder="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'" -->

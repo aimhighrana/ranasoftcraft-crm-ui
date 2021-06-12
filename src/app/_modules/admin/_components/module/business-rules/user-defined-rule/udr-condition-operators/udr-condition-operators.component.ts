@@ -42,16 +42,17 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
         const matchedData: ConditionalOperator[] = [];
         groups.forEach(grp=>{
           const changeAble = {childs:grp.childs,desc: grp.desc} as ConditionalOperator;
-          const chld: string[] = [];
+          const chld: { code: string; value?: string}[] = [];
           changeAble.childs.forEach(child=>{
-              if(child.toLocaleLowerCase().indexOf(res.toLocaleLowerCase()) !==-1) {
-                chld.push(child);
-              }
-            });
-            if(chld.length) {
-              changeAble.childs = chld;
-              matchedData.push(changeAble);
+            const value = child.value ? child.value : child.code;
+            if(value.toLocaleLowerCase().indexOf(res.toLocaleLowerCase()) !==-1) {
+              chld.push(child);
             }
+          });
+          if(chld.length) {
+            changeAble.childs = chld;
+            matchedData.push(changeAble);
+          }
         });
         this.conditionalOperatorsOb = of(matchedData);
       } else {
@@ -62,10 +63,10 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
       // set preselected autocomplete
       if(this.selecetedOperator){
         this.conditionalOperators.forEach(oper=>{
-          const match = oper.childs.filter(fill => fill === this.selecetedOperator);
+          const match = oper.childs.filter(fill => fill.code === this.selecetedOperator);
           if(match.length > 0) {
-            this.afterSelect.emit(match[0]);
-            this.operator.setValue(match[0]);
+            this.afterSelect.emit(match[0].code);
+            this.operator.setValue(match[0].value ? match[0].value : match[0].code);
           }
         })
       }
@@ -78,7 +79,8 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
    */
   operatorSelectionChng(option: MatAutocompleteSelectedEvent) {
     if(option && option.option.value) {
-      this.afterSelect.emit(option.option.value);
+      this.afterSelect.emit(option.option.value.code);
+      this.operator.setValue(option.option.value.value ? option.option.value.value : option.option.value.code)
     }
   }
 

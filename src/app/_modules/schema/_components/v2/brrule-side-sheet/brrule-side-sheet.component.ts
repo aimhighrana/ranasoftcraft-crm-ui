@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CategoryInfo, FieldConfiguration, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
@@ -20,6 +20,11 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { RuleDependentOn } from '@models/collaborator';
 import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
+
+class ConditionalOperator {
+  desc: string;
+  childs: string[];
+}
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -283,10 +288,16 @@ export class BrruleSideSheetComponent implements OnInit {
     const searchStr = this.searchRegexFunctionStr?.toLowerCase();
     return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
+
+  get isFormLoading() {
+    return Boolean(this.moduleId && !this.metataData);
+  }
+
   /**
    * Angular hook
    */
   ngOnInit(): void {
+    this.filterRuleTypes();
     this.getCategories();
     this.filteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
@@ -316,6 +327,14 @@ export class BrruleSideSheetComponent implements OnInit {
         }
       });
     });
+  }
+
+  /**
+   * Removes untested rule types
+   */
+  filterRuleTypes() {
+    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT'];
+    this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
   }
 
   /**

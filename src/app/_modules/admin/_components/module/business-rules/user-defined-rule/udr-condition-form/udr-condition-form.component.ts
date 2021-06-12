@@ -187,29 +187,29 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     const genericOp: ConditionalOperator = new ConditionalOperator();
     genericOp.desc = 'Common Operator';
     genericOp.childs = [];
-    genericOp.childs.push('EQUAL');
-    genericOp.childs.push('STARTS_WITH');
-    genericOp.childs.push('ENDS_WITH');
-    genericOp.childs.push('CONTAINS');
-    genericOp.childs.push('EMPTY');
-    genericOp.childs.push('NOT_EMPTY');
+    genericOp.childs.push({ code: 'EQUAL' });
+    genericOp.childs.push({ code: 'STARTS_WITH' });
+    genericOp.childs.push({ code: 'ENDS_WITH' });
+    genericOp.childs.push({ code: 'CONTAINS' });
+    genericOp.childs.push({ code: 'EMPTY' });
+    genericOp.childs.push({ code: 'NOT_EMPTY' });
 
     // for numeric number field
     const onlyNum:ConditionalOperator = new ConditionalOperator();
     onlyNum.desc = 'Numeric Operators';
     onlyNum.childs = [];
-    onlyNum.childs.push('RANGE');
-    onlyNum.childs.push('LESS_THAN');
-    onlyNum.childs.push('LESS_THAN_EQUAL');
-    onlyNum.childs.push('GREATER_THAN');
-    onlyNum.childs.push('GREATER_THAN_EQUAL');
+    onlyNum.childs.push({ code: 'RANGE' });
+    onlyNum.childs.push({ code: 'LESS_THAN' });
+    onlyNum.childs.push({ code: 'LESS_THAN_EQUAL' });
+    onlyNum.childs.push({ code: 'GREATER_THAN' });
+    onlyNum.childs.push({ code: 'GREATER_THAN_EQUAL' });
 
     // for special operators
     const specialOpe:ConditionalOperator = new ConditionalOperator();
     specialOpe.desc = 'Special Operators';
     specialOpe.childs = [];
-    specialOpe.childs.push('REGEX');
-    specialOpe.childs.push('LOCATION');
+    specialOpe.childs.push({ code: 'REGEX' });
+    specialOpe.childs.push({ code: 'LOCATION' });
     return [genericOp,onlyNum,specialOpe];
   }
 

@@ -187,7 +187,7 @@ export class Category {
 
 export class ConditionalOperator {
     desc: string;
-    childs: string[];
+    childs: { code: string; value?: string}[];
 }
 
 export class DuplicateRuleModel {

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,7 +37,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { OverlayModule } from '@angular/cdk/overlay';
+import { CloseScrollStrategy, Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from './_components/breadcrumb/breadcrumb.component';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
@@ -277,10 +277,15 @@ import { GenericFieldControlComponent } from './_components/generic-field-contro
     GenericFieldControlComponent
   ],
   providers: [
-    TitleCasePipe
+    TitleCasePipe,
+    { provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ],
   entryComponents: [
     TableCellInputComponent
   ]
 })
 export class SharedModule { }
+
+export function scrollFactory(overlay: Overlay): () => CloseScrollStrategy {
+	return () => overlay.scrollStrategies.close();
+}
