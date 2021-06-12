@@ -339,11 +339,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     } else {
       businessRule = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
     }
-    if (event instanceof MatSliderChange) {
-      businessRule.brWeightage = String((event as MatSliderChange).value);
-    }
-    else if (eventName === 'checkbox') {
+    if (eventName === 'checkbox') {
       businessRule.status = event ? '1' : '0';
+    } else {
+      businessRule.brWeightage = String(event);
     }
   }
 
