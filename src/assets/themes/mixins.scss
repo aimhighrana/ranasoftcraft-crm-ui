@@ -1810,18 +1810,6 @@
     }
   }
 
-  div.root .summary-sidesheet.sidesheetcontent-listing {
-    .lib-input .mdo-field .mdo-field-label
-    {
-      font-size: 14px;
-    }
-  }
-
-  .sidesheetcontent-listing .mandatory {
-    margin: 0px 5px;
-    color: $color-status-error;
-  }
-
   pros-configure-sidesheet,
   pros-library-mapping-sidesheet,
   pros-lookup-rule {
@@ -2016,6 +2004,17 @@
     .mdo-field-input {
       border: 1px solid $color-status-error;
     }
+  }
+
+  div.root .summary-sidesheet.sidesheetcontent-listing {
+    .lib-input .mdo-field .mdo-field-label {
+      font-size: 14px;
+    }
+  }
+
+  .sidesheetcontent-listing .mandatory {
+    margin: initial 5px;
+    color: $color-status-error;
   }
 
   pros-import-log {
