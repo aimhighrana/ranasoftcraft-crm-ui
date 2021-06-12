@@ -1817,6 +1817,11 @@
     }
   }
 
+  .sidesheetcontent-listing .mandatory {
+    margin: 0px 5px;
+    color: $color-status-error;
+  }
+
   pros-configure-sidesheet,
   pros-library-mapping-sidesheet,
   pros-lookup-rule {
