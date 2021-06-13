@@ -166,4 +166,12 @@ export class EndpointsAnalyticsService {
   public shareReport(reportId: string) : string {
     return `${this.apiUrl}/report/share?reportId=${reportId}`;
   }
+
+  public getAllTemplates(): string {
+    return `${this.apiUrl}/report/share/email/template`;
+  }
+
+  public getTemplateById(_id: string): string {
+    return `${this.apiUrl}/report/share/email/${_id}/template`;
+  }
 }

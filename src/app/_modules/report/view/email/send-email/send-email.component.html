@@ -9,7 +9,7 @@
                     <span class="f-spacer"></span>
                     <lib-button-group>
                         <lib-button type="major" (click)="selectTemplate()" i18n="@@select_template">Select a template</lib-button>
-                        <lib-button type="major" (click)="sendEmail()" i18n="@@send">Save</lib-button>
+                        <lib-button type="major" (click)="sendEmail()" i18n="@@send">Send</lib-button>
                     </lib-button-group>
                </div>
             </div>
@@ -17,6 +17,7 @@
         <div class="f-col sidesheetcontent-listing">
             <div class="f-col mdo-justify">
                 <div class="f-col">
+                    <lib-banner *ngIf="errorMsg" status="error" [text]="errorMsg"></lib-banner>
                     <div class="f-col mdo-form-field">
                          <!-- Multiselect -->
                         <mat-label  i18n="@@send_to">Send to</mat-label>

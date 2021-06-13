@@ -66,9 +66,10 @@ describe('SendEmailComponent', () => {
 
   it('selectTemplate(), should navigate to select Teamplate' , () => {
     spyOn(router, 'navigate');
+    component.reportId = '844806112923162960';
     component.selectTemplate();
     expect(component.selectTemplate).toBeTruthy();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb:`sb/report/send-email`, outer: 'outer/report/email-template' } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb:`sb/report/send-email/${component.reportId}`, outer: 'outer/report/email-template' } }]);
   });
 
   it('setEmailFormGroup(), should build the email form' , () => {
@@ -88,12 +89,26 @@ describe('SendEmailComponent', () => {
   });
 
   it('sendEmail(), On click of send email validate form and then send' , () => {
-    component.emailFormGrp.patchValue({subject:'', message:'', to : ['testuser@ymail.com']})
-    component.sendEmail();
-    /* Expect statements will be return once api call is done */
+    const emailResponse = [{
+        email:'testuser@ymail.com.',
+        acknowledge: true,
+      }];
 
-    component.emailFormGrp.patchValue({subject:'', message:'', to : []})
-    expect(component.sendEmail()).toBeFalse();
+    component.emailRecipients = ['testuser@ymail.com'];
+    component.emailFormGrp.patchValue({subject:'subject', message:'message', to : ['testuser@ymail.com']});
+    spyOn(reportService,'shareReport').and.returnValues(of(emailResponse),throwError('Error'));
+    component.sendEmail();
+    expect(component.errorMsg).toBeDefined('');
+
+    component.sendEmail();
+    expect(component.errorMsg).toBeDefined('');
+  });
+
+  it('sendEmail(), On click of send email validate form' , () => {
+    component.emailRecipients = [''];
+    component.emailFormGrp.patchValue({subject:'', message:'', to : ['']});
+    component.sendEmail();
+    expect(component.errorMsg).toBeUndefined('');
   });
 
   it('addMyself(), On click of add myself set loggedIn user as recipient' , () => {

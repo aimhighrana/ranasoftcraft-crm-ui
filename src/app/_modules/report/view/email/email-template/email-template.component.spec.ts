@@ -5,9 +5,10 @@ import { EmailTemplateComponent } from './email-template.component';
 import { ReportService } from '../../../_service/report.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
-import { EmailTemplate } from '../../../_models/email';
+import { EmailTemplate, EmailTemplateBody } from '../../../_models/email';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { of, throwError } from 'rxjs'
 
 describe('EmailTemplateComponent', () => {
   let component: EmailTemplateComponent;
@@ -40,7 +41,7 @@ describe('EmailTemplateComponent', () => {
     spyOn(router, 'navigate');
     component.close();
     expect(component.close).toBeTruthy();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/report/send-email`, outer: null } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/report/send-email/`, outer: null } }]);
   });
 
   it('updateTemplate(), should update the selected template' , () => {
@@ -50,7 +51,7 @@ describe('EmailTemplateComponent', () => {
     spyOnProperty(reportService.selectedTemplate, 'value', 'get').and.returnValue(templates[0]);
     component.updateTemplate(event);
     expect(component.close).toBeTruthy();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/report/send-email`, outer: null } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/report/send-email/`, outer: null } }]);
   });
 
   it('getDropdownPos(), should return dropdown position' , () => {
@@ -66,4 +67,23 @@ describe('EmailTemplateComponent', () => {
     expect(component.filteredTemplates).toBeTruthy();
   });
 
+  it('getAllTemplates(), should return all templates',()=>{
+    const templates: EmailTemplate[] =  [{ _id: 'Template 1', desc: 'Subject - Template 1'}];
+    spyOn(reportService,'getAllTemplates').and.returnValues(of(templates), throwError('Error'));
+    component.getAllTemplates();
+    expect(component.templates.length).toEqual(2);
+
+    component.getAllTemplates();
+    expect(component.templates.length).toEqual(2);
+  });
+
+  it('getTemplateById(), should return template',()=>{
+    const template: EmailTemplateBody =  {emailSub: 'subject', subType: 'dashboard', emailText: 'subject' }
+    spyOn(reportService,'getTemplateById').and.returnValues(of(template), throwError('Error'));
+    component.getTemplateById('_id');
+    expect(component.emailTemplate ).toEqual(template);
+
+    component.getTemplateById('');
+    expect(component.getTemplateById).toThrowError();
+  });
 });
