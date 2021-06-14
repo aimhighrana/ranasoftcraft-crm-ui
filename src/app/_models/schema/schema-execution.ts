@@ -14,6 +14,7 @@ export interface SchemaExecutionProgressResponse {
     percentage: number;
     totalRules: number;
     completedRules: number;
+    ruleDesc: string;
 }
 
 export class SchemaExecutionTree {
