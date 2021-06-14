@@ -85,7 +85,7 @@
             </ng-template>
 
             <!-- Add filter control -->
-            <lib-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize" icon="filter"></lib-chip>
+            <lib-button class="filter-btn" type="plain" icon="filter" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize" rounded="true"></lib-button>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
                 <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
@@ -94,7 +94,7 @@
             </mat-menu>
 
             <!-- More control -->
-            <lib-chip class="mdo-filter-matchip" disableRipple="true" icon="ellipsis-h" [matMenuTriggerFor]="moreFilterMenu"></lib-chip>
+            <lib-button class="menu-link-btn" type="plain" icon="ellipsis-h" [matMenuTriggerFor]="moreFilterMenu" rounded="true"></lib-button>
             <!-- More control MatMenu -->
             <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
                 <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->

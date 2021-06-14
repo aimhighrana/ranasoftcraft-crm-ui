@@ -756,6 +756,14 @@
     }
   }
 
+  .filter-btn button,
+  .menu-link-btn button {
+    border-color: $color-app-border;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 50%;
+  }
+
   //Mat-Menu
   .cdk-overlay-pane {
     &.display-dialog {

@@ -4,6 +4,11 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  .filter-btn,
+  .menu-link-btn {
+    margin: 0 4px;
+  }
+
   .selected {
     background-color: #f2f5f8;
   }
