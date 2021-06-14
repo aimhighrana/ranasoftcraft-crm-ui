@@ -1365,6 +1365,10 @@
     }
   }
 
+  .lib-button.navbar-action .mdo-button.mdo-minor {
+    background: $color-text-canvas;
+  }
+
   pros-primary-navigation {
     mat-sidenav-content.body-sidecontent {
       height: calc(100% - 60px);
