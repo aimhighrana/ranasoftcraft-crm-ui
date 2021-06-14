@@ -1,7 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatSliderChange } from '@angular/material/slider';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
 import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
@@ -339,11 +338,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     } else {
       businessRule = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
     }
-    if (event instanceof MatSliderChange) {
-      businessRule.brWeightage = String((event as MatSliderChange).value);
-    }
-    else if (eventName === 'checkbox') {
+    if (eventName === 'checkbox') {
       businessRule.status = event ? '1' : '0';
+    } else {
+      businessRule.brWeightage = String(event);
     }
   }
 

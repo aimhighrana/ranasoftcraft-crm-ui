@@ -2006,6 +2006,17 @@
     }
   }
 
+  div.root .summary-sidesheet.sidesheetcontent-listing {
+    .lib-input .mdo-field .mdo-field-label {
+      font-size: 14px;
+    }
+  }
+
+  .sidesheetcontent-listing .mandatory {
+    margin: initial 5px;
+    color: $color-status-error;
+  }
+
   pros-import-log {
     table.mat-table.table-vertical tbody tr {
       td.mat-cell {
