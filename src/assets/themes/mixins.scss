@@ -1235,6 +1235,12 @@
         background: inherit;
       }
     }
+
+    .mat-cell {
+      .grid-cell-editable {
+        min-height: 50px;
+      }
+    }
   }
 
   //Mat-Stepper
