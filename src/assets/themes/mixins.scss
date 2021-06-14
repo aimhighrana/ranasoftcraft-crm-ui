@@ -2097,6 +2097,10 @@
       color: $color-status-error;
     }
   }
+
+  .lib-button.navbar-action .mdo-button.mdo-minor {
+    background: $color-text-canvas;
+  }
 }
 
 @mixin pros-cmp-typography($config) {

@@ -6,11 +6,11 @@
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
+            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
                 <!-- <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> -->
                 <ng-container i18n="@@check_data"> Check data </ng-container>
             </lib-button>
-            <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
+            <lib-button class="lib-button navbar-action" type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
                 <!-- <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon> -->
             </lib-button>
         </lib-button-group>
