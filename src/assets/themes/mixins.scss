@@ -1253,6 +1253,10 @@
         border-width: 1px;
       }
     }
+
+    .mat-cell.edit-mode {
+      border: 1px solid #000;
+    }
   }
 
   //Mat-Stepper

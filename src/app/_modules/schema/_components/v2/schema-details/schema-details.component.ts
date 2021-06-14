@@ -807,6 +807,24 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  isEditEnabled(fldid: string, row: any, rIndex: number) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    if (field && !field.isEditable) {
+      return false;
+    }
+
+    const el = document.getElementById('inpctrl_' + fldid + '_' + rIndex);
+
+    if (el) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      if (inpCtrl.style.display === 'block') {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   isFieldEditable(fldid) {
     const field = this.selectedFields.find(f => f.fieldId === fldid);
     if (field && this.activeNode.nodeId === field.nodeId && field.isEditable) {
