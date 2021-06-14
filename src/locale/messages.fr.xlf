@@ -2466,7 +2466,7 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="resetFilters" datatype="html">
+       <trans-unit id="resetFilters" datatype="html">
         <source>Reset all filters</source>
         <target>Réinitialiser tous les filtres</target>
         <context-group purpose="location">
@@ -2481,8 +2481,8 @@
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
-      </trans-unit>
-      <trans-unit id="import_report" datatype="html">
+        </trans-unit>
+       <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>Importer un rapport</target>
         <context-group purpose="location">
