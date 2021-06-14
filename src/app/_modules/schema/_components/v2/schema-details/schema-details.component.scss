@@ -4,6 +4,10 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  .selected {
+    background-color: #f2f5f8;
+  }
+
   .filter-container {
     flex-wrap: wrap;
     margin: 8px 0;

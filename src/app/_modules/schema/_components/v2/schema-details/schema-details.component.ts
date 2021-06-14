@@ -209,7 +209,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   inlineSearchSubject: Subject<string> = new Subject();
 
-  widthOfSchemaNav = 292;
+  widthOfSchemaNav = 236;
   boxPosition: { left: number, top: number };
   public mousePosition: { x: number, y: number };
   public status: SchemaNavGrab = SchemaNavGrab.OFF;
@@ -371,8 +371,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData(this.filterCriteria.getValue(), this.sortOrder);
       }
     });
-    this.setNavDivPositions();
-    this.enableResize();
+    // this.setNavDivPositions();
+    // this.enableResize();
   }
 
   ngOnInit(): void {
@@ -1144,8 +1144,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   variantChange(variantId) {
     if (this.variantId !== variantId) {
       this.variantId = variantId;
-      this.variantName = this.variantId === '0' ? 'Entire dataset'
-        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
+      const scope = this.dataScope.find(v => v.variantId === this.variantId);
+      this.variantName = this.variantId === '0' ? 'Entire dataset' : scope?.variantName;
       if (this.variantId !== '0') {
         this.getVariantDetails();
       } else {
