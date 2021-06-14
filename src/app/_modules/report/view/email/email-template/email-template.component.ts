@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReportService } from '../../../_service/report.service'
-import { EmailTemplate } from '../../../_models/email';
+import { EmailTemplate, EmailTemplateBody } from '../../../_models/email';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatAutocomplete,MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
@@ -13,23 +13,28 @@ import { MatAutocomplete,MatAutocompleteSelectedEvent } from '@angular/material/
   styleUrls: ['./email-template.component.scss']
 })
 export class EmailTemplateComponent implements OnInit {
-
   /* Templates list */
-  templates: EmailTemplate[] = [{ templateName: 'No', subject: '', message: '' }, { templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }]
+  templates: EmailTemplate[] = [{ _id: '0', desc: 'No' }];
+
+  /* Email Template body */
+  emailTemplate: EmailTemplateBody;
   /* Form group for the language settings */
   templateFormGrp: FormGroup;
   /*  holds the list of filtered options */
   filteredTemplates: Observable<EmailTemplate[]>;
 
+  subscriptions: Subscription[] = [];
+
   constructor(private router: Router, private reportService: ReportService) { }
 
   ngOnInit(): void {
     this.setUpForm();
+    this.getAllTemplates();
   }
 
   /* Close slidesheet */
   close() {
-    this.router.navigate([{ outlets: { sb: `sb/report/send-email`, outer: null } }]);
+    this.router.navigate([{ outlets: { sb: `sb/report/send-email/`, outer: null } }]);
   }
 
   /*
@@ -64,18 +69,41 @@ export class EmailTemplateComponent implements OnInit {
    * @param value filter value
    * @param list current list to filter
    */
-   private filter(value: string, list): EmailTemplate[] {
+   private filter(value: string, list: EmailTemplate[]): EmailTemplate[] {
     const filterValue = value?.toLowerCase();
     if (list) {
-      return list.filter(temp => temp?.templateName?.toLowerCase().indexOf(filterValue) === 0);
+      return list.filter(temp => temp?.desc?.toLowerCase().indexOf(filterValue) === 0);
     }
   }
 
   /* Update the template */
   updateTemplate(event: MatAutocompleteSelectedEvent){
-    const template = this.templates.find(x=>x.templateName === event.option.viewValue);
-    this.reportService.selectedTemplate.next(template);
+    const templateId = '';
+    this.getTemplateById(templateId);
+    this.reportService.selectedTemplate.next(this.emailTemplate);
     this.close();
   }
 
+  /* API call to get all templates */
+  public getAllTemplates(){
+    const templates = this.reportService.getAllTemplates().subscribe((resp)=>{
+      if(resp && resp.length > 0){
+        this.templates = this.templates.concat(resp);
+      }
+    },err => {
+      console.log('Error while getting all templates');
+     })
+    this.subscriptions.push(templates);
+  }
+
+  /* API call to get template by Id */
+  public getTemplateById(_id: string){
+    const template = this.reportService.getTemplateById(_id).subscribe((resp) => {
+      this.emailTemplate = resp;
+    },err => {
+      console.log(`Error while getting template ${_id}`);
+     });
+
+    this.subscriptions.push(template);
+  }
 }

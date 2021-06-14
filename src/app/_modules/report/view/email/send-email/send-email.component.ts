@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute  } from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../../../_services/user/userservice.service'
 import { Userdetails } from '@models/userdetails';
 import { UserMdoModel } from '@models/collaborator';
 import { ReportService } from '../../../_service/report.service'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { EmailRequestBody } from '@modules/report/_models/email';
 
 @Component({
   selector: 'pros-send-email',
@@ -40,10 +41,23 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     { label: 'PPT', value: 'PPT' }
   ]
 
+  /* Subscription list */
+  subscriptions: Subscription[] = [];
+
+  /* Email Request Body */
+  emailRequestBody: EmailRequestBody;
+
+  /* Report ID */
+  reportId: string;
+
+  /* Error message */
+  errorMsg: string;
+
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private reportService: ReportService) {
+    private reportService: ReportService,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -51,7 +65,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.getCollaboratorPermission('', 0);
     this.getSelectedTemplate();
     this.filterUsers();
-    // this.ref.detectChanges();
+    this.getRequestParam();
   }
 
   /* Close Slidesheet */
@@ -61,16 +75,16 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   /* Navigate to select template slidesheet */
   selectTemplate() {
-    this.router.navigate([{ outlets: { sb:`sb/report/send-email`, outer: 'outer/report/email-template' } }]);
+    this.router.navigate([{ outlets: { sb:`sb/report/send-email/`+ this.reportId, outer: 'outer/report/email-template' } }]);
   }
 
   /* Set Email Form group fields */
   setEmailFormGroup() {
     this.emailFormGrp = this.formBuilder.group({
-      subject: new FormControl('', [Validators.required]),
+      subject: new FormControl({value:'', disabled:true}, [Validators.required]),
       message: new FormControl('', [Validators.required]),
-      to: new FormControl([''], [Validators.email, Validators.required]),
-      attachmentType: new FormControl(['']),
+      to: new FormControl([''], [Validators.required]),
+      attachmentType: new FormControl('',),
     });
   }
 
@@ -81,14 +95,12 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   /* Call to api to send email */
   sendEmail() {
-    this.emailFormGrp.patchValue({to: this.emailRecipients})
-    if (this.emailFormGrp.invalid) {
-      (Object).values(this.emailFormGrp.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsTouched()
-        }
-      });
-      return false;
+    /* Validate form first and then call api endpoint */
+    if(this.isFormValid()) {
+      this.updateEmailForm();
+
+      /* Calling api endpoint to send email */
+      this.shareReport();
     }
   }
 
@@ -123,15 +135,25 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   }
 
   /* Unsubscribe subscriptions */
-  ngOnDestroy(){
-    this.reportService.selectedTemplate.unsubscribe();
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   //#region Subscription
   getSelectedTemplate() {
-    this.reportService.selectedTemplate.subscribe(res => {
+    const templateSubscription =  this.reportService.selectedTemplate.subscribe(res => {
       if (res) {
-        this.emailFormGrp.patchValue({ subject: res.subject, message: res.message });
+        this.emailFormGrp.patchValue({ subject: res.emailSub, message: res.emailText });
+      }
+    })
+
+    this.subscriptions.push(templateSubscription);
+  }
+
+  public getRequestParam(){
+    this.route.params.subscribe((params) => {
+      if(!this.reportId) {
+        this.reportId = params?.reportId;
       }
     })
   }
@@ -158,6 +180,42 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   public filterUsers(){
     this.filteredUsers = this.emailTo.valueChanges.pipe(
       map((user: string | null) => user ? this._filter(user) : this.users?.slice()));
+  }
+
+  private updateEmailForm() {
+    if(this.emailFormGrp?.controls) {
+      this.emailRequestBody = {
+        message: this.emailFormGrp.controls.message?.value,
+        subject: this.emailFormGrp.controls.subject?.value,
+        email: this.emailFormGrp.controls.to?.value,
+        attachmentType: this.emailFormGrp.controls.attachmentType?.value,
+      }
+    }
+  }
+
+  public shareReport(){
+    this.reportService.shareReport(this.emailRequestBody, this.reportId).subscribe(res =>{
+      this.errorMsg = '';
+    }, err => {
+     this.errorMsg = err;
+    });
+  }
+
+  private isFormValid(): boolean{
+    this.emailFormGrp.patchValue({to: this.emailRecipients})
+    if (this.emailFormGrp.invalid) {
+      (Object).values(this.emailFormGrp.controls).forEach(control => {
+        if(control.disabled === true && control.value === '') {
+          control.setErrors({required: true});
+        }
+        if (control.invalid || (control.disabled === true && control.value === '')) {
+          control.markAsTouched()
+        }
+      });
+      return false;
+    }
+
+    return true;
   }
   //#endregion
 }
