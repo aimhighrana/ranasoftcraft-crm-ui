@@ -3,7 +3,7 @@
         <lib-empty-state primaryText="Nothing to see here"
             secondaryText="So far you haven't performed any data checks. Would you like to start one now?"
             icon="table" iconSize="100">
-            <lib-button class="check-data lib-button" [matMenuTriggerFor]="check" iconFontType="solid" icon="caret-down" (menuOpened)="moduleSearchInput.clearSearch();">Check data</lib-button>
+            <lib-button type="minor" [matMenuTriggerFor]="check" iconFontType="solid" icon="caret-down" (menuOpened)="moduleSearchInput.clearSearch();">Check data</lib-button>
             <!-- module-menu -->
             <mat-menu #check="matMenu" class="navigation-menu">
                 <lib-search class="field-mat-menu"  #moduleSearchInput [placeholder]="'Search modules'"

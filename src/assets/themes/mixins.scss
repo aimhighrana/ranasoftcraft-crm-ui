@@ -1420,6 +1420,10 @@
 
         .lib-button.check-data {
           margin-right: 90px;
+
+          .mdo-button.mdo-minor {
+            background: $color-text-canvas;
+          }
         }
       }
     }
@@ -2092,10 +2096,6 @@
       border: 1px solid $color-status-error;
       color: $color-status-error;
     }
-  }
-
-  .lib-button.check-data .mdo-button.mdo-minor {
-    background: $color-text-canvas;
   }
 }
 
