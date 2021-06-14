@@ -143,7 +143,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     Open Sidesheet for Send email
   */
   openSendEmailSideSheet(){
-     this.router.navigate([{ outlets: { sb: `sb/report/send-email`}}]);
+     this.router.navigate(['',{ outlets: { sb: `sb/report/send-email/`+ this.reportId }}]);
   }
 
   /**
