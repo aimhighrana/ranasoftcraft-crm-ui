@@ -1240,6 +1240,10 @@
       .grid-cell-editable {
         min-height: 50px;
       }
+
+      &.error-cell {
+        border-width: 1px;
+      }
     }
   }
 
