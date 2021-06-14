@@ -42,7 +42,7 @@
     </ng-template>
     <ng-template #schemaInfoTemplate>
         <div class="empty-state" *ngIf="!statics || (statics && !statics.totalCnt)">
-            <lib-empty-state primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
+            <lib-empty-state class="lib-empty-state" primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
                 <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Check data </lib-button>
             </lib-empty-state>
         </div>

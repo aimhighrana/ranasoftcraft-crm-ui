@@ -25,7 +25,7 @@ div.root {
     width: 98%;
     height: calc(100% - 45px);
 
-    lib-empty-state {
+    .lib-empty-state {
       position: absolute;
       display: flex;
       justify-content: center;
