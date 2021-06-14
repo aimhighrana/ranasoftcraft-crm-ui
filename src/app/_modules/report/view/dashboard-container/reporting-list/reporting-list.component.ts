@@ -163,7 +163,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.selectedMultiSelectData = {};
         this.localFilterCriteria.forEach(item => {
           const type = this.getFormFieldType(item.fieldId);
-          if (type == FormControlType.TEXT || type == FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
+          if (type === FormControlType.TEXT || type == FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
           } else if (type === FormControlType.DROP_DOWN) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
@@ -185,7 +185,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           }
         })
         if (Object.keys(this.reportingListFilterForm.controls).length)
-          this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, [...this.filterCriteria, ...this.localFilterCriteria], this.activeSorts);
+          this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria, this.activeSorts);
       }
     })
   }
@@ -388,7 +388,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   getServerData(event): PageEvent {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
-    this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, [...this.filterCriteria, ...this.localFilterCriteria], this.activeSorts);
+    this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria), this.activeSorts);
     return event;
   }
 
@@ -422,9 +422,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       if (dir === '') {
         this.activeSorts = null;
       }
-      this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, [...this.filterCriteria, ...this.localFilterCriteria], this.activeSorts);
-    }
-  }
+      this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria), this.activeSorts);
+    }  }
 
   /**
    * Download data , call service with filter criteria and page from ...
@@ -432,7 +431,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   downloadData(frm: number) {
     frm = frm * 5000;
     const downloadLink = document.createElement('a');
-    downloadLink.href = `${this.endpointService.downloadWidgetDataUrl(String(this.widgetId))}?from=${frm}&conditionList=${JSON.stringify([...this.filterCriteria, ...this.localFilterCriteria])}`;
+    downloadLink.href = `${this.endpointService.downloadWidgetDataUrl(String(this.widgetId))}?from=${frm}&conditionList=${JSON.stringify(this.filterCriteria.concat(this.localFilterCriteria))}`;
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -624,7 +623,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
       this.localFilterCriteria.push(filterCriteria);
-      filterCriteria['conditionFieldText'] = selectedText;
+      filterCriteria.conditionFieldText = selectedText;
       if (selectedDataIndex > -1) this.filteredList[selectedDataIndex] = filterCriteria;
       else this.filteredList.push(filterCriteria);
     } else {
@@ -641,13 +640,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           filterCriteria.widgetType = WidgetType.TABLE_LIST;
           filterCriteria.conditionOperator = selectedData && selectedData['conditionOperator'] ? selectedData['conditionOperator'] : ConditionOperator.EQUAL;
           this.localFilterCriteria.push(filterCriteria);
-          filterCriteria['conditionFieldText'] = item.TEXT;
+          filterCriteria.conditionFieldText = item.TEXT;
           this.filteredList.push(filterCriteria);
         })
       }
     }
     this.reportService.setFilterCriteria(this.filteredList);
-    const sub = this.widgetService.getListdata(String(this.pageSize), String(this.pageIndex), String(this.widgetId), [...this.filterCriteria, ...this.localFilterCriteria], this.activeSorts).subscribe(returndata => {
+    const sub = this.widgetService.getListdata(String(this.pageSize), String(this.pageIndex), String(this.widgetId), this.filterCriteria.concat(this.localFilterCriteria), this.activeSorts).subscribe(returndata => {
       this.returndata = returndata;
       this.updateTable(this.returndata);
     });

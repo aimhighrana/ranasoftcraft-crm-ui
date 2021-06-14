@@ -82,6 +82,7 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
       this.displayCriteria = changes.displayCriteria.currentValue;
     }
     if (changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
+      this.formFieldId = changes.formFieldId.currentValue;
       this.getDropDownValue();
     }
   }

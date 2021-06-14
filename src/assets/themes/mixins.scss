@@ -2101,6 +2101,9 @@
     .mat-list-base .mat-list-item .mat-list-item-content {
       display: block;
     }
+    .selected {
+      background-color: $color-app-hover;
+    }
   }
 }
 

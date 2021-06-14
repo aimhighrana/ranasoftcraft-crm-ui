@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConditionOperator, Criteria, DisplayCriteria, ReportingWidget, OutputFormat, FormControlType, BlockType, WidgetType } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
+import { UserService } from '@services/user/userservice.service';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 
@@ -25,19 +26,20 @@ export class ConfigureFiltersComponent implements OnInit {
   configurationFilterForm: FormGroup;
   outputFormatList = [{ label: OutputFormat.CODE, value: DisplayCriteria.CODE }, { label: OutputFormat.TEXT, value: DisplayCriteria.TEXT }, { label: OutputFormat.CODE_TEXT, value: DisplayCriteria.CODE_TEXT }];
   rulesList = [{ label: 'Is', value: ConditionOperator.EQUAL }, { label: 'Is Not', value: ConditionOperator.NOT_EQUAL }];
-  dateFormat = 'dd MMM, yyyy, h:mm:ss a';
+  dateFormat: string = null;
 
   constructor(
     private router: Router,
     private reportService: ReportService,
-    private activatedRoute: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private userService: UserService,
   ) {
   }
 
 
   ngOnInit(): void {
     this.initializeForm();
+    this.getUserDetails();
     this.getColumnNames();
   }
 
@@ -65,9 +67,9 @@ export class ConfigureFiltersComponent implements OnInit {
           const index = this.filterCriteria.findIndex(filterData => item.fieldId == filterData.fieldId);
           if (index > -1) {
             this.filterCriteria[index].conditionFieldValue.push(item.conditionFieldValue);
-            this.filterCriteria[index].conditionFieldText.push(item['conditionFieldText'])
+            this.filterCriteria[index].conditionFieldText.push(item.conditionFieldText)
           } else {
-            this.filterCriteria.push({ ...item, conditionFieldValue: [item.conditionFieldValue], conditionFieldText: [item['conditionFieldText']] })
+            this.filterCriteria.push({ ...item, conditionFieldValue: [item.conditionFieldValue], conditionFieldText: [item.conditionFieldText] })
           }
         } else {
           this.filterCriteria.push({ ...item });
@@ -310,7 +312,7 @@ export class ConfigureFiltersComponent implements OnInit {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
           } else if (formFieldType === FormControlType.DROP_DOWN) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
-            filteredCriteria['conditionFieldText'] = item.conditionFieldText;
+            filteredCriteria.conditionFieldText = item.conditionFieldText;
           } else if (formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME || formFieldType === FormControlType.TIME || formFieldType === FormControlType.NUMBER) {
             filteredCriteria.conditionFieldStartValue = item.conditionFieldStartValue;
             filteredCriteria.conditionFieldEndValue = item.conditionFieldEndValue;
@@ -325,7 +327,7 @@ export class ConfigureFiltersComponent implements OnInit {
             filteredCriteria.blockType = BlockType.COND;
             filteredCriteria.conditionOperator = item.conditionOperator;
             filteredCriteria.conditionFieldValue = el;
-            filteredCriteria['conditionFieldText'] = item.conditionFieldText[index];
+            filteredCriteria.conditionFieldText = item.conditionFieldText[index];
             filteredCriteriaList.push(filteredCriteria);
           })
         }
@@ -427,6 +429,34 @@ export class ConfigureFiltersComponent implements OnInit {
 
   getSelectedTimeValue() {
     return { start: this.selectedFilter.conditionFieldStartValue, end: this.selectedFilter.conditionFieldEndValue }
+  }
+
+  public getUserDetails() {
+    const sub = this.userService.getUserDetails().subscribe(user => {
+      switch (user.dateformat) {
+        case 'MM.dd.yy':
+          this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
+          break;
+
+        case 'dd.MM.yy':
+          this.dateFormat = 'dd.MM.yyyy, h:mm:ss a';
+          break;
+
+        case 'dd M, yy':
+          this.dateFormat = 'dd MMM, yyyy, h:mm:ss a';
+          break;
+
+        case 'MM d, yy':
+          this.dateFormat = 'MMMM d, yyyy, h:mm:ss a';
+          break;
+
+        default:
+          break;
+      }
+    }, (error) => {
+      console.log('Something went wrong while getting user details.', error.message)
+    });
+    this.subscription.push(sub);
   }
 
 }

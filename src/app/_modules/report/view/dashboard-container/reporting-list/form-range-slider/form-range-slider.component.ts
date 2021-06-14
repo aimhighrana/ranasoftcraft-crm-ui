@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { FormControl, Validators } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-form-range-slider',
@@ -12,7 +11,7 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class FormRangeSliderComponent implements OnInit {
 
-  constructor(private reportService: ReportService) { }
+  constructor() { }
 
 
   /**
@@ -71,10 +70,6 @@ export class FormRangeSliderComponent implements OnInit {
       this.minValue = values[0];
       this.maxValue = values[1];
       this.control.setValue({ min: this.minValue, max: this.maxValue });
-    })
-
-    this.control.valueChanges.subscribe(res => {
-      console.log('res 22====', res);
     })
   }
 

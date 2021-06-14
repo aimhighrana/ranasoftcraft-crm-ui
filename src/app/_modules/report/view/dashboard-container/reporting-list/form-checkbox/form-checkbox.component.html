@@ -1,8 +1,7 @@
 <div>
-<ng-template [ngIf]="isTableFilter === 'true'">
     <div class="f-col mdo-field" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
         <!-- <div class="mdo-field-input"> -->
-            <lib-input [placeholder]="placeholder" disabled></lib-input>
+        <lib-input [placeholder]="placeholder" disabled></lib-input>
         <!-- </div> -->
     </div>
     <mat-menu #datasearch="matMenu">
@@ -21,9 +20,4 @@
             </div>
         </lib-filter-dropdown>
     </mat-menu>
-</ng-template>
-<ng-template [ngIf]="isTableFilter !== 'true'">
-    <lib-checkbox [label]="label" [checked]="isChecked()" [formControl]="control">
-    </lib-checkbox>
-</ng-template>
 </div>

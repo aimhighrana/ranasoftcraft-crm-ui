@@ -54,8 +54,9 @@ export class FormCheckboxComponent implements OnInit {
  */
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.controls && changes.controls.previousValue !== undefined && changes.controls.previousValue !== changes.controls.currentValue) {
-      this.control.setValue(changes.controls.currentValue);
+    if(changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
+        this.formFieldId = changes.formFieldId.currentValue;
+        this.control.setValue(changes.controls.currentValue);
     }
   }
 
