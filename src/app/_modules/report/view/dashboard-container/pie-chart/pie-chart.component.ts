@@ -140,12 +140,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     });
     this.subscriptions.push(afterColorDefined);
 
-    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+   /*  const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
-    this.subscriptions.push(getDisplayCriteria);
+    this.subscriptions.push(getDisplayCriteria); */
   }
 
   public getHeaderMetaData(): void {
