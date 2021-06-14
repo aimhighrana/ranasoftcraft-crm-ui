@@ -1229,6 +1229,12 @@
     .schema-header-cell {
       background: $color-app-accent;
     }
+
+    .mat-row:hover {
+      .schema-header-cell {
+        background: inherit;
+      }
+    }
   }
 
   //Mat-Stepper
