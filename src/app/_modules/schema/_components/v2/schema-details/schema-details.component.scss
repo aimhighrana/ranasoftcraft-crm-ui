@@ -18,6 +18,22 @@ div.root {
     }
   }
 
+  .empty-state {
+    position: absolute;
+    background: white;
+    z-index: 1000;
+    width: 98%;
+    height: calc(100% - 45px);
+
+    lib-empty-state {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      top: 15%;
+    }
+  }
+
   .listing-container {
     height: calc(100% - 56px - 35px - 8px * 2);
     overflow: hidden;
