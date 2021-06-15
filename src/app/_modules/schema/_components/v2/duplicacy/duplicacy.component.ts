@@ -293,6 +293,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
       if (result && !result.editActive) {
         this.selectedFields = result.selectedFields;
+        this.selectedFields.map((x) => x.editable = true);
         this.calculateDisplayFields();
         if (result.tableActionsList && result.tableActionsList.length) {
           this.tableActionsList = result.tableActionsList
@@ -375,8 +376,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
               console.error('Exception while persist table view');
             });
             this.selectedFields = orderFld;
+            this.selectedFields.map((x) => x.editable = true);
           } else {
             this.selectedFields = res[1] ? res[1] : [];
+            this.selectedFields.map((x) => x.editable = true);
           }
           this.calculateDisplayFields();
         }
