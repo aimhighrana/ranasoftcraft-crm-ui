@@ -124,7 +124,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
 
   /**
    * method called when click on list items
-   * @param filter filtered values for selected filters 
+   * @param filter filtered values for selected filters
    * @param ind index of selected value
    */
   onClickOnListItem(filter: Criteria, ind: number) {
@@ -475,20 +475,20 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
    */
   public getUserDetails() {
     const sub = this.userService.getUserDetails().subscribe(user => {
-      switch (user.dateformat) {
-        case 'MM.dd.yy':
+      switch (user.dateformat.toLowerCase()) {
+        case 'mm.dd.yy':
           this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
           break;
 
-        case 'dd.MM.yy':
+        case 'dd.mm.yy':
           this.dateFormat = 'dd.MM.yyyy, h:mm:ss a';
           break;
 
-        case 'dd M, yy':
+        case 'dd m, yy':
           this.dateFormat = 'dd MMM, yyyy, h:mm:ss a';
           break;
 
-        case 'MM d, yy':
+        case 'mm d, yy':
           this.dateFormat = 'MMMM d, yyyy, h:mm:ss a';
           break;
 

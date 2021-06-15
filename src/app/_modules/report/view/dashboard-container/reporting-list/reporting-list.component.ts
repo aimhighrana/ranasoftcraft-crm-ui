@@ -725,6 +725,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   getSelectedDateValue(fieldId) {
     if (this.reportingListFilterForm.controls[fieldId].value) {
       return { start: new Date(this.reportingListFilterForm.controls[fieldId].value.start), end: new Date(this.reportingListFilterForm.controls[fieldId].value.end)};
+    } else {
+      return null;
     }
   }
 }

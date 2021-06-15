@@ -89,7 +89,6 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
   }
 
   getDropDownValue(searchText?): string | boolean | void {
-    console.log('form  field id====',this.formFieldId,searchText);
     if(!this.formFieldId){
       return;
     }

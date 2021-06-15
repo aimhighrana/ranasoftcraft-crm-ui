@@ -548,7 +548,7 @@ describe('ReportingListComponent', () => {
   }));
 
 
-  it('ngOnInit()', async(()=>{ 
+  it('ngOnInit()', async(()=>{
     component.ngOnInit();
     component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
     expect(component.ngOnInit).toBeTruthy();

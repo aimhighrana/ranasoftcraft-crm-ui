@@ -35,6 +35,7 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
 
   @Input() label : string;
 
+  isApplied : boolean;
 
 
   /**
@@ -63,7 +64,11 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
   /**
    * apply filter and emit the output event
    */
-  applyFilter() {
+  applyFilter(event) {
+    if(this.isTableFilter === 'false') {
+      this.control.setValue(event);
+    }
+    this.isApplied = true;
     const response = {
       formFieldId: this.formFieldId,
       value: this.control.value

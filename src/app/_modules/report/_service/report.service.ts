@@ -124,7 +124,7 @@ export class ReportService {
   public sideSheetStatusChange() {
     return this.isSideSheetClose.asObservable();
   }
-  
+
   public shareReport(request: EmailRequestBody, reportId:string): Observable<EmailResponseBody[]> {
     return this.http.post<EmailResponseBody[]>(this.endpointAnalyticService.shareReport(reportId), request);
   }

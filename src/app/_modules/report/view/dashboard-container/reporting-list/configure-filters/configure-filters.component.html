@@ -16,8 +16,8 @@
         <div class="f-col-8 list">
             <mat-list>
                 <mat-list-item *ngFor="let filter of filterCriteria;let i = index"
-                    [ngClass]="selectedFilter.fieldId === filter.fieldId ? 'selected': ''" (click)="onClickOnListItem(filter,i)"
-                    class="list-item">
+                    [ngClass]="selectedFilter.fieldId === filter.fieldId ? 'selected': ''"
+                    (click)="onClickOnListItem(filter,i)" class="list-item">
                     <div>{{ columnDescs[filter.fieldId] }}</div>
                     <div class="selected-values" *ngIf="filter.conditionFieldValue || filter.conditionFieldStartValue">
                         <ng-template
