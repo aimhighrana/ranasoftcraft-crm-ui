@@ -158,6 +158,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
+      this.parentFieldDesc = '';
       this.getFields();
     }
 
