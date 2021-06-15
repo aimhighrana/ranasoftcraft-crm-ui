@@ -1748,6 +1748,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             }
           });
           this.selectedFields = allFields;
+          this.selectedFields.map((x) => x.isEditable = true);
           this.selectedFieldsOb.next(updateTableView);
         };
 

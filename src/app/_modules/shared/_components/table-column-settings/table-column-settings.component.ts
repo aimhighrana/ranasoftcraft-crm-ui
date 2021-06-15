@@ -147,7 +147,7 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
 
         res.unselectedFields.forEach((f, index)=>{
           const fld: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-          fld.isEditable = false; fld.fieldId = f.fieldId; fld.editable = false;
+          fld.isEditable = true; fld.fieldId = f.fieldId; fld.editable = true;
           fld.metadataCreateModel = f; fld.order = flds.length -1;
           flds.push(fld);
         });
@@ -210,15 +210,15 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
     const selIndex =  this.beforeSaveState.findIndex(f => f.fieldId === fld.fieldId);
     if(selIndex !==-1) {
       this.beforeSaveState[selIndex].isSelected = evt;
-      this.beforeSaveState[selIndex].isEditable = !this.beforeSaveState[selIndex].isSelected  ? false : this.beforeSaveState[selIndex].isEditable;
+      this.beforeSaveState[selIndex].isEditable = true;
 
       this.fields[selIndex].isSelected = evt;
-      this.fields[selIndex].isEditable = !this.fields[selIndex].isSelected  ? false : this.fields[selIndex].isEditable;
+      this.fields[selIndex].isEditable = true;
       this.fieldsObs = of(this.fields);
     } else {
       const fieldView = new SchemaTableViewFldMap();
       fieldView.fieldId = fld.fieldId; fieldView.isSelected = true;
-      fieldView.isEditable = false;
+      fieldView.isEditable = true;
       fieldView.nodeId = fld.nodeId; fieldView.nodeType = fld.nodeType;
       this.beforeSaveState.push(fieldView);
     }
