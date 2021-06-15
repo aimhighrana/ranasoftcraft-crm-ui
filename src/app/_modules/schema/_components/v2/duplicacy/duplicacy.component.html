@@ -173,7 +173,7 @@
                                             <lib-button type="plain" (click)="openTableColumnSettings()" icon="cog">
                                             </lib-button>
                                         </mat-header-cell>
-                                        <mat-cell *matCellDef="let element" class="action-width no-text-decoration">
+                                        <mat-cell *matCellDef="let element" [class.action-buttons-width]="activeTab === 'review'" class="no-text-decoration">
                                             <div class="f-row">
                                                 <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
                                                     <lib-button-group>
@@ -228,7 +228,8 @@
                                                         <ng-container *ngFor="let pAction of primaryActions">
                                                             <button mat-flat-button color="accent"
                                                                 *ngIf="hasActionPermission(pAction)"
-                                                                (click)="doAction(pAction, element)">
+                                                                (click)="doAction(pAction, element)"
+                                                                class="action-button">
                                                                 <mat-icon fontSet="mdo-icons"
                                                                     *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
                                                                     {{ pAction.actionIconLigature }}

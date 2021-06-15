@@ -1572,6 +1572,14 @@
     }
   }
 
+  pros-duplicacy {
+    .mat-table {
+      .mat-cell.action-buttons-width {
+        min-width: 300px;
+      }
+    }
+  }
+
   pros-report-datatable-column-settings {
     .checkedall {
       background: mat-color($background-palette, card);
