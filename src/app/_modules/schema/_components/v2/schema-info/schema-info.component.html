@@ -6,11 +6,11 @@
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
+            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
                 <!-- <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> -->
                 <ng-container i18n="@@check_data"> Check data </ng-container>
             </lib-button>
-            <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
+            <lib-button class="lib-button navbar-action" type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
                 <!-- <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon> -->
             </lib-button>
         </lib-button-group>
@@ -27,11 +27,22 @@
         <lib-tab label="Summary" i18n-label="@@summary">
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <lib-input (valueChange)="onChangeSchemaDescription($event)" class="mdo-scheduler-input"
-                        [formControlName]="'schemaName'" type="text"
+                    <div class="input-badge-wrapper"
+                    matBadge
+                    prosStatusBadge
+                    [badgeIcon]="getStatusIcon('schemaName', schemaLoader).icon"
+                    [statusBadgePosition]="{ top: 10, right: -11 }"
+                    [badgeIconFont]="getStatusIcon('schemaName', schemaLoader).font"
+                    [badgeType]="getStatusIcon('schemaName', schemaLoader).type">
+                        <lib-input
+                        (click)="schemaSummaryForm.controls.schemaName.markAsTouched()"
+                        formControlName="schemaName"
+                        type="text"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
                         placeholder="Schema name" i18n-label="@@schema_name" label="Schema name"
-                        (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
+                        (afterBlur)="onChangeSchemaDescription(schemaSummaryForm.controls.schemaName.value);"></lib-input>
+                    </div>
+
                     <div class="row-spacer"></div>
                     <div class="f-col mdo-form-field">
                         <mat-label i18n="@@threshold">Threshold</mat-label>
@@ -256,7 +267,7 @@
                     <div class="col col-x8"><strong>Subscriber</strong></div>
                     <div class="col col-x4"><strong>Role</strong></div>
                     <div class="col col-x16"></div>
-                    <div class="col col-x16" *ngIf="false"><strong>Data allocation</strong></div>
+                    <div class="col col-x16"><strong>Data allocation</strong></div>
                     <div class="col mat-item-end"></div>
                 </div>
 
@@ -324,9 +335,8 @@
                             <button mat-menu-item *ngFor="let role of roles"
                                 (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                         </mat-menu>
-
                         <div class="col col-x16"></div>
-                        <div class="col col-x16" *ngIf="false">
+                        <div class="col col-x16">
                             <mat-chip-list>
                                 <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
 

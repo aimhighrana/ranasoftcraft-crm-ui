@@ -351,7 +351,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * Removes untested rule types
      */
     filterRuleTypes() {
-        const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT'];
+        const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK'];
         this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
     }
 
@@ -586,7 +586,7 @@ export class NewBusinessRulesComponent implements OnInit {
             if (index === -1) {
                 this.form.get(key).setValidators(null);
                 this.form.get(key).clearValidators();
-                if (key !== 'rule_type' && key !== 'weightage' && !this.data.createRuleFormValues) {
+                if (key !== 'rule_type' && key !== 'weightage' && !this.data?.createRuleFormValues) {
                     this.form.get(key).setValue('');
                 }
             } else {

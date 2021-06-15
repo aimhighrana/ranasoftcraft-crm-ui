@@ -333,7 +333,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * Removes untested rule types
    */
   filterRuleTypes() {
-    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT'];
+    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK'];
     this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
   }
 
@@ -571,10 +571,10 @@ export class BrruleSideSheetComponent implements OnInit {
     const controlKeys: any[] = Object.keys(this.currentControls);
     let requiredKeys: string[] = [];
     if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      requiredKeys = ['categoryId', 'rule_name', 'error_message'];
+      requiredKeys = [/* 'categoryId', */ 'rule_name', 'error_message'];
     }
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
-      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
+      requiredKeys = ['categoryId',  'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
     if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
@@ -642,10 +642,10 @@ export class BrruleSideSheetComponent implements OnInit {
     let patchList = [];
 
     if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId' ];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      patchList = ['rule_type', 'categoryId', 'rule_name', 'weightage', 'error_message'];
+      patchList = ['rule_type', /* 'categoryId', */  'rule_name', 'weightage', 'error_message'];
     }
     if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
       dataToPatch.transformationRuleType = this.getTrRuleType(br.transFormationSchema);
