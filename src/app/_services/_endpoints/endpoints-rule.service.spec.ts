@@ -537,7 +537,7 @@ describe('EndpointsRuleService', () => {
 
   it('masterRecordChangeUrl(),should return masterRecordChangeUrl url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.masterRecordChangeUrl()).toContain('duplicate/updatemasterRecord');
+    expect(serObj.masterRecordChangeUrl()).toContain('schema/actions/updatemasterRecord');
   }));
 
   it('markForDeletionUrl(),should return markForDeletionUrl url', async(() => {
