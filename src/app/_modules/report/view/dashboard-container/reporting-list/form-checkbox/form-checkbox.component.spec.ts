@@ -5,7 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-describe('FormInputComponent', () => {
+fdescribe('FormCheckboxComponent', () => {
   let component: FormCheckboxComponent;
   let fixture: ComponentFixture<FormCheckboxComponent>;
 
