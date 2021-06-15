@@ -1368,6 +1368,7 @@
   pros-primary-navigation {
     mat-sidenav-content.body-sidecontent {
       height: calc(100% - 60px);
+      position: relative;
     }
 
     div.nav-root {
@@ -2124,6 +2125,22 @@
     }
   }
   /* stylelint-enable */
+
+  pros-overlay-loader {
+    position: relative;
+
+    .root {
+      position: absolute;
+      z-index: 1000;
+      opacity: 0.65;
+      width: 100vw;
+      height: calc(100vh - 60px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $color-text-canvas;
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {
