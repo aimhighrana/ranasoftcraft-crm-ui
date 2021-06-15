@@ -436,9 +436,9 @@
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
 
-                                        <input matInput [matAutocomplete]="chooseColumnWF" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
+                                        <input matInput [matAutocomplete]="chooseColumnWF" [formControl]="fieldCtrl" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
                                             (keyup)="openAutoComplete(columnsTrigger); searchChooseColumnWorkflow($event.target.value)">
-                                        <mat-autocomplete #chooseColumnWF="matAutocomplete"
+                                        <mat-autocomplete #chooseColumnWF="matAutocomplete" (opened)="removeError('fieldCtrl')"
                                             [displayWith]="chooseColumnDisWith">
                                             <mat-optgroup label="System fileds">
                                                 <mat-option *ngFor="let field of (workflowFieldsObs | async).static"
@@ -476,9 +476,9 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && styleCtrlGrp.get('isCustomdataSet').value===true">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumn" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
+                                        <input matInput [matAutocomplete]="chooseColumn" [formControl]="fieldCtrl" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
                                             (keyup)="openAutoComplete(columnsTrigger); searchCustomChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete"
+                                        <mat-autocomplete #chooseColumn="matAutocomplete" (opened)="removeError('fieldCtrl')"
                                             [displayWith]="chooseColumnDisWith">
                                             <mat-option *ngFor="let fld of CustomfieldsObs | async"
                                                 value="{{ fld.fieldId }}">

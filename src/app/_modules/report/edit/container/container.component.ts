@@ -822,7 +822,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         };
 
         if (!widget.objectType && (!widget.widgetTableFields || widget.widgetTableFields.length === 0)) {
-          this.toasterService.open(`Fields to be highlighted :  Data set, Choose columns.`, 'Close', { duration: 2000 });
+          this.toasterService.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
           this.ref.detectChanges(); // This is needed if the right sidebar is close
           setDatesetError();
