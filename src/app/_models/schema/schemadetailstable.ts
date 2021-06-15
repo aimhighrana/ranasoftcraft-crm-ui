@@ -553,5 +553,9 @@ export enum DetailView {
     DUPLICACY_VIEW = 'DUPLICACY_VIEW',
     MRO_CLASSIFICATION_VIEW = 'MRO_CLASSIFICATION_VIEW',
     POTEXT_VIEW = 'POTEXT_VIEW'
-  }
+}
 
+export interface ParentField {
+    fieldDescri: string;
+    fieldId: string;
+}

@@ -23,7 +23,7 @@
         <mat-label class="mdo-field-label">{{ lebel }}</mat-label>
         <!-- input container -->
         <div class="mdo-field-input">
-            {{parentFieldDesc}}{{Selected}} 
+            <span *ngIf="parentFieldDesc.fieldDescri">{{parentFieldDesc.fieldDescri}}/</span>{{Selected}} 
             <input matInput #optionsInput [formControl]="fieldFrmCtrl" [matAutocomplete]="fieldsCtrl"
                 matTooltipPosition="right" [value]="preSelectedCtrl ? preSelectedCtrl.fieldDescri: ''"
                 matTooltip="{{preSelectedCtrl ? preSelectedCtrl.fieldDescri: ''}}" />

@@ -3,9 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MetadatafieldControlComponent, Metadata } from './metadatafield-control.component';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { MetadataModel, Heirarchy } from '@models/schema/schemadetailstable';
+import { MetadataModel, Heirarchy, ParentField } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/core';
 
 describe('MetadatafieldControlComponent', () => {
   let component: MetadatafieldControlComponent;
@@ -54,6 +56,7 @@ describe('MetadatafieldControlComponent', () => {
   const h1 = new Heirarchy();
   h1.heirarchyId = '1';
   h1.heirarchyText = 'Plant';
+  h1.fieldId = '1';
 
   const h2 = new Heirarchy();
   h2.heirarchyId = '4';
@@ -97,7 +100,7 @@ describe('MetadatafieldControlComponent', () => {
     let actualResonse =  component.transformFieldRes(metadataModeleResponse);
 
     // asserts
-    expect(actualResonse.length).toEqual(4, 'length should be equlas to 4 including groups');
+    expect(actualResonse.length).toEqual(5, 'length should be equlas to 4 including groups');
     expect(actualResonse[0].childs.length).toEqual(4, '4 static system fields');
 
     // const grd = actualResonse.filter(fil=> fil.fieldId === 'LANGUAGE_GRID');
@@ -112,7 +115,7 @@ describe('MetadatafieldControlComponent', () => {
     actualResonse =  component.transformFieldRes(metadataModeleResponse);
 
     // asserts
-    expect(actualResonse.length).toEqual(4, 'length should be equlas to 2 including groups');
+    expect(actualResonse.length).toEqual(2, 'length should be equlas to 2 including groups');
     expect(actualResonse[0].childs.length).toEqual(2, '2 static system fields');
   }));
 
@@ -153,6 +156,13 @@ describe('MetadatafieldControlComponent', () => {
   it('selected() Should emit after value change', async(() => {
     const option = {} as Metadata;
     expect(component.selected(option)).toEqual(undefined);
+
+
+    const autoSelectMatOption = {} as MatAutocompleteSelectedEvent;
+    autoSelectMatOption.option = {} as MatOption;
+    autoSelectMatOption.option.value = {} as ParentField;
+    component.selected(option)
+    expect(component.parentFieldDesc).toBeDefined();
   }));
 
   it(`ngOnChanges(), should call reset when reset metadatafield`, async(()=>{
@@ -180,4 +190,53 @@ describe('MetadatafieldControlComponent', () => {
     expect(schemaDetailsService.getMetadataFields).toHaveBeenCalled();
   }));
 
+  it(`mapHierarchyFields(), help to transform Hierarchy field with groups & autocomplete search`, async(()=>{
+    // call actual method
+    let actualResonse =  component.transformFieldRes(metadataModeleResponse);
+    component.mapHierarchyFields(metadataModeleResponse,actualResonse)
+    // asserts
+    expect(actualResonse.length).toEqual(7, 'length should be equlas to 7 including groups');
+    expect(actualResonse[0].childs.length).toEqual(4, '4 static system fields');
+
+    component.widgetType = 'TIMESERIES';
+    actualResonse = [];
+    actualResonse =  component.transformFieldRes(metadataModeleResponse);
+    component.mapHierarchyFields(metadataModeleResponse,actualResonse)
+    // asserts
+    expect(actualResonse.length).toEqual(2, 'length should be equlas to 2 including groups');
+    expect(actualResonse[0].childs.length).toEqual(2, '2 static system fields');
+  }));
+
+  it(`mapGridFields(), help to transform Grid field with groups & autocomplete search`, async(()=>{
+    // call actual method
+    let actualResonse =  component.transformFieldRes(metadataModeleResponse);
+    component.mapGridFields(metadataModeleResponse,actualResonse)
+    // asserts
+    expect(actualResonse.length).toEqual(6, 'length should be equlas to 7 including groups');
+    expect(actualResonse[0].childs.length).toEqual(4, '4 static system fields');
+
+    component.widgetType = 'TIMESERIES';
+    actualResonse = [];
+    actualResonse =  component.transformFieldRes(metadataModeleResponse);
+    component.mapHierarchyFields(metadataModeleResponse,actualResonse)
+    // asserts
+    expect(actualResonse.length).toEqual(2, 'length should be equlas to 2 including groups');
+    expect(actualResonse[0].childs.length).toEqual(2, '2 static system fields');
+  }));
+
+  it(`getHierarchyParentField(), to get HierarchyParent field`, async(()=>{
+    // call actual method
+    const actualResonse =  component.getHierarchyParentField(metadataModeleResponse.hierarchy[0]);
+
+    // asserts
+    expect(actualResonse).toBeDefined();
+  }));
+
+  it(`getHierarchyParentField(), to get HierarchyParent field`, async(()=>{
+    // call actual method
+    const actualResonse =  component.getGridParentField(metadataModeleResponse.grids[0]);
+
+    // asserts
+    expect(actualResonse).toBeDefined();
+  }));
 });
