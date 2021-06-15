@@ -1192,11 +1192,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     if (event.value !== RuleDependentOn.ALL) {
       const tobeChild = this.businessRuleData[index]
       if (this.businessRuleData[index - 1].dep_rules) {
-        this.addChildatSameRoot(tobeChild, index)
+        this.addChildatSameRoot(tobeChild, index);
       }
       else {
         this.businessRuleData[index - 1].dep_rules = [];
-        this.addChildatSameRoot(tobeChild, index)
+        this.addChildatSameRoot(tobeChild, index);
       }
       const idxforChild = this.businessRuleData[index - 1].dep_rules.findIndex(item => item.brIdStr === tobeChild.brIdStr);
       this.businessRuleData[index - 1].dep_rules[idxforChild].dependantStatus = event.value;
