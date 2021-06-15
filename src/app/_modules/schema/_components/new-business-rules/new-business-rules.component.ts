@@ -586,7 +586,7 @@ export class NewBusinessRulesComponent implements OnInit {
             if (index === -1) {
                 this.form.get(key).setValidators(null);
                 this.form.get(key).clearValidators();
-                if (key !== 'rule_type' && key !== 'weightage' && !this.data.createRuleFormValues) {
+                if (key !== 'rule_type' && key !== 'weightage' && !this.data?.createRuleFormValues) {
                     this.form.get(key).setValue('');
                 }
             } else {

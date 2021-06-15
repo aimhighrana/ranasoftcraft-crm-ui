@@ -1021,4 +1021,31 @@ describe('SchemaInfoComponent', () => {
    expect(component.getCurrentBrStatusObj('All').key).toEqual('all');
    expect(component.getCurrentBrStatusObj('success').key).toEqual('success');
   }));
+
+  it('getStatusIcon(), should return an icon object', () => {
+      component.initializeSummaryForm();
+      component.schemaSummaryForm.controls.schemaName.setValue('test');
+      component.schemaSummaryForm.controls.schemaName.markAsTouched();
+
+      let res = component.getStatusIcon('schemaName', { loading: false, error: false});
+      expect(res).toEqual({
+        icon: 'check',
+        font: '',
+        type: 'success'
+      });
+
+      res = component.getStatusIcon('schemaName', { loading: true, error: false});
+      expect(res).toEqual({
+        icon: 'clock',
+        font: '',
+        type: ''
+      });
+
+      res = component.getStatusIcon('schemaName', { loading: false, error: true});
+      expect(res).toEqual({
+        icon: 'exclamation-circle',
+        font: 'solid',
+        type: 'error'
+      });
+  })
 });
