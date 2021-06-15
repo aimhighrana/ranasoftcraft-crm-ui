@@ -152,7 +152,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
    */
   isChecked(code: string): boolean {
     if (Object.keys(this.selectedMultiSelectData).length === 0) {
-      return false
+      return false;
     }
     if (this.selectedMultiSelectData && this.selectedMultiSelectData) {
       const index = this.selectedMultiSelectData.findIndex(item => {
