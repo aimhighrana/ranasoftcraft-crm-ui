@@ -1179,7 +1179,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     console.log($event);
     if (this.schemaValueChanged.observers.length === 0) {
       this.schemaValueChanged
-        .pipe(debounceTime(1000), distinctUntilChanged())
+        .pipe(distinctUntilChanged())
         .subscribe(schema => {
           this.updateSchemaInfo(schema, null, null);
         });
