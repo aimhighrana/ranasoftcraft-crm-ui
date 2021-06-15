@@ -7,12 +7,12 @@ import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 import { Router, Event, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
 import { ListService } from '@services/list/list.service';
-import { distinctUntilChanged, take } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, take } from 'rxjs/operators';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SecondaynavType } from '@models/menu-navigation';
@@ -88,6 +88,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
   /** To check page reloaded or not */
   isPageReload = true;
+  schemaList: SchemaListDetails[] = [];
+  schemaSearchString = '';
+  schemaSearchSub: Subject<string> = new Subject();
 
   /**
    * Emitter to emit sidebar toggleing
@@ -271,6 +274,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       }
     });
     this.getInboxNodesCount();
+  
+    const subscription = this.schemaSearchSub.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((searchString) => {
+      this.schemaSearchString =searchString;
+      this.getAllSchemaList(true);
+    });
+    this.subscriptions.push(subscription);
   }
 
   ngAfterViewInit() {
@@ -384,8 +396,25 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
     }, error => {
       console.error(`Error : ${error.message}`);
-    })
+    });
     this.subscriptions.push(subscription);
+    this.getAllSchemaList(true);
+  }
+
+  getAllSchemaList(reload = false) {
+    console.log('Get All Schema list', this.schemaSearchString);
+    const schemafromIndex = reload ? 0 : this.schemaList.length;
+    const subscription = this.schemaListService.getAllSchemaList(schemafromIndex, this.schemaSearchString).subscribe((schemaList) => {
+      this.schemaList = reload ? schemaList : this.schemaList.concat(schemaList);
+    });
+    this.subscriptions.push(subscription);
+  }
+
+  updateSchemaBatchInfo(schemaId: string) {
+    this.schemaListService.updateSchemaBatchInfo(schemaId).subscribe(() => {
+    }, (err) => {
+      console.error('Error while updating schema batch info', schemaId, err);
+    })
   }
 
   /**
@@ -485,8 +514,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    * @param searchString schema string to be searched
    */
   searchSchema(searchString: string) {
-
-    if (this.activatedPrimaryNav === 'schema' || this.activatedPrimaryNav === 'welcome') {
+    if(this.activatedPrimaryNav === 'welcome') {
+      this.schemaSearchSub.next(searchString);
+    }
+    if (this.activatedPrimaryNav === 'schema') {
       if (searchString === null) {
         return this.searchModuleResults = this.moduleList;
       }

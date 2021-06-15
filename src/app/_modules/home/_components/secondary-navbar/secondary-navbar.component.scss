@@ -126,3 +126,11 @@
 .menu-customdropdown > .lib-button {
   width: 100%;
 }
+
+.mat-line div.f-col {
+  > strong, >span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

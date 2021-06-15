@@ -28,6 +28,13 @@ export class EndpointsRuleService {
     return this.origin + '/schema/metadata/get-all-schemabymoduleids';
   }
 
+  public getAllRunningSchemaList(offset: number, size: number, searchStr: string): string {
+    return this.classicOrigin + `/schema/getAllRunningSchemaList?from=${offset}&size=${size}&searchString=${searchStr}`;
+  }
+  public updateSchemaBatchInfo(schemaId: string): string {
+    return this.classicOrigin + `/schema/updateSchemaBatchInfo?schemaId=${schemaId}`;
+  }
+
   public getSchemaDetailsBySchemaIdUrl(schemaId: string): string {
     return this.origin + '/schema/metadata/schema-details/' + schemaId;
   }

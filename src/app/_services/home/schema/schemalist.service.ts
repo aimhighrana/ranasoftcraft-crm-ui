@@ -20,6 +20,13 @@ export class SchemalistService {
     return this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
   }
 
+  public getAllSchemaList(offset: number, searchStr = ''): Observable<SchemaListDetails[]> {
+    return this.http.get<SchemaListDetails[]>(this.endpointService.getAllRunningSchemaList(offset, 40, searchStr));
+  }
+  public updateSchemaBatchInfo(schemaId: string): Observable<any> {
+    return this.http.post<any>(this.endpointService.updateSchemaBatchInfo(schemaId), {schemaId});
+  }
+
   public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {
     return this.http.get<any>(this.endpointService.getSchemaDetailsBySchemaIdUrl(schemaId)).pipe(map(data => {
       return this.any2tsService.any2SchemaDetailsWithCount(data);
