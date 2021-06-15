@@ -47,6 +47,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Selected group key
    */
   groupKey: string;
+  groupDesc: string;
   /**
    * Module / dataset id
    */
@@ -362,6 +363,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
                 const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
                 choosenField.order = index;
                 choosenField.fieldId = header;
+                choosenField.nodeId = 'header';
+                choosenField.nodeType = 'HEADER';
                 orderFld.push(choosenField);
               }
             });
@@ -870,6 +873,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
     this.groupId = event.groupId;
     this.groupKey = event.groupKey;
+    this.groupDesc = event.groupDesc;
     this.getData();
 
   }
@@ -999,10 +1003,18 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
-        console.log('correction request....')
+        console.log('correction request....');
+        const groupNumber = this.groupDesc ? this.groupDesc.split('Group')[1] : 1;
         const request: DoCorrectionRequest = {
-          id: objctNumber, fldId: fldid, vc: value, oc: oldVal,
-          groupIdold: this.groupId, groupIdnew: '', isReviewed: 'false', groupField: this.groupKey
+          id: objctNumber,
+          fldId: fldid,
+          vc: value,
+          oc: oldVal,
+          groupIdold: this.groupId,
+          groupIdnew: '',
+          isReviewed: 'false',
+          groupField: this.groupKey,
+          groupDesc: Number(groupNumber)
         } as DoCorrectionRequest;
         this.catalogService.doCorrection(this.schemaId, this.schemaInfo.runId, request).subscribe(res => {
           // row[fldid].fieldData = value;
