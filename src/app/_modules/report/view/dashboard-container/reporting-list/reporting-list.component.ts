@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy, SimpleChanges, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -16,7 +16,7 @@ import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { debounceTime, filter, map, startWith } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 @Component({
@@ -163,7 +163,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.selectedMultiSelectData = {};
         this.localFilterCriteria.forEach(item => {
           const type = this.getFormFieldType(item.fieldId);
-          if (type === FormControlType.TEXT || type == FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
+          if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
           } else if (type === FormControlType.DROP_DOWN) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
@@ -185,7 +185,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           }
         })
         if (Object.keys(this.reportingListFilterForm.controls).length)
-          this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria, this.activeSorts);
+          this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria), this.activeSorts);
       }
     })
   }
@@ -274,12 +274,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.displayedColumnsId.forEach(fieldId => {
           const type = this.getFormFieldType(fieldId)
           if (type === FormControlType.DROP_DOWN || type === FormControlType.TEXT || type === FormControlType.TEXTAREA) {
-            const sub = this.reportingListFilterForm.controls[fieldId].valueChanges.pipe(debounceTime(1000)).subscribe(res => {
+            const subRes = this.reportingListFilterForm.controls[fieldId].valueChanges.pipe(debounceTime(1000)).subscribe(res => {
               if (res !== null && ((type === FormControlType.DROP_DOWN && res === '') || (type === FormControlType.TEXTAREA || type === FormControlType.TEXT))) {
                 this.onFilterApplied(fieldId, type);
               }
             })
-            this.subscription.push(sub);
+            this.subscription.push(subRes);
           }
         })
       }
@@ -348,7 +348,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
               let textvalue = valArray.toString();
               const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields === column) : null;
               textvalue = textvalue === 'null' ? '' : textvalue
-              let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+              let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(item => item.c).toString() : '' : '';
               codeValue = codeValue === 'null' ? '' : codeValue;
               if (column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN' || reportingWidget.fldMetaData.picklist === '35') {
                 textvalue = this.getFields(column, codeValue);
@@ -556,7 +556,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
 
   /**
-   * 
+   *
    * @param fieldId field id of the column
    * @param formControlType type of form control
    * @param value selected values
@@ -582,7 +582,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
       } else if (formControlType === FormControlType.RADIO) {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
-      } 
+      }
       else {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
@@ -591,7 +591,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       let conditionOperator;
       const selectedDataIndex = this.filteredList.findIndex(item => item.fieldId === fieldId);
       if (selectedDataIndex > -1) {
-        conditionOperator = this.filteredList[selectedDataIndex]['conditionOperator'];
+        conditionOperator = this.filteredList[selectedDataIndex].conditionOperator;
       }
       const filterCriteria = new Criteria();
       filterCriteria.fieldId = fieldId;
@@ -632,13 +632,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.filteredList = this.filteredList.filter(item => item.fieldId !== fieldId);
         value.forEach(item => {
           const selectedValue = item.CODE;
-          let filterCriteria = new Criteria();
+          const filterCriteria = new Criteria();
           filterCriteria.fieldId = fieldId;
           filterCriteria.conditionFieldId = fieldId;
           filterCriteria.conditionFieldValue = selectedValue;
           filterCriteria.blockType = BlockType.COND;
           filterCriteria.widgetType = WidgetType.TABLE_LIST;
-          filterCriteria.conditionOperator = selectedData && selectedData['conditionOperator'] ? selectedData['conditionOperator'] : ConditionOperator.EQUAL;
+          filterCriteria.conditionOperator = selectedData && selectedData.conditionOperator ? selectedData.conditionOperator : ConditionOperator.EQUAL;
           this.localFilterCriteria.push(filterCriteria);
           filterCriteria.conditionFieldText = item.TEXT;
           this.filteredList.push(filterCriteria);
@@ -679,7 +679,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   getRangeLimit(fieldId: string, limitType: string): number {
     const fieldData = this.tableColumnMetaData.find(item => item.fields === fieldId)
-    if (limitType == 'max')
+    if (limitType === 'max')
       return +fieldData.fldMetaData.maxChar;
   }
 

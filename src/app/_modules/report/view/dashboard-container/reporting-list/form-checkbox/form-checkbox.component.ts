@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./form-checkbox.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FormCheckboxComponent implements OnInit {
+export class FormCheckboxComponent implements OnInit,OnChanges {
 
   constructor() { }
 
@@ -27,7 +27,7 @@ export class FormCheckboxComponent implements OnInit {
   /**
    * To emit value change of input to parent
    */
-  @Output() valueChange = new EventEmitter<Object>();
+  @Output() valueChange = new EventEmitter<object>();
 
   @Input() value: string;
 
@@ -47,7 +47,7 @@ export class FormCheckboxComponent implements OnInit {
     }
   }
 
-  /**
+/**
  * ANGULAR HOOK
  * To detect the changes from parent and update value
  * @param  changes: object contains prev and current value

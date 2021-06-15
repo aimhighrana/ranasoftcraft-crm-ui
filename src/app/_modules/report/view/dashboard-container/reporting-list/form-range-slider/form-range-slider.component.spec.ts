@@ -30,11 +30,6 @@ describe('FormRangeSliderComponent', () => {
     component.minValue = '0';
     component.maxValue = '10';
 
-    const res = {
-      formFieldId: 'column',
-      value: 'first'
-    }
-
     const emitEventSpy = spyOn(component.valueChange, 'emit');
     component.applyFilter();
     expect(emitEventSpy).toHaveBeenCalled();
@@ -44,23 +39,23 @@ describe('FormRangeSliderComponent', () => {
   it('getSelectedRangeValue(),should return selected range', async(() => {
     component.control = new FormControl();
 
-    let res = component.getSelectedRangeValue();
+    const res = component.getSelectedRangeValue();
     expect(res).toEqual('');
 
     component.control.setValue({ min: 1, max: 10 });
-    let result = component.getSelectedRangeValue();
+    const result = component.getSelectedRangeValue();
     expect(result).toEqual('1-10');
 
     component.control.setValue({ min: 0, max: 10 });
-    let result1 = component.getSelectedRangeValue().toString();
+    const result1 = component.getSelectedRangeValue().toString();
     expect(result1).toEqual('10');
 
     component.control.setValue({ min: 1, max: 0 });
-    let result2 = component.getSelectedRangeValue().toString();
+    const result2 = component.getSelectedRangeValue().toString();
     expect(result2).toEqual('1');
 
     component.control.setValue({ min: 0, max: 0 });
-    let result3 = component.getSelectedRangeValue();
+    const result3 = component.getSelectedRangeValue();
     expect(result3).toEqual('');
   }));
 

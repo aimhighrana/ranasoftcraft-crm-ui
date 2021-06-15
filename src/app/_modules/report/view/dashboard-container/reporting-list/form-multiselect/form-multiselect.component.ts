@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy, OnChanges, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Criteria, DisplayCriteria, DropDownValues } from '@modules/report/_models/widget';
+import { DisplayCriteria, DropDownValues } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { debounceTime, startWith } from 'rxjs/operators';
   styleUrls: ['./form-multiselect.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FormMultiselectComponent implements OnInit {
+export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
 
   constructor(private reportService: ReportService) { }
 
@@ -28,12 +28,12 @@ export class FormMultiselectComponent implements OnInit {
 
   @Input() displayCriteria: string;
 
-  @Input() isTableFilter: boolean = false;
+  @Input() isTableFilter = false;
 
   /**
    * To emit value change of input to parent
    */
-  @Output() valueChange = new EventEmitter<Object>();
+  @Output() valueChange = new EventEmitter<object>();
 
   @Input() value: [] = [];
 
@@ -59,11 +59,11 @@ export class FormMultiselectComponent implements OnInit {
     })
   }
 
-  /**
- * ANGULAR HOOK
- * To detect the changes from parent and update value
- * @param  changes: object contains prev and current value
- */
+ /**
+  * ANGULAR HOOK
+  * To detect the changes from parent and update value
+  * @param  changes: object contains prev and current value
+  */
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.value && changes.value.previousValue !== changes.value.currentValue) {
@@ -84,10 +84,13 @@ export class FormMultiselectComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    * @param searchText string to search
    */
   getDropDownValue(searchText?) {
+    if(!this.formFieldId) {
+      return;
+    }
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
       this.optionList = res;
       if (this.isTableFilter && this.selectedMultiSelectData.length) {
@@ -118,7 +121,7 @@ export class FormMultiselectComponent implements OnInit {
     this.valueChange.emit(response);
   }
 
-  /**
+/**
  * Method to handle when values are selected from multi select drop down
  * @param fieldId field id of the column
  * @param key key of the selected option
@@ -128,7 +131,7 @@ export class FormMultiselectComponent implements OnInit {
     if (this.selectedMultiSelectData) {
       const index = this.selectedMultiSelectData.findIndex(item => {
         const selectedKey = Object.keys(item)[0];
-        return selectedKey == key;
+        return selectedKey === key;
       });
       if (index > -1) {
         this.selectedMultiSelectData.splice(index, 1);
@@ -143,17 +146,17 @@ export class FormMultiselectComponent implements OnInit {
   }
 
   /**
-  * check that whether checkbox is checked or not
-  * @param code value of the checkbox
-  * @returns return checked property of option
-  */
+   * check that whether checkbox is checked or not
+   * @param code value of the checkbox
+   * @returns return checked property of option
+   */
   isChecked(code: string): boolean {
-    if (Object.keys(this.selectedMultiSelectData).length == 0) {
+    if (Object.keys(this.selectedMultiSelectData).length === 0) {
       return false
     }
     if (this.selectedMultiSelectData && this.selectedMultiSelectData) {
       const index = this.selectedMultiSelectData.findIndex(item => {
-        return Object.keys(item)[0] == code;
+        return Object.keys(item)[0] === code;
       });
       if (index > -1) {
         return true;
@@ -162,7 +165,7 @@ export class FormMultiselectComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    * @param option value of dropDown option
    * @returns returns the string to display on check box label
    */
@@ -206,7 +209,9 @@ export class FormMultiselectComponent implements OnInit {
     })
     additionalLength = this.selectedMultiSelectData.length - selectedValues.length;
     const additionalCount = document.getElementById('additional-' + this.formFieldId);
-    additionalCount ? additionalCount.innerHTML = '' : null;
+    if(additionalCount) {
+      additionalCount.innerHTML = '';
+    }
     if (additionalLength) {
       additionalCount.innerHTML = ' +' + additionalLength;
     }

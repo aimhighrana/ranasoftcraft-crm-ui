@@ -1,7 +1,7 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConditionOperator, Criteria, DisplayCriteria, ReportingWidget, OutputFormat, FormControlType, BlockType, WidgetType } from '@modules/report/_models/widget';
+import { Router } from '@angular/router';
+import { ConditionOperator, Criteria, DisplayCriteria, ReportingWidget, OutputFormat, FormControlType, BlockType } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
 import * as moment from 'moment';
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './configure-filters.component.html',
   styleUrls: ['./configure-filters.component.scss']
 })
-export class ConfigureFiltersComponent implements OnInit {
+export class ConfigureFiltersComponent implements OnInit, OnDestroy {
   filterCriteria: any[] = [];
   columnDescs: any = {} as any;
   tableColumnMetaData: ReportingWidget[];
@@ -36,21 +36,32 @@ export class ConfigureFiltersComponent implements OnInit {
   ) {
   }
 
-
+  /**
+   * angular hooks
+   */
   ngOnInit(): void {
     this.initializeForm();
     this.getUserDetails();
     this.getColumnNames();
   }
 
+  /**
+   * method call to initialize form
+   */
   initializeForm() {
     this.configurationFilterForm = this.formBuilder.group({});
   }
 
+  /**
+   * method call when click on cancel button
+   */
   close() {
     this.router.navigate([{ outlets: { sb: null } }]);
   }
 
+  /**
+   * method to get the column names
+   */
   getColumnNames() {
     const fieldsArray = [];
     this.tableColumnMetaData = this.reportService.getColumnMetaData();
@@ -64,10 +75,10 @@ export class ConfigureFiltersComponent implements OnInit {
       filteredCriteriaList.forEach(item => {
         const type = this.getFormFieldType(item.fieldId);
         if (type === FormControlType.MULTI_SELECT) {
-          const index = this.filterCriteria.findIndex(filterData => item.fieldId == filterData.fieldId);
-          if (index > -1) {
-            this.filterCriteria[index].conditionFieldValue.push(item.conditionFieldValue);
-            this.filterCriteria[index].conditionFieldText.push(item.conditionFieldText)
+          const filteredIndex = this.filterCriteria.findIndex(filterData => item.fieldId === filterData.fieldId);
+          if (filteredIndex > -1) {
+            this.filterCriteria[filteredIndex].conditionFieldValue.push(item.conditionFieldValue);
+            this.filterCriteria[filteredIndex].conditionFieldText.push(item.conditionFieldText)
           } else {
             this.filterCriteria.push({ ...item, conditionFieldValue: [item.conditionFieldValue], conditionFieldText: [item.conditionFieldText] })
           }
@@ -77,12 +88,12 @@ export class ConfigureFiltersComponent implements OnInit {
       })
     }
     this.tableColumnMetaData.forEach(item => {
-      const index = this.filterCriteria.findIndex(el => el.fieldId === item.fields);
-      if (index === -1) {
+      const filteredIndex = this.filterCriteria.findIndex(el => el.fieldId === item.fields);
+      if (filteredIndex === -1) {
         this.filterCriteria.push({ fieldId: item.fields })
       }
     })
-    this.filterCriteria.forEach((item, index) => {
+    this.filterCriteria.forEach((item) => {
       if (item.conditionFieldValue) {
         const type = this.getFormFieldType(item.fieldId)
         if (type === FormControlType.MULTI_SELECT || type === FormControlType.RADIO || type === FormControlType.CHECKBOX || type === FormControlType.DROP_DOWN) {
@@ -106,12 +117,17 @@ export class ConfigureFiltersComponent implements OnInit {
     const index = this.tableColumnMetaData.findIndex(item => item.fields === this.selectedFilter.fieldId);
     this.selectedFieldMetaData = this.tableColumnMetaData[index];
     if (this.selectedFieldMetaData && !this.selectedFieldMetaData.displayCriteria) {
-      this.selectedFieldMetaData['displayCriteria'] = DisplayCriteria.TEXT;
+      this.selectedFieldMetaData.displayCriteria = DisplayCriteria.TEXT;
     }
   }
 
 
-  onFilter(filter: Criteria, ind: number) {
+  /**
+   * method called when click on list items
+   * @param filter filtered values for selected filters 
+   * @param ind index of selected value
+   */
+  onClickOnListItem(filter: Criteria, ind: number) {
     this.selectedFilter = filter;
     const index = this.tableColumnMetaData.findIndex(item => item.fields === this.selectedFilter.fieldId);
     this.selectedFieldMetaData = this.tableColumnMetaData[index];
@@ -127,6 +143,10 @@ export class ConfigureFiltersComponent implements OnInit {
     }
   }
 
+  /**
+   * method called when value selected of option for single select, multi select
+   * @param value value for selected options
+   */
   onChange(value) {
     const formFieldType = this.getFormFieldType(this.selectedFilter.fieldId);
     if (this.filterApplied && this.filterApplied[this.selectedFilter.fieldId] && this.filterApplied[this.selectedFilter.fieldId].length) {
@@ -170,7 +190,10 @@ export class ConfigureFiltersComponent implements OnInit {
     }
   }
 
-
+  /**
+   * method called when input value change
+   * @param value value of input text
+   */
   onInputValueChange(value: string) {
     const filterCriteriaIndex = this.filterCriteria.findIndex(item => item.fieldId === this.selectedFilter.fieldId);
     if (this.filterCriteria[filterCriteriaIndex].conditionFieldValue) {
@@ -187,6 +210,10 @@ export class ConfigureFiltersComponent implements OnInit {
     }
   }
 
+  /**
+   * method called when value change for selected events
+   * @param event event for selected value
+   */
   rangeTypeValueChange(event) {
     const formFieldType = this.getFormFieldType(this.selectedFilter.fieldId);
     const filterCriteriaIndex = this.filterCriteria.findIndex(item => item.fieldId === this.selectedFilter.fieldId);
@@ -213,6 +240,10 @@ export class ConfigureFiltersComponent implements OnInit {
     }
   }
 
+  /**
+   * get the drop down list for selected items
+   * @param selectedItem field Id of selected item
+   */
   getDropDownValue(selectedItem: any) {
     const formFieldType = this.getFormFieldType(selectedItem.fieldId);
     this.filterApplied[selectedItem.fieldId] = [];
@@ -229,7 +260,7 @@ export class ConfigureFiltersComponent implements OnInit {
   }
 
   changeOutputFormat(type: DisplayCriteria) {
-    const index = this.tableColumnMetaData.findIndex(item => item.fields == this.selectedFilter.fieldId);
+    const index = this.tableColumnMetaData.findIndex(item => item.fields === this.selectedFilter.fieldId);
     this.tableColumnMetaData[index].displayCriteria = type;
     this.selectedFieldMetaData.displayCriteria = type;
   }
@@ -241,8 +272,8 @@ export class ConfigureFiltersComponent implements OnInit {
   }
 
   /**
-   * 
-   * @param fieldId id of field that 
+   *
+   * @param fieldId id of field that
    * @param value selected values for the filter
    * @returns text for the selected value
    */
@@ -289,8 +320,8 @@ export class ConfigureFiltersComponent implements OnInit {
         this.filterCriteria[i].conditionFieldValue.splice(conditionFieldIndex, 1);
       }
     } else {
-      const ind = this.filterCriteria.findIndex(item => item.fieldId === this.selectedFilter.fieldId && item.conditionFieldValue === code);
-      this.filterCriteria[ind].conditionFieldValue = null
+      const filteredIndex = this.filterCriteria.findIndex(item => item.fieldId === this.selectedFilter.fieldId && item.conditionFieldValue === code);
+      this.filterCriteria[filteredIndex].conditionFieldValue = null
     }
   }
 
@@ -371,9 +402,9 @@ export class ConfigureFiltersComponent implements OnInit {
   /**
    * Return the column type for the respective column
    * @param fieldId column id
-   * @returns form control type 
+   * @returns form control type
    */
-  getFormFieldType(fieldId: String): FormControlType | boolean {
+  getFormFieldType(fieldId: string): FormControlType | boolean {
     const hasFld = this.tableColumnMetaData.find(item => item.fields === fieldId);
     if (hasFld?.fldMetaData?.picklist || hasFld?.fldMetaData?.dataType) {
       if (hasFld.fldMetaData.dataType === 'DATS') {
@@ -412,25 +443,37 @@ export class ConfigureFiltersComponent implements OnInit {
   }
 
   /**
-  * returns the min or max value for range sliders
-  * @param fieldId field id for the column
-  * @param limitType min or max value
-  * @returns minimum or max value for range slider
-  */
+   * returns the min or max value for range sliders
+   * @param fieldId field id for the column
+   * @param limitType min or max value
+   * @returns minimum or max value for range slider
+   */
   getRangeLimit(fieldId: string, limitType: string): number {
     const fieldData = this.tableColumnMetaData.find(item => item.fields === fieldId)
-    if (limitType == 'max')
+    if (limitType === 'max')
       return +fieldData.fldMetaData.maxChar;
   }
 
+  /**
+   * return the selected date value
+   * @returns return the selected date value
+   */
   getSelectedDateValue() {
     return { start: new Date(Number(this.selectedFilter.conditionFieldStartValue)), end: new Date(Number(this.selectedFilter.conditionFieldEndValue)) };
   }
 
+  /**
+   * return the selected time value for selected component
+   * @returns selected time value
+   */
   getSelectedTimeValue() {
     return { start: this.selectedFilter.conditionFieldStartValue, end: this.selectedFilter.conditionFieldEndValue }
   }
 
+
+  /**
+   * Method call to get the date format
+   */
   public getUserDetails() {
     const sub = this.userService.getUserDetails().subscribe(user => {
       switch (user.dateformat) {

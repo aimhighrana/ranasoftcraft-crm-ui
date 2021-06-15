@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import {  FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Criteria, DropDownValues } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
@@ -30,11 +30,11 @@ export class FormRadioButtonGroupComponent implements OnInit {
 
   @Input() displayCriteria: string;
 
-  @Input() isTableFilter: boolean = false;
+  @Input() isTableFilter: boolean;
   /**
    * To emit value change of input to parent
    */
-  @Output() valueChange = new EventEmitter<Object>();
+  @Output() valueChange = new EventEmitter<object>();
 
 
   @Input() formFieldId: string;

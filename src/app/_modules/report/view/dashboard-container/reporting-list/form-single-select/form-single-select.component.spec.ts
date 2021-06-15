@@ -32,41 +32,37 @@ describe('FormSingleSelectComponent', () => {
   });
 
 
-  it("getDisplayText(),should return display text, ", async(() => {
-    let opt = {
+  it('getDisplayText(),should return display text, ', async(() => {
+    const opt = {
       CODE: 'first',
       TEXT: 'first',
-      FIELDNAME: "column",
-      langu: "EN",
+      FIELDNAME: 'column',
+      langu: 'EN',
       sno: 1,
       display: ''
     } as DropDownValues
 
     component.displayCriteria = 'CODE_TEXT';
-    let result = component.getDisplayText(opt);
+    const result = component.getDisplayText(opt);
     expect(result).toBe(opt.CODE + '-' + opt.TEXT);
 
     component.displayCriteria = 'CODE';
-    let result1 = component.getDisplayText(opt);
+    const result1 = component.getDisplayText(opt);
     expect(result1).toBe(opt.CODE);
 
     component.displayCriteria = 'TEXT';
-    let result2 = component.getDisplayText(opt);
+    const result2 = component.getDisplayText(opt);
     expect(result2).toBe(opt.TEXT);
 
   }));
 
-  it("getDisplayText(), ", async(() => {
-    let opt = null;
+  it('getDisplayText(), ', async(() => {
+    const opt = null;
     expect(component.getDisplayText(opt)).toBe('');
   }));
 
 
   it('selectSingleDropDownValue(), select values from single drop down', async(() => {
-    const res = {
-      formFieldId: 'column',
-      value: 'first'
-    }
 
     const emitEventSpy = spyOn(component.valueChange, 'emit');
     component.selectSingleDropDownValue();
@@ -101,23 +97,41 @@ describe('FormSingleSelectComponent', () => {
         previousValue: 'first',
         currentValue: 'test',
         firstChange: false,
-        isFirstChange() { return true }
+        isFirstChange() { return null }
       },
       displayCriteria: {
         previousValue: 'TEXT',
         currentValue: 'CODE',
         firstChange: false,
-        isFirstChange() { return true }
+        isFirstChange() { return null }
       },
       formFieldId: {
         previousValue: 'col',
         currentValue: 'MATL_GROUP',
         firstChange: false,
-        isFirstChange() { return false }
+        isFirstChange() { return null }
       }
     };
-    component.optionList = [{ CODE: 'test', TEXT: "TEST1" } as DropDownValues];
+    const returnData: DropDownValues[] = [{
+      sno: 1,
+      CODE: 'first',
+      TEXT: 'test',
+      langu: '',
+      display: '',
+      FIELDNAME: ''
+    }];
+
+    component.formFieldId = 'MATL_GROUP';
+
+    component.optionList = [{ CODE: 'test', TEXT: 'TEST1' } as DropDownValues];
+    spyOn(reportService, 'getDropDownValues')
+      .withArgs(component.formFieldId, undefined).and.returnValue(of(returnData))
+    console.log('componet.id',component.formFieldId);
+    component.getDropDownValue();
+
+    expect(component.optionList.length).toEqual(1);
     component.ngOnChanges(change);
+    expect(reportService.getDropDownValues).toHaveBeenCalledWith(component.formFieldId,undefined);
     expect(component.ngOnChanges).toBeTruthy();
   }));
 

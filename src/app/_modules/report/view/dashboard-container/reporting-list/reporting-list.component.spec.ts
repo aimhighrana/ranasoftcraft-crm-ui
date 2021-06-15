@@ -21,7 +21,7 @@ import { DropDownValue } from '@modules/admin/_components/module/business-rules/
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
 
-fdescribe('ReportingListComponent', () => {
+describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
   let fixture: ComponentFixture<ReportingListComponent>;
   let widgetServiceSpy: WidgetService;
@@ -501,17 +501,20 @@ fdescribe('ReportingListComponent', () => {
     component.onFilterApplied('MATL_GROUP', 'radio');
     expect(component.onFilterApplied).toBeTruthy();
 
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({start:new Date(),end: new Date()});
     component.onFilterApplied('MATL_GROUP', 'date');
     expect(component.onFilterApplied).toBeTruthy();
 
     component.onFilterApplied('MATL_GROUP', 'dropdown');
     expect(component.onFilterApplied).toBeTruthy();
 
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({start:{hours:'2',minutes:23},end:{hours:4, minutes:32}});
     component.onFilterApplied('MATL_GROUP', 'time');
     expect(component.onFilterApplied).toBeTruthy();
 
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({start:new Date(),end: new Date()});
     component.onFilterApplied('MATL_GROUP', 'dateTime');
-    expect(component.onFilterApplied).toBeTruthy(); 
+    expect(component.onFilterApplied).toBeTruthy();
 
     component.localFilterCriteria = [];
     component.onFilterApplied('MATL_GROUP', '');
@@ -540,7 +543,7 @@ fdescribe('ReportingListComponent', () => {
     component.filteredList = [];
     component.localFilterCriteria = [];
     component.onFilterApplied('MATL_GROUP', 'dateTime');
-    expect(component.onFilterApplied).toBeTruthy();  
+    expect(component.onFilterApplied).toBeTruthy();
 
   }));
 
@@ -556,8 +559,10 @@ fdescribe('ReportingListComponent', () => {
 
 
   it('getValue()', async(()=>{
-    component.dropDownValues['MATL_GROUP'] = [{CODE:'test1',TEXT:'text1'}];
-    component.dropDownValues['column'] = [{CODE:'test1',TEXT:'text1'}];
+    const matl = 'MATL_GROUP';
+    const column = 'column';
+    component.dropDownValues[matl] = [{CODE:'test1',TEXT:'text1'}];
+    component.dropDownValues[column] = [{CODE:'test1',TEXT:'text1'}];
     const res = component.getValue('MATL_GROUP');
     expect(res.length).toEqual(1);
   }));

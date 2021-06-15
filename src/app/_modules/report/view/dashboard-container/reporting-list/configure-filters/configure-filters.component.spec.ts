@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { ReportService } from '@modules/report/_service/report.service';
-import { WidgetService } from '@services/widgets/widget.service';
 import { BlockType, ConditionOperator, Criteria, DisplayCriteria, DropDownValues, FormControlType, ReportingWidget } from '@modules/report/_models/widget';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -19,16 +18,14 @@ describe('ConfigureFiltersComponent', () => {
   let component: ConfigureFiltersComponent;
   let fixture: ComponentFixture<ConfigureFiltersComponent>;
   let router: Router;
-  let widgetService: WidgetService;
   let reportService: ReportService;
   let userService: UserService;
 
   beforeEach(async(() => {
-    const widgetServiceSpy = jasmine.createSpyObj(WidgetService, ['getTableMetaData']);
     TestBed.configureTestingModule({
       declarations: [ConfigureFiltersComponent],
       imports: [RouterTestingModule, AppMaterialModuleForSpec, MdoUiLibraryModule],
-      providers: [ReportService, WidgetService, UserService]
+      providers: [ReportService, UserService]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -37,7 +34,6 @@ describe('ConfigureFiltersComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConfigureFiltersComponent);
     reportService = fixture.debugElement.injector.get(ReportService);
-    widgetService = fixture.debugElement.injector.get(WidgetService);
     userService = fixture.debugElement.injector.get(UserService);
     component = fixture.componentInstance;
 
@@ -182,7 +178,7 @@ describe('ConfigureFiltersComponent', () => {
         displayCriteria: DisplayCriteria.CODE
       }
     ];
-    let filter: Criteria = {
+    const filter: Criteria = {
       fieldId: 'MATL_GROUP',
       conditionFieldId: 'MATL_GROUP',
       conditionFieldValue: 'test',
@@ -195,16 +191,16 @@ describe('ConfigureFiltersComponent', () => {
 
 
     component.dropDownDataList = {
-      'MATL_GROUP': [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
-      'column': [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
-      'column1': [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
-      'column2': [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[]
+      MATL_GROUP: [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
+      column: [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
+      column1: [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
+      column2: [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[]
     }
     component.filterApplied = [];
-    component.onFilter(filter, 0);
-    expect(component.onFilter).toBeTruthy();
+    component.onClickOnListItem(filter, 0);
+    expect(component.onClickOnListItem).toBeTruthy();
 
-    let filter1: Criteria = {
+    const filter1: Criteria = {
       fieldId: 'column',
       conditionFieldId: 'column',
       conditionFieldValue: 'test',
@@ -214,10 +210,10 @@ describe('ConfigureFiltersComponent', () => {
       conditionFieldEndValue: null,
       udrid: null
     };
-    component.onFilter(filter1, 1);
-    expect(component.onFilter).toBeTruthy();
+    component.onClickOnListItem(filter1, 1);
+    expect(component.onClickOnListItem).toBeTruthy();
 
-    let filter2: Criteria = {
+    const filter2: Criteria = {
       fieldId: 'column1',
       conditionFieldId: 'column1',
       conditionFieldValue: 'test',
@@ -228,10 +224,10 @@ describe('ConfigureFiltersComponent', () => {
       udrid: null
     };
 
-    component.onFilter(filter2, 2);
-    expect(component.onFilter).toBeTruthy();
+    component.onClickOnListItem(filter2, 2);
+    expect(component.onClickOnListItem).toBeTruthy();
 
-    let filter3: Criteria = {
+    const filter3: Criteria = {
       fieldId: 'column2',
       conditionFieldId: 'column3',
       conditionFieldValue: 'test',
@@ -243,14 +239,15 @@ describe('ConfigureFiltersComponent', () => {
     };
 
     component.tableColumnMetaData[0].fldMetaData = { picklist: '0', dataType: 'CHAR' } as MetadataModel;
-    component.onFilter(filter3, 2);
-    expect(component.onFilter).toBeTruthy();
+    component.onClickOnListItem(filter3, 2);
+    expect(component.onClickOnListItem).toBeTruthy();
   }));
 
 
   it(`onChange(), should add DropDownValue in the filterApplied list if already exist`, async(() => {
 
-    component.filterApplied['MATL_GROUP'] = [];
+    const matl = 'MATL_GROUP';
+    component.filterApplied[matl] = [];
     const value = {
       CODE: 'test1',
       FIELDNAME: 'Test field 1',
@@ -331,7 +328,7 @@ describe('ConfigureFiltersComponent', () => {
 
 
   it('getDropDownValue(), should generate filters available on fieldId', async(() => {
-    let fieldId = 'MATL_GROUP';
+    const fieldId = 'MATL_GROUP';
     const returnData: DropDownValue[] = [];
     component.dropDownDataList[fieldId] = [];
     // spyOn(reportService, 'getDropDownValues').and.returnValue(of(returnData));
@@ -355,7 +352,7 @@ describe('ConfigureFiltersComponent', () => {
   }));
 
   it('getColumnNames(), should get column names', async(() => {
-    let tableColumnMetaData: ReportingWidget[] = [
+    const tableColumnMetaData: ReportingWidget[] = [
       {
         widgetId: 1,
         fields: 'MATL_GROUP',
@@ -367,7 +364,7 @@ describe('ConfigureFiltersComponent', () => {
       }
     ];
 
-    let filteredCriteriaList: Criteria[] = [{
+    const filteredCriteriaList: Criteria[] = [{
       fieldId: 'MATL_GROUP',
       conditionFieldId: 'MATL_GROUP',
       conditionFieldValue: 'test',
@@ -388,7 +385,7 @@ describe('ConfigureFiltersComponent', () => {
   }));
 
   it('getColumnNames(), should get column names for multi select component', async(() => {
-    let tableColumnMetaData: ReportingWidget[] = [
+    const tableColumnMetaData: ReportingWidget[] = [
       {
         widgetId: 1,
         fields: 'MATL_GROUP',
@@ -400,7 +397,7 @@ describe('ConfigureFiltersComponent', () => {
       }
     ];
 
-    let filteredCriteriaList: Criteria[] = [{
+    const filteredCriteriaList: Criteria[] = [{
       fieldId: 'MATL_GROUP',
       conditionFieldId: 'MATL_GROUP',
       conditionFieldValue: 'test',
@@ -443,7 +440,7 @@ describe('ConfigureFiltersComponent', () => {
   it('getSelectedValue() get selected value to show in text', () => {
     let fieldId = 'MATL_GROUP'
     component.dropDownDataList = {
-      'MATL_GROUP': [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
+      MATL_GROUP: [{ CODE: 'test', TEXT: 'TEST' }, { CODE: 'test2', TEXT: 'TEST2' }] as DropDownValues[],
     }
     expect(component.getSelectedValue(fieldId, 'test')).toEqual('TEST');
     fieldId = 'column'
@@ -726,7 +723,7 @@ describe('ConfigureFiltersComponent', () => {
 
 
   it('rangeTypeValueChange()', async(() => {
-    let event = {
+    const event = {
       value: { min: 1, max: 10 }
     }
 

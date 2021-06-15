@@ -11,7 +11,7 @@ describe('FormMultiSelectComponent', () => {
   let component: FormMultiselectComponent;
   let fixture: ComponentFixture<FormMultiselectComponent>;
   let reportService: jasmine.SpyObj<ReportService>;
-  var dumHTML,dumHTML2;
+  let dumHTML;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -21,8 +21,7 @@ describe('FormMultiSelectComponent', () => {
       .compileComponents();
       reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;
       dumHTML = document.createElement('div');
-      dumHTML2 = document.createElement('div');  
-      document.getElementById = jasmine.createSpy('HTML').and.returnValue(dumHTML); 
+      document.getElementById = jasmine.createSpy('HTML').and.returnValue(dumHTML);
   }));
 
   beforeEach(() => {
@@ -48,33 +47,28 @@ describe('FormMultiSelectComponent', () => {
     component.formFieldId='MATL_GROUP';
     component.optionList = [];
     component.selectedMultiSelectData = [{ [value.CODE]: null }];
-    component.isTableFilter = true; 
+    component.isTableFilter = true;
 
     spyOn(reportService,'getDropDownValues')
     .withArgs(component.formFieldId,'first').and.returnValue(of(returnData));
-    
-    component.getDropDownValue('first'); 
+
+    component.getDropDownValue('first');
     expect(component.optionList.length).toEqual(1);
   }));
 
 
-  it('applyFilter(), filter values', async(() => {   
+  it('applyFilter(), filter values', async(() => {
     component.formFieldId = 'MATL_GROUP';
-    const res = { 
-      formFieldId: 'column',
-      value: 'first'
-    }
-
     const emitEventSpy = spyOn(component.valueChange, 'emit');
-    component.applyFilter(); 
+    component.applyFilter();
     expect(emitEventSpy).toHaveBeenCalled();
   }));
 
 
   it('selectionChangeHandler(), selected value for multi selected data', (async () => {
-    const value = { CODE: 'CODE', TEXT: "TEXT" } as DropDownValues;
+    const value = { CODE: 'CODE', TEXT: 'TEXT' } as DropDownValues;
 
-    component.selectedMultiSelectData = null; 
+    component.selectedMultiSelectData = null;
     component.selectionChangeHandler(value.CODE, value.TEXT);
     expect(component.selectionChangeHandler).toBeTruthy();
 
@@ -85,49 +79,48 @@ describe('FormMultiSelectComponent', () => {
     component.selectionChangeHandler(value.CODE, value.TEXT);
     expect(component.selectionChangeHandler).toBeTruthy();
 
-    component.selectedMultiSelectData = [{ 'column': value.TEXT }];
+    component.selectedMultiSelectData = [{ column: value.TEXT }];
     component.selectionChangeHandler(value.CODE, value.TEXT);
     expect(component.selectionChangeHandler).toBeTruthy();
   }));
 
 
   it('isChecked(),should return true if a value is already selected', async(()=>{
-    const value = { CODE: 'CODE', TEXT: "TEXT" } as DropDownValues;
-    
+    const value = { CODE: 'CODE', TEXT: 'TEXT' } as DropDownValues;
+
     component.isChecked(value.CODE);
     expect(component.isChecked).toBeTruthy();
 
-    component.selectedMultiSelectData = [{ [value.CODE]: value.TEXT }];    
+    component.selectedMultiSelectData = [{ [value.CODE]: value.TEXT }];
     component.isChecked(value.CODE);
     expect(component.isChecked).toBeTruthy();
 
   }));
 
   it('getLabel(),should get label', async(()=>{
-    let opt = { 
+    const opt = {
       CODE: 'CODE',
       TEXT: 'TEXT'
-     } as DropDownValues 
-     
+     } as DropDownValues
+
     component.displayCriteria = 'CODE_TEXT';
-    let result = component.getLabel(opt);    
+    const result = component.getLabel(opt);
     expect(result).toBe(opt.CODE + '-' + opt.TEXT);
 
     component.displayCriteria = 'CODE';
-    let result1 = component.getLabel(opt);    
+    const result1 = component.getLabel(opt);
     expect(result1).toBe(opt.CODE);
 
     component.displayCriteria = 'TEXT';
-    let result2 = component.getLabel(opt);    
+    const result2 = component.getLabel(opt);
     expect(result2).toBe(opt.TEXT);
 
   }));
 
 
   it('ngOnChanges(),should detect changes and update', async(()=>{
-    const value = { CODE: 'CODE', TEXT: "TEXT" } as DropDownValues;
     let change : SimpleChanges = {
-      value :{ 
+      value :{
         previousValue: ['first'],
         currentValue: ['second'],
         firstChange: true,
@@ -136,25 +129,25 @@ describe('FormMultiSelectComponent', () => {
     };
 
     component.selectedMultiSelectData = [];
-    component.ngOnChanges(change); 
+    component.ngOnChanges(change);
     expect(component.selectedMultiSelectData[0].second).toEqual(null);
 
     change = {
       value : {
-        previousValue : [{ CODE: 'CODE', TEXT: "TEXT" }],
-        currentValue : [{ CODE: 'CODE', TEXT: "TEXT" },{ CODE: 'CODE1', TEXT: "TEXT1" }],
+        previousValue : [{ CODE: 'CODE', TEXT: 'TEXT' }],
+        currentValue : [{ CODE: 'CODE', TEXT: 'TEXT' },{ CODE: 'CODE1', TEXT: 'TEXT1' }],
         firstChange : false,
         isFirstChange() { return false}
       }
     }
 
-    component.selectedMultiSelectData = [{ CODE: 'CODE', TEXT: "TEXT" },{ CODE: 'CODE1', TEXT: "TEXT1" }]
+    component.selectedMultiSelectData = [{ CODE: 'CODE', TEXT: 'TEXT' },{ CODE: 'CODE1', TEXT: 'TEXT1' }]
     component.ngOnChanges(change);
     expect(component.selectedMultiSelectData.length).toEqual(2);
 
     change = {
       value : {
-        previousValue : [{ CODE: 'CODE', TEXT: "TEXT" }],
+        previousValue : [{ CODE: 'CODE', TEXT: 'TEXT' }],
         currentValue : null,
         firstChange : false,
         isFirstChange() { return false}
@@ -168,19 +161,19 @@ describe('FormMultiSelectComponent', () => {
   }));
 
 
-  it('getSelectedData()', async(()=>{ 
-    const value = { CODE: 'test', TEXT: "TEST1" } as DropDownValues;
+  it('getSelectedData()', async(()=>{
+    const value = { CODE: 'test', TEXT: 'TEST1' } as DropDownValues;
     component.selectedMultiSelectData = [{ [value.CODE]: value.TEXT }];
-    component.optionList = [{ CODE: 'test', TEXT: "TEST1" } as DropDownValues] ; 
+    component.optionList = [{ CODE: 'test', TEXT: 'TEST1' } as DropDownValues] ;
 
-    const selectedDataList = component.getSelectedData(); 
+    const selectedDataList = component.getSelectedData();
     expect(selectedDataList.length).toEqual(1);
   }));
- 
 
-  it('ngOnInit()', async(()=>{  
+
+  it('ngOnInit()', async(()=>{
     component.ngOnInit();
-    expect(component.ngOnInit).toBeTruthy(); 
+    expect(component.ngOnInit).toBeTruthy();
   }));
 
 
@@ -190,12 +183,12 @@ describe('FormMultiSelectComponent', () => {
   });
 
 
-  it('displayMultiselectText()', async(()=>{ 
-    const value = { CODE: 'CODE', TEXT: "TEXT" } as DropDownValues; 
+  it('displayMultiselectText()', async(()=>{
+    const value = { CODE: 'CODE', TEXT: 'TEXT' } as DropDownValues;
     component.formFieldId = 'MATL_GROUP';
 
-    component.selectedMultiSelectData = [{ [value.CODE]: value.TEXT }]; 
-    
+    component.selectedMultiSelectData = [{ [value.CODE]: value.TEXT }];
+
     component.displayCriteria = 'CODE';
     component.displayMultiselectedText();
     expect(component.displayMultiselectedText).toBeTruthy();

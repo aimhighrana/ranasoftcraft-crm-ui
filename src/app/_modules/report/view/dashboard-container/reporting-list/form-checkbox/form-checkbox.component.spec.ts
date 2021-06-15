@@ -37,7 +37,7 @@ describe('FormInputComponent', () => {
 
   it('ngOnChanges()', async(() => {
     component.control = new FormControl();
-    let changes: SimpleChanges = {};
+    const changes: SimpleChanges = {};
     component.ngOnChanges(changes);
     expect(component.ngOnChanges).toBeTruthy();
     const change1: SimpleChanges = {
@@ -64,10 +64,6 @@ describe('FormInputComponent', () => {
 
 
   it('applyFilter(), filter values', async(() => {
-    const response = {
-      formFieldId: component.formFieldId,
-      value: true
-    }
     const emitEventSpy = spyOn(component.valueChange, 'emit');
     component.applyFilter();
     expect(emitEventSpy).toHaveBeenCalled();

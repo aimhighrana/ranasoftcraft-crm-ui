@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pros-form-range-slider',
   templateUrl: './form-range-slider.component.html',
-  styleUrls: ['./form-range-slider.component.scss'],
+  // styleUrls: ['./form-range-slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class FormRangeSliderComponent implements OnInit {
@@ -37,7 +36,7 @@ export class FormRangeSliderComponent implements OnInit {
   /**
    * To emit value change of radio to parent
    */
-  @Output() valueChange = new EventEmitter<Object>();
+  @Output() valueChange = new EventEmitter<object>();
 
 
   @Input() formFieldId: string;
@@ -45,7 +44,7 @@ export class FormRangeSliderComponent implements OnInit {
   @Input() maxValue: string;
   @Input() minValue: string;
 
-  highValue: number = 59;
+  highValue = 59;
   subscription: Subscription[] = [];
   fltrCtrl: FormControl = new FormControl();
   regex = '[0-9]{1,}-[0-9]{1,}'
@@ -92,7 +91,7 @@ export class FormRangeSliderComponent implements OnInit {
 
 
   /**
-   * 
+   *
    * @returns selected value of the range slider
    */
   getSelectedRangeValue(): string {

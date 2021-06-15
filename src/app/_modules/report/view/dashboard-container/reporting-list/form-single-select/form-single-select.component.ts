@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
-import { Criteria, DisplayCriteria, DropDownValues } from '@modules/report/_models/widget';
+import { FormControl } from '@angular/forms';
+import { DropDownValues } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { Subscription } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
+import { debounceTime, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-form-single-select',
   templateUrl: './form-single-select.component.html',
-  styleUrls: ['./form-single-select.component.scss'],
+  // styleUrls: ['./form-single-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class FormSingleSelectComponent implements OnInit, OnChanges {
@@ -39,7 +39,7 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
   /**
    * To emit value change of input to parent
    */
-  @Output() valueChange = new EventEmitter<Object>();
+  @Output() valueChange = new EventEmitter<object>();
 
   @Input() formFieldId: string;
 
@@ -81,13 +81,18 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
     if (changes.displayCriteria && changes.displayCriteria.previousValue !== undefined && changes.displayCriteria.previousValue !== changes.displayCriteria.currentValue) {
       this.displayCriteria = changes.displayCriteria.currentValue;
     }
-    if (changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
+
+    if (changes.formFieldId && changes.formFieldId.currentValue && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
       this.formFieldId = changes.formFieldId.currentValue;
       this.getDropDownValue();
     }
   }
 
   getDropDownValue(searchText?): string | boolean | void {
+    console.log('form  field id====',this.formFieldId,searchText);
+    if(!this.formFieldId){
+      return;
+    }
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
       this.optionList = res;
     })
