@@ -95,9 +95,13 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngOnDestroy() {
-    this.udSub.unsubscribe();
-    this.appStateSubject.complete();
-    this.appStateSubject.unsubscribe();
+    if(this.udSub) {
+      this.udSub.unsubscribe();
+    }
+    if(this.appStateSubject) {
+      this.appStateSubject.complete();
+      this.appStateSubject.unsubscribe();
+    }
   }
 
   /**
