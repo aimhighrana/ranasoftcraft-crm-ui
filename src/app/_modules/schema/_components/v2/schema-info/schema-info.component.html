@@ -40,7 +40,7 @@
                         type="text"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
                         placeholder="Schema name" i18n-label="@@schema_name" label="Schema name"
-                        (afterBlur)="onChangeSchemaDescription($event); updateSchemaInfo($event);"></lib-input>
+                        (afterBlur)="onChangeSchemaDescription(schemaSummaryForm.controls.schemaName.value); updateSchemaInfo($event);"></lib-input>
                     </div>
 
                     <div class="row-spacer"></div>
