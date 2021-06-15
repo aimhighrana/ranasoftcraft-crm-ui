@@ -364,7 +364,6 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
         }
       }
     })
-    console.log('filtered criteria=====', filteredCriteriaList);
     this.reportService.setFilterCriteria(filteredCriteriaList);
     this.reportService.setColumnMetaData(this.tableColumnMetaData);
     this.reportService.isSideSheetClose.next(true);
