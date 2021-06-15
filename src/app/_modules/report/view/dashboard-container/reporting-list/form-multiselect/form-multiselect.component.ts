@@ -231,7 +231,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
     this.selectedMultiSelectData.forEach(el => {
       const code = Object.keys(el)[0]
       const selectedData = this.optionList.find(item => item.CODE === code);
-      const data = { CODE: selectedData.CODE, TEXT: selectedData.TEXT }
+      const data = { CODE: selectedData.CODE, TEXT: selectedData.TEXT };
       selectedDataList.push(data);
     })
     return selectedDataList;
