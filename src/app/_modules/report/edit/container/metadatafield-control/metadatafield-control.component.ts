@@ -12,6 +12,7 @@ export interface Metadata {
   isGroup: boolean;
   fldCtrl?: MetadataModel;
   childs: Metadata[];
+  fieldType?: string;
 }
 @Component({
   selector: 'pros-metadatafield-control',
@@ -69,7 +70,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
 
   customFields: MetadataModel[];
   customFieldsObs: Observable<MetadataModel[]> = of([]);
-
+  parentFieldDesc: string;
   /**
    * All the http or normal subscription will store in this array
    */
@@ -166,6 +167,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   }
 
   ngOnInit(): void {
+
     this.fieldFrmCtrl.valueChanges.subscribe(val=>{
       if(this.isCustomdataset) {
         if(val && typeof val === 'string' && val.trim() !== '') {
@@ -302,6 +304,23 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       childs: headerChilds
     });
 
+
+    if(this.widgetType !== 'Table') {
+
+      metadata.push({
+        fieldId: 'hierarchy_fields',
+        fieldDescri: 'Hierarchy fields',
+        isGroup: true,
+        childs: this.mapHierarchyFields(response)
+      });
+
+      metadata.push({
+        fieldId: 'grid_fields',
+        fieldDescri: 'Grid fields',
+        isGroup: true,
+        childs: this.mapGridFields(response)
+      });
+    }
     // for grid response transformations
     // if(response && response.grids && this.widgetType === 'TIMESERIES') {
     //   Object.keys(response.grids).forEach(grid=>{
@@ -439,6 +458,10 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * @param option selected option from ui
    */
   selected(option:any) {
+    this.parentFieldDesc = '';
+    if( option?.option?.value.fieldType){
+      this.parentFieldDesc = option.option.value.fieldType +'/'
+    }
     this.selectionChange.emit(option);
   }
 
@@ -456,5 +479,92 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       });
     }
     return metaData;
+  }
+
+  private mapHierarchyFields(response: MetadataModeleResponse): Metadata[]{
+    const hierarchyChilds: Metadata[] = [];
+    if(response && response.hierarchy  && this.widgetType === 'TIMESERIES') {
+      response.hierarchy.forEach(hierarchy => {
+        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+            const hierarchyDesc = response.hierarchy.find((x)=> { return x.heirarchyId === fld })?.heirarchyText;
+            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+              hierarchyChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: hierarchyDesc
+              });
+            }
+          });
+        }
+      });
+    }
+    else if(response && response.hierarchy) {
+      response.hierarchy.forEach(hierarchy => {
+        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+            const hierarchyDesc = response.hierarchy.find((x)=> { return x.heirarchyId === hierarchy.heirarchyId })?.heirarchyText;
+            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+            hierarchyChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: hierarchyDesc
+              });
+          });
+        }
+      });
+    }
+    return hierarchyChilds;
+  }
+
+  private mapGridFields(response: MetadataModeleResponse): Metadata[]{
+    const gridChilds: Metadata[] = [];
+    // for grid response transformations
+    if(response && response.grids && this.widgetType === 'TIMESERIES') {
+      Object.keys(response.grids).forEach(grid=>{
+        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+          Object.keys(response.gridFields[grid]).forEach(fld=>{
+            const gridDesc = response.gridFields[grid][fld].fieldDescri;
+            const fldCtrl = response.gridFields[grid][fld];
+            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+              gridChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: gridDesc
+              });
+            }
+          });
+        }
+      })
+    } else if(response && response.grids) {
+      Object.keys(response.grids).forEach(grid=>{
+        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+          Object.keys(response.gridFields[grid]).forEach(fld=>{
+            const gridDesc = response.gridFields[grid][fld].fieldDescri;
+            const fldCtrl = response.gridFields[grid][fld];
+            gridChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: gridDesc
+              });
+          });
+        }
+      })
+    }
+
+      return gridChilds;
   }
 }

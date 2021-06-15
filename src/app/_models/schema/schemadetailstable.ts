@@ -295,6 +295,7 @@ export interface MetadataModel {
     sno?: DisplayCriteria;
     nodeId?: string;
     nodeType?: string;
+    fieldType?:string
 }
 export class Heirarchy {
     objnr: number;
