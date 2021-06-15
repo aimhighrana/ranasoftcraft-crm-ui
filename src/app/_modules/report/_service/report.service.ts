@@ -8,7 +8,7 @@ import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoint
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { BehaviorSubject } from 'rxjs';
-import { EmailTemplate } from '../_models/email';
+import { EmailTemplateBody, EmailRequestBody,EmailResponseBody, EmailTemplate } from '../_models/email';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class ReportService {
   filterCriteria: Criteria[] = [];
   tableColumnMetaData: ReportingWidget[] = [];
   isSideSheetClose: Subject<boolean> = new Subject();
-  selectedTemplate: BehaviorSubject<EmailTemplate> = new BehaviorSubject(null);
+  selectedTemplate: BehaviorSubject<EmailTemplateBody> = new BehaviorSubject(null);
 
   constructor(
     private http: HttpClient,
@@ -124,7 +124,16 @@ export class ReportService {
   public sideSheetStatusChange() {
     return this.isSideSheetClose.asObservable();
   }
-  public shareReport(request: any, reportId: string): Observable<ReportDashboardPermission[]> {
-    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.shareReport(reportId), request);
+  
+  public shareReport(request: EmailRequestBody, reportId:string): Observable<EmailResponseBody[]> {
+    return this.http.post<EmailResponseBody[]>(this.endpointAnalyticService.shareReport(reportId), request);
+  }
+
+  public getAllTemplates(): Observable<EmailTemplate[]> {
+    return this.http.get<EmailTemplate[]>(this.endpointAnalyticService.getAllTemplates());
+  }
+
+  public getTemplateById(_id:string): Observable<EmailTemplateBody> {
+    return this.http.get<EmailTemplateBody>(this.endpointAnalyticService.getTemplateById(_id));
   }
 }

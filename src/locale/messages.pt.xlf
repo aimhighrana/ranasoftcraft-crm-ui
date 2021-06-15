@@ -2706,6 +2706,30 @@
         <source>Field To Field Less Than Equal</source>
         <target>Campo a campo menor que igual</target>
       </trans-unit>
+      <trans-unit id="collaborators" datatype="html">
+        <source>Collaborators</source>
+        <target>Colaboradores</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_user_name" datatype="html">
+        <source>Type user name to add</source>
+        <target>Digite o nome de usuário para adicionar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">215</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="collaborator" datatype="html">
+        <source>Collaborator</source>
+        <target>Colaborador</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">228</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

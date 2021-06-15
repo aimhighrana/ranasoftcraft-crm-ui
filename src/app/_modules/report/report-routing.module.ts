@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'summary/:widgetId/:objectNumber/:layoutId', component: SummaryLayoutComponent },
   { path: 'column-settings/:widgetId', component: ReportDatatableColumnSettingsComponent },
   { path: 'download-widget/:widgetId', component: ExportReportDatatableComponent },
-  { path: 'send-email', component: SendEmailComponent },
+  { path: 'send-email/:reportId', component: SendEmailComponent },
   { path: 'email-template', component: EmailTemplateComponent },
   { path: 'import-log/:reportId', component: ImportLogComponent },
   { path: 'configure-filters/:widgetId', component: ConfigureFiltersComponent },
