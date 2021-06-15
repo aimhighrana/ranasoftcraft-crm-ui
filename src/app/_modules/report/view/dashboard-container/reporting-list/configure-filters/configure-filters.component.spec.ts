@@ -14,7 +14,7 @@ import { UserService } from '@services/user/userservice.service';
 import { of } from 'rxjs';
 import { Userdetails } from '@models/userdetails';
 
-describe('ConfigureFiltersComponent', () => {
+fdescribe('ConfigureFiltersComponent', () => {
   let component: ConfigureFiltersComponent;
   let fixture: ComponentFixture<ConfigureFiltersComponent>;
   let router: Router;

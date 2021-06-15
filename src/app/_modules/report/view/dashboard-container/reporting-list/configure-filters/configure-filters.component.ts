@@ -475,7 +475,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
    */
   public getUserDetails() {
     const sub = this.userService.getUserDetails().subscribe(user => {
-      switch (user.dateformat.toLowerCase()) {
+      switch (user.dateformat?.toLowerCase()) {
         case 'mm.dd.yy':
           this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
           break;
