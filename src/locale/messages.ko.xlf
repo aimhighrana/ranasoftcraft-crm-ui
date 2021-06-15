@@ -2686,6 +2686,30 @@
         <source>Field To Field Less Than Equal</source>
         <target>필드가 같지 않은 필드로</target>
       </trans-unit>
+      <trans-unit id="collaborators" datatype="html">
+        <source>Collaborators</source>
+        <target>협력자</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_user_name" datatype="html">
+        <source>Type user name to add</source>
+        <target>추가 할 사용자 이름을 입력하세요.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">215</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="collaborator" datatype="html">
+        <source>Collaborator</source>
+        <target>협력자</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">228</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

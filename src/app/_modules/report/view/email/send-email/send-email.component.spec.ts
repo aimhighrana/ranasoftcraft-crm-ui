@@ -9,9 +9,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { Userdetails } from '@models/userdetails';
 import { PermissionOn } from '../../../../../_models/collaborator'
-import { EmailTemplate } from '../../../_models/email';
+import { EmailTemplateBody } from '../../../_models/email';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 
 describe('SendEmailComponent', () => {
   let component: SendEmailComponent;
@@ -66,9 +66,10 @@ describe('SendEmailComponent', () => {
 
   it('selectTemplate(), should navigate to select Teamplate' , () => {
     spyOn(router, 'navigate');
+    component.reportId = '844806112923162960';
     component.selectTemplate();
     expect(component.selectTemplate).toBeTruthy();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb:`sb/report/send-email`, outer: 'outer/report/email-template' } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb:`sb/report/send-email/${component.reportId}`, outer: 'outer/report/email-template' } }]);
   });
 
   it('setEmailFormGroup(), should build the email form' , () => {
@@ -88,12 +89,26 @@ describe('SendEmailComponent', () => {
   });
 
   it('sendEmail(), On click of send email validate form and then send' , () => {
-    component.emailFormGrp.patchValue({subject:'', message:'', to : ['testuser@ymail.com']})
-    component.sendEmail();
-    /* Expect statements will be return once api call is done */
+    const emailResponse = [{
+        email:'testuser@ymail.com.',
+        acknowledge: true,
+      }];
 
-    component.emailFormGrp.patchValue({subject:'', message:'', to : []})
-    expect(component.sendEmail()).toBeFalse();
+    component.emailRecipients = ['testuser@ymail.com'];
+    component.emailFormGrp.patchValue({subject:'subject', message:'message', to : ['testuser@ymail.com']});
+    spyOn(reportService,'shareReport').and.returnValues(of(emailResponse),throwError('Error'));
+    component.sendEmail();
+    expect(component.errorMsg).toBeDefined('');
+
+    component.sendEmail();
+    expect(component.errorMsg).toBeDefined('');
+  });
+
+  it('sendEmail(), On click of send email validate form' , () => {
+    component.emailRecipients = [''];
+    component.emailFormGrp.patchValue({subject:'', message:'', to : ['']});
+    component.sendEmail();
+    expect(component.errorMsg).toBeUndefined('');
   });
 
   it('addMyself(), On click of add myself set loggedIn user as recipient' , () => {
@@ -101,7 +116,10 @@ describe('SendEmailComponent', () => {
       email: 'nikhil@prospecta.com',
     } as Userdetails
 
-    spyOn(userService, 'getUserDetails').and.returnValue(of(userDetails));
+    spyOn(userService, 'getUserDetails').and.returnValues(of(userDetails),throwError('Error'));
+    component.addMyself();
+    expect(component.emailRecipients.length).toEqual(1);
+
     component.addMyself();
     expect(component.emailRecipients.length).toEqual(1);
   });
@@ -114,6 +132,13 @@ describe('SendEmailComponent', () => {
     expect(component.users).toBeDefined();
   });
 
+  it('getCollaboratorPermission(), On click of getCollaboratorPermission error should be handled' , () => {
+    spyOn(reportService,'getCollaboratorPermission').and.returnValue(throwError('Error'));
+
+    component.getCollaboratorPermission(null,null);
+    expect(component.users).toBeDefined();
+  });
+
   it('remove(),should remove user from recipients list ',()=>{
     component.emailRecipients = ['testuser']
     component.remove('testuser');
@@ -121,11 +146,11 @@ describe('SendEmailComponent', () => {
   });
 
   it('getSelectedTemplate(),should set template subject and message ',()=>{
-    const templates: EmailTemplate[] =  [{ templateName: 'Template 1', subject: 'Subject - Template 1', message: 'Template 2' }];
-   reportService.selectedTemplate = new BehaviorSubject<EmailTemplate>(templates[0]);
+    const templates: EmailTemplateBody = {subType: 'Dashboard', emailSub: 'Subject', emailText: `<b>Test Template</b>`}
+    reportService.selectedTemplate = new BehaviorSubject<EmailTemplateBody>(templates);
     component.getSelectedTemplate();
-    expect(component.emailFormGrp.controls.subject.valid).toBeTrue();
-    expect(component.emailFormGrp.controls.message.valid).toBeTrue();
+    expect(component.emailFormGrp.controls.subject.value).toEqual(templates.emailSub);
+    expect(component.emailFormGrp.controls.message.value).toEqual(templates.emailText);
 
   });
 

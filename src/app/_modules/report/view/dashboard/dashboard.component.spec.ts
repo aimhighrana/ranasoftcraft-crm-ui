@@ -100,4 +100,12 @@ describe('DashboardComponent', () => {
     expect(dialogSpy).toHaveBeenCalled();
     expect(dialogSpy).toHaveBeenCalledWith(ExportComponent, { data: { reportName: 'Test', reportId: 222 }, disableClose: true, width: '600px', minHeight: '150px' });
   });
+
+  it('openSendEmailSideSheet(), open slidesheet', () => {
+    component.reportId = 222;
+    component.reportName = 'Test';
+    spyOn(router, 'navigate');
+    component.openSendEmailSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith(['',{ outlets: { sb: `sb/report/send-email/222`}}]);
+  });
 });
