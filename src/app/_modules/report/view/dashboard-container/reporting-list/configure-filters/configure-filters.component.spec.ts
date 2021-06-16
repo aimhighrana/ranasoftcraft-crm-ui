@@ -447,41 +447,6 @@ describe('ConfigureFiltersComponent', () => {
     expect(component.getSelectedValue(fieldId, '')).toEqual(null);
   })
 
-  it('isDropDown(), check whether column field is drop down type or not', () => {
-    component.tableColumnMetaData = [
-      {
-        widgetId: 1,
-        fields: 'MATL_GROUP',
-        fieldOrder: '',
-        fieldDesc: 'first field 1',
-        sno: 1,
-        fldMetaData: { fieldId: 'MATL_GROUP', picklist: '1' } as MetadataModel,
-        displayCriteria: DisplayCriteria.CODE
-      },
-      {
-        widgetId: 2,
-        fields: 'column1',
-        fieldOrder: '',
-        fieldDesc: 'first field 1',
-        sno: 1,
-        fldMetaData: { fieldId: 'MATL_GROUP', picklist: '30' } as MetadataModel,
-        displayCriteria: DisplayCriteria.CODE
-      },
-      {
-        widgetId: 3,
-        fields: 'column2',
-        fieldOrder: '',
-        fieldDesc: 'first field 1',
-        sno: 1,
-        fldMetaData: { fieldId: 'MATL_GROUP', picklist: '37' } as MetadataModel,
-        displayCriteria: DisplayCriteria.CODE
-      }]
-    expect(component.isDropDown('MATL_GROUP')).toBeTrue();
-    expect(component.isDropDown('column')).toBeFalse();
-    expect(component.isDropDown('column1')).toBeTrue();
-    expect(component.isDropDown('column2')).toBeTrue();
-  })
-
   it('removedSelectedFilter(), remove filter that is already selected', () => {
     component.filterApplied[component.selectedFilter.fieldId] = [{
       CODE: 'test',
@@ -519,48 +484,6 @@ describe('ConfigureFiltersComponent', () => {
     component.removedSelectedFilter('test', 0);
     expect(component.removedSelectedFilter).toBeTruthy();
   });
-
-
-  it('isDateType(),is date type column', () => {
-    component.selectedFieldMetaData = {
-      widgetId: 1,
-      fields: 'MATL_GROUP',
-      fieldOrder: '',
-      fieldDesc: 'first field 1',
-      sno: 1,
-      fldMetaData: { fieldId: 'MATL_GROUP', dataType: 'DATS' } as MetadataModel,
-      displayCriteria: DisplayCriteria.CODE
-    }
-    expect(component.isDateType()).toBeTrue();
-    component.selectedFieldMetaData = {
-      widgetId: 1,
-      fields: 'MATL_GROUP',
-      fieldOrder: '',
-      fieldDesc: 'first field 1',
-      sno: 1,
-      fldMetaData: { fieldId: 'MATL_GROUP', dataType: 'DTMS' } as MetadataModel,
-      displayCriteria: DisplayCriteria.CODE
-    }
-    expect(component.isDateType()).toBeTrue();
-    component.selectedFieldMetaData = {
-      widgetId: 1,
-      fields: 'MATL_GROUP',
-      fieldOrder: '',
-      fieldDesc: 'first field 1',
-      sno: 1,
-      fldMetaData: { fieldId: 'MATL_GROUP', dataType: 'CHAR' } as MetadataModel,
-      displayCriteria: DisplayCriteria.CODE
-    }
-    expect(component.isDateType()).toBeFalse();
-    component.selectedFieldMetaData = null;
-    expect(component.isDateType()).toBeFalse();
-  })
-
-  it('getDateTypeVal(),get date type value', () => {
-    expect(component.getDateTypeValue('34773647364')).toEqual('34773647364');
-    expect(component.getDateTypeValue('')).toEqual('');
-  })
-
 
   it('changeCondition(),change condition operator for selected filters', () => {
     component.changeCondition(ConditionOperator.NOT_EQUAL);
@@ -793,8 +716,8 @@ describe('ConfigureFiltersComponent', () => {
     component.selectedFilter.conditionFieldEndValue = '1623671412177';
     component.selectedFilter.conditionFieldStartValue = '162367141000';
     component.selectedFilter.fieldId = 'MATL_GROUP';
-    const control = new FormControl({start:new Date(),end:new Date(Number(component.selectedFilter.conditionFieldEndValue))})
-    component.configurationFilterForm.addControl(component.selectedFilter.fieldId,control);
+    const control = new FormControl({ start: new Date(), end: new Date(Number(component.selectedFilter.conditionFieldEndValue)) })
+    component.configurationFilterForm.addControl(component.selectedFilter.fieldId, control);
     component.getSelectedDateValue();
     expect(component.getSelectedDateValue()).toBeInstanceOf(Object);
   })

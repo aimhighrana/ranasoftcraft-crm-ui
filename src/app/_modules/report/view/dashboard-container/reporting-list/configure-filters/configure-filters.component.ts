@@ -305,22 +305,6 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
 
 
   /**
-   * check whether the field is drop down type or not
-   * @param fieldId id of field for the filter
-   * @returns boolean value
-   */
-  isDropDown(fieldId: string) {
-    if (this.tableColumnMetaData && this.tableColumnMetaData.length) {
-      const hasFld = this.tableColumnMetaData.find(item => item.fields === fieldId);
-      if (hasFld && hasFld.fldMetaData && (hasFld.fldMetaData.picklist === '1' || hasFld.fldMetaData.picklist === '30' || hasFld.fldMetaData.picklist === '37')) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  /**
    * Remove the selected filter from the lib chip
    * @param code code of the selected value
    * @param index index of lib chip
@@ -399,24 +383,6 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     this.filterCriteria[index].conditionOperator = condition;
     this.selectedFilter.conditionOperator = condition;
   }
-
-  /**
-   * check whether column is date type of not
-   * @returns return whether column is date type or not
-   */
-  isDateType(): boolean {
-    return this.selectedFieldMetaData ? ((this.selectedFieldMetaData.fldMetaData.dataType === 'DATS' || this.selectedFieldMetaData.fldMetaData.dataType === 'DTMS') ? true : false) : false;
-  }
-
-  /**
-   * return number value for the date
-   * @param val string value
-   * @returns convert string into number
-   */
-  getDateTypeValue(val: string): string {
-    return Number(val) ? val : '';
-  }
-
 
   /**
    * Return the column type for the respective column
