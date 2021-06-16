@@ -457,7 +457,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * function to open column setting side-sheet
    */
   openTableColumnSideSheet() {
-    const sortedColumns = this.sortDisplayedColumns(this.tableColumnMetaData)
+    const sortedColumns = this.sortDisplayedColumns(this.tableColumnMetaData);
     const data = {
       objectType: this.widgetHeader.objectType,
       selectedColumns: sortedColumns.map(columnMetaData => {
