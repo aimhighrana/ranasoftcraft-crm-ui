@@ -3,16 +3,16 @@
         <ng-template [ngIf]="schemaInfo">
             <div class="display-heading-large">
                 {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
-                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{ variantTotalCnt }} records)
             </div>
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
 
             <mat-menu #menu="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
-                <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
+                <button mat-menu-item (click)="variantChange('0')"> Entire dataset ({{ totalVariantsCnt }})</button>
                 <ng-container *ngIf="dataScope && dataScope.length">
                     <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                        {{scope.variantName}}
+                        {{scope.variantName}} ({{ scope._totalDoc ? scope._totalDoc : 0 }})
                     </button>
                 </ng-container>
             </mat-menu>
@@ -22,7 +22,7 @@
         <div class="f-row">
             <lib-button-group>
                 <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
-                    Check data </lib-button>
+                    Refine </lib-button>
                 <lib-button type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
                 <lib-button type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
             </lib-button-group>
