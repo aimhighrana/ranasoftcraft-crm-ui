@@ -46,6 +46,7 @@ export class ModuleInfo {
     moduleId: string;
     moduleDesc: string;
     tenantId?: string;
+    datasetCount?: number;
 }
 export class SchemaListDetails {
     schemaId: string;

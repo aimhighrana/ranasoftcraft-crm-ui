@@ -4,6 +4,10 @@ div.root {
   height: 100%;
   overflow: hidden;
 
+  .action-button {
+    margin: 0 2px;
+  }
+
   .breadcrum-toolbar {
     align-items: center;
     min-height: 40px;
