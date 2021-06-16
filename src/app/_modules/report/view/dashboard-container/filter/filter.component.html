@@ -6,7 +6,8 @@
     </div>
     
     <div class="f-spacer"></div>
-    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
+    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"
+    *ngIf="filterWidget?.getValue()?.metaData?.picklist !== '0' &&  filterWidget?.getValue()?.metaData?.dataType !== 'DTMS' &&  filterWidget?.getValue()?.metaData?.dataType !== 'DATS'"></lib-button>
     <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
     <mat-menu #menu="matMenu" class="navigation-menu">
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
