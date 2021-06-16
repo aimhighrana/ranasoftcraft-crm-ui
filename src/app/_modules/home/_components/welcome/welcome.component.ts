@@ -8,7 +8,6 @@ import { Observable, Subscriber, Subscription } from 'rxjs';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UploadDatasetComponent } from '@modules/schema/_components/upload-dataset/upload-dataset.component';
 import { SchemaListModuleList } from '@models/schema/schemalist';
-import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-welcome',
@@ -76,8 +75,7 @@ export class WelcomeComponent implements OnInit , OnDestroy {
      public matDialog: MatDialog,
      private schemaListService: SchemalistService,
      private router: Router,
-     private schemaService: SchemaService,
-     private shared: SharedServiceService
+     private schemaService: SchemaService
    ) { }
 
    /**
@@ -101,7 +99,6 @@ export class WelcomeComponent implements OnInit , OnDestroy {
     */
    getObjectTypes() {
      this.loader = true;
-     this.shared.showLoader();
      const sub = this.schemaService.getDatasetsAlongWithSchemas().subscribe(res=>{
       if(res.datasetsHttp !== undefined) {
         this.modulesList = res.datasetsHttp;
@@ -110,10 +107,8 @@ export class WelcomeComponent implements OnInit , OnDestroy {
       if(res.schemaHttp !== undefined) {
         this.schemas = res.schemaHttp;
       }
-      this.shared.hideLoader();
     }, err=>{console.error(`Exception : ${err.message}`)});
     this.subscriptions.push(sub);
-    this.shared.hideLoader();
    }
 
    /**

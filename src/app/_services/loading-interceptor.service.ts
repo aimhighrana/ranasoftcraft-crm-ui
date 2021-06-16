@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LoadingService } from './loading.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class LoadingInterceptorService implements HttpInterceptor {
   private requests: HttpRequest<any>[] = [];
 
   constructor(
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private sharedService: SharedServiceService
   ) { }
 
   removeRequest(req: HttpRequest<any>) {
@@ -19,6 +21,7 @@ export class LoadingInterceptorService implements HttpInterceptor {
     if (i >= 0) {
         this.requests.splice(i, 1);
     }
+    (this.requests.length > 0)? this.sharedService.showLoader() : this.sharedService.hideLoader()
     this.loadingService.isLoading().emit(this.requests.length > 0);
   }
 

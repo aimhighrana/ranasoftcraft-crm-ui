@@ -96,15 +96,12 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   getReportInfo(reportId: number) {
-    this.sharedService.showLoader();
     this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
       this.reportService.getReportInfo(reportId, user.plantCode).subscribe(res=>{
-        this.sharedService.hideLoader();
         this.widgetList = res.widgets;
         this.permissons = res.permissons;
         this.resize();
       },error=>{
-        this.sharedService.hideLoader();
         console.log(`Error ${error}`);
       });
     });
