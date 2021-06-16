@@ -21,6 +21,7 @@ export class LoadingInterceptorService implements HttpInterceptor {
     if (i >= 0) {
         this.requests.splice(i, 1);
     }
+    // show loader based on the request
     (this.requests.length > 0)? this.sharedService.showLoader() : this.sharedService.hideLoader()
     this.loadingService.isLoading().emit(this.requests.length > 0);
   }
