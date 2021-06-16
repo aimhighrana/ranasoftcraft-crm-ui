@@ -9,7 +9,7 @@ import { ReportService } from '@modules/report/_service/report.service';
 import { BlockType, ConditionOperator, Criteria, DisplayCriteria, DropDownValues, FormControlType, ReportingWidget } from '@modules/report/_models/widget';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from '@services/user/userservice.service';
 import { of } from 'rxjs';
 import { Userdetails } from '@models/userdetails';
@@ -793,7 +793,9 @@ describe('ConfigureFiltersComponent', () => {
     component.selectedFilter.conditionFieldEndValue = '1623671412177';
     component.selectedFilter.conditionFieldStartValue = '162367141000';
     component.selectedFilter.fieldId = 'MATL_GROUP';
-    component.getSelectedDateValue()
+    const control = new FormControl({start:new Date(),end:new Date(Number(component.selectedFilter.conditionFieldEndValue))})
+    component.configurationFilterForm.addControl(component.selectedFilter.fieldId,control);
+    component.getSelectedDateValue();
     expect(component.getSelectedDateValue()).toBeInstanceOf(Object);
   })
 

@@ -70,4 +70,20 @@ describe('FormRangeSliderComponent', () => {
     expect(component.ngOnInit).toBeTruthy();
   }));
 
+  it('isInvalidInput(),check that input is valid or not',async()=>{
+    component.fltrCtrl.setValue('22-aa');
+    component.isInValidInput();
+    expect(component.isInValidInput()).toBeTrue();
+
+    component.fltrCtrl.setValue('20-10');
+    component.minValue = '20';
+    component.maxValue = '10';
+    expect(component.isInValidInput()).toBeTrue();
+
+    component.fltrCtrl.setValue('10-20');
+    component.minValue = '10';
+    component.maxValue = '20';
+    expect(component.isInValidInput()).toBeFalse();
+  })
+
 });

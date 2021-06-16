@@ -5,15 +5,15 @@
 <mat-menu #rangeSlider="matMenu">
     <lib-filter-dropdown prosClickStopPropagation>
         <div class="dropdown-search-wrapper">
-            <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder"
-                [formControl]="fltrCtrl"></lib-input>
+            <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder" [formControl]="fltrCtrl"
+                [hasError]="isInValidInput()"></lib-input>
         </div>
         <div class="dropdown-options-wrapper f-col">
             <div class="dropdown-options-inner-container">
                 <mat-label>Select range</mat-label>
                 <lib-filter-option>
-                    <lib-range-slider [formControl]="control" [maxValue]="highValue" showTicks="true"
-                        [value]="minValue" [highValue]="maxValue" thumbLabel = "true">
+                    <lib-range-slider [formControl]="control" [maxValue]="highValue" showTicks="true" [value]="minValue"
+                        [highValue]="maxValue" thumbLabel="true">
                     </lib-range-slider>
                 </lib-filter-option>
             </div>

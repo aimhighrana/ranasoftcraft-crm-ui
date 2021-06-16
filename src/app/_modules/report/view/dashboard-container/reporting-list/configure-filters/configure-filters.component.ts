@@ -226,14 +226,14 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       this.filterCriteria[filterCriteriaIndex] = { ...filteredCriteria };
     }
     if (formFieldType === FormControlType.DATE) {
-      this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = moment(event.value.start).valueOf().toString();
-      this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = moment(event.value.end).endOf('day').valueOf().toString();
+      this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = moment(event.start).valueOf().toString();
+      this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = moment(event.end).endOf('day').valueOf().toString();
     } else if (formFieldType === FormControlType.DATE_TIME) {
-      this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = moment(event.value.start).valueOf().toString();
-      this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = moment(event.value.end).valueOf().toString();
+      this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = moment(event.start).valueOf().toString();
+      this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = moment(event.end).valueOf().toString();
     } else if (formFieldType === FormControlType.TIME) {
-      this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = event.value.start;
-      this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = event.value.end;
+      this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = event.start;
+      this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = event.end;
     } else {
       this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue = event.value.min;
       this.filterCriteria[filterCriteriaIndex].conditionFieldEndValue = event.value.max;
@@ -458,7 +458,8 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
    * @returns return the selected date value
    */
   getSelectedDateValue() {
-    return { start: new Date(Number(this.selectedFilter.conditionFieldStartValue)), end: new Date(Number(this.selectedFilter.conditionFieldEndValue)) };
+    if (this.configurationFilterForm.controls[this.selectedFilter.fieldId].value)
+      return this.configurationFilterForm.controls[this.selectedFilter.fieldId].value
   }
 
   /**

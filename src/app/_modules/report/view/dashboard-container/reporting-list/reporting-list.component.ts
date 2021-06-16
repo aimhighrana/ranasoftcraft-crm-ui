@@ -173,9 +173,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
             }
             this.selectedMultiSelectData[item.fieldId].push(item.conditionFieldValue)
           } else if (type === FormControlType.DATE) {
-            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: moment(item.conditionFieldStartValue).format('DD-MM-YYYY'), end: moment(item.conditionFieldEndValue).format('DD-MM-YYYY') });
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: new Date(Number(item.conditionFieldStartValue)), end: new Date(Number(item.conditionFieldEndValue)) });
           } else if (type === FormControlType.DATE_TIME) {
-            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: moment(item.conditionFieldStartValue).format('DD-MM-YYYY'), end: moment(item.conditionFieldEndValue).format('DD-MM-YYYY HH:mm') });
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: new Date(Number(item.conditionFieldStartValue)), end: new Date(Number(item.conditionFieldEndValue)) });
           } else if (type === FormControlType.TIME) {
             this.reportingListFilterForm.controls[item.fieldId].setValue({ start: item.conditionFieldStartValue, end: item.conditionFieldEndValue });
           } else if (type === FormControlType.RADIO) {
@@ -423,7 +423,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.activeSorts = null;
       }
       this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria), this.activeSorts);
-    }  }
+    }
+  }
 
   /**
    * Download data , call service with filter criteria and page from ...
@@ -723,10 +724,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   getSelectedDateValue(fieldId) {
-    if (this.reportingListFilterForm.controls[fieldId].value) {
-      return { start: new Date(this.reportingListFilterForm.controls[fieldId].value.start), end: new Date(this.reportingListFilterForm.controls[fieldId].value.end)};
-    } else {
-      return null;
-    }
+    if (this.reportingListFilterForm.controls[fieldId].value)
+      return this.reportingListFilterForm.controls[fieldId].value;
   }
 }

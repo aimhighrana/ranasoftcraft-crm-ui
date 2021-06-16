@@ -11,7 +11,6 @@ describe('FormMultiSelectComponent', () => {
   let component: FormMultiselectComponent;
   let fixture: ComponentFixture<FormMultiselectComponent>;
   let reportService: jasmine.SpyObj<ReportService>;
-  let dumHTML;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -20,8 +19,6 @@ describe('FormMultiSelectComponent', () => {
     })
       .compileComponents();
       reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;
-      dumHTML = document.createElement('div');
-      document.getElementById = jasmine.createSpy('HTML').and.returnValue(dumHTML);
   }));
 
   beforeEach(() => {
@@ -49,6 +46,7 @@ describe('FormMultiSelectComponent', () => {
     component.selectedMultiSelectData = [{ [value.CODE]: null }];
     component.isTableFilter = true;
 
+    spyOn(component,'displayMultiselectedText');
     spyOn(reportService,'getDropDownValues')
     .withArgs(component.formFieldId,'first').and.returnValue(of(returnData));
 
@@ -60,6 +58,7 @@ describe('FormMultiSelectComponent', () => {
   it('applyFilter(), filter values', async(() => {
     component.formFieldId = 'MATL_GROUP';
     const emitEventSpy = spyOn(component.valueChange, 'emit');
+    spyOn(component,'displayMultiselectedText');
     component.applyFilter();
     expect(emitEventSpy).toHaveBeenCalled();
   }));
@@ -154,8 +153,8 @@ describe('FormMultiSelectComponent', () => {
       }
     }
 
+    spyOn(component,'displayMultiselectedText');
     component.ngOnChanges(change);
-    expect(component.displayMultiselectedText).toBeTruthy();
 
 
   }));
@@ -183,22 +182,5 @@ describe('FormMultiSelectComponent', () => {
   });
 
 
-  it('displayMultiselectText()', async(()=>{
-    const value = { CODE: 'CODE', TEXT: 'TEXT' } as DropDownValues;
-    component.formFieldId = 'MATL_GROUP';
 
-    component.selectedMultiSelectData = [{ [value.CODE]: value.TEXT }];
-
-    component.displayCriteria = 'CODE';
-    component.displayMultiselectedText();
-    expect(component.displayMultiselectedText).toBeTruthy();
-
-    component.displayCriteria = 'CODE_TEXT';
-    component.displayMultiselectedText();
-    expect(component.displayMultiselectedText).toBeTruthy();
-
-    component.displayCriteria = 'TEXT';
-    component.displayMultiselectedText();
-    expect(component.displayMultiselectedText).toBeTruthy();
-  }));
 });

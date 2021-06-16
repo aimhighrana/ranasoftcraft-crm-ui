@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, OnChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   // styleUrls: ['./form-range-slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FormRangeSliderComponent implements OnInit {
+export class FormRangeSliderComponent implements OnInit,OnChanges {
 
   constructor() { }
 
@@ -54,9 +54,13 @@ export class FormRangeSliderComponent implements OnInit {
    */
   ngOnInit(): void {
     if (!this.control) {
-      this.control = new FormControl({ min: this.minValue, max: this.maxValue });
+      this.control = new FormControl({ min: +this.minValue, max: +this.maxValue });
     }
-    this.control.setValidators(Validators.pattern(this.regex));
+    if(this.minValue && this.maxValue) {
+      this.fltrCtrl.setValue(this.getSelectedRangeValue());
+    }
+    this.fltrCtrl.setValidators(Validators.pattern(this.regex));
+    this.fltrCtrl.updateValueAndValidity();
     if (!this.maxValue) {
       this.maxValue = '30';
     }
@@ -65,19 +69,29 @@ export class FormRangeSliderComponent implements OnInit {
       this.minValue = '0';
     }
     this.fltrCtrl.valueChanges.subscribe(res => {
-      const values = res.split('-');
-      this.minValue = values[0];
-      this.maxValue = values[1];
-      this.control.setValue({ min: this.minValue, max: this.maxValue });
+      if (this.fltrCtrl.valid) {
+        const values = res.split('-');
+        this.minValue = values[0];
+        this.maxValue = values[1];
+        this.control.setValue({ min: +this.minValue, max: +this.maxValue });
+      }
     })
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.minValue && changes.minValue.previousValue !== changes.minValue.currentValue) {
+      this.minValue = changes.minValue.currentValue;
+    }
+    if (changes.maxValue && changes.maxValue.previousValue !== changes.maxValue.currentValue) {
+      this.maxValue = changes.maxValue.currentValue;
+    }
+  }
 
   /**
    * method called on apply button emits the value change event on parent class
    */
   applyFilter() {
-    if (this.control.valid && this.minValue < this.maxValue) {
+    if (this.fltrCtrl.valid && +this.minValue < +this.maxValue) {
       if (!this.control.value && (this.minValue && this.maxValue)) {
         this.control.setValue({ min: this.minValue, max: this.maxValue });
       }
@@ -105,5 +119,19 @@ export class FormRangeSliderComponent implements OnInit {
       }
     }
     else return '';
+  }
+
+  /**
+   * check whether the input is valid or not
+   * @returns whether the input value is valid
+   */
+  isInValidInput() {
+    if(this.fltrCtrl.hasError('pattern')) {
+      return true;
+    } else if(+this.minValue > +this.maxValue) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
