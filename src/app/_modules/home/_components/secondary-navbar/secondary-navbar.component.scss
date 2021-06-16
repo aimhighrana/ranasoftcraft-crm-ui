@@ -128,7 +128,8 @@
 }
 
 .mat-line div.f-col {
-  > strong, >span {
+  > strong,
+  > span {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
