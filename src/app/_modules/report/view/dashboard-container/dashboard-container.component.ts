@@ -4,6 +4,7 @@ import { WidgetMapInfo, Criteria, ReportDashboardPermission } from '../../_model
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-dashboard-container',
@@ -36,7 +37,8 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   constructor(
     private reportService: ReportService,
-    private userService: UserService
+    private userService: UserService,
+    private sharedService: SharedServiceService
   ) { }
 
   ngOnDestroy(): void {
@@ -94,12 +96,15 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   getReportInfo(reportId: number) {
+    this.sharedService.showLoader();
     this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
       this.reportService.getReportInfo(reportId, user.plantCode).subscribe(res=>{
+        this.sharedService.hideLoader();
         this.widgetList = res.widgets;
         this.permissons = res.permissons;
         this.resize();
       },error=>{
+        this.sharedService.hideLoader();
         console.log(`Error ${error}`);
       });
     });
