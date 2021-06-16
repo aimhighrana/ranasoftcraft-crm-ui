@@ -159,9 +159,6 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         if(index === -1) {
           this.headers.push(system);
         }
-        if(index !== -1) {
-          this.headers[index] = system;
-        }
       })
 
       for (const metaData in data.headers) {
