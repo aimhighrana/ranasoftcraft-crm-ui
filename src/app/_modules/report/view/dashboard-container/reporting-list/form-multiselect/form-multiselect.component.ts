@@ -234,6 +234,6 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
       const data = { CODE: selectedData.CODE, TEXT: selectedData.TEXT };
       selectedDataList.push(data);
     })
-    return selectedDataList
+    return selectedDataList;
   }
 }
