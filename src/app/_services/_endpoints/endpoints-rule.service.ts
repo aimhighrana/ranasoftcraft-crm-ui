@@ -534,7 +534,7 @@ export class EndpointsRuleService {
    * mark duplicacy record as master record
    */
   public masterRecordChangeUrl(): string {
-    return `${this.origin}/duplicate/updatemasterRecord`;
+    return `${this.origin}/schema/actions/updatemasterRecord`;
   }
 
   /**
@@ -543,7 +543,7 @@ export class EndpointsRuleService {
    * @param moduleId object type
    */
   public markForDeletionUrl(objctNumber, moduleId, schemaId, runId): string {
-    return `${this.origin}/schema/update-delFlag/${objctNumber}/${moduleId}/${schemaId}/${runId}`;
+    return `${this.classicOrigin}/schema/update-delFlag/${objctNumber}/${moduleId}/${schemaId}/${runId}`;
   }
 
   /**

@@ -2143,6 +2143,33 @@
       color: $color-status-error;
     }
   }
+
+  /* stylelint-disable */
+  .mat-badge {
+    .mat-badge-content {
+      .status-badge-icon {
+        color: $color-text-primary;
+        font-size: 12px;
+
+        &.info {
+          color: $color-status-info;
+        }
+
+        &.success {
+          color: $color-status-success;
+        }
+
+        &.warning {
+          color: $color-status-warning;
+        }
+
+        &.error {
+          color: $color-status-error;
+        }
+      }
+    }
+  }
+  /* stylelint-enable */
 }
 
 @mixin pros-cmp-typography($config) {
