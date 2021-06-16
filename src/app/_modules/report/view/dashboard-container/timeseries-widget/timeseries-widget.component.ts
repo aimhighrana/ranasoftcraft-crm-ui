@@ -14,7 +14,6 @@ import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
 import { Context } from 'chartjs-plugin-datalabels';
-import { utc } from 'moment';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
 
