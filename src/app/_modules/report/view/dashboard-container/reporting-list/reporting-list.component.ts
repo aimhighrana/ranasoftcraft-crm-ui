@@ -177,7 +177,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           } else if (type === FormControlType.DATE_TIME) {
             this.reportingListFilterForm.controls[item.fieldId].setValue({ start: new Date(Number(item.conditionFieldStartValue)), end: new Date(Number(item.conditionFieldEndValue)) });
           } else if (type === FormControlType.TIME) {
-            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: item.conditionFieldStartValue, end: item.conditionFieldEndValue });
+            const startValue = new Date(Number(item.conditionFieldStartValue));
+            const endValue = new Date(Number(item.conditionFieldEndValue));
+            this.reportingListFilterForm.controls[item.fieldId].setValue({ start: { hours: startValue.getHours(), minutes: startValue.getMinutes() }, end: { hours: endValue.getHours(), minutes: endValue.getMinutes() } });
           } else if (type === FormControlType.RADIO) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
           } else if (type === FormControlType.NUMBER) {
@@ -577,8 +579,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.localFilterCriteria[ind].conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
         this.localFilterCriteria[ind].conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).valueOf().toString();
       } else if (formControlType === FormControlType.TIME) {
-        this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.start;
-        this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.end;
+        const startValue = this.reportingListFilterForm.controls[fieldId].value.start;
+        const endValue = this.reportingListFilterForm.controls[fieldId].value.end;
+        this.localFilterCriteria[ind].conditionFieldStartValue = new Date().setHours(startValue.hours, startValue.minutes).toString();
+        this.localFilterCriteria[ind].conditionFieldEndValue = new Date().setHours(endValue.hours, endValue.minutes).toString();
       } else if (formControlType === FormControlType.DROP_DOWN && typeof (this.reportingListFilterForm.controls[fieldId].value) === 'object') {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
       } else if (formControlType === FormControlType.RADIO) {
@@ -599,28 +603,34 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       filterCriteria.conditionFieldId = fieldId;
       filterCriteria.blockType = BlockType.COND;
       filterCriteria.widgetType = WidgetType.TABLE_LIST;
-      filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
       if (formControlType === FormControlType.NUMBER) {
+        filterCriteria.conditionOperator = ConditionOperator.RANGE;
         filterCriteria.conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
         filterCriteria.conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
       } else if (formControlType === FormControlType.DATE) {
+        filterCriteria.conditionOperator = ConditionOperator.RANGE;
         filterCriteria.conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
         filterCriteria.conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).endOf('day').valueOf().toString();
       } else if (formControlType === FormControlType.DATE_TIME) {
+        filterCriteria.conditionOperator = ConditionOperator.RANGE;
         filterCriteria.conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
         filterCriteria.conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).valueOf().toString();
       } else if (formControlType === FormControlType.TIME) {
+        filterCriteria.conditionOperator = ConditionOperator.RANGE;
         const startTime = this.reportingListFilterForm.controls[fieldId].value.start;
         const endTime = this.reportingListFilterForm.controls[fieldId].value.end;
         filterCriteria.conditionFieldStartValue = new Date().setHours(startTime.hours, startTime.minutes).toString();
         filterCriteria.conditionFieldEndValue = new Date().setHours(endTime.hours, endTime.minutes).toString();
       } else if (formControlType === FormControlType.DROP_DOWN && typeof (this.reportingListFilterForm.controls[fieldId].value) === 'object') {
+        filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
         selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else if (formControlType === FormControlType.RADIO) {
+        filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
         selectedText = this.reportingListFilterForm.controls[fieldId].value.value;
       } else {
+        filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
       this.localFilterCriteria.push(filterCriteria);
@@ -720,7 +730,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   getSelectedTimeValue(fieldId) {
-    return this.reportingListFilterForm.controls[fieldId].value;
+    if (this.reportingListFilterForm.controls[fieldId].value)
+      return this.reportingListFilterForm.controls[fieldId].value;
   }
 
   getSelectedDateValue(fieldId) {

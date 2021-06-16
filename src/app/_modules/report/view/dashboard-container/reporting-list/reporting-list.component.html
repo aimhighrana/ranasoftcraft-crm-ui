@@ -144,7 +144,7 @@
 
                             <!-- For time picker -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'time'">
-                                <lib-time-range-picker [enableTimeInput]="true"
+                                <lib-time-range-picker [enableTimeInput]="true"  [formControlName]="displayedColumnsId[i]"
                                     [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]" [emitDateOnSave]="true"
                                     (valueChange)="setFilter({formFieldId : displayedColumnsId[i] , value : $event})"
                                     [selected]="getSelectedTimeValue(displayedColumnsId[i])"></lib-time-range-picker>

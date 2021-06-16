@@ -82,7 +82,12 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
           } else {
             this.filterCriteria.push({ ...item, conditionFieldValue: [item.conditionFieldValue], conditionFieldText: [item.conditionFieldText] })
           }
-        } else {
+        } else if (type === FormControlType.TIME) {
+          const startValue = { hours: new Date(Number(item.conditionFieldStartValue)).getHours(), minutes: new Date(Number(item.conditionFieldStartValue)).getMinutes() };
+          const endValue = { hours: new Date(Number(item.conditionFieldEndValue)).getHours(), minutes: new Date(Number(item.conditionFieldEndValue)).getMinutes() };
+          this.filterCriteria.push({ ...item, conditionFieldStartValue: startValue, conditionFieldEndValue: endValue });
+        }
+        else {
           this.filterCriteria.push({ ...item });
         }
       })
@@ -110,8 +115,12 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue(this.selectedFilter.conditionFieldValue);
       } else if (type === FormControlType.NUMBER) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ min: this.selectedFilter.conditionFieldStartValue, max: this.selectedFilter.conditionFieldEndValue })
-      } else if (type === FormControlType.DATE || type === FormControlType.DATE_TIME || type === FormControlType.TIME) {
+      } else if (type === FormControlType.DATE || type === FormControlType.DATE_TIME) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ end: new Date(Number(this.selectedFilter.conditionFieldEndValue)), start: new Date(Number(this.selectedFilter.conditionFieldStartValue)) });
+      } else if (type === FormControlType.TIME) {
+        const startTime = new Date(this.selectedFilter.conditionFieldStartValue);
+        const endTime = new Date(this.selectedFilter.conditionFieldEndValue);
+        this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ start: { hours: startTime.getHours(), minutes: startTime.getMinutes() }, end: { hours: endTime.getHours(), minutes: endTime.getMinutes() } })
       }
     }
     const index = this.tableColumnMetaData.findIndex(item => item.fields === this.selectedFilter.fieldId);
@@ -139,6 +148,14 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       const formFieldType = this.getFormFieldType(filter.fieldId);
       if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX) && filter.conditionFieldValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue(filter.conditionFieldValue);
+      } else if (formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME) {
+        this.configurationFilterForm.controls[filter.fieldId].setValue({ start: new Date(Number(filter.conditionFieldStartValue)), end: new Date(Number(filter.conditionFieldEndValue)) });
+      } else if (formFieldType === FormControlType.TIME) {
+        const startValue = new Date(Number(filter.conditionFieldStartValue));
+        const endValue = new Date(Number(filter.conditionFieldEndValue));
+        this.configurationFilterForm.controls[filter.fieldId].setValue({ start: { hours: startValue.getHours(), minutes: startValue.getMinutes() }, end: { hours: endValue.getHours(), minutes: endValue.getMinutes() } });
+      } else if (formFieldType === FormControlType.NUMBER) {
+        this.configurationFilterForm.controls[filter.fieldId].setValue({ min: filter.conditionFieldStartValue, max: filter.conditionFieldEndValue });
       }
     }
   }
@@ -344,9 +361,12 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
           } else if (formFieldType === FormControlType.DROP_DOWN) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
             filteredCriteria.conditionFieldText = item.conditionFieldText;
-          } else if (formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME || formFieldType === FormControlType.TIME || formFieldType === FormControlType.NUMBER) {
+          } else if (formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME || formFieldType === FormControlType.NUMBER) {
             filteredCriteria.conditionFieldStartValue = item.conditionFieldStartValue;
             filteredCriteria.conditionFieldEndValue = item.conditionFieldEndValue;
+          } else if (formFieldType === FormControlType.TIME) {
+            filteredCriteria.conditionFieldStartValue = new Date().setHours(item.conditionFieldStartValue?.hours, item.conditionFieldStartValue?.minutes).toString();
+            filteredCriteria.conditionFieldEndValue = new Date().setHours(item.conditionFieldEndValue?.hours, item.conditionFieldEndValue?.minutes).toString();
           }
           filteredCriteriaList.push(filteredCriteria);
         }

@@ -166,10 +166,10 @@
             </ng-template>
 
             <!-- For time picker -->
-            <ng-template [ngIf]="getFormFieldType() === 'time'">
-                <lib-time-picker [formControlName]="displayedColumnsId[i]" [emitDateOnSave]="true"
+            <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'time'">
+                <lib-time-range-picker [enableTimeInput]="true" [formControlName]="selectedFilter.fieldId" [emitDateOnSave]="true"
                     (valueChange)="rangeTypeValueChange($event)" [selected]="getSelectedTimeValue()"
-                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"></lib-time-picker>
+                    [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"></lib-time-range-picker>
             </ng-template>
         </div>
         <div class="col-spacer"></div>
