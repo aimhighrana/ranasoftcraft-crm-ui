@@ -8,6 +8,7 @@ import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperat
 import { ReportService } from '../../../_service/report.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import _ from 'lodash';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -454,6 +455,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       const lbl = this.barChartLabels[i] as any;
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
+
+
+    if (this.stackBarWidget.getValue() !== null && this.stackBarWidget.getValue().dataSetSize) {
+      this.barChartLabels = _.take(this.barChartLabels, this.stackBarWidget.getValue().dataSetSize);
+    }
   }
 
 
@@ -692,34 +698,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         });
       }
     }
-    if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
+    if (this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
 
-      const insideRange = resBuckets.filter(bucket =>{
-        if(this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
+      const insideRange = resBuckets.filter(bucket => {
+        if (this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
           return bucket;
         }
       });
-      if(this.stackBarWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
-          if(insideRange[i]) {
-              finalDataSet.push(insideRange[i]);
-          }
-        }
-      } else {
-        finalDataSet = insideRange;
-      }
+      finalDataSet = insideRange;
     } else {
-      if(this.stackBarWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
-          if(resBuckets[i]) {
-              finalDataSet.push(resBuckets[i]);
-          }
-        }
-      } else {
-        finalDataSet = resBuckets;
-      }
+      finalDataSet = resBuckets;
     }
     return finalDataSet;
   }
