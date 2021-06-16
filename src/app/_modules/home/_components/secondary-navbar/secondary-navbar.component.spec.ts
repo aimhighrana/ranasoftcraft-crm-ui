@@ -21,6 +21,7 @@ import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { ImportComponent } from '@modules/report/view/import/import.component';
 import { MatDialog } from '@angular/material/dialog';
+import { throwError } from 'rxjs';
 
 
 describe('SecondaryNavbarComponent', () => {
@@ -424,7 +425,7 @@ describe('SecondaryNavbarComponent', () => {
 
   it('searchSchema(), should search for schema according to searchString', async () => {
     let searchString = null;
-    component.activatedPrimaryNav = 'welcome'
+    component.activatedPrimaryNav = 'schema'
     component.moduleList = [{
       moduleId: '1002',
       moduleDesc: 'module_AshishG'
@@ -512,5 +513,27 @@ describe('SecondaryNavbarComponent', () => {
     component.importReport();
     expect(dialogSpy).toHaveBeenCalled();
     expect(dialogSpy).toHaveBeenCalledWith(ImportComponent, { disableClose: false, width: '600px', minHeight: '250px' });
+  });
+
+  it('getAllSchemaList should have infinite scroll and call schema list API ', async () => {
+    const schemaListDetails: Array<SchemaListDetails> = [{} as SchemaListDetails];
+    component.schemaList = [{} as SchemaListDetails];
+    const allSchemaSpy = spyOn(schemaListService, 'getAllSchemaList').and.returnValue(of(schemaListDetails));
+    component.getAllSchemaList(true);
+    expect(component.schemaList.length).toEqual(1);
+    component.getAllSchemaList();
+    expect(component.schemaList.length).toEqual(2);
+    allSchemaSpy.and.returnValue(throwError({ message: 'error' }));
+    expect(allSchemaSpy).toHaveBeenCalled();
+  });
+
+  it('updateSchemaBatchInfo should update the schema batch info ', async () => {
+    const schemaId = 'test';
+    const schemaBatchSpy = spyOn(schemaListService, 'updateSchemaBatchInfo').and.returnValue(of(null));
+    component.updateSchemaBatchInfo(schemaId);
+    expect(schemaBatchSpy).toHaveBeenCalled();
+    schemaBatchSpy.and.returnValue(throwError({ message: 'error' }));
+    component.updateSchemaBatchInfo(schemaId);
+    expect(schemaBatchSpy).toHaveBeenCalled();
   });
 });

@@ -274,7 +274,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       }
     });
     this.getInboxNodesCount();
-  
     const subscription = this.schemaSearchSub.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -406,6 +405,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     const schemafromIndex = reload ? 0 : this.schemaList.length;
     const subscription = this.schemaListService.getAllSchemaList(schemafromIndex, this.schemaSearchString).subscribe((schemaList) => {
       this.schemaList = reload ? schemaList : this.schemaList.concat(schemaList);
+    }, (error) => {
+      console.log('Error while getting all schema list', error);
     });
     this.subscriptions.push(subscription);
   }
