@@ -56,7 +56,6 @@ describe('FormCheckboxComponent', () => {
     };
 
     component.ngOnChanges(change1);
-    console.log(component.control.value)
     expect(component.control.value).toBeTrue();
     expect(component.formFieldId).toEqual('column')
 
