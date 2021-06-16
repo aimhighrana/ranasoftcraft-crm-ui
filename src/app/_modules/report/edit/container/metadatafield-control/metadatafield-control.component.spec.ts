@@ -3,11 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MetadatafieldControlComponent, Metadata } from './metadatafield-control.component';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { MetadataModel, Heirarchy, ParentField } from '@models/schema/schemadetailstable';
+import { MetadataModel, Heirarchy } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatOption } from '@angular/material/core';
 
 describe('MetadatafieldControlComponent', () => {
   let component: MetadatafieldControlComponent;
@@ -156,13 +154,6 @@ describe('MetadatafieldControlComponent', () => {
   it('selected() Should emit after value change', async(() => {
     const option = {} as Metadata;
     expect(component.selected(option)).toEqual(undefined);
-
-
-    const autoSelectMatOption = {} as MatAutocompleteSelectedEvent;
-    autoSelectMatOption.option = {} as MatOption;
-    autoSelectMatOption.option.value = {} as ParentField;
-    component.selected(option)
-    expect(component.parentFieldDesc).toBeDefined();
   }));
 
   it(`ngOnChanges(), should call reset when reset metadatafield`, async(()=>{

@@ -70,7 +70,6 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
 
   customFields: MetadataModel[];
   customFieldsObs: Observable<MetadataModel[]> = of([]);
-  parentFieldDesc: ParentField;
   /**
    * All the http or normal subscription will store in this array
    */
@@ -158,7 +157,6 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
-      this.parentFieldDesc = {} as ParentField;
       this.getFields();
     }
 
@@ -449,10 +447,6 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * @param option selected option from ui
    */
   selected(option:any) {
-    this.parentFieldDesc = {} as ParentField;
-    if( option?.option?.value.fieldType){
-      this.parentFieldDesc = option.option.value.fieldType
-    }
     this.selectionChange.emit(option);
   }
 
