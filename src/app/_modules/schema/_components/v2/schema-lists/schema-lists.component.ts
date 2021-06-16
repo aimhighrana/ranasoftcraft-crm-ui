@@ -32,9 +32,6 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
    */
   outlet = 'sb';
 
-  dataSetCountMsg = 'There are 0 records in this dataset';
-  dataSetCount = 0;
-
   /**
    * constructor of class
    * @param activatedRoute Instance the ActivatedRoute class
@@ -106,8 +103,7 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
       if (module) {
         this.moduleData.moduleDesc = module.moduleDesc;
         this.moduleData.moduleId = module.moduleId;
-        this.dataSetCount = module.datasetCount || 0;
-        this.dataSetCountMsg = `There are ${this.dataSetCount} records in this dataset`;
+        this.moduleData.datasetCountMsg = `There are ${module.datasetCount || 0} records in this dataset`;
       }
     }, error => {
       console.error('Error: {}', error.message);
