@@ -720,7 +720,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   getSelectedTimeValue(fieldId) {
-    return this.reportingListFilterForm.controls[fieldId].value
+    return this.reportingListFilterForm.controls[fieldId].value;
   }
 
   getSelectedDateValue(fieldId) {
