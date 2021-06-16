@@ -668,7 +668,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.filteredList = [];
     this.reportService.setFilterCriteria([]);
     if (isLocalClear) {
-      this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
+      this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts)
     }
   }
 
