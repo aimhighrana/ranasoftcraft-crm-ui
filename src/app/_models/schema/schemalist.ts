@@ -40,7 +40,6 @@ export class SchemaListModuleList {
     moduleId: string;
     moduleDesc: string;
     schemaLists: SchemaListDetails[];
-    datasetCountMsg?: string;
 }
 
 export class ModuleInfo {

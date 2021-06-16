@@ -6,7 +6,7 @@
         <span class="f-spacer"></span>
         <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before" icon="upload" > Upload data </lib-button>
     </div>
-    <lib-banner *ngIf="moduleData && moduleData.datasetCountMsg" status="info" [text]="moduleData.datasetCountMsg"></lib-banner>
+    <lib-banner status="info" [text]="datasetCountMsg"></lib-banner>
 
     <!-- <mat-card class="f-row mat-elevation-z0 message info-alert">
             <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
