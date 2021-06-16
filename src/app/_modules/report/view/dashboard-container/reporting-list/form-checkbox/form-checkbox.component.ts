@@ -65,7 +65,6 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
    * apply filter and emit the output event
    */
   applyFilter(event?) {
-    console.log(event);
     if(this.isTableFilter === 'false') {
       this.control.setValue(event);
     }
