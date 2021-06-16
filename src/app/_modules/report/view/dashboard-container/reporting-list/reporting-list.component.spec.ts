@@ -426,12 +426,15 @@ describe('ReportingListComponent', () => {
         displayCriteria: DisplayCriteria.CODE
       }
     ];
+
+    spyOn(component,'onFilterApplied');
     component.setFilter(event);
     expect(component.setFilter).toBeTruthy();
 
     component.tableColumnMetaData[0].fldMetaData = {  picklist: '22', dataType: 'CHAR'} as MetadataModel;
     component.setFilter(event);
     expect(component.setFilter).toBeTruthy();
+    expect(component.onFilterApplied).toHaveBeenCalled();
   }));
 
 
