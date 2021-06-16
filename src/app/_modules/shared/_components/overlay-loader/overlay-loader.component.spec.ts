@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { OverlayLoaderComponent } from './overlay-loader.component';
 
@@ -8,7 +10,8 @@ describe('OverlayLoaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OverlayLoaderComponent ]
+      declarations: [ OverlayLoaderComponent ],
+      imports: [MdoUiLibraryModule, AppMaterialModuleForSpec]
     })
     .compileComponents();
   }));
