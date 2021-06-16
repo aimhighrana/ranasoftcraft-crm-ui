@@ -14,6 +14,9 @@ import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
 import { Context } from 'chartjs-plugin-datalabels';
+import { utc } from 'moment';
+import { UserService } from '@services/user/userservice.service';
+import { Userdetails } from '@models/userdetails';
 
 
 const btnArray: ButtonArr[] = [
@@ -154,10 +157,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   subscriptions: Subscription[] = [];
 
+  userDetails: Userdetails = new Userdetails();
+
   constructor(
     private widgetService: WidgetService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
+    private userService:UserService,
     public matDialog: MatDialog) {
     super(matDialog);
   }
@@ -227,6 +233,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
     });
     this.subscriptions.push(afterColorDefined);
+
+    this.userService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   /**
@@ -566,7 +576,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
    getwidgetData(widgetId: number): void {
     this.dataSet = [{ data: [] }];
-    this.widgetService.getWidgetData(String(widgetId), this.filterCriteria).subscribe(response => {
+    this.widgetService.getWidgetData(String(widgetId), this.filterCriteria, '', '', this.userDetails.selfServiceUserModel.timeZone).subscribe(response => {
       this.responseData = response;
       this.updateChart(this.responseData)
     });
@@ -898,15 +908,15 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       let filterApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === groupwith);
       this.removeOldFilterCriteria(filterApplied);
       if (filterApplied.length) {
-        filterApplied[0].conditionFieldStartValue = moment(this.startDateCtrl.value).valueOf().toString();
-        filterApplied[0].conditionFieldEndValue = moment(this.endDateCtrl.value).valueOf().toString();
+        filterApplied[0].conditionFieldStartValue = moment(this.startDateCtrl.value).utc().valueOf().toString();
+        filterApplied[0].conditionFieldEndValue = moment(this.endDateCtrl.value).utc().valueOf().toString();
       } else {
         filterApplied = [];
         const critera: Criteria = new Criteria();
         critera.fieldId = groupwith;
         critera.conditionFieldId = groupwith;
-        critera.conditionFieldEndValue = moment(this.endDateCtrl.value).valueOf().toString();
-        critera.conditionFieldStartValue = moment(this.startDateCtrl.value).valueOf().toString();
+        critera.conditionFieldEndValue = moment(this.startDateCtrl.value).utc().valueOf().toString();
+        critera.conditionFieldStartValue = moment(this.endDateCtrl.value).utc().valueOf().toString();
         critera.blockType = BlockType.COND;
         critera.conditionOperator = ConditionOperator.RANGE;
         filterApplied.push(critera);

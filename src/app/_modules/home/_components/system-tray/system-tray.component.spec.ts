@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SystemTrayComponent } from './system-tray.component';
+import { Userdetails } from '@models/userdetails';
 
 describe('SystemTrayComponent', () => {
   let component: SystemTrayComponent;
@@ -39,7 +40,8 @@ describe('SystemTrayComponent', () => {
         userName: '',
         dateformat: '',
         email: '',
-        assignedRoles: []
+        assignedRoles: [],
+        selfServiceUserModel: null
       })
     });
     notificationSpy = spyOn(component.homeService, 'getNotifications').and.callFake(() => {
@@ -96,7 +98,7 @@ describe('SystemTrayComponent', () => {
       dateformat: '',
       email: '',
       assignedRoles: []
-    }
+    } as Userdetails;
   });
 
   it('should create', async () => {

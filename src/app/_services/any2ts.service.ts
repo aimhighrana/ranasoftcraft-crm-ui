@@ -264,6 +264,7 @@ export class Any2tsService {
         assignedRoles.push(assignedRole);
       });
       userDetails.assignedRoles = assignedRoles;
+      userDetails.selfServiceUserModel = response.selfServiceUserModel;
     }
     return userDetails;
   }

@@ -210,7 +210,7 @@ describe('Any2tsService', () => {
   });
 
 
-  it('any2UserDetails() should return value', () => {
+  fit('any2UserDetails() should return value', () => {
     const testData = {
       userName: 'avm',
       fname: 'apoorv',

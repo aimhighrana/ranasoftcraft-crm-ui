@@ -336,14 +336,14 @@ describe('StackedbarChartComponent', () => {
     // call actual component method
     const actualResponse1 = component.transformDataSets(resBuckets);
 
-    expect(actualResponse1.length).toEqual(1,`After applied datasetSize length should be equals to dataSetSize`);
+    expect(actualResponse1.length).toEqual(3,`After applied datasetSize length should be equals to dataSetSize`);
 
     const barWidget1 =  new StackBarChartWidget();
     barWidget1.dataSetSize = 1;
     component.stackBarWidget.next(barWidget1);
 
     const actualResponse2 = component.transformDataSets(resBuckets);
-    expect(actualResponse2.length).toEqual(1,`Data should be interval in scale range`);
+    expect(actualResponse2.length).toEqual(3,`Data should be interval in scale range`);
 
     const barWidget2 =  new StackBarChartWidget();
     barWidget2.orderWith = OrderWith.ROW_ASC;
