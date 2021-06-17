@@ -81,7 +81,7 @@
                 [routerLinkActive]="'selected'">
                 <div (click)="updateSchemaBadgeInfo(schema)" mat-line>
                   <div class="f-col">
-                    <strong class="schema-name">{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</strong>
+                    <lib-text-line type="small" weight="strong" class="schema-name">{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</lib-text-line>
                     <lib-text-line type="xsmall">{{schema.moduleDesc}}</lib-text-line>
                   </div>
                 </div>
