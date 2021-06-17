@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output, OnChanges, OnDestroy, ViewChild } from '@angular/core';
-import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, MetadataModel, Heirarchy, ParentField } from '@models/schema/schemadetailstable';
 import { Observable, of, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormControl } from '@angular/forms';
@@ -12,6 +12,7 @@ export interface Metadata {
   isGroup: boolean;
   fldCtrl?: MetadataModel;
   childs: Metadata[];
+  fieldType?: ParentField;
 }
 @Component({
   selector: 'pros-metadatafield-control',
@@ -69,7 +70,6 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
 
   customFields: MetadataModel[];
   customFieldsObs: Observable<MetadataModel[]> = of([]);
-
   /**
    * All the http or normal subscription will store in this array
    */
@@ -166,6 +166,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   }
 
   ngOnInit(): void {
+
     this.fieldFrmCtrl.valueChanges.subscribe(val=>{
       if(this.isCustomdataset) {
         if(val && typeof val === 'string' && val.trim() !== '') {
@@ -302,6 +303,13 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       childs: headerChilds
     });
 
+
+    if(this.widgetType !== 'Table') {
+
+      this.mapHierarchyFields(response, metadata);
+
+      this.mapGridFields(response, metadata)
+    }
     // for grid response transformations
     // if(response && response.grids && this.widgetType === 'TIMESERIES') {
     //   Object.keys(response.grids).forEach(grid=>{
@@ -456,5 +464,123 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       });
     }
     return metaData;
+  }
+
+  public mapHierarchyFields(response: MetadataModeleResponse, metadata: Metadata[]): void{
+
+    if(response && response.hierarchy  && this.widgetType === 'TIMESERIES') {
+      response.hierarchy.forEach(hierarchy => {
+        const hierarchyChilds: Metadata[] = [];
+        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+            const hierarchyDesc = response.hierarchy.find((x)=> { return x.heirarchyId === hierarchy.heirarchyId });
+            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+              hierarchyChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: this.getHierarchyParentField(hierarchyDesc)
+              });
+            }
+          });
+        }
+      });
+    }
+    else if(response && response.hierarchy) {
+      response.hierarchy.forEach(hierarchy => {
+        const hierarchyChilds: Metadata[] = [];
+        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+            const hierarchyDesc = response.hierarchy.find((x)=> { return x.heirarchyId === hierarchy.heirarchyId });
+            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+            hierarchyChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: this.getHierarchyParentField(hierarchyDesc)
+              });
+          });
+        }
+
+        metadata.push({
+          fieldId: hierarchy.heirarchyId,
+          fieldDescri: hierarchy.heirarchyText,
+          isGroup: true,
+          childs: hierarchyChilds
+        });
+      });
+    }
+  }
+
+  public mapGridFields(response: MetadataModeleResponse, metadata: Metadata[]): void{
+
+    // for grid response transformations
+    if(response && response.grids && this.widgetType === 'TIMESERIES') {
+      Object.keys(response.grids).forEach(grid=>{
+        const gridChilds: Metadata[] = [];
+        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+          Object.keys(response.gridFields[grid]).forEach(fld=>{
+            const gridDesc =  this.getGridParentField(response.grids[grid]);
+            const fldCtrl = response.gridFields[grid][fld];
+            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+              gridChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: gridDesc
+              });
+            }
+          });
+        }
+      })
+    } else if(response && response.grids) {
+      Object.keys(response.grids).forEach(grid=>{
+        const gridChilds: Metadata[] = [];
+        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+          Object.keys(response.gridFields[grid]).forEach(fld=>{
+            const gridDesc = this.getGridParentField(response.grids[grid]);
+            const fldCtrl = response.gridFields[grid][fld];
+            gridChilds.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[],
+                fieldType: gridDesc
+              });
+          });
+          }
+          metadata.push({
+          fieldId: grid,
+          fieldDescri: response.grids[grid].fieldDescri,
+          isGroup: true,
+          childs: gridChilds
+        });
+      })
+    }
+  }
+
+  getHierarchyParentField(hierarchy: Heirarchy) : ParentField{
+    const parentField: ParentField = {
+      fieldId: hierarchy?.fieldId,
+      fieldDescri: hierarchy?.heirarchyText,
+    }
+    return parentField;
+  }
+
+  getGridParentField(grid: MetadataModel){
+    const parentField: ParentField = {
+      fieldId: grid?.fieldId,
+      fieldDescri: grid?.fieldDescri,
+    }
+    return parentField;
+
   }
 }

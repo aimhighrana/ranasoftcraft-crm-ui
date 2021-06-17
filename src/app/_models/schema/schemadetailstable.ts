@@ -295,6 +295,7 @@ export interface MetadataModel {
     sno?: DisplayCriteria;
     nodeId?: string;
     nodeType?: string;
+    fieldType?:string
 }
 export class Heirarchy {
     objnr: number;
@@ -552,5 +553,9 @@ export enum DetailView {
     DUPLICACY_VIEW = 'DUPLICACY_VIEW',
     MRO_CLASSIFICATION_VIEW = 'MRO_CLASSIFICATION_VIEW',
     POTEXT_VIEW = 'POTEXT_VIEW'
-  }
+}
 
+export interface ParentField {
+    fieldDescri: string;
+    fieldId: string;
+}
