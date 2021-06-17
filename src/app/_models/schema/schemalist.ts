@@ -299,6 +299,7 @@ export interface SchemaVariantsModel {
     filterCriteria: FilterCriteria[];
     isDefault: boolean;
     variantType: VarinatType;
+    _totalDoc: number;
 }
 
 export enum VarinatType {
