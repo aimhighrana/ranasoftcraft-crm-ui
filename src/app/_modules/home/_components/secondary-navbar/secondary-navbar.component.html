@@ -79,7 +79,7 @@
           <mat-list-item *ngFor="let schema of schemaList"
                 [routerLink]="['schema/schema-details', schema.moduleId, schema.schemaId]"
                 [routerLinkActive]="'selected'">
-                <div (click)="updateSchemaBatchInfo(schema)" mat-line>
+                <div (click)="updateSchemaBadgeInfo(schema)" mat-line>
                   <div class="f-col">
                     <strong>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</strong>
                     <span>{{schema.moduleDesc}}</span>

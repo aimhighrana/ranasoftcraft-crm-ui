@@ -9,7 +9,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { SchemaListDetails, SchemaListModuleList } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaListModuleList, SchemaRunningDetails } from '@models/schema/schemalist';
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -530,10 +530,10 @@ describe('SecondaryNavbarComponent', () => {
   it('updateSchemaBatchInfo should update the schema batch info ', async () => {
     const schemaId = 'test';
     const schemaBatchSpy = spyOn(schemaListService, 'updateSchemaBatchInfo').and.returnValue(of(null));
-    component.updateSchemaBadgeInfo(schemaId);
+    component.updateSchemaBadgeInfo({schemaId} as SchemaRunningDetails);
     expect(schemaBatchSpy).toHaveBeenCalled();
     schemaBatchSpy.and.returnValue(throwError({ message: 'error' }));
-    component.updateSchemaBatchInfo(schemaId);
+    component.updateSchemaBadgeInfo({schemaId} as SchemaRunningDetails);
     expect(schemaBatchSpy).toHaveBeenCalled();
   });
 });
