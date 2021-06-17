@@ -41,7 +41,7 @@
                         <span class="f-spacer"></span>
                         <div class="col"><strong i18n="@@Visible"> Visible </strong></div>
                         <span class="f-col-spacer-half"></span>
-                        <div class="col"><strong i18n="@@editable"> Editable </strong></div>
+                        <!-- <div class="col"><strong i18n="@@editable"> Editable </strong></div> -->
                     </div>
                     <div cdkDropList [cdkDropListData]="fields" (cdkDropListDropped)="drop($event)"
                         #scrollableContainer>
@@ -64,10 +64,10 @@
                                 </div>
                                 <span class="f-col-spacer-half"></span>
 
-                                <div class="col">
+                                <!-- <div class="col">
                                     <lib-checkbox (valueChange)="editableChange(fld)" [disabled]="!isChecked(fld)"
                                         [checked]="isEditEnabled(fld)"></lib-checkbox>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

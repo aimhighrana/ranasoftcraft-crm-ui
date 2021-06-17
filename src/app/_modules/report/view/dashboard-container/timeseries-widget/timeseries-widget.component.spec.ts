@@ -358,14 +358,14 @@ describe('TimeseriesWidgetComponent', () => {
     expect(obj.Week).toEqual(dataArr.label+'\t');
   }));
 
-  it('checkTextCode()', async(() => {
+  it('checkTextCode() should return a string', async(() => {
     component.displayCriteriaOption.key = DisplayCriteria.CODE;
-    const arrBucket = {key: 'admin', text: 'Administrator'};
-    const arrBucket1 = {};
+    const arrBucket = {code: 'admin', text: 'Administrator'};
+    const arrBucket1 = { code: null, text: null};
     let res = component.checkTextCode(arrBucket);
     let res1 = component.checkTextCode(arrBucket1);
 
-    expect(res).toEqual(arrBucket.key);
+    expect(res).toEqual(arrBucket.code);
     expect(res1).toEqual('');
 
     component.displayCriteriaOption.key = DisplayCriteria.TEXT;
@@ -378,6 +378,6 @@ describe('TimeseriesWidgetComponent', () => {
     component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
     res = component.checkTextCode(arrBucket);
 
-    expect(res).toEqual(`${arrBucket.key} -- ${arrBucket.text}`);
+    expect(res).toEqual(`${arrBucket.code} -- ${arrBucket.text}`);
   }));
 });

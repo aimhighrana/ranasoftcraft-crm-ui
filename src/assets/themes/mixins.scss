@@ -1233,6 +1233,14 @@
     }
   }
 
+  pros-duplicacy {
+    .mat-table {
+      .mat-cell.action-buttons-width {
+        min-width: 300px;
+      }
+    }
+  }
+
   .schema-details-table .mat-table {
     .schema-header-cell {
       background: $color-app-accent;
