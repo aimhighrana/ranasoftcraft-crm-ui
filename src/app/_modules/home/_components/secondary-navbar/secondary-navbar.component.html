@@ -82,7 +82,7 @@
                 <div (click)="updateSchemaBadgeInfo(schema)" mat-line>
                   <div class="f-col">
                     <strong class="schema-name">{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</strong>
-                    <span>{{schema.moduleDesc}}</span>
+                    <lib-text-line type="xsmall">{{schema.moduleDesc}}</lib-text-line>
                   </div>
                 </div>
                 <span class="f-spacer"></span>
