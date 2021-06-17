@@ -23,8 +23,8 @@ export class SchemalistService {
   public getAllSchemaList(offset: number, searchStr = ''): Observable<SchemaListDetails[]> {
     return this.http.get<SchemaListDetails[]>(this.endpointService.getAllRunningSchemaList(offset, 40, searchStr));
   }
-  public updateSchemaBatchInfo(schemaId: string): Observable<any> {
-    return this.http.post<any>(this.endpointService.updateSchemaBatchInfo(schemaId), {schemaId});
+  public updateSchemaBadgeInfo(schemaId: string): Observable<any> {
+    return this.http.post<any>(this.endpointService.updateSchemaBadgeInfo(schemaId), {});
   }
 
   public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {

@@ -411,10 +411,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     this.subscriptions.push(subscription);
   }
 
-  updateSchemaBatchInfo(schemaId: string) {
-    this.schemaListService.updateSchemaBatchInfo(schemaId).subscribe(() => {
+  updateSchemaBatchInfo(schema) {
+    this.schemaListService.updateSchemaBadgeInfo(schema.schemaId).subscribe(() => {
+      schema.viewed = true;
     }, (err) => {
-      console.error('Error while updating schema batch info', schemaId, err);
+      console.error('Error while updating schema batch info', schema.schemaId, err);
     })
   }
 

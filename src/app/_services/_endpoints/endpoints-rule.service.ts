@@ -31,8 +31,8 @@ export class EndpointsRuleService {
   public getAllRunningSchemaList(offset: number, size: number, searchStr: string): string {
     return this.classicOrigin + `/schema/getAllRunningSchemaList?from=${offset}&size=${size}&searchString=${searchStr}`;
   }
-  public updateSchemaBatchInfo(schemaId: string): string {
-    return this.classicOrigin + `/schema/updateSchemaBatchInfo?schemaId=${schemaId}`;
+  public updateSchemaBadgeInfo(schemaId: string): string {
+    return this.classicOrigin + `/schema/updateSchemaBadgeInfo?schemaId=${schemaId}`;
   }
 
   public getSchemaDetailsBySchemaIdUrl(schemaId: string): string {

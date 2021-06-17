@@ -530,7 +530,7 @@ describe('SecondaryNavbarComponent', () => {
   it('updateSchemaBatchInfo should update the schema batch info ', async () => {
     const schemaId = 'test';
     const schemaBatchSpy = spyOn(schemaListService, 'updateSchemaBatchInfo').and.returnValue(of(null));
-    component.updateSchemaBatchInfo(schemaId);
+    component.updateSchemaBadgeInfo(schemaId);
     expect(schemaBatchSpy).toHaveBeenCalled();
     schemaBatchSpy.and.returnValue(throwError({ message: 'error' }));
     component.updateSchemaBatchInfo(schemaId);
