@@ -397,7 +397,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       console.error(`Error : ${error.message}`);
     });
     this.subscriptions.push(subscription);
-    this.getAllSchemaList(true);
+    if(this.activatedPrimaryNav === 'welcome') {
+      this.getAllSchemaList(true);
+    }
   }
 
   getAllSchemaList(reload = false) {

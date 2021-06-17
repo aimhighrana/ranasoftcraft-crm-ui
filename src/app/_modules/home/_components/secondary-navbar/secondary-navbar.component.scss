@@ -127,15 +127,6 @@
   width: 100%;
 }
 
-.mat-line div.f-col {
-  > strong,
-  > span {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-}
-
 .running-schema-list .schema-name {
   margin-bottom: 5px;
   font-size: 12.6px;
