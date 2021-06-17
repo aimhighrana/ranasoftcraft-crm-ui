@@ -2,7 +2,7 @@ import { TaskListService } from '@services/task-list.service';
 import { InboxNodesCount } from './../../../../_models/list-page/listpage';
 import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SchemaListModuleList, SchemaListDetails, ModuleInfo } from '@models/schema/schemalist';
+import { SchemaListModuleList, SchemaListDetails, ModuleInfo, SchemaRunningDetails } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
@@ -88,7 +88,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
   /** To check page reloaded or not */
   isPageReload = true;
-  schemaList: SchemaListDetails[] = [];
+  schemaList: SchemaRunningDetails[] = [];
   schemaSearchString = '';
   schemaSearchSub: Subject<string> = new Subject();
 
@@ -411,7 +411,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     this.subscriptions.push(subscription);
   }
 
-  updateSchemaBatchInfo(schema) {
+  updateSchemaBatchInfo(schema: SchemaRunningDetails) {
     this.schemaListService.updateSchemaBadgeInfo(schema.schemaId).subscribe(() => {
       schema.viewed = true;
     }, (err) => {
