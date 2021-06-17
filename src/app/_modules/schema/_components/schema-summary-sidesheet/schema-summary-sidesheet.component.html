@@ -54,7 +54,7 @@
                 <div class="f-col mdo-form-field mdo-field">
                     <lib-text-line type="small" weight="strong">
                         <span i18n="@@data_scope">Data scope</span>&nbsp;
-                        <mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon">question-circle</mat-icon>
+                        <mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">question-circle</mat-icon>
                         <span class="mandatory">*</span>
                     </lib-text-line>
                     <mat-form-field appearance="outline">
@@ -70,7 +70,7 @@
                 </div>
                 <div class="f-col mdo-form-field mdo-field">
                     <lib-text-line type="small" weight="strong">
-                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon">question-circle</mat-icon>
+                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">question-circle</mat-icon>
                     </lib-text-line>
                     <div class="f-row slider-row">
                     <lib-range-slider class="lib-slider" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
@@ -107,7 +107,7 @@
                                     <span i18n="@@weightage">Weightage</span>
                                     <mat-icon i18n-libTooltip="@@br_weightage_tooltip_msg"
                                         libTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100"
-                                        fontSet="mdo-icons" class="mat-head-icon">
+                                        fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">
                                         question-circle</mat-icon>
                                 </lib-text-line>
                             </div>
