@@ -526,6 +526,7 @@ describe('SecondaryNavbarComponent', () => {
     allSchemaSpy.and.returnValue(throwError({ message: 'error' }));
     expect(allSchemaSpy).toHaveBeenCalled();
   });
+
   it('updateSchemaBatchInfo should update the schema batch info ', async () => {
     const schemaId = 'test';
     const schemaBatchSpy = spyOn(schemaListService, 'updateSchemaBadgeInfo').and.returnValue(of(null));
