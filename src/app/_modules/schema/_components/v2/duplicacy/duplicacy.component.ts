@@ -354,7 +354,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   /**
-   * get module info based on module id
+   * get module info based on module id...
    * @param id module id
    */
   getModuleInfo(id) {
