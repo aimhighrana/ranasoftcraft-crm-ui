@@ -68,7 +68,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   reportId: string;
 
   /** report name for any report */
-  reportName = new FormControl ('', Validators.required);
+  reportName = new FormControl('', Validators.required);
 
   /** fields for table widget */
   chooseColumns: WidgetTableModel[] = [];
@@ -140,23 +140,23 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** system fields for Transactional module dataset */
   systemFields = [
     {
-      fieldId:'STATUS',
-      fieldDescri:'Status',
+      fieldId: 'STATUS',
+      fieldDescri: 'Status',
     },
     {
-      fieldId:'USERMODIFIED',
-      fieldDescri:'User Modified',
+      fieldId: 'USERMODIFIED',
+      fieldDescri: 'User Modified',
       picklist: '1',
       dataType: 'AJAX',
-    },{
-      fieldId:'APPDATE',
-      fieldDescri:'Update Date',
+    }, {
+      fieldId: 'APPDATE',
+      fieldDescri: 'Update Date',
 
       picklist: '0',
       dataType: 'DTMS',
-    },{
-      fieldId:'STAGE',
-      fieldDescri:'Creation Date',
+    }, {
+      fieldId: 'STAGE',
+      fieldDescri: 'Creation Date',
       picklist: '0',
       dataType: 'DTMS',
     }
@@ -203,7 +203,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getReportConfig(this.reportId);
       } else {
         this.widgetList = [];
-        this.reportName = new FormControl('',Validators.required);
+        this.reportName = new FormControl('', Validators.required);
         this.collaboratorPermission = true;
       }
     });
@@ -480,9 +480,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
     const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
     if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
-      dropableWidget.x = boxX;
-      dropableWidget.y = boxY;
-
+      if (boxX + dropableWidget.width <= 200) {
+        dropableWidget.x = boxX;
+        dropableWidget.y = boxY;
+      }
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }
@@ -557,7 +558,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
-          objectType: data.objectType ? data.objectType: '',
+          objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
           isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
         });
@@ -603,7 +604,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (hasObj) {
           this.datasetCtrl.setValue(hasObj);
         }
-      } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
+      } else if (!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           this.datasetCtrl.setValue(hasObj);
@@ -700,8 +701,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
-    if(fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
-    this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
+    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
+      this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
   }
 
   /**
@@ -729,7 +730,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData selected data or on change dropdown data
    * @param index row index
    */
-   onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
+  onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
     if (fieldData && fieldData.option.value) {
       frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
@@ -1043,8 +1044,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param value width entered by user..
    */
   widthCount(value: number) {
-    if (value > 200) {
-      return this.styleCtrlGrp.get('width').setValue(200);
+    const marginCount = this.selStyleWid.x;
+    if (marginCount + value > 200) {
+      const width = 200 - marginCount;
+      return this.styleCtrlGrp.get('width').setValue(width);
     }
   }
 
@@ -1092,6 +1095,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         const lastWidget = this.widgetList[this.widgetList.length - 1];
         dropableWidget.x = boxX + lastWidget.x + 11;
         dropableWidget.y = boxY + lastWidget.y + 11;
+        if (dropableWidget.x + dropableWidget.width > 200) {
+          dropableWidget.x = boxX;
+          dropableWidget.y = boxY;
+        }
       } else {
         dropableWidget.x = boxX;
         dropableWidget.y = boxY;
@@ -1155,7 +1162,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  get isSriesWithVisibile() :boolean {
+  get isSriesWithVisibile(): boolean {
     if (this.styleCtrlGrp.get('field').value && this.styleCtrlGrp.get('groupById').value && this.styleCtrlGrp.get('distictWith').value) {
       this.selectedOption = 'year';
       this.isSerieswithDisabled = true;
@@ -1167,17 +1174,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
   }
-  checkNumLength(value :number){
+  checkNumLength(value: number) {
     if (value > 1000) {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue(1000);
-    } else if(value<1){
+    } else if (value < 1) {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue('');
     }
   }
 
-  checkEnabledBarPerc(){
-    if(this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
-        this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
+  checkEnabledBarPerc() {
+    if (this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
+      this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
     }
   }
 }
