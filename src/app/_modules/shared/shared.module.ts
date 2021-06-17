@@ -83,6 +83,7 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
 import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
 import { StatusBadgeDirective } from './_directives/status-badge.directive';
+import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loader.component';
 
 @NgModule({
   declarations: [
@@ -129,7 +130,8 @@ import { StatusBadgeDirective } from './_directives/status-badge.directive';
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
     GenericFieldControlComponent,
-    StatusBadgeDirective
+    StatusBadgeDirective,
+    OverlayLoaderComponent
   ],
   imports: [
     // ng modules
@@ -277,7 +279,8 @@ import { StatusBadgeDirective } from './_directives/status-badge.directive';
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
     GenericFieldControlComponent,
-    StatusBadgeDirective
+    StatusBadgeDirective,
+    OverlayLoaderComponent
   ],
   providers: [
     TitleCasePipe,
