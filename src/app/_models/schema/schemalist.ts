@@ -46,6 +46,7 @@ export class ModuleInfo {
     moduleId: string;
     moduleDesc: string;
     tenantId?: string;
+    datasetCount?: number;
 }
 export class SchemaListDetails {
     schemaId: string;
@@ -298,6 +299,7 @@ export interface SchemaVariantsModel {
     filterCriteria: FilterCriteria[];
     isDefault: boolean;
     variantType: VarinatType;
+    _totalDoc: number;
 }
 
 export enum VarinatType {

@@ -4,6 +4,20 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  .filter-btn,
+  .menu-link-btn {
+    margin: 0 4px;
+  }
+
+  .btn-txt {
+    margin-left: 5px;
+    font-weight: bold;
+  }
+
+  .selected {
+    background-color: #f2f5f8;
+  }
+
   .filter-container {
     flex-wrap: wrap;
     margin: 8px 0;
@@ -15,6 +29,22 @@ div.root {
 
     .mdo-filter-matchip {
       margin: 0 4px;
+    }
+  }
+
+  .empty-state {
+    position: absolute;
+    background: white;
+    z-index: 1000;
+    width: 98%;
+    height: calc(100% - 45px);
+
+    .lib-empty-state {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      top: 15%;
     }
   }
 

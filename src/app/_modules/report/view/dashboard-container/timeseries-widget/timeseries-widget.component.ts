@@ -199,14 +199,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     });
     this.subscriptions.push(endDateCtrl);
 
-
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
-
 
     this.getTimeSeriesMetadata();
     const widgeInf = this.widgetInf.subscribe(metadata => {
@@ -658,7 +656,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       const dataSet = new Object();
       dataSet[arrKeys[0]] = finalOutput[status];
       dataSet[arrKeys[1]] = status;
-      dataSet[arrKeys[2]] = status;
+      dataSet[arrKeys[2]] = this.checkTextCode({ text: status, code: codetextObj[status] });
       dataSet[arrKeys[3]] = false;
       dataSet[arrKeys[4]] = this.getUpdatedColorCode(status);
       const chartLegend = { text: status, code: codetextObj[status], legendIndex: this.chartLegend.length };
@@ -684,6 +682,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const fieldId = this.timeseriesData.timeSeries.fieldId;
     let finalOutput = new Array();
     this.dataSetlabel = [];
+    const tempDataSetlabel = [];
     const objData = {};
     this.chartLegend = [];
     const aggregation = res ? res.aggregations['date_histogram#date'] : [];
@@ -723,12 +722,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           if (exist.length === 0) {
             this.chartLegend.push(chartLegend);
             if (this.dataSetlabel.indexOf(codeValue) === -1) {
-              label.length > 0 ? this.dataSetlabel.push(label) : this.dataSetlabel.push(this.checkTextCode(arrBucket));
+              label.length > 0 ? tempDataSetlabel.push(label) : tempDataSetlabel.push(arrBucket.key);
+              this.dataSetlabel.push(this.checkTextCode(chartLegend));
             }
           }
           dataSet[label] = count;
         });
-        this.dataSetlabel.forEach(key => {
+        tempDataSetlabel.forEach(key => {
           if (Object.keys(dataSet).includes(key.toString())) {
             arrcount.push(dataSet[key.toString()]);
           } else {
@@ -1149,20 +1149,20 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.subscriptions.push(saveDisplayCriteria);
   }
 
-  checkTextCode(arrBucket): string {
+  checkTextCode(value: { code: string; text: string; }): string {
     switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
-        if(arrBucket.key) {
-          return arrBucket.key;
+        if(value.code) {
+          return value.code;
         }
         break;
         case DisplayCriteria.TEXT:
-          if(arrBucket.text) {
-            return arrBucket.text;
+          if(value.text) {
+            return value.text;
           }
         break;
         default:
-          return `${arrBucket.key} -- ${arrBucket.text || ''}`;
+          return `${value.code} -- ${value.text || ''}`;
         break;
     }
     return '';

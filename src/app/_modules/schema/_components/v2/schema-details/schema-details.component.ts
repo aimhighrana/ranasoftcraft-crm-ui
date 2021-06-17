@@ -57,6 +57,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   variantName = 'Entire dataset';
 
   /**
+   * Selected Variant total count
+   */
+  variantTotalCnt = 0;
+
+  /**
+   * doc count for entire dataset
+   */
+  totalVariantsCnt = 0;
+
+  /**
    * Hold all metada control for header , hierarchy and grid fields ..
    */
   metadata: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject<MetadataModeleResponse>(null);
@@ -209,7 +219,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   inlineSearchSubject: Subject<string> = new Subject();
 
-  widthOfSchemaNav = 292;
+  widthOfSchemaNav = 236;
   boxPosition: { left: number, top: number };
   public mousePosition: { x: number, y: number };
   public status: SchemaNavGrab = SchemaNavGrab.OFF;
@@ -371,8 +381,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData(this.filterCriteria.getValue(), this.sortOrder);
       }
     });
-    this.setNavDivPositions();
-    this.enableResize();
+    // this.setNavDivPositions();
+    // this.enableResize();
   }
 
   ngOnInit(): void {
@@ -807,6 +817,24 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
+  isEditEnabled(fldid: string, row: any, rIndex: number) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    if (field && !field.isEditable) {
+      return false;
+    }
+
+    const el = document.getElementById('inpctrl_' + fldid + '_' + rIndex);
+
+    if (el) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      if (inpCtrl.style.display === 'block') {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   isFieldEditable(fldid) {
     const field = this.selectedFields.find(f => f.fieldId === fldid);
     if (field && this.activeNode.nodeId === field.nodeId && field.isEditable) {
@@ -1144,8 +1172,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   variantChange(variantId) {
     if (this.variantId !== variantId) {
       this.variantId = variantId;
-      this.variantName = this.variantId === '0' ? 'Entire dataset'
-        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
+      const scope = this.dataScope.find(v => v.variantId === this.variantId);
+      this.variantName = this.variantId === '0' ? 'Entire dataset' : scope?.variantName;
+      this.variantTotalCnt = this.variantId === '0' ? this.totalVariantsCnt : scope?._totalDoc;
       if (this.variantId !== '0') {
         this.getVariantDetails();
       } else {
@@ -1554,6 +1583,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
       if (res && res.length) {
         this.moduleInfo = res[0];
+        this.totalVariantsCnt = this.moduleInfo.datasetCount || 0;
       }
     }, error => {
       console.log(`Error:: ${error.message}`)
@@ -1730,6 +1760,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             }
           });
           this.selectedFields = allFields;
+          this.selectedFields.map((x) => x.isEditable = true);
           this.selectedFieldsOb.next(updateTableView);
         };
 

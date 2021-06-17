@@ -756,6 +756,14 @@
     }
   }
 
+  .filter-btn button,
+  .menu-link-btn button {
+    border-color: $color-app-border;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 50%;
+  }
+
   //Mat-Menu
   .cdk-overlay-pane {
     &.display-dialog {
@@ -1225,9 +1233,37 @@
     }
   }
 
+  pros-duplicacy {
+    .mat-table {
+      .mat-cell.action-buttons-width {
+        min-width: 300px;
+      }
+    }
+  }
+
   .schema-details-table .mat-table {
     .schema-header-cell {
       background: $color-app-accent;
+    }
+
+    .mat-row:hover {
+      .schema-header-cell {
+        background: inherit;
+      }
+    }
+
+    .mat-cell {
+      .grid-cell-editable {
+        min-height: 50px;
+      }
+
+      &.error-cell {
+        border-width: 1px;
+      }
+    }
+
+    .mat-cell.edit-mode {
+      border: 1px solid #000;
     }
   }
 
@@ -1242,7 +1278,7 @@
     }
   }
 
-  //Mat-Header with avatar
+  //Mat-Header with avatar...
   mat-card-header.mat-card-header {
     align-items: center;
 
@@ -1363,6 +1399,10 @@
     .colunm-box {
       border-bottom: 1px solid $color-app-border;
     }
+  }
+
+  .lib-button.navbar-action .mdo-button.mdo-minor {
+    background: $color-text-canvas;
   }
 
   pros-primary-navigation {
@@ -2108,6 +2148,33 @@
       color: $color-status-error;
     }
   }
+
+  /* stylelint-disable */
+  .mat-badge {
+    .mat-badge-content {
+      .status-badge-icon {
+        color: $color-text-primary;
+        font-size: 12px;
+
+        &.info {
+          color: $color-status-info;
+        }
+
+        &.success {
+          color: $color-status-success;
+        }
+
+        &.warning {
+          color: $color-status-warning;
+        }
+
+        &.error {
+          color: $color-status-error;
+        }
+      }
+    }
+  }
+  /* stylelint-enable */
 }
 
 @mixin pros-cmp-typography($config) {
