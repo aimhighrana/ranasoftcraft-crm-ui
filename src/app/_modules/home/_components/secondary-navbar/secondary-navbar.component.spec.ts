@@ -516,8 +516,8 @@ describe('SecondaryNavbarComponent', () => {
   });
 
   it('getAllSchemaList should have infinite scroll and call schema list API ', async () => {
-    const schemaListDetails: Array<SchemaListDetails> = [{} as SchemaListDetails];
-    component.schemaList = [{} as SchemaListDetails];
+    const schemaListDetails: Array<SchemaRunningDetails> = [{} as SchemaRunningDetails];
+    component.schemaList = [{} as SchemaRunningDetails];
     const allSchemaSpy = spyOn(schemaListService, 'getAllSchemaList').and.returnValue(of(schemaListDetails));
     component.getAllSchemaList(true);
     expect(component.schemaList.length).toEqual(1);
@@ -529,7 +529,7 @@ describe('SecondaryNavbarComponent', () => {
 
   it('updateSchemaBatchInfo should update the schema batch info ', async () => {
     const schemaId = 'test';
-    const schemaBatchSpy = spyOn(schemaListService, 'updateSchemaBatchInfo').and.returnValue(of(null));
+    const schemaBatchSpy = spyOn(schemaListService, 'updateSchemaBadgeInfo').and.returnValue(of(null));
     component.updateSchemaBadgeInfo({schemaId} as SchemaRunningDetails);
     expect(schemaBatchSpy).toHaveBeenCalled();
     schemaBatchSpy.and.returnValue(throwError({ message: 'error' }));
