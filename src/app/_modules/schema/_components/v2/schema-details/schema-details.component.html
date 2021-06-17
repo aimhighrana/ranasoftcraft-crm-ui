@@ -22,7 +22,9 @@
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()"> Refine</lib-button>
+            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
+                <span class="btn-txt">Refine</span>
+            </lib-button>
             <lib-button *ngIf="false" type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
             <lib-button class="lib-button navbar-action" type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
         </lib-button-group>
