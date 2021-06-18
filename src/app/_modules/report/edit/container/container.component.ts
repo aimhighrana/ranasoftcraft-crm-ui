@@ -136,7 +136,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   datasetCtrl: FormControl = new FormControl('');
   fieldCtrl: FormControl = new FormControl('');
-  chooseWorkflow = [];
 
   /** system fields for Transactional module dataset */
   systemFields = [
@@ -596,7 +595,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
-      this.chooseWorkflow = data.workflowPath ? data.workflowPath : [];
 
       this.datasetCtrl.setValue('');
       // make while edit widget ..
@@ -1181,34 +1179,5 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
       this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
     }
-  }
-
-  workflowPathSelected(value) {
-    const selectedItemIndex = this.chooseWorkflow.findIndex(item => item === value);
-    if (selectedItemIndex > -1) {
-      this.chooseWorkflow.splice(selectedItemIndex, 1);
-    }
-    else {
-      this.chooseWorkflow.push(value);
-    }
-
-    const workFlowValue = this.chooseWorkflow.map(item=>item.pathname);
-    this.styleCtrlGrp.controls.workflowPath.setValue(workFlowValue);
-  }
-
-  isSelectedWorkflow(workflow) {
-    if (this.selStyleWid) {
-      const changedWidget = this.selStyleWid;
-      const selectedField = changedWidget.workflowPath?.filter(fill => fill === workflow);
-      if (selectedField && selectedField.length) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  getSelectedWorkflowValue() {
-    const chooseWorkFlowValue = this.chooseWorkflow.map(item=>item.workflowdesc);
-    return chooseWorkFlowValue.join(',');
   }
 }

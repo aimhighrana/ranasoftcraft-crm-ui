@@ -183,22 +183,12 @@
                                     [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Workflow path</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumnWF"
-                                            #columnsTrigger="matAutocompleteTrigger"
-                                            (click)="openAutoComplete(columnsTrigger)"
-                                            (keyup)="openAutoComplete(columnsTrigger);" [value]="getSelectedWorkflowValue()"> 
-                                        <mat-autocomplete #chooseColumnWF="matAutocomplete" >
-                                           <mat-option *ngFor="let workflow of workflowPathOb | async"
-                                                [value]="workflow.pathname">        
-                                                <div (click)="workflowPathSelected(workflow)">
-                                                    <lib-checkbox prosClickStopPropagation
-                                                        (valueChange)="workflowPathSelected(workflow)"
-                                                        [checked]="isSelectedWorkflow(workflow)"
-                                                        [label]=" workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' ">
-                                                    </lib-checkbox>
-                                                </div>
+                                        <mat-select formControlName="workflowPath" multiple>
+                                            <mat-option *ngFor="let workflow of workflowPathOb | async"
+                                                [value]="workflow.pathname">
+                                                {{ workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' }}
                                             </mat-option>
-                                        </mat-autocomplete>
+                                        </mat-select>
                                     </mat-form-field>
                                 </ng-template>
                             </div>
@@ -393,8 +383,10 @@
                                             <mat-label i18n="@@sortBy">Sort by</mat-label>
                                             <mat-form-field appearance="outline">
                                                 <mat-select formControlName="orderWith">
-                                                    <mat-option [value]="OrderWith.ASC" i18n="@@ascending"> Ascending </mat-option>
-                                                    <mat-option [value]="OrderWith.DESC" i18n="@@descending"> Descending </mat-option>
+                                                    <mat-option [value]="OrderWith.ASC" i18n="@@ascending"> Ascending
+                                                    </mat-option>
+                                                    <mat-option [value]="OrderWith.DESC" i18n="@@descending"> Descending
+                                                    </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
@@ -409,9 +401,12 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumn" [formControl]="fieldCtrl" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
+                                        <input matInput [matAutocomplete]="chooseColumn" [formControl]="fieldCtrl"
+                                            #columnsTrigger="matAutocompleteTrigger"
+                                            (click)="openAutoComplete(columnsTrigger)"
                                             (keyup)="openAutoComplete(columnsTrigger); searchChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith" (opened)="removeError('fieldCtrl')">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete"
+                                            [displayWith]="chooseColumnDisWith" (opened)="removeError('fieldCtrl')">
                                             <mat-optgroup label="System fileds">
                                                 <mat-option *ngFor="let field of systemFields
                                                 " value="{{ field.fieldId }}">
@@ -424,7 +419,8 @@
                                                 </mat-option>
                                             </mat-optgroup>
                                             <mat-optgroup label="Header fileds">
-                                                <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}">
+                                                <mat-option *ngFor="let field of headerFields | async"
+                                                    value="{{ field.fieldId }}">
                                                     <div (click)="optionClicked($event, field)">
                                                         <lib-checkbox prosClickStopPropagation
                                                             (valueChange)="toggleSelection(field)"
@@ -445,10 +441,12 @@
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
 
-                                        <input matInput [matAutocomplete]="chooseColumnWF" [formControl]="fieldCtrl" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
+                                        <input matInput [matAutocomplete]="chooseColumnWF" [formControl]="fieldCtrl"
+                                            #columnsTrigger="matAutocompleteTrigger"
+                                            (click)="openAutoComplete(columnsTrigger)"
                                             (keyup)="openAutoComplete(columnsTrigger); searchChooseColumnWorkflow($event.target.value)">
-                                        <mat-autocomplete #chooseColumnWF="matAutocomplete" (opened)="removeError('fieldCtrl')"
-                                            [displayWith]="chooseColumnDisWith">
+                                        <mat-autocomplete #chooseColumnWF="matAutocomplete"
+                                            (opened)="removeError('fieldCtrl')" [displayWith]="chooseColumnDisWith">
                                             <mat-optgroup label="System fileds">
                                                 <mat-option *ngFor="let field of (workflowFieldsObs | async).static"
                                                     value="{{ field.fieldId }}">
@@ -483,10 +481,12 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && styleCtrlGrp.get('isCustomdataSet').value===true">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumn" [formControl]="fieldCtrl" #columnsTrigger="matAutocompleteTrigger" (click)="openAutoComplete(columnsTrigger)"
+                                        <input matInput [matAutocomplete]="chooseColumn" [formControl]="fieldCtrl"
+                                            #columnsTrigger="matAutocompleteTrigger"
+                                            (click)="openAutoComplete(columnsTrigger)"
                                             (keyup)="openAutoComplete(columnsTrigger); searchCustomChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete" (opened)="removeError('fieldCtrl')"
-                                            [displayWith]="chooseColumnDisWith">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete"
+                                            (opened)="removeError('fieldCtrl')" [displayWith]="chooseColumnDisWith">
                                             <mat-option *ngFor="let fld of CustomfieldsObs | async"
                                                 value="{{ fld.fieldId }}">
                                                 <div (click)="optionClicked($event, fld)">
@@ -525,7 +525,8 @@
                             </div>
 
                             <div class="f-col">
-                                <lib-checkbox formControlName="isEnableGlobalFilter" label="Global Filters not applicable"></lib-checkbox>
+                                <lib-checkbox formControlName="isEnableGlobalFilter"
+                                    label="Global Filters not applicable"></lib-checkbox>
                             </div>
 
                             <div class="f-col">
@@ -537,7 +538,8 @@
                                     </mat-form-field>
 
                                     <div class="f-row image-algin">
-                                        <lib-button (click)="uploadFileChange()" prosClickStopPropagation icon="image"></lib-button>
+                                        <lib-button (click)="uploadFileChange()" prosClickStopPropagation icon="image">
+                                        </lib-button>
                                         <input type="file" (change)="fileChange($event)" style="display: none;"
                                             id="uploadFileCtrl" accept="image/png, image/jpeg"
                                             prosClickStopPropagation />
@@ -625,15 +627,18 @@
                                     <mat-label i18n="@@sortBy">Sort by</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="orderWith">
-                                            <mat-option [value]="OrderWith.ROW_ASC" i18n="@@rowAscending"> Row ascending </mat-option>
-                                            <mat-option [value]="OrderWith.ROW_DESC" i18n="@@rowDescending"> Row descending </mat-option>
-                                            <mat-option [value]="OrderWith.COL_ASC" i18n="@@columnAscending"> Column Ascending </mat-option>
-                                            <mat-option [value]="OrderWith.COL_DESC" i18n="@@columnDescending"> Column descending </mat-option>
+                                            <mat-option [value]="OrderWith.ROW_ASC" i18n="@@rowAscending"> Row ascending
+                                            </mat-option>
+                                            <mat-option [value]="OrderWith.ROW_DESC" i18n="@@rowDescending"> Row
+                                                descending </mat-option>
+                                            <mat-option [value]="OrderWith.COL_ASC" i18n="@@columnAscending"> Column
+                                                Ascending </mat-option>
+                                            <mat-option [value]="OrderWith.COL_DESC" i18n="@@columnDescending"> Column
+                                                descending </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <ng-template
-                                    [ngIf]="selStyleWid">
+                                <ng-template [ngIf]="selStyleWid">
                                     <div class="f-col">
                                         <div class="f-row">
                                             <div class="f-col">
@@ -856,7 +861,9 @@
                                                     <div class="f-col value-set">
                                                         <mat-label>Value</mat-label>
                                                         <mat-form-field appearance="outline">
-                                                            <input matInput formControlName="conditionFieldValue" matTooltip="{{selStyleWid.defaultFilters[i].conditionFieldValue ? selStyleWid.defaultFilters[i].conditionFieldValue: ''}}" matTooltipPosition="right">
+                                                            <input matInput formControlName="conditionFieldValue"
+                                                                matTooltip="{{selStyleWid.defaultFilters[i].conditionFieldValue ? selStyleWid.defaultFilters[i].conditionFieldValue: ''}}"
+                                                                matTooltipPosition="right">
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-template>
@@ -867,7 +874,8 @@
                                                     color="warn" matTooltipPosition="right">
                                                     <mat-icon>remove_circle_outline</mat-icon>
                                                 </button> -->
-                                                <lib-button type="plain" icon="minus-circle" (click)="removeFilter(i)" matTooltip="Remove" matTooltipPosition="right"></lib-button>
+                                                <lib-button type="plain" icon="minus-circle" (click)="removeFilter(i)"
+                                                    matTooltip="Remove" matTooltipPosition="right"></lib-button>
                                             </div>
                                         </ng-container>
                                     </div>
