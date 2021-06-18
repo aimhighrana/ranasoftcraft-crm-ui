@@ -914,8 +914,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         const critera: Criteria = new Criteria();
         critera.fieldId = groupwith;
         critera.conditionFieldId = groupwith;
-        critera.conditionFieldEndValue = moment(this.startDateCtrl.value).valueOf().toString();
-        critera.conditionFieldStartValue = moment(this.endDateCtrl.value).valueOf().toString();
+        critera.conditionFieldEndValue = moment(this.endDateCtrl.value).valueOf().toString();
+        critera.conditionFieldStartValue = moment(this.startDateCtrl.value).valueOf().toString();
         critera.blockType = BlockType.COND;
         critera.conditionOperator = ConditionOperator.RANGE;
         filterApplied.push(critera);
