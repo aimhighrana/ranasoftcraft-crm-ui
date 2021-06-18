@@ -225,6 +225,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     if (returndata.data) {
       returndata = returndata.data;
     }
+
+    const widgets = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
+    /* setting the picklist of event column as '1' */
+    widgets?.forEach(item => item.fields === 'EVENT_ID' ? item.fldMetaData.picklist = '1': item);
+    this.reportingListWidget.next(widgets);
+
     returndata.hits.hits.forEach(element => {
       const source = element.sourceAsMap;
       let objectNumber = source.id ? source.id : source.staticFields && source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc ? source.staticFields.OBJECT_NUMBER.vc[0].c : element.id;
