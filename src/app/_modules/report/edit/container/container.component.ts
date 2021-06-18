@@ -68,7 +68,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   reportId: string;
 
   /** report name for any report */
-  reportName = new FormControl ('', Validators.required);
+  reportName = new FormControl('', Validators.required);
 
   /** fields for table widget */
   chooseColumns: WidgetTableModel[] = [];
@@ -136,27 +136,28 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   datasetCtrl: FormControl = new FormControl('');
   fieldCtrl: FormControl = new FormControl('');
+  chooseWorkflow = [];
 
   /** system fields for Transactional module dataset */
   systemFields = [
     {
-      fieldId:'STATUS',
-      fieldDescri:'Status',
+      fieldId: 'STATUS',
+      fieldDescri: 'Status',
     },
     {
-      fieldId:'USERMODIFIED',
-      fieldDescri:'User Modified',
+      fieldId: 'USERMODIFIED',
+      fieldDescri: 'User Modified',
       picklist: '1',
       dataType: 'AJAX',
-    },{
-      fieldId:'APPDATE',
-      fieldDescri:'Update Date',
+    }, {
+      fieldId: 'APPDATE',
+      fieldDescri: 'Update Date',
 
       picklist: '0',
       dataType: 'DTMS',
-    },{
-      fieldId:'STAGE',
-      fieldDescri:'Creation Date',
+    }, {
+      fieldId: 'STAGE',
+      fieldDescri: 'Creation Date',
       picklist: '0',
       dataType: 'DTMS',
     }
@@ -203,7 +204,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getReportConfig(this.reportId);
       } else {
         this.widgetList = [];
-        this.reportName = new FormControl('',Validators.required);
+        this.reportName = new FormControl('', Validators.required);
         this.collaboratorPermission = true;
       }
     });
@@ -557,7 +558,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
-          objectType: data.objectType ? data.objectType: '',
+          objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
           isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
         });
@@ -595,6 +596,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
+      this.chooseWorkflow = data.workflowPath ? data.workflowPath : [];
 
       this.datasetCtrl.setValue('');
       // make while edit widget ..
@@ -603,7 +605,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (hasObj) {
           this.datasetCtrl.setValue(hasObj);
         }
-      } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
+      } else if (!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           this.datasetCtrl.setValue(hasObj);
@@ -700,8 +702,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
-    if(fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
-    this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
+    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
+      this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
   }
 
   /**
@@ -729,7 +731,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData selected data or on change dropdown data
    * @param index row index
    */
-   onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
+  onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
     if (fieldData && fieldData.option.value) {
       frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
@@ -1155,7 +1157,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  get isSriesWithVisibile() :boolean {
+  get isSriesWithVisibile(): boolean {
     if (this.styleCtrlGrp.get('field').value && this.styleCtrlGrp.get('groupById').value && this.styleCtrlGrp.get('distictWith').value) {
       this.selectedOption = 'year';
       this.isSerieswithDisabled = true;
@@ -1167,17 +1169,46 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
   }
-  checkNumLength(value :number){
+  checkNumLength(value: number) {
     if (value > 1000) {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue(1000);
-    } else if(value<1){
+    } else if (value < 1) {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue('');
     }
   }
 
-  checkEnabledBarPerc(){
-    if(this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
-        this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
+  checkEnabledBarPerc() {
+    if (this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
+      this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
     }
+  }
+
+  workflowPathSelected(value) {
+    const selectedItemIndex = this.chooseWorkflow.findIndex(item => item === value);
+    if (selectedItemIndex > -1) {
+      this.chooseWorkflow.splice(selectedItemIndex, 1);
+    }
+    else {
+      this.chooseWorkflow.push(value);
+    }
+
+    const workFlowValue = this.chooseWorkflow.map(item=>item.pathname);
+    this.styleCtrlGrp.controls.workflowPath.setValue(workFlowValue);
+  }
+
+  isSelectedWorkflow(workflow) {
+    if (this.selStyleWid) {
+      const changedWidget = this.selStyleWid;
+      const selectedField = changedWidget.workflowPath?.filter(fill => fill === workflow);
+      if (selectedField && selectedField.length) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  getSelectedWorkflowValue() {
+    const chooseWorkFlowValue = this.chooseWorkflow.map(item=>item.workflowdesc);
+    return chooseWorkFlowValue.join(',');
   }
 }

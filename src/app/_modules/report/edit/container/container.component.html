@@ -183,12 +183,22 @@
                                     [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Workflow path</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-select formControlName="workflowPath" multiple>
-                                            <mat-option *ngFor="let workflow of workflowPathOb | async"
-                                                [value]="workflow.pathname">
-                                                {{ workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' }}
+                                        <input matInput [matAutocomplete]="chooseColumnWF"
+                                            #columnsTrigger="matAutocompleteTrigger"
+                                            (click)="openAutoComplete(columnsTrigger)"
+                                            (keyup)="openAutoComplete(columnsTrigger);" [value]="getSelectedWorkflowValue()"> 
+                                        <mat-autocomplete #chooseColumnWF="matAutocomplete" >
+                                           <mat-option *ngFor="let workflow of workflowPathOb | async"
+                                                [value]="workflow.pathname">        
+                                                <div (click)="workflowPathSelected(workflow)">
+                                                    <lib-checkbox prosClickStopPropagation
+                                                        (valueChange)="workflowPathSelected(workflow)"
+                                                        [checked]="isSelectedWorkflow(workflow)"
+                                                        [label]=" workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' ">
+                                                    </lib-checkbox>
+                                                </div>
                                             </mat-option>
-                                        </mat-select>
+                                        </mat-autocomplete>
                                     </mat-form-field>
                                 </ng-template>
                             </div>
