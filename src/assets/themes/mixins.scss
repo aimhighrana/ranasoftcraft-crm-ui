@@ -1469,6 +1469,10 @@
     }
   }
 
+  .mat-nav-list .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+    top: 5px;
+  }
+
   pros-settings {
     .mat-list-item.selected {
       background-color: $color-app-hover;
