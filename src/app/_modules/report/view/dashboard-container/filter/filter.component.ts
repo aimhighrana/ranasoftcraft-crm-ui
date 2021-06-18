@@ -104,7 +104,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   isClearFilter = false;
 
   subscriptions: Subscription[] = [];
-  returnData: any;
 
   /**
    * Constructor of Class
@@ -137,7 +136,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
       if (this.filterWidget && this.filterWidget.value && !this.widgetHeader.isEnableGlobalFilter) {
-        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '');
+        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '', undefined, true);
       }
     }
   }
@@ -149,10 +148,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.filterFormControl.valueChanges.pipe(debounceTime(1000)).subscribe(val=>{
       if(typeof val === 'string') {
         this.searchString = val;
-        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, val);
+        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, val, undefined, true);
       } else {
         this.searchString = '';
-        this.filteredOptionsSubject.next(this.values);
+        this.setFilteredOptions();
         if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
           this.removeSingleSelectedVal(false);
         }
@@ -175,7 +174,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   }
 
-  getFieldsMetadaDesc(buckets:any[], fieldId: string) {
+  getFieldsMetadaDesc(buckets:any[], fieldId: string, reset: boolean) {
     const finalVal = {} as any;
     buckets.forEach(bucket=>{
       const key = bucket.key.FILTER;
@@ -213,11 +212,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.values[index] = valOld[0];
         }
     });
-    this.filteredOptionsSubject.next(this.values);
 
+    this.setFilteredOptions(reset);
   }
 
-  updateObjRefDescription(buckets:any[], fieldId: string) {
+  updateObjRefDescription(buckets:any[], fieldId: string, reset: boolean) {
     let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
     locale = locale.toUpperCase();
     const finalVal = {} as any;
@@ -257,7 +256,17 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
     });
 
-    this.filteredOptionsSubject.next(this.values);
+    this.setFilteredOptions(reset);
+  }
+
+  setFilteredOptions(reset?: boolean) {
+    if (reset) {
+      this.filteredOptionsSubject.next(this.values);
+    } else {
+      const values = this.filteredOptionsSubject.value;
+      values.push(...this.values);
+      this.filteredOptionsSubject.next(values);
+    }
   }
 
   public getHeaderMetaData():void{
@@ -373,48 +382,43 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }
   }
 
-  public loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string, searchAfter?:string): void{
+  public loadAlldropData(fieldId: string, criteria: Criteria[], searchString?: string, searchAfter?: string, reset?: boolean): void{
     criteria = this.removefilter(this.filterWidget.value.fieldId, criteria);
     const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString,searchAfter).subscribe(returnData=>{
-      this.returnData = returnData;
-      this.updateFilter(fieldId, this.returnData);
+      const res = Object.keys(returnData.aggregations);
+      const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
+      if (buckets && buckets.length === 10) {
+        this.searchAfter = returnData.aggregations[res[0]].after_key.FILTER ? returnData.aggregations[res[0]].after_key.FILTER : '';
+        this.isLoadMore = true;
+      } else {
+        this.isLoadMore = false;
+      }
+      if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37'|| this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35')) {
+        const metadatas: DropDownValues[] = [];
+        buckets.forEach(bucket => {
+          const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER, display: this.setDisplayCriteria(bucket.key.FILTER, bucket.key.FILTER)} as DropDownValues;
+          metadatas.push(metaData);
+        });
+        this.values = metadatas;
+        if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35') {
+          this.getFieldsMetadaDesc(buckets, fieldId, reset);
+        } else if(this.filterWidget.getValue().metaData.picklist === '30'){
+          this.updateObjRefDescription(buckets, fieldId, reset);
+        } else {
+          this.setFilteredOptions(reset);
+        }
+      } else if(this.filterWidget.getValue().metaData && (this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC')) {
+        // static data  TODO
+        const filterResponse = new FilterResponse();
+        filterResponse.min = 1;
+        filterResponse.max = 2000;
+        filterResponse.fieldId = this.filterWidget.getValue().fieldId;
+        this.filterResponse = filterResponse;
+      }
     }, error=>{
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(widgetData);
-  }
-
-  private updateFilter(fieldId: string, returnData) {
-    const res = Object.keys(returnData.aggregations);
-    const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
-    if (buckets && buckets.length === 10) {
-      this.searchAfter = returnData.aggregations[res[0]].after_key.FILTER ? returnData.aggregations[res[0]].after_key.FILTER : '';
-      this.isLoadMore = true;
-    } else {
-      this.isLoadMore = false;
-    }
-    if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37'|| this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35')) {
-      const metadatas: DropDownValues[] = [];
-      buckets.forEach(bucket => {
-        const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER, display: this.setDisplayCriteria(bucket.key.FILTER, bucket.key.FILTER)} as DropDownValues;
-        metadatas.push(metaData);
-      });
-      this.values = metadatas;
-      if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35') {
-        this.getFieldsMetadaDesc(buckets, fieldId);
-      } else if(this.filterWidget.getValue().metaData.picklist === '30'){
-        this.updateObjRefDescription(buckets, fieldId);
-      } else {
-        this.filteredOptionsSubject.next(this.values);
-      }
-    } else if(this.filterWidget.getValue().metaData && (this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC')) {
-      // static data  TODO
-      const filterResponse = new FilterResponse();
-      filterResponse.min = 1;
-      filterResponse.max = 2000;
-      filterResponse.fieldId = this.filterWidget.getValue().fieldId;
-      this.filterResponse = filterResponse;
-    }
   }
 
   fieldDisplayFn(data): string {
@@ -804,6 +808,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           });
         });
       }
+      this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '', undefined, true);
     }, error => {
       console.error(`Error : ${error}`);
       this.toasterService.open(`Something went wrong`, 'Close', { duration: 3000 });
