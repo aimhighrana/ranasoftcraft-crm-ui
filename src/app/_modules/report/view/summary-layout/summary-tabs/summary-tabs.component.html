@@ -54,7 +54,7 @@
                 <div class="f-row item-tile">
                   <mat-label>{{fieldData.fieldDescri}}</mat-label>
                   <div mat-line>
-                    {{fieldData.value | date: getDateTimeFormat(true)}}
+                    {{fieldData.value | dateFormatPipe:dateFormat}}
                   </div>
                 </div>
               </div>
@@ -64,7 +64,7 @@
                 <div class="f-row item-tile">
                   <mat-label>{{fieldData.fieldDescri}}</mat-label>
                   <div mat-line>
-                    {{fieldData.value | date : getDateTimeFormat()}}
+                    {{fieldData.value | dateFormatPipe:dateFormat}}
                   </div>
                 </div>
               </div>

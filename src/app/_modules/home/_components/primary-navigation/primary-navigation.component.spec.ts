@@ -51,7 +51,7 @@ describe('PrimaryNavigationComponent', () => {
         userId: 'DemoApp'
       }
     ]
-  };
+  } as Userdetails;
   beforeEach(async(() => {
     const userSvcSpy = jasmine.createSpyObj('UserService', ['getUserDetails']);
     TestBed.configureTestingModule({

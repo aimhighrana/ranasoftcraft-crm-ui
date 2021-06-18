@@ -51,6 +51,8 @@ export class SummaryTabsComponent implements OnInit {
 
   panelOpenState = false;
 
+  dateFormat: string;
+
   userDetails: Userdetails = new Userdetails();
 
   ngOnInit(): void {
@@ -72,6 +74,8 @@ export class SummaryTabsComponent implements OnInit {
     this.userService.getUserDetails().subscribe(res => {
       this.userDetails = res;
     }, error => console.error(`Error : ${error.message}`));
+
+    this.getDateTimeFormat();
   }
 
   preparedata():void{
@@ -168,25 +172,29 @@ export class SummaryTabsComponent implements OnInit {
            text;
   }
 
-  getDateTimeFormat(includeTime? : boolean){
-    let dateFormat = 'd MMM, yyyy';
+  public getDateTimeFormat(){
     if (this.userDetails){
       switch(this.userDetails.dateformat){
-        case 'MM.dd.yy' : dateFormat = 'MM.dd.yyyy';
-                          break;
-        case 'dd.MM.yy' : dateFormat = 'dd.MM.yyyy';
-                  break;
-        case 'dd M, yy' : dateFormat = 'd MMM, yyyy'
-                  break;
-        case 'MM d, yy' : dateFormat = 'MMMM d, yyyy';
-                  break;
-        default : dateFormat = 'd MMM, yyyy';
-                  break;
-      }
+        case 'mm.dd.yy':
+          this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
+          break;
+
+        case 'dd.MM.yy':
+         this.dateFormat = 'dd.MM.yyyy, h:mm:ss a';
+          break;
+
+        case 'dd M, yy':
+          this.dateFormat = 'dd MMM, yyyy, h:mm:ss a';
+          break;
+
+        case 'MM d, yy':
+          this.dateFormat = 'MMMM d, yyyy, h:mm:ss a';
+          break;
+
+        default:
+          break;
     }
-
-    return includeTime ? dateFormat +  ' hh:mm:ss' : dateFormat;
-
+    }
   }
 
 }
