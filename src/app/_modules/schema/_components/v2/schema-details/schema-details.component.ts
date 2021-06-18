@@ -774,7 +774,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       schemaId: this.schemaId,
       runId: this.schemaInfo.runId,
       requestStatus: this.activeTab,
-      executionTreeHierarchy: this.executionTreeHierarchy && this.executionTreeHierarchy.nodeId ? this.executionTreeHierarchy: null
+      executionTreeHierarchy: this.executionTreeHierarchy && this.executionTreeHierarchy.nodeId ? this.executionTreeHierarchy: null,
+      variantId: this.variantId
     }
 
     this.matDialog.open(DownloadExecutionDataComponent, {

@@ -3,11 +3,11 @@
     <div class="f-row">
         <ng-template [ngIf]="schemaInfo">
             <lib-text-line type="leading">{{ moduleInfo?.moduleDesc || 'Module' }} /
-                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{ variantTotalCnt }} records)</lib-text-line>
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{ variantTotalCnt ? variantTotalCnt : 0 }} records)</lib-text-line>
            
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
             <mat-menu #menu="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt }})</button>
+                <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
                 <ng-container *ngIf="dataScope && dataScope.length">
                     <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
                         {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope._totalDoc ? scope._totalDoc : 0 }})

@@ -39,7 +39,7 @@ export class DownloadExecutionDataComponent implements OnInit {
    * Method for download execution data
    */
   downloadExecutionDetails() {
-    const sub = this.schemaService.downloadExecutionDetailsByNodes(this.data.schemaId, this.data.requestStatus, this.selectedNodes).subscribe(
+    const sub = this.schemaService.downloadExecutionDetailsByNodes(this.data.schemaId, this.data.requestStatus, this.selectedNodes, this.data.variantId).subscribe(
       resp => {
         this.transientService.open('Download successfully started', null, {
           duration: 1000
