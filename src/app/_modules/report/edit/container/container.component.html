@@ -5,7 +5,8 @@
         </div>
         <div class="f-spacer"></div>
         <lib-button type="minor" *ngIf="collaboratorPermission && reportId"
-        [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]" iconPosition="before" icon="user-plus"> Add collaborators </lib-button>
+            [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]" iconPosition="before"
+            icon="user-plus"> Add collaborators </lib-button>
         <span class="f-col-spacer-half"></span>
         <lib-button (click)="createUpdateReport()" type="major">Save</lib-button>
     </div>
@@ -142,7 +143,9 @@
                                         <mat-label>Data set</mat-label>
                                     </ng-template>
                                     <mat-form-field appearance="outline">
-                                        <input matInput #datasetTrigger="matAutocompleteTrigger" [formControl]="datasetCtrl" [matAutocomplete]="datasetList" (click)="openAutoComplete(datasetTrigger)"
+                                        <input matInput #datasetTrigger="matAutocompleteTrigger"
+                                            [formControl]="datasetCtrl" [matAutocomplete]="datasetList"
+                                            (click)="openAutoComplete(datasetTrigger)"
                                             (keyup)="openAutoComplete(datasetTrigger); searchDataSet($event.target.value)">
                                         <mat-autocomplete #datasetList="matAutocomplete"
                                             [displayWith]="displayWithDataSet">
@@ -277,8 +280,8 @@
                             </div>
 
                             <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'COUNT'">
-                                <mat-checkbox color="primary" formControlName="isFieldDistinct">Include field as
-                                    distinct</mat-checkbox>
+                                <lib-checkbox formControlName="isFieldDistinct" label="Include field as
+                                distinct"></lib-checkbox>
                             </div>
 
                             <div class="f-col">
@@ -372,9 +375,8 @@
                                         </div>
 
                                         <div class="f-col">
-                                            <mat-checkbox color="primary" formControlName="isMultiSelect">Is
-                                                multiselect
-                                            </mat-checkbox>
+                                            <lib-checkbox formControlName="isMultiSelect" label="Is multiselect">
+                                            </lib-checkbox>
                                         </div>
 
                                         <div class="f-col">
@@ -404,20 +406,20 @@
                                                 <mat-option *ngFor="let field of systemFields
                                                 " value="{{ field.fieldId }}">
                                                     <div (click)="optionClicked($event, field)">
-                                                        <mat-checkbox prosClickStopPropagation (change)="toggleSelection(field)" [checked]="isSelected(field)"
-                                                            color="primary">
-                                                            {{ field.fieldDescri }}
-                                                        </mat-checkbox>
+                                                        <lib-checkbox prosClickStopPropagation
+                                                            (valueChange)="toggleSelection(field)"
+                                                            [checked]="isSelected(field)" [label]="field.fieldDescri">
+                                                        </lib-checkbox>
                                                     </div>
                                                 </mat-option>
                                             </mat-optgroup>
                                             <mat-optgroup label="Header fileds">
                                                 <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}">
                                                     <div (click)="optionClicked($event, field)">
-                                                        <mat-checkbox prosClickStopPropagation (change)="toggleSelection(field)" [checked]="isSelected(field)"
-                                                            color="primary">
-                                                            {{ field.fieldDescri }}
-                                                        </mat-checkbox>
+                                                        <lib-checkbox prosClickStopPropagation
+                                                            (valueChange)="toggleSelection(field)"
+                                                            [checked]="isSelected(field)" [label]="field.fieldDescri">
+                                                        </lib-checkbox>
                                                     </div>
                                                 </mat-option>
                                             </mat-optgroup>
@@ -441,11 +443,10 @@
                                                 <mat-option *ngFor="let field of (workflowFieldsObs | async).static"
                                                     value="{{ field.fieldId }}">
                                                     <div (click)="optionClicked($event, field)">
-                                                        <mat-checkbox prosClickStopPropagation
-                                                            (change)="toggleSelection(field)"
-                                                            [checked]="isSelected(field)" color="primary">
-                                                            {{ field.fieldDescri }}
-                                                        </mat-checkbox>
+                                                        <lib-checkbox prosClickStopPropagation
+                                                            (valueChange)="toggleSelection(field)"
+                                                            [checked]="isSelected(field)" [label]="field.fieldDescri">
+                                                        </lib-checkbox>
                                                     </div>
                                                 </mat-option>
                                             </mat-optgroup>
@@ -454,11 +455,10 @@
                                                 <mat-option *ngFor="let field of (workflowFieldsObs | async).dynamic"
                                                     value="{{ field.fieldId }}">
                                                     <div (click)="optionClicked($event, field)">
-                                                        <mat-checkbox prosClickStopPropagation
-                                                            (change)="toggleSelection(field)"
-                                                            [checked]="isSelected(field)" color="primary">
-                                                            {{ field.fieldDescri }}
-                                                        </mat-checkbox>
+                                                        <lib-checkbox prosClickStopPropagation
+                                                            (valueChange)="toggleSelection(field)"
+                                                            [checked]="isSelected(field)" [label]="field.fieldDescri">
+                                                        </lib-checkbox>
                                                     </div>
                                                 </mat-option>
                                             </mat-optgroup>
@@ -480,11 +480,10 @@
                                             <mat-option *ngFor="let fld of CustomfieldsObs | async"
                                                 value="{{ fld.fieldId }}">
                                                 <div (click)="optionClicked($event, fld)">
-                                                    <mat-checkbox prosClickStopPropagation
-                                                        (change)="toggleSelection(fld)" [checked]="isSelected(fld)"
-                                                        color="primary">
-                                                        {{ fld.fieldDescri }}
-                                                    </mat-checkbox>
+                                                    <lib-checkbox prosClickStopPropagation
+                                                        (valueChange)="toggleSelection(fld)" [checked]="isSelected(fld)"
+                                                        [label]="fld.fieldDescri">
+                                                    </lib-checkbox>
                                                 </div>
                                             </mat-option>
                                         </mat-autocomplete>
@@ -516,7 +515,7 @@
                             </div>
 
                             <div class="f-col">
-                                <mat-checkbox color="primary" formControlName="isEnableGlobalFilter">Global Filters not applicable</mat-checkbox>
+                                <lib-checkbox formControlName="isEnableGlobalFilter" label="Global Filters not applicable"></lib-checkbox>
                             </div>
 
                             <div class="f-col">
@@ -664,8 +663,8 @@
                             </ng-template>
 
                             <div class="f-col">
-                                <mat-checkbox color="primary" formControlName="isEnableDatalabels"  (change)="checkEnabledBarPerc()">Enable datalabels
-                                </mat-checkbox>
+                                <lib-checkbox formControlName="isEnableDatalabels" (valueChange)="checkEnabledBarPerc()"
+                                    label="Enable datalabels"></lib-checkbox>
                             </div>
 
                             <div class="f-col"
@@ -683,14 +682,14 @@
                             <!-- PIE CHART PERCETAGE CONFIG -->
                             <div class="f-col"
                                 *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
-                                <mat-checkbox color="primary" formControlName="isEnabledBarPerc">Show data in %
-                                </mat-checkbox>
+                                <lib-checkbox formControlName="isEnabledBarPerc" label="Show data in %">
+                                </lib-checkbox>
                             </div>
                             <!-- PIE CHART PERCETAGE CONFIG -->
 
                             <div class="f-col">
-                                <mat-checkbox color="primary" formControlName="isEnableLegend">Show legend
-                                </mat-checkbox>
+                                <lib-checkbox formControlName="isEnableLegend" label="Show legend">
+                                </lib-checkbox>
                             </div>
 
                             <div class="f-col" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableLegend').value">
