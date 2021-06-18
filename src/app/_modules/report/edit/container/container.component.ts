@@ -1045,7 +1045,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   widthCount(value: number) {
     const marginCount = this.selStyleWid.x;
-    if (marginCount + value > 200) {
+    if (marginCount + Number(value) > 200) {
       const width = 200 - marginCount;
       return this.styleCtrlGrp.get('width').setValue(width);
     }
