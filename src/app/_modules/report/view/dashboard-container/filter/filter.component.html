@@ -1,13 +1,14 @@
 <mat-card class="mat-elevation-z0 widget">
 
   <div class="f-row breadcrum-toolbar">
-    <div class="display-heading-large" #displayHeading
-      [libTooltip]="widgetHeader.desc" matTooltipPosition="right" [matTooltipDisabled]="false">
+    <div class="display-heading-large" #displayHeading [libTooltip]="widgetHeader.desc" matTooltipPosition="right"
+      [matTooltipDisabled]="false">
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
     <!-- <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button> -->
-    <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
+    <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain"
+      iconFontType="light" icon="times"></lib-button>
     <!-- <mat-menu #menu="matMenu" class="navigation-menu">
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
       <mat-menu #tcOptionMenu="matMenu">
@@ -32,8 +33,9 @@
                   <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
               </mat-chip-list>
-              <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl" (focus)="onfocus()"
-                  [matAutocomplete]="auto" class="mat-input" [matChipInputFor]="chipList" (matChipInputTokenEnd)="$event.input.value = ''" [matChipInputAddOnBlur]="true">
+              <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl"
+                (focus)="onfocus()" [matAutocomplete]="auto" class="mat-input" [matChipInputFor]="chipList"
+                (matChipInputTokenEnd)="$event.input.value = ''" [matChipInputAddOnBlur]="true">
             </mat-form-field>
           </div>
         </ng-template>
@@ -50,19 +52,20 @@
           </div>
         </ng-template>
 
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" prosAutoCompleteScroll (autoCompleteScroll)="onScroll($event)" prosClickStopPropagation (optionSelected) = "optionClicked($event)">
-              <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.display }}" matTooltipPosition="right">
-                <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
-                  <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
-                    color="primary">
-                    {{ option.display }}
-                  </mat-checkbox>
-                </ng-template>
-                <ng-template #singleSelection>
-                  {{ option.display }}
-                </ng-template>
-              </mat-option>
-          </mat-autocomplete>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" prosAutoCompleteScroll
+          (autoCompleteScroll)="onScroll($event)" prosClickStopPropagation (optionSelected)="optionClicked($event)">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.display }}"
+            matTooltipPosition="right">
+            <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
+              <lib-checkbox prosClickStopPropagation (valueChange)="toggleSelection(option)" [checked]="isSelected(option)"
+                [label]="option.display">
+              </lib-checkbox>
+            </ng-template>
+            <ng-template #singleSelection>
+              {{ option.display }}
+            </ng-template>
+          </mat-option>
+        </mat-autocomplete>
       </ng-template>
 
       <!-- HORIZONTAL_VALS -->
@@ -74,7 +77,8 @@
                 (click)="optionClicked($event, option)">{{ option.display }}</button>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.display }}</button>
+              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{
+                option.display }}</button>
             </ng-template>
           </ng-template>
         </div>
@@ -89,8 +93,8 @@
                 (click)="optionClicked($event, option)">{{ option.display }}</button>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.display }}</button>
+              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{
+                option.display }}</button>
             </ng-template>
           </ng-template>
         </div>
@@ -103,11 +107,11 @@
       <div class="f-row horizontal-row">
         <ng-template ngFor let-quickDate [ngForOf]="dateFilterQuickSelect">
           <ng-template [ngIf]="quickDate.isSelected" [ngIfElse]="nopselect">
-            <button mat-stroked-button color="primary"
-              (click)="selectQuickDate(quickDate.code, true)">{{ quickDate.text  }}</button>
+            <button mat-stroked-button color="primary" (click)="selectQuickDate(quickDate.code, true)">{{ quickDate.text
+              }}</button>
           </ng-template>
           <ng-template #nopselect>
-            <button mat-stroked-button (click)="selectQuickDate(quickDate.code, false)">{{ quickDate.text  }}</button>
+            <button mat-stroked-button (click)="selectQuickDate(quickDate.code, false)">{{ quickDate.text }}</button>
           </ng-template>
         </ng-template>
         <!-- <button mat-flat-button color="primary">Today</button>
@@ -167,8 +171,10 @@
     -->
 
     <!-- CONTROL FOR THE LOCATION HIRERACHY FILTER -->
-    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '29'">
-      <pros-hierarchy-filter (selectionChange)="getLocationSelection($event)" [clearFilterClicked]="isClearFilter"></pros-hierarchy-filter>
+    <ng-template
+      [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '29'">
+      <pros-hierarchy-filter (selectionChange)="getLocationSelection($event)" [clearFilterClicked]="isClearFilter">
+      </pros-hierarchy-filter>
     </ng-template>
   </mat-card-content>
 </mat-card>

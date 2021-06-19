@@ -35,7 +35,7 @@
               <!-- ----------------------- Check-Box Case ------------------------------------- -->
               <div *ngIf="fieldData && fieldData.picklist === 2">
                 <div class="f-row item-tile">
-                  <mat-checkbox color="primary" disabled="true" checked="{{fieldData.value}}">{{fieldData.fieldDescri}}</mat-checkbox>
+                  <lib-checkbox disabled="true" checked="{{fieldData.value}}" [label]="fieldData.fieldDescri"></lib-checkbox>
                 </div>
               </div>
   
