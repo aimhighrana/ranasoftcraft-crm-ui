@@ -10,6 +10,12 @@
                 <lib-button type="major" (click)="submitSetting()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
+            <div class="f-row" *ngIf="showConfiguredBanner && userConfigured === undefined">
+                <lib-banner status="info" text="The configured view is different to your selected view option. Would like to update to the original?"></lib-banner>
+                <lib-button type="plain" (afterClick)="setUserConfigured(false)" i18n="@@yes">yes</lib-button>
+                <lib-button type="major" (afterClick)="setUserConfigured(true)" i18n="@@no">No</lib-button>
+            </div>
+            <div class="row-spacer"></div>
             <lib-search placeholder="Search fields" (valueChange)="searchHeader($event)"></lib-search>
         </div>
     </div>
@@ -35,7 +41,7 @@
                         <lib-checkbox label="{{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}" (valueChange)="selectionChange(header)" [checked]="isChecked(header)">
                         </lib-checkbox>
                         <mat-form-field appearance="outline" *ngIf="header.picklist == '1' || header.picklist == '30' || header.picklist == '37'">
-                            <mat-select [(ngModel)]="header.displayCriteria" (ngModelChange)="manageAllDisplayCriteria()">
+                            <mat-select [(ngModel)]="header.displayCriteria" (ngModelChange)="manageAllDisplayCriteria(); manageConfigure()">
                                 <mat-option value="TEXT" i18n="@@text">Text</mat-option>
                                 <mat-option value="CODE" i18n="@@code">Code</mat-option>
                                 <mat-option value="CODE_TEXT" i18n="@@codeAndText">Code and Text</mat-option>
