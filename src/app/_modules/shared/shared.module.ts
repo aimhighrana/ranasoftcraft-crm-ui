@@ -82,6 +82,8 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
 import { ResizableColumnDirective } from './_directives/resizable-column.directive';
 import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
+import { StatusBadgeDirective } from './_directives/status-badge.directive';
+import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loader.component';
 
 @NgModule({
   declarations: [
@@ -127,7 +129,9 @@ import { GenericFieldControlComponent } from './_components/generic-field-contro
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
-    GenericFieldControlComponent
+    GenericFieldControlComponent,
+    StatusBadgeDirective,
+    OverlayLoaderComponent
   ],
   imports: [
     // ng modules
@@ -274,7 +278,9 @@ import { GenericFieldControlComponent } from './_components/generic-field-contro
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
-    GenericFieldControlComponent
+    GenericFieldControlComponent,
+    StatusBadgeDirective,
+    OverlayLoaderComponent
   ],
   providers: [
     TitleCasePipe,

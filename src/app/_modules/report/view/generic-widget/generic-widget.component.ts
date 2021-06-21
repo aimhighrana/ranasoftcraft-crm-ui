@@ -131,7 +131,7 @@ export abstract class GenericWidgetComponent implements AfterViewInit {
   @HostListener('window:resize', [])
   showHeadingTooltip() {
     if (this.displayHeading && this.tooltipDirective) {
-      if (this.displayHeading.nativeElement.offsetWidth < this.displayHeading.nativeElement.scrollWidth) {
+      if (this.displayHeading?.nativeElement?.offsetWidth < this.displayHeading?.nativeElement?.scrollWidth) {
         this.tooltipDirective.disabled = false;
       } else {
         this.tooltipDirective.disabled = true;

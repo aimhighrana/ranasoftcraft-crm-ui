@@ -46,6 +46,7 @@ export class ModuleInfo {
     moduleId: string;
     moduleDesc: string;
     tenantId?: string;
+    datasetCount?: number;
 }
 export class SchemaListDetails {
     schemaId: string;
@@ -82,6 +83,19 @@ export class SchemaListDetails {
     variants: SchemaVariantsModel[];
     schemaCategory: string;
 }
+
+export class SchemaRunningDetails {
+    createdBy: string;
+    dateModified: number;
+    moduleDesc: string;
+    moduleId: string;
+    running: boolean;
+    schemaDescription: string;
+    schemaId: string;
+    viewed: boolean;
+    variants: SchemaVariantsModel[];
+}
+
 export class BusinessRuleExecutionDetails {
     brId: string;
     error: number;
@@ -298,6 +312,7 @@ export interface SchemaVariantsModel {
     filterCriteria: FilterCriteria[];
     isDefault: boolean;
     variantType: VarinatType;
+    _totalDoc: number;
 }
 
 export enum VarinatType {

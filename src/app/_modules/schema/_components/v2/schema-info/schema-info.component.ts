@@ -119,6 +119,10 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   brListFetchCount = 0 ;
 
+  schemaLoader: any = {
+    loading: false,
+    error: false
+  };
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
@@ -1114,8 +1118,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaDescription: updated schema description.
    * @param event: event of mat slider(for schema threshold).
    */
-  updateSchemaInfo(schemaDescription: string, event?: any, field = 'description') {
-    console.log(event);
+  updateSchemaInfo(schemaDescription: string, event?: any, field = null) {
     if (this.schemaDetails && schemaDescription !== this.schemaDetails.schemaDescription || event) {
       const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
       schemaReq.moduleId = this.moduleId;
@@ -1123,14 +1126,27 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaReq.discription = schemaDescription;
       schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
       schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
-
+      this.schemaLoader = {
+        loading: true,
+        error: false
+      };
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+        this.schemaLoader = {
+          loading: false,
+          error: false
+        };
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.toasterService.open(`Schema ${field} updated successfully.`, 'ok', {
-          duration: 2000
-        })
+        if(field) {
+          this.toasterService.open(`Schema ${field} updated successfully.`, 'ok', {
+            duration: 2000
+          });
+        }
         this.getSchemaDetails(this.schemaId);
       }, (error) => {
+        this.schemaLoader = {
+          loading: false,
+          error: true
+        };
         this.toasterService.open('Something went wrong', 'ok', {
           duration: 2000
         });
@@ -1163,9 +1179,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     console.log($event);
     if (this.schemaValueChanged.observers.length === 0) {
       this.schemaValueChanged
-        .pipe(debounceTime(1000), distinctUntilChanged())
+        .pipe(distinctUntilChanged())
         .subscribe(schema => {
-          this.updateSchemaInfo(schema);
+          this.updateSchemaInfo(schema, null, null);
         });
     }
     this.schemaValueChanged.next($event);
@@ -1176,11 +1192,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     if (event.value !== RuleDependentOn.ALL) {
       const tobeChild = this.businessRuleData[index]
       if (this.businessRuleData[index - 1].dep_rules) {
-        this.addChildatSameRoot(tobeChild, index)
+        this.addChildatSameRoot(tobeChild, index);
       }
       else {
         this.businessRuleData[index - 1].dep_rules = [];
-        this.addChildatSameRoot(tobeChild, index)
+        this.addChildatSameRoot(tobeChild, index);
       }
       const idxforChild = this.businessRuleData[index - 1].dep_rules.findIndex(item => item.brIdStr === tobeChild.brIdStr);
       this.businessRuleData[index - 1].dep_rules[idxforChild].dependantStatus = event.value;
@@ -1260,6 +1276,35 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   getCurrentBrStatusObj(status) {
     return this.depRuleList.find(depRule => depRule.key === status || depRule.value === status) || this.depRuleList[0];
   }
+
+  getStatusIcon(controlName: string, loader: any): any {
+    const status = {
+      icon: '',
+      font: '',
+      type: ''
+    }
+
+    if(this.schemaSummaryForm.controls[controlName].touched) {
+      if(this.schemaSummaryForm.controls[controlName].value) {
+        status.icon = 'clock';
+        status.font = '';
+        status.type = '';
+
+        if(!loader.loading && loader.error) {
+          status.icon = 'exclamation-circle';
+          status.type = 'error';
+          status.font = 'solid';
+        }
+        if(!loader.loading && !loader.error) {
+          status.icon = 'check';
+          status.type = 'success';
+        }
+      }
+    }
+
+    return status;
+  }
+
   /**
    * ANGULAR HOOK
    * To destroy all the subscriptions

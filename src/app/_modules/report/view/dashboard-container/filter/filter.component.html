@@ -6,13 +6,14 @@
     </div>
     
     <div class="f-spacer"></div>
-    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
+    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"
+    *ngIf="filterWidget?.getValue()?.metaData?.picklist !== '0' &&  filterWidget?.getValue()?.metaData?.dataType !== 'DTMS' &&  filterWidget?.getValue()?.metaData?.dataType !== 'DATS'"></lib-button>
     <lib-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
     <mat-menu #menu="matMenu" class="navigation-menu">
       <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
       <mat-menu #tcOptionMenu="matMenu" class="mat-elevation-z0 tooltip-fields-menu">
         <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions"
-          (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+          (valueChange)="saveDisplayCriteria()" name="displayCriteria{{widgetId}}"></lib-radio-group>
       </mat-menu>
     </mat-menu>
   </div>
@@ -29,7 +30,7 @@
               <lib-chip-list #chipList aria-label="Select">
                 <lib-chip *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
                   (removed)="remove(option)">
-                  {{ option.TEXT }}
+                  {{ option.display }}
                 </lib-chip>
               </lib-chip-list>
               <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl"
@@ -42,7 +43,7 @@
           <div class="f-col">
             <mat-form-field appearance="outline">
               <input type="text" placeholder="Select" aria-label="Number"
-                value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
+                value="{{ selectedDropVals.length ? selectedDropVals[0].display : ''}}" matInput
                 [formControl]="filterFormControl" [matAutocomplete]="auto" (focus)="onfocus()">
               <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
                 <mat-icon>close</mat-icon>
@@ -53,16 +54,16 @@
 
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" prosAutoCompleteScroll
           (autoCompleteScroll)="onScroll($event)" prosClickStopPropagation (optionSelected)="optionClicked($event)">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.TEXT }}"
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.display }}"
             matTooltipPosition="right">
             <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
 
-              <lib-checkbox prosClickStopPropagation label=" {{ option.TEXT }}" (valueChange)="toggleSelection(option)"
+              <lib-checkbox prosClickStopPropagation label=" {{ option.display }}" (valueChange)="toggleSelection(option)"
                 [checked]="isSelected(option)">
               </lib-checkbox>
             </ng-template>
             <ng-template #singleSelection>
-              {{ option.TEXT }}
+              {{ option.display }}
             </ng-template>
           </mat-option>
         </mat-autocomplete>
@@ -71,52 +72,22 @@
       <!-- HORIZONTAL_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'HORIZONTAL_VALS'">
         <div class="f-row horizontal-row">
-          <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
-            <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <!-- <button mat-stroked-button color="primary" prosClickStopPropagation
-                (click)="optionClicked($event, option)"></button> -->
-              <lib-chip-list>
-                <lib-chip (click)="optionClicked($event, option)">
-                  {{ option.TEXT }}
-                </lib-chip>
-              </lib-chip-list>
-            </ng-template>
-            <ng-template #unselectedButton>
-              <!-- <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
-                }}</button> -->
-              <lib-chip-list>
-                <lib-chip (click)="optionClicked($event, option)">
-                  {{ option.TEXT }}
-                </lib-chip>
-              </lib-chip-list>
-            </ng-template>
-          </ng-template>
+          <lib-chip-list *ngFor="let option of filteredOptions | async">
+            <lib-chip (click)="optionClicked($event, option)" [selectable]="true" [selected]="isSelected(option)">
+              {{ option.display }}
+            </lib-chip>
+          </lib-chip-list>
         </div>
       </ng-template>
 
       <!-- VERTICAL_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'VERTICAL_VALS'">
         <div class="f-col vertical-row">
-          <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
-            <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <!-- <button mat-stroked-button color="primary" prosClickStopPropagation
-                (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button> -->
-              <lib-chip-list>
-                <lib-chip (click)="optionClicked($event, option)">
-                  {{ option.TEXT ? option.TEXT : option.CODE }}
-                </lib-chip>
-              </lib-chip-list>
-            </ng-template>
-            <ng-template #unselectedButton>
-              <!-- <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT
-                ? option.TEXT : option.CODE }}</button> -->
-              <lib-chip-list>
-                <lib-chip (click)="optionClicked($event, option)">
-                  {{ option.TEXT ? option.TEXT : option.CODE }}
-                </lib-chip>
-              </lib-chip-list>
-            </ng-template>
-          </ng-template>
+          <lib-chip-list class="lib-chip-list vertical" *ngFor="let option of filteredOptions | async">
+            <lib-chip (click)="optionClicked($event, option)" [selectable]="true" [selected]="isSelected(option)">
+              {{ option.display }}
+            </lib-chip>
+          </lib-chip-list>
         </div>
       </ng-template>
     </ng-template>

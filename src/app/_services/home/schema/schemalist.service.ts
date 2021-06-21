@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaListModuleList, SchemaListDetails, SchemaRunningDetails } from 'src/app/_models/schema/schemalist';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
 import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
@@ -18,6 +18,13 @@ export class SchemalistService {
 
   public getSchemaList(): Observable<SchemaListModuleList[]> {
     return this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
+  }
+
+  public getAllSchemaList(offset: number, searchStr = ''): Observable<SchemaRunningDetails[]> {
+    return this.http.get<SchemaRunningDetails[]>(this.endpointService.getAllRunningSchemaList(offset, 40, searchStr));
+  }
+  public updateSchemaBadgeInfo(schemaId: string): Observable<any> {
+    return this.http.post<any>(this.endpointService.updateSchemaBadgeInfo(schemaId), {});
   }
 
   public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {

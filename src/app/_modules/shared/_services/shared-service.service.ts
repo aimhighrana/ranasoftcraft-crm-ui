@@ -21,6 +21,11 @@ export class SharedServiceService {
   private refreshSecondaryNav: Subject<SecondaryNavRefresh> = new Subject<SecondaryNavRefresh>();
 
   private afterSubscriberSave: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  /**
+   * obervable to signal loading state for components
+   */
+  public loader: BehaviorSubject<boolean> = new BehaviorSubject(null);
   /**
    * obervable to signal subscriber to call api for update notification
    */
@@ -234,5 +239,11 @@ export class SharedServiceService {
   }
   public getSchemaRunNotif(): Observable<any> {
     return this.schemaRunSub.asObservable();
+  }
+  public showLoader() {
+    this.loader.next(true);
+  }
+  public hideLoader() {
+    this.loader.next(false);
   }
 }

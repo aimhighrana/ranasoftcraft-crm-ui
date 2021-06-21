@@ -6,7 +6,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, ModuleInfo } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -47,6 +47,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Selected group key
    */
   groupKey: string;
+  groupDesc: string;
   /**
    * Module / dataset id
    */
@@ -73,6 +74,22 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Variant name if have otherwise by default is entire dataset
    */
   variantName = 'Entire dataset';
+
+
+  /**
+   * Selected Variant total count
+   */
+  variantTotalCnt = 0;
+
+  /**
+   * doc count for entire dataset
+   */
+  totalVariantsCnt = 0;
+
+  /**
+   * holds module info
+   */
+  moduleInfo: ModuleInfo;
 
   /**
    * Hold meta data map , fieldId as key and metadamodel as value
@@ -180,9 +197,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' },
-    { actionText: 'Delete', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.DELETE, actionIconLigature: 'recycle-bin' }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban' },
+    { actionText: 'Delete', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.DELETE, actionIconLigature: 'trash-alt' }
   ] as SchemaTableAction[];
 
   @Input()
@@ -225,6 +242,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
+      this.getModuleInfo(this.moduleId);
       isRefresh = true;
     }
 
@@ -293,6 +311,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
       if (result && !result.editActive) {
         this.selectedFields = result.selectedFields;
+        this.selectedFields.map((x) => x.editable = true);
         this.calculateDisplayFields();
         if (result.tableActionsList && result.tableActionsList.length) {
           this.tableActionsList = result.tableActionsList
@@ -336,6 +355,21 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   /**
+   * get module info based on module id
+   * @param id module id
+   */
+  getModuleInfo(id) {
+    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+      if (res && res.length) {
+        this.moduleInfo = res[0];
+        this.totalVariantsCnt = this.moduleInfo.datasetCount || 0;
+      }
+    }, error => {
+      console.log(`Error:: ${error.message}`)
+    });
+  }
+
+  /**
    * Get schema info ..
    */
   getSchemaDetails() {
@@ -362,6 +396,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
                 const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
                 choosenField.order = index;
                 choosenField.fieldId = header;
+                choosenField.nodeId = 'header';
+                choosenField.nodeType = 'HEADER';
                 orderFld.push(choosenField);
               }
             });
@@ -375,8 +411,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
               console.error('Exception while persist table view');
             });
             this.selectedFields = orderFld;
+            this.selectedFields.map((x) => x.editable = true);
           } else {
             this.selectedFields = res[1] ? res[1] : [];
+            this.selectedFields.map((x) => x.editable = true);
           }
           this.calculateDisplayFields();
         }
@@ -802,9 +840,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   variantChange(variantId) {
     if (this.variantId !== variantId) {
       this.variantId = variantId;
-      this.variantName = this.variantId === '0' ? 'Entire dataset'
-        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
-
+      const scope = this.dataScope.find(v => v.variantId === this.variantId);
+      this.variantName = this.variantId === '0' ? 'Entire dataset' : scope?.variantName;
+      this.variantTotalCnt = this.variantId === '0' ? this.totalVariantsCnt : scope?._totalDoc;
       if (this.variantId !== '0') {
         this.getVariantDetails();
       } else {
@@ -870,6 +908,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
     this.groupId = event.groupId;
     this.groupKey = event.groupKey;
+    this.groupDesc = event.groupDesc;
     this.getData();
 
   }
@@ -999,10 +1038,18 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
-        console.log('correction request....')
+        console.log('correction request....');
+        const groupNumber = this.groupDesc ? this.groupDesc.split('Group')[1] : 1;
         const request: DoCorrectionRequest = {
-          id: objctNumber, fldId: fldid, vc: value, oc: oldVal,
-          groupIdold: this.groupId, groupIdnew: '', isReviewed: 'false', groupField: this.groupKey
+          id: objctNumber,
+          fldId: fldid,
+          vc: value,
+          oc: oldVal,
+          groupIdold: this.groupId,
+          groupIdnew: '',
+          isReviewed: 'false',
+          groupField: this.groupKey,
+          groupDesc: Number(groupNumber)
         } as DoCorrectionRequest;
         this.catalogService.doCorrection(this.schemaId, this.schemaInfo.runId, request).subscribe(res => {
           // row[fldid].fieldData = value;
