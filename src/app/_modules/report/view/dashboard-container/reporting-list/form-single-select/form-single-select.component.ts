@@ -111,7 +111,7 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
   getDisplayText(option) {
     if (option) {
       if (this.displayCriteria === 'CODE_TEXT') {
-        return option.CODE + '-' + option.TEXT
+        return option.CODE + '-' + option.TEXT;
       } else if (this.displayCriteria === 'CODE') {
         return option.CODE;
       } else {
