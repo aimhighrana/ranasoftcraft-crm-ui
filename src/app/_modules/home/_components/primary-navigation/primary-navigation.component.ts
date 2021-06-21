@@ -98,7 +98,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
 
 
   ngAfterViewChecked() {
-    const currentWidth = this.secondaryContent.getElementRef().nativeElement.clientWidth;
+    const currentWidth = this.secondaryContent.getElementRef().nativeElement.clientWidth
     if(currentWidth !== this.previousSideNavigationWidth) {
       this.previousSideNavigationWidth = currentWidth;
       this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
