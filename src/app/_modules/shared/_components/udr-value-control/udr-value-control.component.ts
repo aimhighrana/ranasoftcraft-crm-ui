@@ -122,7 +122,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       this.fieldList = [];
       return;
     }
-  
+
     this.schemaDetailsService.getUDRDropdownValues(this.fieldId, this.searchStr).subscribe((list: Array<UDRDropdownValue>) => {
       this.fieldList = list;
     }, (error) => {
