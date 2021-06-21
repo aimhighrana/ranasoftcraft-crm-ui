@@ -842,7 +842,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.variantId = variantId;
       const scope = this.dataScope.find(v => v.variantId === this.variantId);
       this.variantName = this.variantId === '0' ? 'Entire dataset' : scope?.variantName;
-      this.variantTotalCnt = this.variantId === '0' ? this.totalVariantsCnt : scope?._totalDoc;
+      this.variantTotalCnt = this.variantId === '0' ? this.totalVariantsCnt : scope?.dataScopeCount;
       if (this.variantId !== '0') {
         this.getVariantDetails();
       } else {
