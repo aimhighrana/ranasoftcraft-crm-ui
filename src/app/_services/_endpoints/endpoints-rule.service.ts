@@ -63,8 +63,8 @@ export class EndpointsRuleService {
     return this.classicOrigin + '/schema/variants/' + schemaId;
   }
 
-  public getUDRDropdownValues(fieldId: string): string {
-    return this.classicOrigin + '/schema/drop-values/' + fieldId;
+  public getUDRDropdownValues(fieldId: string, searchStr: string): string {
+    return this.classicOrigin + `/schema/drop-values/${fieldId}?queryString=${searchStr}`;
   }
 
   public getSchemaBrInfoList(schemaId: string): string {

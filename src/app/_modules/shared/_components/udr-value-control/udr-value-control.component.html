@@ -3,7 +3,7 @@
         [placeholder]="placeholder">
 
     <mat-autocomplete class="mdo-autocomplete" #fieldsCtrl="matAutocomplete" (optionSelected)="selected($event)">
-        <ng-container *ngFor="let fld of filteredList">
+        <ng-container *ngFor="let fld of fieldList">
             <mat-option class="mdo-option" [value]="fld.TEXT" [matTooltip]="fld.TEXT" matTooltipPosition="right">
                 {{fld.TEXT}}
             </mat-option>

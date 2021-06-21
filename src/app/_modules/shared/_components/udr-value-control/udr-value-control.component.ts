@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, UDRDropdownValue } from '@models/schema/schemadetailstable';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-udr-value-control',
@@ -33,14 +35,16 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
    */
   @Input() metataData: MetadataModeleResponse = null;
   @Input() fieldId: string;
-  get filteredList() {
-    return this.fieldList.filter(x => !this.searchStr || x.TEXT.toLowerCase().includes(this.searchStr.toLowerCase()));
-  }
+  subscriptions: Array<Subscription> = [];
+  searchSub: Subject<string> = new Subject();
   constructor(
     private schemaDetailsService: SchemaDetailsService
   ) { }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
@@ -56,12 +60,20 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    const subscription = this.searchSub.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((searchString) => {
+      this.loadDropdownValues();
+    });
+    this.subscriptions.push(subscription);
   }
 
   /**
    * Should send changed text to parent
    */
   inputChanged() {
+    this.searchSub.next(this.searchStr);
     this.valueChange.emit(this.searchStr);
   }
 
@@ -84,7 +96,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       return null;
     }
     for (const field in this.metataData) {
-      if(this.metataData[field]) {
+      if (this.metataData[field]) {
         list.push(this.metataData[field]);
       }
     }
@@ -100,7 +112,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     return null;
   }
-
   /**
    * Should update dropdown values
    */
@@ -111,7 +122,8 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       this.fieldList = [];
       return;
     }
-    this.schemaDetailsService.getUDRDropdownValues(this.fieldId).subscribe((list: Array<UDRDropdownValue>) => {
+  
+    this.schemaDetailsService.getUDRDropdownValues(this.fieldId, this.searchStr).subscribe((list: Array<UDRDropdownValue>) => {
       this.fieldList = list;
     }, (error) => {
       this.fieldList = [];
