@@ -84,7 +84,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       return null;
     }
     for (const field in this.metataData) {
-      if(this.metataData[fieldId]) {
+      if(this.metataData[field]) {
         list.push(this.metataData[field]);
       }
     }
