@@ -33,8 +33,42 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
    */
   @Input() metataData: MetadataModeleResponse = null;
   @Input() fieldId: string;
+  selectedMetaData: any;
   get filteredList() {
     return this.fieldList.filter(x => !this.searchStr || x.TEXT.toLowerCase().includes(this.searchStr.toLowerCase()));
+  }
+
+  get displayControl(): string {
+    let control = 'dropdown';
+    const metadata = this.selectedMetaData;
+    if (metadata) {
+      switch (true) {
+        case metadata.picklist === '0' && (['CHAR', 'ALTN', 'ISCN', 'REQ', 'DEC'].includes(metadata.dataType)):
+        case metadata.picklist === '22' && metadata.dataType === 'CHAR':
+          control = 'text';
+          break;
+        case metadata.picklist === '0' && metadata.dataType === 'NUMC':
+          control = 'number';
+          break;
+        case metadata.picklist === '2' && metadata.dataType === 'CHAR':
+          control = 'checkbox';
+          break;
+        case metadata.picklist === '4' && metadata.dataType === 'CHAR':
+        case metadata.picklist === '35' && !metadata.dataType:
+          control = 'radio';
+          break;
+        case metadata.picklist === 'DATS' && metadata.dataType === 'CHAR':
+          control = 'date';
+          break;
+        case metadata.picklist === 'DTMS' && metadata.dataType === 'CHAR':
+          control = 'datetimerange';
+          break;
+        case metadata.picklist === 'TIMS' && metadata.dataType === 'CHAR':
+          control = 'timerange';
+          break;
+      }
+    }
+    return control;
   }
   constructor(
     private schemaDetailsService: SchemaDetailsService
@@ -46,9 +80,9 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     console.log('Changes occured', changes);
     if (changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
-      this.loadDropdownValues();
+      this.loadUDRValueControl();
     } else if (changes.metataData && changes.metataData.firstChange) {
-      this.loadDropdownValues();
+      this.loadUDRValueControl();
     }
     if (changes.value) {
       this.searchStr = this.value;
@@ -84,7 +118,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       return null;
     }
     for (const field in this.metataData) {
-      if(this.metataData[field]) {
+      if (this.metataData[field]) {
         list.push(this.metataData[field]);
       }
     }
@@ -102,10 +136,11 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Should update dropdown values
+   * Should update value control type and data
    */
-  loadDropdownValues() {
+  loadUDRValueControl() {
     const metadata = this.parseMetadata(this.fieldId);
+    this.selectedMetaData = metadata;
     const pickLists = ['1', '30', '37'];
     if (!metadata || !pickLists.includes(metadata.picklist)) {
       this.fieldList = [];
