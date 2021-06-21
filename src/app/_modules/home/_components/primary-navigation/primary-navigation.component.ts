@@ -58,6 +58,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * To store count of notifications
    */
   notificationsCount = 0;
+  previousSideNavigationWidth : number;
   constructor(
     private userService: UserService,
     public matDialog: MatDialog,
@@ -92,8 +93,17 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngAfterViewInit() {
+    this.previousSideNavigationWidth =  this.secondaryContent.getElementRef().nativeElement.clientWidth;
   }
 
+
+  ngAfterViewChecked() {
+    const currentWidth = this.secondaryContent.getElementRef().nativeElement.clientWidth;
+    if(currentWidth !== this.previousSideNavigationWidth) {
+      this.previousSideNavigationWidth = currentWidth;
+      this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
+    }
+  }
   ngOnDestroy() {
     this.udSub.unsubscribe();
     this.appStateSubject.complete();
@@ -155,7 +165,9 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       const widthPercent = ((window.innerWidth - newWidth) / window.innerWidth * 100);
       if (widthPercent > 70 && widthPercent < 94) {
         document.getElementById('secondarySidenav').style.width = newWidth + 'px';
-      }
+        document.getElementById('secondaryContent').style.marginLeft = newWidth+10+'px';
+        this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
+      } 
     }
   }
 
@@ -173,8 +185,9 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * function to modify the width of secondary sidebar
    */
   toggleSecondarySideBar() {
-    console.log('secondaryContent', this.secondaryContent);
-    this.secondarySideBarOpened =! this.secondarySideBarOpened;
+    console.log('secondaryContentet', this.secondaryContent);
+    this.secondarySideBarOpened = !this.secondarySideBarOpened;
+    this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
     this.appStateSubject.next(true);
   }
 
