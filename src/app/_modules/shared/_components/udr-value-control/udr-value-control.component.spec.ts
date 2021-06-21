@@ -5,11 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModel, Heirarchy } from '@models/schema/schemadetailstable';
-import { of } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { of, throwError } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
 
 describe('UDRValueControlComponent', () => {
@@ -18,8 +14,8 @@ describe('UDRValueControlComponent', () => {
   let schemaDetailsService: SchemaDetailsService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UDRValueControlComponent ],
-      imports:[
+      declarations: [UDRValueControlComponent],
+      imports: [
         AppMaterialModuleForSpec,
         HttpClientModule,
         ReactiveFormsModule,
@@ -27,7 +23,7 @@ describe('UDRValueControlComponent', () => {
         SharedModule
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -39,28 +35,23 @@ describe('UDRValueControlComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('ngOnInit(), should assign pre required ', async(()=>{
+  it('ngOnInit(), should assign pre required ', async(() => {
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
+  it('ngOnDestroy(), should destroy the component ', async(() => {
+    component.ngOnDestroy();
+    expect(component.ngOnDestroy).toBeTruthy();
+  }));
 
-  it('ngOnChanges(), should call reset when reset filter', async(()=>{
+  it('ngOnChanges(), should call reset when reset filter', async(() => {
     // mock data
-    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:'1005', previousValue: false, firstChange:null, isFirstChange:null}};
-
-    // spyOn(schemaDetailsService, 'getMetadataFields').withArgs('1005').and.returnValue(of(metadataModeleResponse));
-
-    // call actual method
-    component.ngOnChanges(chnages);
-
-    expect(component.moduleId).toBeTruthy();
-
-    // mock data
-    const chnages2:import('@angular/core').SimpleChanges = null;
-    // call actual method
+    component.value = '';
+    const chnages1: import('@angular/core').SimpleChanges = { fieldId: { currentValue: '1005', previousValue: false, firstChange: true, isFirstChange: null }, value: { currentValue: '1005', previousValue: false, firstChange: true, isFirstChange: null } };
+    const chnages2: import('@angular/core').SimpleChanges = { metataData: { currentValue: {}, previousValue: false, firstChange: true, isFirstChange: null } };
+    component.ngOnChanges(chnages1);
     component.ngOnChanges(chnages2);
     expect(component.ngOnChanges).toBeTruthy();
-
   }));
 
   it('loadDropdownValues() should load all dropdown values', async(() => {
@@ -79,6 +70,52 @@ describe('UDRValueControlComponent', () => {
     }
     component.loadDropdownValues();
     expect(component.fieldList.length).toBe(1);
+    schemaSpy.and.returnValue(throwError({ message: 'error' }));
+    component.loadDropdownValues();
+    expect(component.fieldList.length).toBe(0);
   }));
 
+  it('parseMetadata() should parse correct meta data', async(() => {
+    component.metataData = {
+      gridFields: {},
+      headers: {
+        TEST_FIELD: {
+          picklist: '1',
+          ANOTHER_FIELD: {
+            picklist: '2'
+          }
+        }
+      },
+      hierarchy: [],
+      hierarchyFields: {},
+      grids: []
+    };
+    expect(component.parseMetadata('TEST_FIELD')).toBeTruthy();
+    expect(component.parseMetadata('ANOTHER_FIELD')).toBeTruthy();
+    expect(component.parseMetadata('NEW_FIELD')).toBeNull();
+  }));
+
+  it('selected() should update selected value', async(() => {
+    const event = {
+      option: {
+        viewValue: 'test'
+      }
+    }
+    component.selected(event);
+    expect(component.searchStr).toEqual('test');
+  }));
+
+  it('filteredList should filter data', async(() => {
+    component.fieldList = [{
+      TEXT: 'test'
+    } as any, {
+      TEXT: 'welcome'
+    } as any];
+    component.searchStr = '';
+    expect(component.filteredList.length).toEqual(2);
+    component.searchStr = 'wel';
+    expect(component.filteredList.length).toEqual(1);
+    component.searchStr = 'new';
+    expect(component.filteredList.length).toEqual(0);
+  }));
 });

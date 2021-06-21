@@ -30,10 +30,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   placeholder = 'Value';
 
   fieldList: Array<UDRDropdownValue> = [];
-  /**
-   * All the http or normal subscription will store in this array
-   */
-  subscriptions: Subscription[] = [];
   searchStr = '';
   @Output() valueChange = new EventEmitter<string>();
   @Input() value: string;
@@ -50,9 +46,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => {
-      sub.unsubscribe();
-    });
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
@@ -70,19 +63,26 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
   }
 
-  clear() {
+  /**
+   * Should send changed text to parent
+   */
+  inputChanged() {
     this.valueChange.emit(this.searchStr);
   }
 
-  displayFn(value) {
-    return value;
-  }
-
+  /**
+   * Should return selected object to parent
+   * @param $event current dropdown event
+   */
   selected($event) {
     this.searchStr = $event.option.viewValue;
-    this.valueChange.emit(this.searchStr);
+    this.inputChanged();
   }
 
+  /**
+   * Should return required meta data field
+   * @param fieldId field name string
+   */
   parseMetadata(fieldId: string): any {
     const list = [];
     if (!fieldId || !this.metataData) {
@@ -99,12 +99,14 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
         if (typeof item[field] === 'object') {
           list.push(item[field]);
         }
-      }
-      
+      } 
     }
     return null;
   }
 
+  /**
+   * Should update dropdown values
+   */
   loadDropdownValues() {
     const metadata = this.parseMetadata(this.fieldId);
     const pickLists = ['1', '30', '37'];
