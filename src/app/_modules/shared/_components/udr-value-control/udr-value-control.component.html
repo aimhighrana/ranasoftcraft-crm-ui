@@ -1,6 +1,7 @@
 <mat-form-field appearance="outline">
     <input matInput [value]="value" [(ngModel)]="searchStr" (input)="inputChanged()" [matAutocomplete]="fieldsCtrl"
         [placeholder]="placeholder">
+
     <mat-autocomplete class="mdo-autocomplete" #fieldsCtrl="matAutocomplete" (optionSelected)="selected($event)">
         <ng-container *ngFor="let fld of filteredList">
             <mat-option class="mdo-option" [value]="fld.TEXT" [matTooltip]="fld.TEXT" matTooltipPosition="right">
