@@ -63,6 +63,7 @@
 </div>
 
 <mat-sidenav-content id="primaryContent" class="body-sidecontent">
+    <pros-overlay-loader></pros-overlay-loader>
     <mat-sidenav-container autosize>
         <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav
             [ngStyle]="{'width.px': secondarySideBarOpened ? '260' : '16', 'cursor': grabCursor}">

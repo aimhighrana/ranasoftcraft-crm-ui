@@ -737,7 +737,7 @@ describe('SchemaService', () => {
     const httpMockData = {
       message: 'success'
     };
-    schemaService.downloadExecutionDetailsByNodes('1701', 'error', ['header']).subscribe(data => {
+    schemaService.downloadExecutionDetailsByNodes('1701', 'error', ['header'], '0').subscribe(data => {
       expect(data).toEqual(httpMockData);
     });
 

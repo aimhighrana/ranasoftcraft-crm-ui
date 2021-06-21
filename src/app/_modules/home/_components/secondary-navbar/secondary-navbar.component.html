@@ -37,7 +37,8 @@
     
     <div class="row-spacer"></div>
 
-    <div class="nav-tree" id="nav-tree">
+    <div prosInfiniteScroll 
+    bufferPercentage="20" (scrollEnd)="getAllSchemaList()" class="nav-tree" id="nav-tree">
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome' || showTasksList">
       <!-- <mat-accordion> -->
         <lib-section text="Tasks" *ngIf="taskList.length"></lib-section>
@@ -73,28 +74,26 @@
 
       <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
-        <lib-section text="Data intelligence"></lib-section>
-        <ng-container *ngFor="let module of searchModuleResults">
-          <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
-            *ngIf="module.schemaLists && module.schemaLists.length>0">
-            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-              <mat-panel-title>
-                <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
-                <span class="f-spacer"></span>
-                <div class="badge">{{module.schemaLists.length}}</div>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-nav-list role="navigation" [disableRipple]="true">
-              <mat-list-item *ngFor="let schema of module.schemaLists"
-                [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
+
+        <mat-nav-list class="running-schema-list" role="navigation" [disableRipple]="true">
+          <mat-list-item *ngFor="let schema of schemaList"
+                [routerLink]="['schema/schema-details', schema.moduleId, schema.schemaId]"
                 [routerLinkActive]="'selected'">
-                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
+                <div (click)="updateSchemaBadgeInfo(schema)" mat-line>
+                  <div class="f-col">
+                    <lib-text-line type="small" weight="strong" class="schema-name">{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</lib-text-line>
+                    <lib-text-line type="xsmall">{{schema.moduleDesc}}</lib-text-line>
+                  </div>
+                </div>
                 <span class="f-spacer"></span>
-                <lib-spinner *ngIf="schema.isInRunning" size="24"></lib-spinner>
+                <lib-spinner *ngIf="schema.running" size="24"></lib-spinner>
+                <lib-button *ngIf="!schema.viewed" disabled
+                [matBadgeOverlap]="true"
+                [libBadge]="1"
+                matBadgePosition="after"
+                ></lib-button>
               </mat-list-item>
-            </mat-nav-list>
-          </mat-expansion-panel>
-        </ng-container>
+        </mat-nav-list>
       </mat-accordion>
 
       <!-- Tree to show when navigation is on schema -->

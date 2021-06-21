@@ -329,8 +329,8 @@ export class SchemaService {
     return this.http.get<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus));
   }
 
-  public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[]): Observable<any> {
-    return this.http.get<any>(this.endpointClassic.downloadExecutionDetailsByNodesUrl(schemaId, status, nodes));
+  public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[], variantId: string): Observable<any> {
+    return this.http.get<any>(this.endpointClassic.downloadExecutionDetailsByNodesUrl(schemaId, status, nodes, variantId));
   }
 
   /**

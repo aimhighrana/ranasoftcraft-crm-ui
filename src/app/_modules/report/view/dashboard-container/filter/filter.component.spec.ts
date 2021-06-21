@@ -222,7 +222,7 @@ describe('FilterComponent', () => {
   it('updateObjRefDescription(), update description of objRef in filter', async(()=>{
     const buckets = [{doc_count: 21151,key: 'KEY2','top_hits#items':{hits:{hits: [{ _source: {hdvs: {MATL_GROUP: {vc: [{c: 'KEY2',t: 'Key2'}]}}}}]}}}];
 
-    component.updateObjRefDescription(buckets, 'MATL_GROUP');
+    component.updateObjRefDescription(buckets, 'MATL_GROUP', false);
 
     expect(component.values.length).toEqual(0);
   }));
@@ -233,7 +233,7 @@ describe('FilterComponent', () => {
     const filterWidget= new FilterWidget()
      filterWidget.metaData={fieldId:'MATL_GROUP',picklist:'1'} as MetadataModel;
     component.filterWidget.next(filterWidget);
-    component.getFieldsMetadaDesc(buckets, 'MATL_GROUP');
+    component.getFieldsMetadaDesc(buckets, 'MATL_GROUP', false);
     expect(component.values.length).toEqual(2);
     expect(component.values[0].TEXT).toEqual('200010');
     expect(component.values[1].TEXT).toEqual('testing');
@@ -243,7 +243,7 @@ describe('FilterComponent', () => {
     const filterWidget1= new FilterWidget()
      filterWidget1.metaData={fieldId:'OVERDUE',picklist:'1'} as MetadataModel;
     component.filterWidget.next(filterWidget1);
-    component.getFieldsMetadaDesc(buckets2, 'OVERDUE');
+    component.getFieldsMetadaDesc(buckets2, 'OVERDUE', false);
     expect(component.values.length).toEqual(2);
     expect(component.values[0].TEXT).toEqual('No');
     expect(component.values[1].TEXT).toEqual('Yes');
@@ -348,12 +348,30 @@ describe('FilterComponent', () => {
     expect(res).toEqual('1234');
   }));
 
+  it('setFilteredOptions(), should call filteredOptionsSubject.next base on reset boolean', async(()=> {
+    component.values = [{CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: '200010'} as DropDownValues, {CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: 'testing'} as DropDownValues]
+    component.setFilteredOptions();
+    expect(component.filteredOptionsSubject.value.length).toEqual(2);
+
+    component.values = [{CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: '200010'} as DropDownValues, {CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: 'testing'} as DropDownValues]
+    component.setFilteredOptions();
+    expect(component.filteredOptionsSubject.value.length).toEqual(4);
+
+    component.values = [{CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: '200010'} as DropDownValues, {CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: 'testing'} as DropDownValues]
+    component.setFilteredOptions(true);
+    expect(component.filteredOptionsSubject.value.length).toEqual(2);
+  }));
+
   it('saveDisplayCriteria(), should call saveDisplayCriteria', async(()=> {
+    const filterWidget = new FilterWidget();
+    filterWidget.fieldId = 'ZMRO';
+    component.filterWidget.next(filterWidget);
     component.displayCriteriaOption.key = DisplayCriteria.TEXT;
     component.widgetId = 12345;
     component.widgetInfo = new Widget();
     component.widgetInfo.widgetType = WidgetType.FILTER;
     component.widgetInfo.widgetId = component.widgetId.toString();
+    component.filterCriteria = [];
     spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption.key).and.returnValue(of({}));
     component.saveDisplayCriteria();
     expect(widgetService.saveDisplayCriteria).toHaveBeenCalledWith('12345', WidgetType.FILTER, DisplayCriteria.TEXT);

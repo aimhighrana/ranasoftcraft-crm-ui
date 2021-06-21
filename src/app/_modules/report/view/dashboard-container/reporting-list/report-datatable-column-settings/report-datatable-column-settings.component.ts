@@ -106,7 +106,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    */
   ngOnInit(): void {
     const reportDataTable = this.sharedService.getReportDataTableSetting().subscribe(data => {
-        if(data.isRefresh === false){
+        if(data?.isRefresh === false){
           this.data = data;
 
         this.objectNumber = data.objectType;
@@ -158,9 +158,6 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         const index = this.fieldIdArray.indexOf(system.fieldId);
         if(index === -1) {
           this.headers.push(system);
-        }
-        if(index !== -1) {
-          this.headers[index] = system;
         }
       })
 

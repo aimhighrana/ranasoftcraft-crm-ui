@@ -3,14 +3,14 @@
     <div class="f-row">
         <ng-template [ngIf]="schemaInfo">
             <lib-text-line type="leading">{{ moduleInfo?.moduleDesc || 'Module' }} /
-                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}</lib-text-line>
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{ variantTotalCnt ? variantTotalCnt : 0 }} records)</lib-text-line>
            
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
             <mat-menu #menu="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset</button>
+                <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
                 <ng-container *ngIf="dataScope && dataScope.length">
                     <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                        {{ scope.variantName ? scope.variantName : 'Unknown'}}
+                        {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope._totalDoc ? scope._totalDoc : 0 }})
                     </button>
                 </ng-container>
                 <mat-divider></mat-divider>
@@ -22,8 +22,9 @@
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button class="lib-button navbar-action" i18n="@@check_data" type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
-                Check data </lib-button>
+            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
+                <span class="btn-txt">Refine</span>
+            </lib-button>
             <lib-button *ngIf="false" type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
             <lib-button class="lib-button navbar-action" type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
         </lib-button-group>

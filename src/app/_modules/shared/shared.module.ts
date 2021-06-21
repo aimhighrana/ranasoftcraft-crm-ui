@@ -84,6 +84,7 @@ import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
 import { StatusBadgeDirective } from './_directives/status-badge.directive';
 import { UDRValueControlComponent } from './_components/udr-value-control/udr-value-control.component';
+import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loader.component';
 
 @NgModule({
   declarations: [
@@ -131,7 +132,8 @@ import { UDRValueControlComponent } from './_components/udr-value-control/udr-va
     AutoCompleteScrollDirective,
     GenericFieldControlComponent,
     UDRValueControlComponent,
-    StatusBadgeDirective
+    StatusBadgeDirective,
+    OverlayLoaderComponent
   ],
   imports: [
     // ng modules
@@ -280,7 +282,8 @@ import { UDRValueControlComponent } from './_components/udr-value-control/udr-va
     AutoCompleteScrollDirective,
     GenericFieldControlComponent,
     UDRValueControlComponent,
-    StatusBadgeDirective
+    StatusBadgeDirective,
+    OverlayLoaderComponent
   ],
   providers: [
     TitleCasePipe,
