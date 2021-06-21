@@ -1,11 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
-import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
-import { Observable, of, Subscription } from 'rxjs';
-import { FormControl } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, UDRDropdownValue } from '@models/schema/schemadetailstable';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'pros-udr-value-control',
@@ -89,7 +84,9 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       return null;
     }
     for (const field in this.metataData) {
-      list.push(this.metataData[field]);
+      if(this.metataData[fieldId]) {
+        list.push(this.metataData[field]);
+      }
     }
     for (const item of list) {
       if (item[fieldId]) {
@@ -99,7 +96,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
         if (typeof item[field] === 'object') {
           list.push(item[field]);
         }
-      } 
+      }
     }
     return null;
   }
