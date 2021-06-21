@@ -184,10 +184,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.displayedColumnsId = ['action'];
     // this.columnDescs = {};
     const fieldsArray=[];
-    const sub = this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
+    const sub = this.widgetService.getListTableMetadata(this.widgetId).subscribe((returnData: ReportingWidget[]) => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
+          if (singlerow.fields === 'EVENT_ID') {
+            /* setting the picklist of event column as '1' */
+            singlerow.fldMetaData.picklist = '1';
+          }
           const obj = { fields: singlerow.fields, fieldOrder: singlerow.fieldOrder }
           fieldsArray.push(obj);
           this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc : singlerow.fldMetaData.fieldDescri;
@@ -225,11 +229,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     if (returndata.data) {
       returndata = returndata.data;
     }
-
-    const widgets = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
-    /* setting the picklist of event column as '1' */
-    widgets?.forEach(item => item.fields === 'EVENT_ID' ? item.fldMetaData.picklist = '1': item);
-    this.reportingListWidget.next(widgets);
 
     returndata.hits.hits.forEach(element => {
       const source = element.sourceAsMap;
