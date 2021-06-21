@@ -22,6 +22,20 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   let reportServiceSpy: ReportService;
   let sharedserviceSpy: SharedServiceService;
   let schemaDetailsService: SchemaDetailsService;
+  const selectedColumns  = (displayCriteria = DisplayCriteria.CODE) => {
+    return [
+      {
+        fieldId: 'NDCTYPE',
+        fieldDescri: 'NDC TYPE MATERIAL',
+        displayCriteria
+      },
+      {
+        fieldId: 'MATL_TYPE',
+        fieldDescri: 'MATERIAL TYPE',
+        displayCriteria
+      }
+    ] as MetadataModel[];
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -141,7 +155,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: 'numberoflogin', selectedColumns: ['fname'], isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false};
+    const response = { objectType: 'numberoflogin', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
     spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
@@ -150,7 +164,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: 'numberoflogin,test', selectedColumns: ['fname'], isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false};
+    const response = { objectType: 'numberoflogin,test', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
     spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
@@ -174,7 +188,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: '1005', selectedColumns: ['fname'], isWorkflowdataSet: true, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false};
+    const response = { objectType: '1005', selectedColumns: selectedColumns(), isWorkflowdataSet: true, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
     spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
@@ -209,7 +223,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: '1005', selectedColumns: ['fname'], isWorkflowdataSet: false, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false};
+    const response = { objectType: '1005', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
     spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
@@ -241,18 +255,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   it('manageAllDisplayCriteria(), allDisplayCriteria should equal CODE', async(() => {
     component.data = {
       objectType: 1005,
-      selectedColumns: [
-        {
-          fieldId: 'NDCTYPE',
-          fieldDescri: 'NDC TYPE MATERIAL',
-          displayCriteria: DisplayCriteria.CODE
-        },
-        {
-          fieldId: 'MATL_TYPE',
-          fieldDescri: 'MATERIAL TYPE',
-          displayCriteria: DisplayCriteria.CODE
-        }
-      ],
+      selectedColumns: selectedColumns(),
       isWorkflowdataSet: false,
       widgetId: 123456
     };
@@ -331,9 +334,57 @@ describe('ReportDatatableColumnSettingsComponent', () => {
       widgetId: 123456
     };
     component.allDisplayCriteria = DisplayCriteria.CODE_TEXT;
+    spyOn(component, 'manageConfigure');
     component.changeAllDisplayCriteria();
     expect(component.data.selectedColumns[0].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
     expect(component.data.selectedColumns[1].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
     expect(component.data.selectedColumns[2].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
+    expect(component.manageConfigure).toHaveBeenCalled();
+  }));
+
+  it('setOriginalConfigured(), should set tempHeaders and change all displayCriteria to default', async(() => {
+    component.setOriginalConfigured();
+    expect(component.tempHeaders).toEqual([]);
+
+    component.data = {
+      selectedColumns: selectedColumns(),
+      displayCriteria: DisplayCriteria.CODE
+    };
+    component.setOriginalConfigured();
+    expect(component.tempHeaders).toEqual(component.data.selectedColumns);
+
+    component.data.displayCriteria = DisplayCriteria.TEXT;
+    component.setOriginalConfigured();
+    expect(component.tempHeaders).toEqual(selectedColumns(DisplayCriteria.TEXT));
+  }));
+
+  it('manageConfigure(), should show or not show Banner', async(() => {
+    component.data = {
+      selectedColumns: selectedColumns(),
+      displayCriteria: DisplayCriteria.CODE
+    };
+    component.tempHeaders = selectedColumns()
+    component.manageConfigure();
+    expect(component.showConfiguredBanner).toBeFalsy();
+
+    component.tempHeaders = selectedColumns(DisplayCriteria.TEXT);
+    component.manageConfigure();
+    expect(component.showConfiguredBanner).toBeTruthy();
+  }));
+
+  it('setUserConfigured(), should set userConfigured', async(() => {
+    component.setUserConfigured(true);
+    expect(component.userConfigured).toBeTruthy();
+
+    component.data = {
+      selectedColumns: selectedColumns(),
+      displayCriteria: DisplayCriteria.TEXT
+    };
+    component.headers = selectedColumns()
+    component.tempHeaders = selectedColumns();
+    component.setUserConfigured(false);
+    expect(component.userConfigured).toBeFalsy();
+    expect(component.tempHeaders[0].displayCriteria).toEqual(DisplayCriteria.TEXT);
+    expect(component.tempHeaders[1].displayCriteria).toEqual(DisplayCriteria.TEXT);
   }));
 });
