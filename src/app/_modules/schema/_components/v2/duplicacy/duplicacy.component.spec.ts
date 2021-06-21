@@ -499,7 +499,7 @@ describe('DuplicacyComponent', () => {
 
   });
 
-  it('should get record status class', () => {
+  it('should get record status class', async(() => {
 
     const record = {};
     record[RECORD_STATUS_KEY] = { fieldData: RECORD_STATUS.MASTER };
@@ -512,7 +512,7 @@ describe('DuplicacyComponent', () => {
     record[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.DELETABLE;
     expect(component.getRecordStatusClass(record)).toEqual('unselected');
 
-  });
+  }));
 
   it('should format cell data', () => {
     const metadataFldLst = {

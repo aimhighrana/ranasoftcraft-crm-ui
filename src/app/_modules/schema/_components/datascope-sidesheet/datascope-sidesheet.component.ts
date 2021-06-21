@@ -57,6 +57,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    */
   subscriptions: Subscription[] = [];
 
+  scopeCnt = 0;
+
   /**
    * Constructor of the class
    */
@@ -163,6 +165,17 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         this.variantInfo.filterCriteria.push(filterCtrl);
       }
     }
+
+    this.updateDataScopeCount();
+  }
+
+  updateDataScopeCount() {
+    const sub = this.schemaService.getDataScopeCount(this.moduleId, this.variantInfo.filterCriteria).subscribe((res) => {
+      const count = (res && res > 0) ? res : 0;
+      this.scopeCnt = count;
+    });
+
+    this.subscriptions.push(sub);
   }
 
   /**
@@ -225,6 +238,12 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     const filterToBeRemoved = this.variantInfo.filterCriteria.filter((filterCtrl) => filterCtrl.fieldId === ctrl.fieldId)[0];
     const index = this.variantInfo.filterCriteria.indexOf(filterToBeRemoved);
     this.variantInfo.filterCriteria.splice(index, 1);
+
+    if (this.variantInfo.filterCriteria.length) {
+      this.updateDataScopeCount();
+    } else {
+      this.scopeCnt = 0;
+    }
   }
 
   /**
@@ -243,7 +262,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
           filterCtrl.textValues.push(value.TEXT ? value.TEXT : value.CODE);
         })
       }
-    })
+    });
+
+    this.updateDataScopeCount();
   }
 
   /**

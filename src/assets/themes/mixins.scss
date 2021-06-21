@@ -1659,6 +1659,17 @@
     }
   }
 
+  .mat-option .variant-section {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .datascope-scroll {
+    // height: 250px;
+    max-height: 256px;
+    overflow-y: scroll;
+  }
+
   pros-schema-summary-sidesheet,
   pros-schema-info {
     div.root {

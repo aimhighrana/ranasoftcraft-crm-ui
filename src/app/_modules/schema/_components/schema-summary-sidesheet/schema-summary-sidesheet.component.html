@@ -37,6 +37,9 @@
             </div>
         </div>
     </div>
+    <div class="cnt-banner">
+        <lib-banner status="info" text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection"></lib-banner>
+    </div>
     <div class="f-col summary-sidesheet sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
@@ -51,7 +54,32 @@
                     </mat-error>
                 </div>
 
-                <div class="f-col mdo-form-field mdo-field">
+                <div class="f-col mdo-field">
+                    <mat-label class="mdo-field-label">Data Scope</mat-label>
+                    <div class="mdo-field-input data-scope-input">
+                        <input matInput placeholder="Type to search" #optionsInput [formControl]="dataScopeName" [matAutocomplete]="auto" (blur)="resetLastScope()"/>
+                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete" (optionSelected)="selectDataScope()">
+                            <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateDataScopeList()">
+                                <mat-option i18n="@@add_data_scope" (click)="openDataScopeSideSheet()">Add data scope</mat-option>
+                                <mat-divider></mat-divider>
+                                <mat-option value='0' i18n="@@entire_data_scope">
+                                    <div class="variant-section">
+                                        <span>Entire data scope</span>
+                                        <span>{{entireDataSetCount ? entireDataSetCount : 0}}</span>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
+                                    <div class="variant-section">
+                                        <span>{{variant.variantName}}</span>
+                                        <span>{{variant.dataScopeCount ? variant.dataScopeCount : 0}}</span>
+                                    </div>
+                                </mat-option>
+                            </div>
+                        </mat-autocomplete>
+                    </div>
+                </div>
+
+                <!-- <div class="f-col mdo-form-field mdo-field">
                     <lib-text-line type="small" weight="strong">
                         <span i18n="@@data_scope">Data scope</span>&nbsp;
                         <mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">question-circle</mat-icon>
@@ -67,7 +95,7 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                </div>
+                </div> -->
                 <div class="f-col mdo-form-field mdo-field">
                     <lib-text-line type="small" weight="strong">
                         <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">question-circle</mat-icon>
