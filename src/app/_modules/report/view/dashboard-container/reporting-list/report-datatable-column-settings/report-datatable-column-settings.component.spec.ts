@@ -384,7 +384,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     component.tempHeaders = selectedColumns();
     component.setUserConfigured(false);
     expect(component.userConfigured).toBeFalsy();
-    expect(component.tempHeaders[0].displayCriteria).toEqual(DisplayCriteria.TEXT);
-    expect(component.tempHeaders[1].displayCriteria).toEqual(DisplayCriteria.TEXT);
+    expect(component.headers[0].displayCriteria).toEqual(DisplayCriteria.TEXT);
+    expect(component.headers[1].displayCriteria).toEqual(DisplayCriteria.TEXT);
   }));
 });
