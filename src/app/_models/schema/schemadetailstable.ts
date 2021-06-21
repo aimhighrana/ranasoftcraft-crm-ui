@@ -424,6 +424,16 @@ export interface FieldConfiguration {
     valueKey: string;
 }
 
+export interface UDRDropdownValue {
+    CODE: string;
+    PLANTCODE: string;
+    SNO: string;
+    FIELDNAME: string;
+    TEXT: string;
+    LANGU: string;
+    CLIENTID: string;
+}
+
 export interface TransformationFormData {
     sourceFld: string;
     targetFld: string;
