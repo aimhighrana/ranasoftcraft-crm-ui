@@ -475,16 +475,13 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   }
 
   /**
-   * function to set this.userConfigured
+   * function to set this.userConfigured. If false will set all displayCriteria to the default
    */
   setUserConfigured(value: boolean) {
     this.userConfigured = value;
     if (!this.userConfigured) {
       this.headers.forEach((item) => {
-        const header = this.tempHeaders.find(h => h.fieldId === item.fieldId)
-        if (header) {
-          item.displayCriteria = header.displayCriteria;
-        }
+        item.displayCriteria = this.data.displayCriteria;
       });
     }
   }
