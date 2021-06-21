@@ -105,7 +105,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
         this.displayMultiselectedText();
       }
     })
-    this.subscription.push(sub)
+    this.subscription.push(sub);
   }
 
   /**
