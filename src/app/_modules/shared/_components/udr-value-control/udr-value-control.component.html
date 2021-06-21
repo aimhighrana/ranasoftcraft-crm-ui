@@ -1,0 +1,11 @@
+<mat-form-field appearance="outline">
+    <input matInput [value]="value" [(ngModel)]="searchStr" (input)="clear()" [matAutocomplete]="fieldsCtrl"
+        [placeholder]="placeholder">
+    <mat-autocomplete class="mdo-autocomplete" #fieldsCtrl="matAutocomplete" (optionSelected)="selected($event)">
+        <ng-container *ngFor="let fld of filteredList">
+            <mat-option class="mdo-option" [value]="fld.TEXT" [matTooltip]="fld.TEXT" matTooltipPosition="right">
+                {{fld.TEXT}}
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+</mat-form-field>

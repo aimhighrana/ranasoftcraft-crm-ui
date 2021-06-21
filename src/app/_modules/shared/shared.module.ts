@@ -83,6 +83,7 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
 import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { GenericFieldControlComponent } from './_components/generic-field-control/generic-field-control.component';
 import { StatusBadgeDirective } from './_directives/status-badge.directive';
+import { UDRValueControlComponent } from './_components/udr-value-control/udr-value-control.component';
 
 @NgModule({
   declarations: [
@@ -129,6 +130,7 @@ import { StatusBadgeDirective } from './_directives/status-badge.directive';
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
     GenericFieldControlComponent,
+    UDRValueControlComponent,
     StatusBadgeDirective
   ],
   imports: [
@@ -277,6 +279,7 @@ import { StatusBadgeDirective } from './_directives/status-badge.directive';
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective,
     GenericFieldControlComponent,
+    UDRValueControlComponent,
     StatusBadgeDirective
   ],
   providers: [

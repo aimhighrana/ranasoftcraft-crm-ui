@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RequestForSchemaDetailsWithBr, SchemaTableViewRequest, CategoryInfo, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule } from 'src/app/_models/schema/schemadetailstable';
+import { RequestForSchemaDetailsWithBr, SchemaTableViewRequest, CategoryInfo, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule, UDRDropdownValue } from 'src/app/_models/schema/schemadetailstable';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
@@ -284,5 +284,9 @@ export class SchemaDetailsService {
 
   public getUploadProgressPercent(schemaId: string, runId: string): Observable<CrossMappingRule[]> {
     return this.http.get<any>(this.endpointService.getUploadProgressUrl(schemaId, runId));
+  }
+
+  public getUDRDropdownValues(fieldId: string): Observable<UDRDropdownValue[]> {
+    return this.http.get<UDRDropdownValue[]>(this.endpointService.getUDRDropdownValues(fieldId));
   }
 }
