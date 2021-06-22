@@ -195,7 +195,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getBarConfigurationData() : void {
     // bar orientation based on orientation value
-    this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
+    this.orientation = this.stackBarWidget?.getValue()?.orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
     // if showLegend flag will be true it show legend on Stacked bar widget
     if (this.stackBarWidget.getValue().isEnableLegend) {
@@ -732,7 +732,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
-        if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
+        if(this.stackBarWidget?.getValue()?.orientation === Orientation.HORIZONTAL) {
           this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
