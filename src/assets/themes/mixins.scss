@@ -770,6 +770,11 @@
       display: none;
     }
 
+    .datascope-scroll {
+      max-height: 256px;
+      overflow-y: scroll;
+    }
+
     .search-row {
       margin: 8px;
     }
@@ -1657,17 +1662,6 @@
         }
       }
     }
-  }
-
-  .mat-option .variant-section {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .datascope-scroll {
-    // height: 250px;
-    max-height: 256px;
-    overflow-y: scroll;
   }
 
   pros-schema-summary-sidesheet,

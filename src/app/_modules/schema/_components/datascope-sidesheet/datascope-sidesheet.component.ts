@@ -100,6 +100,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
           this.variantName.setValue(this.variantInfo.variantName);
           this.variantInfo.filterCriteria = res.filterCriteria || [];
           this.variantInfo.variantId = res.variantId || '';
+
+          if (this.variantInfo.filterCriteria.length) {
+            this.updateDataScopeCount();
+          }
         }
       }, (error) => {
         console.log('Something went wrong while getting variant details.', error.message);
