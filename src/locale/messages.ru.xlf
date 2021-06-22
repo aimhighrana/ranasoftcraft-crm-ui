@@ -2730,6 +2730,22 @@
           <context context-type="linenumber">228</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="yes" datatype="html">
+        <source>Yes</source>
+        <target>да</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="no" datatype="html">
+        <source>No</source>
+        <target>Нет</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -8,6 +8,8 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { WidgetService } from '@services/widgets/widget.service';
 import { Observable, of, Subscription } from 'rxjs';
+import { isEqual } from 'lodash';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-report-datatable-column-settings',
@@ -84,6 +86,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       dataType: 'DTMS',
     }as MetadataModel
   ];
+  userConfigured: boolean = undefined;
+  showConfiguredBanner: boolean;
+  tempHeaders: MetadataModel[] = [];
 
   /**
    * Constructor of class
@@ -93,6 +98,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     private sharedService: SharedServiceService,
     private reportService: ReportService,
     private widgetService: WidgetService,
+    private transientService: TransientService,
   ) { }
 
   ngOnDestroy(): void {
@@ -108,6 +114,8 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     const reportDataTable = this.sharedService.getReportDataTableSetting().subscribe(data => {
         if(data?.isRefresh === false){
           this.data = data;
+
+          this.setOriginalConfigured();
 
         this.objectNumber = data.objectType;
         if ((data.isWorkflowdataSet === null || data.isWorkflowdataSet === false) && (data.isCustomdataSet === null || data.isCustomdataSet === false)) {
@@ -146,7 +154,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       if (this.data && this.data.selectedColumns && this.data.selectedColumns.length > 0) {
         this.data.selectedColumns.forEach(selectedColumn => {
           this.headers.push(selectedColumn);
-        })
+        });
       }
       /**
        * building array of fieldIds of headers
@@ -238,6 +246,16 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   }
 
   /**
+   * function to to copy tempHeaders and set all displayCriteria to default displayCriteria
+   */
+  setOriginalConfigured() {
+    if (this.data && this.data.selectedColumns && this.data.selectedColumns.length > 0) {
+      this.tempHeaders = JSON.parse(JSON.stringify(this.data.selectedColumns));
+      this.tempHeaders.forEach(h => h.displayCriteria = this.data.displayCriteria);
+    }
+  }
+
+  /**
    * function to trigger on check/uncheck checkbox
    */
   selectionChange(checkbox: MetadataModel) {
@@ -252,7 +270,8 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     if (flag === false) {
       this.data.selectedColumns.push(checkbox);
     }
-    this.manageStateOfCheckbox()
+    this.manageStateOfCheckbox();
+    this.setOriginalConfigured();
   }
 
   /**
@@ -296,16 +315,30 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   }
 
   /**
+   * function to show or not show the Configured Banner
+   */
+  manageConfigure() {
+    if (this.userConfigured === undefined) {
+      if (isEqual(this.data.selectedColumns, this.tempHeaders)) {
+        this.showConfiguredBanner = false;
+      } else {
+        this.showConfiguredBanner = true;
+      }
+    }
+  }
+
+  /**
    * function to change all selected column to a DisplayCriteria
    */
   changeAllDisplayCriteria() {
     const selectDisplayCriteria = (row: MetadataModel) => {
-  if (row.picklist === '1' || row.picklist === '30' || row.picklist === '37') {
+      if (row.picklist === '1' || row.picklist === '30' || row.picklist === '37') {
         row.displayCriteria = this.allDisplayCriteria;
       }
     }
     this.headers.forEach(row => selectDisplayCriteria(row));
     this.data.selectedColumns.forEach(row => selectDisplayCriteria(row));
+    this.manageConfigure();
   }
 
   /**
@@ -371,6 +404,11 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * function to update table view
    */
   updateTableView(headerInOrder: MetadataModel[]){
+    if (this.showConfiguredBanner && this.userConfigured === undefined) {
+      this.setUserConfigured(true);
+      return;
+    }
+
     const prepareData = [];
     let order = 0;
     headerInOrder.forEach(header => {
@@ -378,7 +416,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         widgetId : this.data.widgetId,
         fields: header.fieldId,
         sno: header.sno,
-        displayCriteria: header.displayCriteria,
+        displayCriteria: this.userConfigured ? header.displayCriteria : null,
         createdBy: this.data.userDetails.userName,
         fieldOrder: order++
       }
@@ -434,5 +472,17 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       console.error('Error while getting report workflow fields', error.message);
     });
     this.subscriptions.push(CustomfldSub);
+  }
+
+  /**
+   * function to set this.userConfigured. If false will set all displayCriteria to the default
+   */
+  setUserConfigured(value: boolean) {
+    this.userConfigured = value;
+    if (!this.userConfigured) {
+      this.headers.forEach((item) => {
+        item.displayCriteria = this.data.displayCriteria;
+      });
+    }
   }
 }
