@@ -364,4 +364,13 @@ export class SchemaService {
     selected = selected? selected : false;
     return this.http.get<SchemaTableViewDto>(this.endpointService.getallFieldsbynodeId(), { params: { nodeType, nodeIds, schemaId , variantId, fetchCount,searchString, selected   } });
   }
+
+  /**
+   * Get all the active business rule in schema based on last run
+   * @param schemaId schema id for get the rules
+   * @returns the list of CoreSchemaBrInfo
+   */
+  public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
+    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString} , {params:{schemaId}});
+  }
 }

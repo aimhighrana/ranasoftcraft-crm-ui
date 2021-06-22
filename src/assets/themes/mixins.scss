@@ -2036,6 +2036,14 @@
           background-color: mat-color($background-palette, card);
         }
       }
+      .b-root {
+        lib-button {
+          width: 100%;
+          .mdo-button.mdo-minor {
+            width: 100%;
+          }
+        }
+      }
     }
   }
 
@@ -2371,4 +2379,13 @@ mat-tooltip-component {
 
 .lib-chip-list.vertical > .mdo-chip-list {
   flex-direction: column;
+}
+
+pros-filter-values .root {
+  lib-button {
+    width: 100%;
+    .mdo-button.mdo-minor {
+      width: 100%;
+    }
+  }
 }

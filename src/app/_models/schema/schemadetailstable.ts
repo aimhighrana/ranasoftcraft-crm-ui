@@ -101,6 +101,7 @@ export class RequestForSchemaDetailsWithBr {
     isLoadMore: boolean;
     nodeId?: string;
     nodeType?: string;
+    ruleSelected?: string[];
 
 }
 
