@@ -61,6 +61,8 @@ export class SharedServiceService {
 
   private schemaRunSub: Subject<boolean> = new Subject();
 
+  private isSecondaySideNavBarOpen : Subject<boolean> = new Subject();
+
   constructor() {}
 
   public setChooseColumnData(data: any) {
@@ -234,5 +236,13 @@ export class SharedServiceService {
   }
   public getSchemaRunNotif(): Observable<any> {
     return this.schemaRunSub.asObservable();
+  }
+
+  public setSecondarySideNavBarState(data:boolean) {
+    this.isSecondaySideNavBarOpen.next(data);
+  }
+
+  public getSecondarySideNavBarState():Observable<any> {
+    return this.isSecondaySideNavBarOpen.asObservable();
   }
 }

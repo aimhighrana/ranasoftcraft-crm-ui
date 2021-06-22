@@ -480,9 +480,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
     const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
     if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
-      dropableWidget.x = boxX;
-      dropableWidget.y = boxY;
-
+      if (boxX + dropableWidget.width <= 200) {
+        dropableWidget.x = boxX;
+        dropableWidget.y = boxY;
+      }
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }
@@ -1043,8 +1044,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param value width entered by user..
    */
   widthCount(value: number) {
-    if (value > 200) {
-      return this.styleCtrlGrp.get('width').setValue(200);
+    const marginCount = this.selStyleWid.x;
+    if (marginCount + Number(value) > 200) {
+      const width = 200 - marginCount;
+      return this.styleCtrlGrp.get('width').setValue(width);
     }
   }
 
@@ -1092,6 +1095,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         const lastWidget = this.widgetList[this.widgetList.length - 1];
         dropableWidget.x = boxX + lastWidget.x + 11;
         dropableWidget.y = boxY + lastWidget.y + 11;
+        if (dropableWidget.x + dropableWidget.width > 200) {
+          dropableWidget.x = boxX;
+          dropableWidget.y = boxY;
+        }
       } else {
         dropableWidget.x = boxX;
         dropableWidget.y = boxY;
