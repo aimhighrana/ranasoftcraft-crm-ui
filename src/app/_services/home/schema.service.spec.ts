@@ -748,7 +748,7 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-  fit('getBuisnessRulesBasedOnRun() get the rules based on last run', async(() => {
+  it('getBuisnessRulesBasedOnRun() get the rules based on last run', async(() => {
 
     const url = 'test getBuisnessRulesBasedOnRun';
     endpointServiceSpy.getBuisnessRulesBasedOnRunUrl.and.returnValue(url);
