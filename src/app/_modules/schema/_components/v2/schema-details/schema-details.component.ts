@@ -275,6 +275,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    filterableRulesOb: Observable<CoreSchemaBrInfo[]> = of([]);
    appliedBrList: CoreSchemaBrInfo[] = [];
 
+   delayedCall = debounce((searchText: string) => {
+    this.businessRulesBasedOnLastRun(searchText);
+  }, 300)
+
   constructor(
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -487,7 +491,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     // get the business rules based on
     this.businessRulesBasedOnLastRun('');
-
   }
 
   selectedNodeChange(params: ParamMap) {
@@ -1807,9 +1810,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param searchString get the business rule bt this text ...
    */
   searchBusinessRules(searchString: string) {
-    debounce(() =>{
-      this.businessRulesBasedOnLastRun(searchString);
-    },300);
+    this.delayedCall(searchString);
   }
 
   /**

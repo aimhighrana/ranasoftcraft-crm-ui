@@ -371,6 +371,6 @@ export class SchemaService {
    * @returns the list of CoreSchemaBrInfo
    */
   public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
-    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString} , {params:{schemaId}});
+    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString,from:0,size:10 } , {params:{schemaId}});
   }
 }

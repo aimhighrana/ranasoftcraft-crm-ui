@@ -29,7 +29,6 @@ div.root {
     .mdo-filter-matchip {
       margin: 0 4px;
     }
-    
   }
 
   .empty-state {
@@ -45,6 +44,19 @@ div.root {
       justify-content: center;
       width: 100%;
       top: 15%;
+    }
+  }
+
+  .b-root {
+    padding: 8px;
+    height: 100%;
+
+    mat-nav-list {
+      padding-top: 0;
+      margin: 8px -8px;
+      overflow: auto;
+      height: calc(100% - 36px - 8px * 4 - 36px);
+      max-height: 139px;
     }
   }
 
@@ -213,21 +225,5 @@ div.root {
         }
       }
     }
-  }
-}
-
-.b-root {
-  padding: 8px;
-  height: 100%;
-
-  mat-nav-list {
-    padding-top: 0;
-    margin: 8px -8px;
-    overflow: auto;
-    height: calc(100% - 36px - 8px * 4 - 36px);
-    max-height: 139px;
-  }
-  lib-button {
-    width: 100%;
   }
 }
