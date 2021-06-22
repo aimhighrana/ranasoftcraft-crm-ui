@@ -667,4 +667,9 @@ describe('EndpointsRuleService', () => {
     const serObj = new EndpointsRuleService();
     expect(serObj.getUploadProgressUrl('', '')).toContain('/schema/uploadStatus?schemaId');
   }));
+
+  it('getBuisnessRulesBasedOnRunUrl()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getBuisnessRulesBasedOnRunUrl()).toContain('/schema/metadata/get-running-brs');
+  }));
 });
