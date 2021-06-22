@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, UDRDropdownValue } from '@models/schema/schemadetailstable';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-udr-value-control',
@@ -26,7 +28,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
 
   fieldList: Array<UDRDropdownValue> = [];
   searchStr = '';
-  @Output() valueChange = new EventEmitter<string>();
+  @Output() valueChange = new EventEmitter();
   @Input() value: string;
   /**
    * Hold the metadata fields response ....
@@ -70,33 +72,61 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     return control;
   }
+  subscriptions: Array<Subscription> = [];
+  searchSub: Subject<string> = new Subject();
   constructor(
     private schemaDetailsService: SchemaDetailsService
   ) { }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    console.log('Changes occured', changes);
-    if (changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
-      this.loadUDRValueControl();
-    } else if (changes.metataData && changes.metataData.firstChange) {
-      this.loadUDRValueControl();
-    }
-    if (changes.value) {
+    if (changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue
+      || changes.metataData && changes.metataData.previousValue !== changes.metataData.currentValue
+      || changes.value && changes.value.previousValue !== changes.value.currentValue
+    ) {
+      console.log('CHANGES', changes);
       this.searchStr = this.value;
+      this.loadUDRValueControl();
     }
   }
 
   ngOnInit(): void {
+    const subscription = this.searchSub.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((searchString) => {
+      this.loadUDRValueControl(searchString);
+    });
+    this.subscriptions.push(subscription);
   }
 
   /**
    * Should send changed text to parent
    */
-  inputChanged() {
+  inputChanged(searchStr) {
+    if (this.displayControl === 'radio') {
+      this.searchStr = '';
+    } else {
+      this.searchStr = searchStr;
+    }
+    this.searchSub.next(searchStr);
     this.valueChange.emit(this.searchStr);
+  }
+
+  dateChanged(date: Date) {
+    this.inputChanged(date.toString());
+  }
+  dateRangeChanged(dateObj: {start:Date, end: Date}) {
+    this.valueChange.emit({
+      start: dateObj.start?.toString() || '',
+      end: dateObj.end?.toString() || ''
+    });
+    console.log('Date range selected:', dateObj);
   }
 
   /**
@@ -104,10 +134,14 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
    * @param $event current dropdown event
    */
   selected($event) {
-    this.searchStr = $event.option.viewValue;
-    this.inputChanged();
+    const searchStr = $event.option.viewValue;
+    this.searchStr = searchStr;
+    this.searchSub.next(searchStr);
+    this.valueChange.emit(this.searchStr);
   }
-
+  checkboxChanged($event) {
+    this.valueChange.emit(`${$event}`);
+  }
   /**
    * Should return required meta data field
    * @param fieldId field name string
@@ -134,19 +168,24 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     return null;
   }
-
   /**
    * Should update value control type and data
    */
-  loadUDRValueControl() {
+  loadUDRValueControl(searchString = this.searchStr) {
     const metadata = this.parseMetadata(this.fieldId);
     this.selectedMetaData = metadata;
-    const pickLists = ['1', '30', '37'];
-    if (!metadata || !pickLists.includes(metadata.picklist)) {
+    const pickLists = ['1', '30', '35', '37'];
+    if (metadata) {
+      metadata.picklist = 'DTMS';
+      metadata.dataType = 'CHAR';
+    } else if (!metadata || !pickLists.includes(metadata.picklist)) {
       this.fieldList = [];
       return;
     }
-    this.schemaDetailsService.getUDRDropdownValues(this.fieldId).subscribe((list: Array<UDRDropdownValue>) => {
+    if (!['radio', 'dropdown'].includes(this.displayControl)) {
+      searchString = '';
+    }
+    this.schemaDetailsService.getUDRDropdownValues(this.fieldId, searchString).subscribe((list: Array<UDRDropdownValue>) => {
       this.fieldList = list;
     }, (error) => {
       this.fieldList = [];

@@ -104,18 +104,4 @@ describe('UDRValueControlComponent', () => {
     component.selected(event);
     expect(component.searchStr).toEqual('test');
   }));
-
-  it('filteredList should filter data', async(() => {
-    component.fieldList = [{
-      TEXT: 'test'
-    } as any, {
-      TEXT: 'welcome'
-    } as any];
-    component.searchStr = '';
-    expect(component.filteredList.length).toEqual(2);
-    component.searchStr = 'wel';
-    expect(component.filteredList.length).toEqual(1);
-    component.searchStr = 'new';
-    expect(component.filteredList.length).toEqual(0);
-  }));
 });

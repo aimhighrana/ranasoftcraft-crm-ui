@@ -286,7 +286,7 @@ export class SchemaDetailsService {
     return this.http.get<any>(this.endpointService.getUploadProgressUrl(schemaId, runId));
   }
 
-  public getUDRDropdownValues(fieldId: string): Observable<UDRDropdownValue[]> {
-    return this.http.get<UDRDropdownValue[]>(this.endpointService.getUDRDropdownValues(fieldId));
+  public getUDRDropdownValues(fieldId: string, searchStr: string): Observable<UDRDropdownValue[]> {
+    return this.http.get<UDRDropdownValue[]>(this.endpointService.getUDRDropdownValues(fieldId, searchStr));
   }
 }
