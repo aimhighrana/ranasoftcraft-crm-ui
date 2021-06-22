@@ -1,10 +1,11 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{  moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
+            {{ moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
         </div>
         <span class="f-spacer"></span>
-        <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before" icon="upload" > Upload data </lib-button>
+        <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before" icon="upload"> Upload data
+        </lib-button>
     </div>
     <lib-banner status="info" [text]="datasetCountMsg"></lib-banner>
 
@@ -22,11 +23,13 @@
                 <!-- Schema Name -->
                 <div mat-line>{{ schemalist.schemaDescription? schemalist.schemaDescription: 'Untitled'}}</div>
                 <!-- Schema Last Run -->
-                <div mat-line class="short-line">Last run: 
-                    {{ schemalist.executionEndTime ? (schemalist.executionEndTime | date:'MMM d, y, h:mm:ss a'): 'N/A' }}
+                <div mat-line class="short-line">Last run:
+                    {{ schemalist.executionEndTime ? (schemalist.executionEndTime | date:'MMM d, y, h:mm:ss a'): 'N/A'
+                    }}
                 </div>
-                <lib-button type="plain" iconFontType="solid" (click)="openSchemaInfo(schemalist.schemaId)" icon="long-arrow-right"></lib-button>
-    
+                <lib-button type="plain" iconFontType="solid" (click)="openSchemaInfo(schemalist.schemaId)"
+                    icon="long-arrow-right"></lib-button>
+
             </mat-list-item>
             <mat-divider></mat-divider>
         </mat-list>
