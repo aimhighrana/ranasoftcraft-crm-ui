@@ -748,7 +748,7 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-  it('getBuisnessRulesBasedOnRun() get the rules based on last run', async(() => {
+  fit('getBuisnessRulesBasedOnRun() get the rules based on last run', async(() => {
 
     const url = 'test getBuisnessRulesBasedOnRun';
     endpointServiceSpy.getBuisnessRulesBasedOnRunUrl.and.returnValue(url);
@@ -761,7 +761,7 @@ describe('SchemaService', () => {
       expect(data).toEqual(httpMockData);
     });
 
-    const httpReq = httpTestingController.expectOne(url);
+    const httpReq = httpTestingController.expectOne(`${url}?schemaId=7575757`);
     expect(httpReq.request.method).toEqual('POST');
     httpReq.flush(httpMockData);
 
