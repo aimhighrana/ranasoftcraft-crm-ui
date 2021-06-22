@@ -384,6 +384,10 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/metadata/variant/create-update-single`;
   }
 
+  public getDataScopeCount(moduleId: string): string {
+    return `${this.origin}/schema/datascope-count?moduleId=${moduleId}`;
+  }
+
   /**
    * endpoint for get schema data scope
    * @param schemaId: ID of schema
