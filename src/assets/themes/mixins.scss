@@ -1821,6 +1821,26 @@
     }
   }
 
+  pros-schema-migration {
+    div.root {
+      .colunm-box {
+        border-bottom: 1px solid $color-app-border;
+      }
+
+      .table-vertical {
+        tr.mat-row {
+          &:nth-child(odd) {
+            background: mat-color($background-palette, card);
+          }
+
+          .mat-cell {
+            border-bottom: 1px solid $color-app-border;
+          }
+        }
+      }
+    }
+  }
+
   pros-bar-chart,
   pros-count,
   pros-filter,
