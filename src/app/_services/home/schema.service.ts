@@ -293,6 +293,10 @@ export class SchemaService {
     return this.http.post<any>(this.endpointService.saveUpdateDataScopeUrl(), dataScopeReq)
   }
 
+  public getDataScopeCount(moduleId: string, filterCriteria): Observable<any> {
+    return this.http.post<any>(this.endpointService.getDataScopeCount(moduleId), filterCriteria);
+  }
+
   /**
    * function to POST Api call for create/update schema check-data
    * @param checkDataObject: Object having check data details

@@ -770,6 +770,11 @@
       display: none;
     }
 
+    .datascope-scroll {
+      max-height: 256px;
+      overflow-y: scroll;
+    }
+
     .search-row {
       margin: 8px;
     }

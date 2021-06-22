@@ -186,9 +186,7 @@
                     [hasError]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
                     </lib-input>
                 </div>
-            </form>
-    
-    
+            </form>    
             <form [formGroup]="udrNodeForm" *ngIf="isUDR">
                 <div class="f-col user-defined-set" formArrayName="frmArray">
                     <ng-container *ngFor="let item of udrNodeForm.get('frmArray').controls; let i = index">
@@ -239,15 +237,14 @@
                                 <!-- Comparison value -->
                                 <div class="col" *ngIf="i == 0 && item.value.conditionOperator !== 'RANGE'">
                                     <div class="f-row" *ngIf="item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
-                                        <lib-input label="‎" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" 
-                                        (valueChange)="setComparisonValue($event,i)"></lib-input>
+                                        <pros-udr-value-control [metataData]="metataData" [fieldId]="item.controls.conditionFieldId?.value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" (valueChange)="setComparisonValue($event,i)"></pros-udr-value-control>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
                                 <div class="col" *ngIf="i != 0 && item.value.conditionOperator !== 'RANGE' && item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
                                     <div class="f-row">
-                                        <lib-input label="‎" i18n-placeholder="@@comparison_value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" 
-                                        (valueChange)="setComparisonValue($event,i)"></lib-input>
+                                        <pros-udr-value-control [fieldId]="item.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@comparison_value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" 
+                                        (valueChange)="setComparisonValue($event,i)"></pros-udr-value-control>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
@@ -315,8 +312,8 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE' && chldNode.value.conditionOperator !== 'EMPTY' && chldNode.value.conditionOperator !== 'NOT_EMPTY'">
-                                                    <lib-input label="‎" [placeholder]="chldNode.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="chldNode.value.conditionFieldValue"
-                                                    (valueChange)="setComparisonValueForChild($event,childIndex,i)"></lib-input>
+                                                    <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" [placeholder]="chldNode.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="chldNode.value.conditionFieldValue"
+                                                    (valueChange)="setComparisonValueForChild($event,childIndex,i)"></pros-udr-value-control>
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                     <div class="f-row">

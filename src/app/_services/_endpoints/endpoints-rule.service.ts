@@ -63,6 +63,10 @@ export class EndpointsRuleService {
     return this.classicOrigin + '/schema/variants/' + schemaId;
   }
 
+  public getUDRDropdownValues(fieldId: string, searchStr: string): string {
+    return this.classicOrigin + `/schema/drop-values/${fieldId}?queryString=${searchStr}`;
+  }
+
   public getSchemaBrInfoList(schemaId: string): string {
     return `${this.origin}/schema/metadata/schema-br-infolist/${schemaId}`;
   }
@@ -378,6 +382,10 @@ export class EndpointsRuleService {
    */
   public saveUpdateDataScopeUrl(): string {
     return `${this.origin}/schema/metadata/variant/create-update-single`;
+  }
+
+  public getDataScopeCount(moduleId: string): string {
+    return `${this.origin}/schema/datascope-count?moduleId=${moduleId}`;
   }
 
   /**
