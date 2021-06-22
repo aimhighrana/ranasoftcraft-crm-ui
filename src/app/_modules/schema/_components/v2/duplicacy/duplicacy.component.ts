@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnChanges, SimpleChanges, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { FieldInputType, FilterCriteria, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Subject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -210,7 +210,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @ViewChild('tableSearchInput') tableSearchInput: SearchInputComponent;
 
-
+  currentDatascopePageNo = 0;
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -242,7 +242,6 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
-      this.getModuleInfo(this.moduleId);
       isRefresh = true;
     }
 
@@ -255,6 +254,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.variantId = changes.variantId.currentValue ? changes.variantId.currentValue : '0';
     } */
 
+    const moduleSub = this.getModuleInfo(this.moduleId);
+    const sub = this.getDataScope();
+    forkJoin({getDataScope: sub, getModuleInfo: moduleSub}).subscribe((res) => {
+      if (res) {
+        this.getSchemaDetails();
+      }
+    });
     if (isRefresh && !this.isInRunning) {
       this.dataSource = new DuplicacyDataSource(this.catalogService, this.snackBar);
       this.groupId = null;
@@ -262,9 +268,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.variantId = '0';
       this.variantName = 'Entire dataset';
       this.sortOrder = {};
-      this.getDataScope();
       this.getSchemaStatics();
-      this.getSchemaDetails();
       this.getSchemaTableActions();
       // this.getData();
       if (this.variantId !== '0') {
@@ -359,7 +363,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * @param id module id
    */
   getModuleInfo(id) {
-    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+    this.totalVariantsCnt = 0;
+    const sub = this.schemaService.getModuleInfoByModuleId(id);
+    sub.subscribe(res => {
       if (res && res.length) {
         this.moduleInfo = res[0];
         this.totalVariantsCnt = this.moduleInfo.datasetCount || 0;
@@ -367,6 +373,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }, error => {
       console.log(`Error:: ${error.message}`)
     });
+
+    return sub;
   }
 
   /**
@@ -376,6 +384,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     this.schemaInfo = new SchemaListDetails();
     this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
+      if (this.schemaInfo.variantId) {
+        this.variantChange(this.schemaInfo.variantId);
+      }
     }, error => console.error(`Error : ${error.message}`))
   }
 
@@ -852,6 +863,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       if (this.tableSearchInput) {
         this.tableSearchInput.clearSearch(true);
       }
+    } else if (this.variantId === '0') {
+      this.variantTotalCnt = this.totalVariantsCnt;
     }
   }
 
@@ -937,12 +950,38 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Get data scopes .. or variants ...
    */
   getDataScope(activeVariantId?: string) {
-    this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    const obsv = this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body);
+
+    obsv.subscribe(res => {
       this.dataScope = res;
+      this.currentDatascopePageNo = 0;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
     }, (error) => console.error(`Something went wrong while getting variants : ${error.message}`));
+
+    return obsv;
+  }
+
+  updateDataScopeList() {
+    const pageNo = this.currentDatascopePageNo + 1;
+    const body = {
+      from: pageNo,
+      size: 10,
+      variantName: null
+    };
+
+    this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        this.dataScope = [...this.dataScope, ...res];
+        this.currentDatascopePageNo = pageNo;
+      }
+    }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
   }
 
   /**

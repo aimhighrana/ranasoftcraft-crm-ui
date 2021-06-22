@@ -532,7 +532,6 @@ describe('SchemaDetailsComponent', () => {
     spyOn(component, 'getDataScope').and.returnValue(of(sub));
     spyOn(component, 'getFldMetadata');
     spyOn(component, 'getSchemaStatics');
-    spyOn(component, 'getSchemaDetails');
     spyOn(component, 'manageStaticColumns');
     spyOn(component, 'getData');
     spyOn(component, 'getVariantDetails');
@@ -547,7 +546,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     expect(component.getVariantDetails).toHaveBeenCalled();
     expect(component.getSchemaExecutionTree).toHaveBeenCalled();
@@ -580,7 +578,6 @@ describe('SchemaDetailsComponent', () => {
     component.ngOnChanges(changes1);
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res2=> {
       if(res2) {
@@ -614,7 +611,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     expect(component.variantId).toEqual('0');
     expect(component.executionTreeHierarchy).toEqual(undefined);
@@ -648,7 +644,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res3=> {
       if(res3) {
@@ -680,7 +675,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res4=> {
       if(res4) {
@@ -712,7 +706,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res5=> {
       if(res5) {
@@ -744,7 +737,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res6=> {
       if(res6) {
@@ -776,7 +768,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
-    expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res7=> {
       if(res7) {
@@ -829,9 +820,14 @@ describe('SchemaDetailsComponent', () => {
 
   it('getDataScope(), should return all variants of a schema', async () => {
     component.schemaId = '1005';
-    spyOn(schemaVariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    spyOn(schemaVariantService, 'getDataScopesList').withArgs(component.schemaId, 'RUNFOR', body).and.returnValue(of())
     component.getDataScope();
-    expect(schemaVariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+    expect(schemaVariantService.getDataScopesList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR', body);
   });
 
   it(`approveRecords(), approve corrected records `, async(()=>{

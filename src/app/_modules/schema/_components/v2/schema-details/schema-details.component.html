@@ -7,12 +7,14 @@
            
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
             <mat-menu #menu="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
-                <ng-container *ngIf="dataScope && dataScope.length">
-                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                        {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
-                    </button>
-                </ng-container>
+                <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateDataScopeList()">
+                    <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
+                    <div *ngIf="dataScope && dataScope.length">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                            {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
+                        </button>
+                    </div>
+                </div>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="openDataScopeSideSheet()">
                     <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> <span i18n="@@new_data_scope">New data scope</span>
@@ -44,7 +46,7 @@
     <ng-template #schemaInfoTemplate>
         <div class="empty-state" *ngIf="!statics || (statics && !statics.totalCnt)">
             <lib-empty-state class="lib-empty-state" primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
-                <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Check data </lib-button>
+                <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Refine </lib-button>
             </lib-empty-state>
         </div>
         <div class="f-row filter-container">

@@ -433,11 +433,16 @@ describe('DuplicacyComponent', () => {
 
   it('getDataScope(), should return all variants of a schema', async () => {
     component.schemaId = '1005';
-    spyOn(schemaVariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR')
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    spyOn(schemaVariantService, 'getDataScopesList').withArgs(component.schemaId, 'RUNFOR', body)
       .and.returnValues(of([]), of([]), throwError({status: 500}))
 
     component.getDataScope();
-    expect(schemaVariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+    expect(schemaVariantService.getDataScopesList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR', body);
 
     spyOn(component, 'variantChange');
     component.getDataScope('1');
