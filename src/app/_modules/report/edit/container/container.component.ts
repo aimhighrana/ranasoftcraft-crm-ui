@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria, FilterWith, BucketFilter, AggregationOperator } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -68,7 +68,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   reportId: string;
 
   /** report name for any report */
-  reportName = new FormControl ('', Validators.required);
+  reportName = new FormControl('', Validators.required);
 
   /** fields for table widget */
   chooseColumns: WidgetTableModel[] = [];
@@ -140,27 +140,95 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** system fields for Transactional module dataset */
   systemFields = [
     {
-      fieldId:'STATUS',
-      fieldDescri:'Status',
+      fieldId: 'STATUS',
+      fieldDescri: 'Status',
     },
     {
-      fieldId:'USERMODIFIED',
-      fieldDescri:'User Modified',
+      fieldId: 'USERMODIFIED',
+      fieldDescri: 'User Modified',
       picklist: '1',
       dataType: 'AJAX',
-    },{
-      fieldId:'APPDATE',
-      fieldDescri:'Update Date',
+    }, {
+      fieldId: 'APPDATE',
+      fieldDescri: 'Update Date',
 
       picklist: '0',
       dataType: 'DTMS',
-    },{
-      fieldId:'STAGE',
-      fieldDescri:'Creation Date',
+    }, {
+      fieldId: 'STAGE',
+      fieldDescri: 'Creation Date',
       picklist: '0',
       dataType: 'DTMS',
     }
   ] as MetadataModel[];
+
+  bucketFilter = [
+    {
+      key: BucketFilter.WITHIN_1_DAY,
+      value: 'SLA Within a day'
+    }, {
+      key: BucketFilter.MORE_THEN_1_DAY,
+      value: 'SLA Within a more day'
+    }
+  ];
+
+  timeInterval = [
+    { key: SeriesWith.millisecond, value: 'Today' },
+    { key: TimeseriesStartDate.D7, value: TimeseriesStartDate.D7 },
+    { key: TimeseriesStartDate.D10, value: TimeseriesStartDate.D10 },
+    { key: TimeseriesStartDate.D20, value: TimeseriesStartDate.D20 },
+    { key: TimeseriesStartDate.D30, value: TimeseriesStartDate.D30 },
+  ]
+
+  filterType = [
+    {
+      key: FilterWith.DROPDOWN_VALS,
+      value: 'Dropdown value'
+    },
+    {
+      key: FilterWith.HORIZONTAL_VALS,
+      value: 'Horizontal value'
+    },
+    {
+      key: FilterWith.VERTICAL_VALS,
+      value: 'Vertical value'
+    }
+  ];
+
+  orderWith = [
+    {
+      key: OrderWith.ASC,
+      value: 'Ascending'
+    },
+    {
+      key: OrderWith.DESC,
+      value: 'Descending'
+    }
+  ];
+
+  seriesWith = [
+    { key: SeriesWith.day, value: 'Day' },
+    { key: SeriesWith.week, value: 'Week' },
+    { key: SeriesWith.month, value: 'Month' },
+    { key: SeriesWith.quarter, value: 'Quarter' },
+    { key: SeriesWith.year, value: 'Year' }
+  ]
+
+  seriesFormat = ['MMM-dd-yy', 'dd-MMM-yy', 'dd MMM, yy', 'MMM d, yy'];
+  aggregrationOp = [
+    {
+      key: AggregationOperator.GROUPBY,
+      value: 'Group by'
+    },
+    {
+      key: AggregationOperator.COUNT,
+      value: 'Count'
+    },
+    {
+      key: AggregationOperator.SUM,
+      value: 'Sum'
+    }
+  ];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -203,7 +271,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getReportConfig(this.reportId);
       } else {
         this.widgetList = [];
-        this.reportName = new FormControl('',Validators.required);
+        this.reportName = new FormControl('', Validators.required);
         this.collaboratorPermission = true;
       }
     });
@@ -217,7 +285,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       aggregrationOp: [''],
       filterType: [''],
       isMultiSelect: [false],
-      orderWith: [OrderWith.DESC],
+      orderWith: [{ ...this.orderWith[1] }],
       groupById: [''],
       objectType: [''],
       imageUrl: [''],
@@ -251,10 +319,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       scaleTo: [''],
       stepSize: [''],
       dataSetSize: [''],
-      seriesWith: [SeriesWith.day],
+      seriesWith: [{ ...this.seriesWith[0] }],
       seriesFormat: [''],
       blankValueAlias: [''],
-      timeseriesStartDate: [TimeseriesStartDate.D7],
+      timeseriesStartDate: [{ ...this.timeInterval[1] }],
       isEnabledBarPerc: [false],
       bucketFilter: [null]
     });
@@ -271,9 +339,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.widgetTitle = latestVal.widgetName;
         changedWidget.field = typeof latestVal.field === 'string' ? latestVal.field : latestVal.field.fieldId;
         changedWidget.aggregrationOp = latestVal.aggregrationOp;
-        changedWidget.filterType = latestVal.filterType;
+        changedWidget.filterType = latestVal.filterType?.key ? latestVal.filterType.key : null;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
-        changedWidget.orderWith = latestVal.orderWith;
+        changedWidget.orderWith = latestVal.orderWith?.key ? latestVal.orderWith.key : null;
         changedWidget.groupById = latestVal.groupById;
         changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
@@ -334,6 +402,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartPropCtrlGrp.valueChanges.subscribe(latestProp => {
       if (latestProp) {
         this.selStyleWid.chartProperties = latestProp;
+        this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter.key : null;
+        this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : null;
+        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : null
         this.preapreNewWidgetPosition(this.selStyleWid);
       }
     });
@@ -534,15 +605,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           } catch (error) { console.error(`Error : ${error}`); endDate = data.dateFilterCtrl.endDate }
         }
 
+        const selectedFilterType = this.filterType.find(type => type.key === data.filterType);
+        const selectedOrderWith = this.orderWith.find(item => item.key === data.orderWith);
         this.styleCtrlGrp.setValue({
           widgetName: data.widgetTitle ? data.widgetTitle : '',
           height: data.height ? data.height : '',
           width: data.width ? data.width : '',
           field: data.field ? data.field : '',
           aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
-          filterType: data.filterType ? data.filterType : '',
+          filterType: data.filterType ? selectedFilterType : '',
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
-          orderWith: data.orderWith ? data.orderWith : OrderWith.DESC,
+          orderWith: data.orderWith ? selectedOrderWith : this.orderWith[1],
           groupById: data.groupById ? data.groupById : '',
           isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
           imageUrl: data.imageUrl ? data.imageUrl : '',
@@ -557,15 +630,22 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
-          objectType: data.objectType ? data.objectType: '',
+          objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
           isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
         });
 
+
         // set value to properties frm ctrl
         if (data.chartProperties) {
           console.log(data)
+          const selectedBucketFilter = this.bucketFilter.find(item => item.key === data.chartProperties.bucketFilter);
+          const selectedTimeInterval = this.timeInterval.find(item => item.key === data.chartProperties.timeseriesStartDate);
+          const selectedSeries = this.seriesWith.find(item => item.key === data.chartProperties.seriesWith);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
+          this.chartPropCtrlGrp.controls.bucketFilter.patchValue(selectedBucketFilter);
+          this.chartPropCtrlGrp.controls.timeseriesStartDate.patchValue(selectedTimeInterval);
+          this.chartPropCtrlGrp.controls.seriesWith.patchValue(selectedSeries);
         } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
           this.chartPropCtrlGrp.setValue({
             chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
@@ -603,7 +683,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (hasObj) {
           this.datasetCtrl.setValue(hasObj);
         }
-      } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
+      } else if (!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           this.datasetCtrl.setValue(hasObj);
@@ -700,8 +780,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
-    if(fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
-    this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
+    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
+      this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
   }
 
   /**
@@ -729,7 +809,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData selected data or on change dropdown data
    * @param index row index
    */
-   onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
+  onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
     if (fieldData && fieldData.option.value) {
       frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
@@ -1155,7 +1235,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  get isSriesWithVisibile() :boolean {
+  get isSriesWithVisibile(): boolean {
     if (this.styleCtrlGrp.get('field').value && this.styleCtrlGrp.get('groupById').value && this.styleCtrlGrp.get('distictWith').value) {
       this.selectedOption = 'year';
       this.isSerieswithDisabled = true;
@@ -1167,17 +1247,35 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
   }
-  checkNumLength(value :number){
+  checkNumLength(value: number) {
     if (value > 1000) {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue(1000);
-    } else if(value<1){
+    } else if (value < 1) {
       return this.styleCtrlGrp.get('pageDefaultSize').setValue('');
     }
   }
 
-  checkEnabledBarPerc(){
-    if(this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
-        this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
+  checkEnabledBarPerc() {
+    if (this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
+      this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
     }
+  }
+
+  displayProperties(opt) {
+    return opt ? opt.value : null;
+  }
+
+  displaySeriesWith(opt) {
+    return opt.charAt(0).toUpperCase().concat(opt.slice(1, opt.length));
+  }
+
+  getValue(value, control) {
+    const searchText = control.value ? (typeof control.value === 'string' ? control.value : control.value.value) : '';
+    return searchText ? value.filter(item => item.value.toLowerCase().includes(searchText.toLowerCase())) : value;
+  }
+
+  getSeriesValue(value, control) {
+    const searchText = control.value;
+    return searchText ? value.filter(item => item.toLowerCase().includes(searchText.toLowerCase())) : value;
   }
 }

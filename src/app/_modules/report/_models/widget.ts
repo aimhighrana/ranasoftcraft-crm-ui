@@ -626,3 +626,14 @@ export enum ReportCategory {
     MISSING_MODULE = 'MISSING_MODULE',
     MISSING_FIELDS = 'MISSING_FIELDS',
 }
+
+export enum FilterWith {
+    DROPDOWN_VALS = 'DROPDOWN_VALS',
+    HORIZONTAL_VALS = 'HORIZONTAL_VALS',
+    VERTICAL_VALS = 'VERTICAL_VALS'
+}
+
+export enum BucketFilter {
+    WITHIN_1_DAY = 'within_1_day',
+    MORE_THEN_1_DAY = 'more_then_1_day'
+}
