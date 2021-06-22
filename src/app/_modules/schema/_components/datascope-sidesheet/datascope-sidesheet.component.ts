@@ -58,6 +58,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   scopeCnt = 0;
+  entireDatasetCnt = 0;
 
   /**
    * Constructor of the class
@@ -81,11 +82,27 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.variantId = params.variantId;
       this.outlet = params.outlet;
+      this.getModuleInfo();
 
       if(this.variantId !== 'new') {
         this.getDataScopeDetails(this.variantId);
       }
-    })
+    });
+  }
+
+  getModuleInfo() {
+    const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      const module = moduleData[0];
+      if (module) {
+        this.entireDatasetCnt = module.datasetCount;
+        if (this.variantId === 'new') {
+          this.scopeCnt = module.datasetCount;
+        }
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+    this.subscriptions.push(moduleInfoByModuleId);
   }
 
   /**
@@ -100,10 +117,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
           this.variantName.setValue(this.variantInfo.variantName);
           this.variantInfo.filterCriteria = res.filterCriteria || [];
           this.variantInfo.variantId = res.variantId || '';
-
-          if (this.variantInfo.filterCriteria.length) {
-            this.updateDataScopeCount();
-          }
+          this.updateDataScopeCount();
         }
       }, (error) => {
         console.log('Something went wrong while getting variant details.', error.message);
@@ -174,12 +188,16 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   updateDataScopeCount() {
-    const sub = this.schemaService.getDataScopeCount(this.moduleId, this.variantInfo.filterCriteria).subscribe((res) => {
-      const count = (res && res > 0) ? res : 0;
-      this.scopeCnt = count;
-    });
+    if (this.variantInfo.filterCriteria.length) {
+      const sub = this.schemaService.getDataScopeCount(this.moduleId, this.variantInfo.filterCriteria).subscribe((res) => {
+        const count = (res && res > 0) ? res : 0;
+        this.scopeCnt = count;
+      });
 
-    this.subscriptions.push(sub);
+      this.subscriptions.push(sub);
+    } else {
+      this.scopeCnt = this.entireDatasetCnt;
+    }
   }
 
   /**
@@ -243,11 +261,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     const index = this.variantInfo.filterCriteria.indexOf(filterToBeRemoved);
     this.variantInfo.filterCriteria.splice(index, 1);
 
-    if (this.variantInfo.filterCriteria.length) {
-      this.updateDataScopeCount();
-    } else {
-      this.scopeCnt = 0;
-    }
+    this.updateDataScopeCount();
   }
 
   /**
