@@ -1798,4 +1798,19 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getAllNodeFields(node)).toBeTruthy();
   }));
 
+  it('updateDataScopeList(), should update datascope list', async(() => {
+    component.currentDatascopePageNo = 1;
+    const body = {
+      from: 2,
+      size: 10,
+      variantName: null
+    };
+    component.schemaId = '1005';
+
+    spyOn(schemaVariantService, 'getDataScopesList').withArgs(component.schemaId, 'RUNFOR', body)
+      .and.returnValues(of([]), of([]), throwError({status: 500}))
+
+    component.updateDataScopeList();
+    expect(schemaVariantService.getDataScopesList).toHaveBeenCalledWith('1005', 'RUNFOR', body);
+  }));
 });
