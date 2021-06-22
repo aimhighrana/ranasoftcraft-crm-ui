@@ -674,4 +674,12 @@ export class EndpointsRuleService {
   public getallFieldsbynodeId(): string {
     return  `${this.classicOrigin}/schema/getallFieldsbynodeId`;
   }
+
+  /**
+   * Get the uri for return all business rules in schema based on last run
+   * @returns will return the url
+   */
+  public getBuisnessRulesBasedOnRunUrl(): string {
+    return `${this.origin}/schema/metadata/get-running-brs`;
+  }
 }
