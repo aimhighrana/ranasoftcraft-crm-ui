@@ -142,6 +142,7 @@ export class FilterWidget {
     fieldId: string;
     isMultiSelect: boolean;
     metaData: MetadataModel;
+    orderWith: string;
 }
 
 export interface DropDownValues {
