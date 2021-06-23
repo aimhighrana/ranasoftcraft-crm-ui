@@ -298,6 +298,7 @@ export class VariantDetails {
     schemaId: string;
     variantName: string;
     variantId: string;
+    dataScopeCount?: number;
     udrBlocksModel: UDRBlocksModel[]
 }
 
@@ -312,7 +313,7 @@ export interface SchemaVariantsModel {
     filterCriteria: FilterCriteria[];
     isDefault: boolean;
     variantType: VarinatType;
-    _totalDoc: number;
+    dataScopeCount?: number;
 }
 
 export enum VarinatType {

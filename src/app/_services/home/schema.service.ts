@@ -293,6 +293,10 @@ export class SchemaService {
     return this.http.post<any>(this.endpointService.saveUpdateDataScopeUrl(), dataScopeReq)
   }
 
+  public getDataScopeCount(moduleId: string, filterCriteria): Observable<any> {
+    return this.http.post<any>(this.endpointService.getDataScopeCount(moduleId), filterCriteria);
+  }
+
   /**
    * function to POST Api call for create/update schema check-data
    * @param checkDataObject: Object having check data details
@@ -363,5 +367,14 @@ export class SchemaService {
     searchString = searchString? searchString : '';
     selected = selected? selected : false;
     return this.http.get<SchemaTableViewDto>(this.endpointService.getallFieldsbynodeId(), { params: { nodeType, nodeIds, schemaId , variantId, fetchCount,searchString, selected   } });
+  }
+
+  /**
+   * Get all the active business rule in schema based on last run
+   * @param schemaId schema id for get the rules
+   * @returns the list of CoreSchemaBrInfo
+   */
+  public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
+    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString,from:0,size:10 } , {params:{schemaId}});
   }
 }

@@ -3,7 +3,6 @@
     <mat-nav-list prosClickStopPropagation>
         <mat-list-item *ngFor="let checkbox of searchValue;">
             <lib-checkbox (valueChange)="onChange(checkbox)" [checked]="isChecked(checkbox)" [label]="checkbox.TEXT ? checkbox.TEXT : checkbox.CODE">
-                Trest checkbox
             </lib-checkbox>
         </mat-list-item>
     </mat-nav-list>

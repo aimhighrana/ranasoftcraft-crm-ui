@@ -13,7 +13,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { FilterCriteria, Heirarchy, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { ParamMap, Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
@@ -1800,6 +1800,88 @@ describe('SchemaDetailsComponent', () => {
 
     node.nodeType = SchemaExecutionNodeType.GRID;
     expect(component.getAllNodeFields(node)).toBeTruthy();
+  }));
+
+  it(`businessRulesBasedOnLastRun(), get the business rules from the last run`, async(()=>{
+    // mock data
+    const rules = [{
+      brInfo:'Rule 1',
+      brIdStr:'765675757'
+    }as CoreSchemaBrInfo];
+
+    // spy the service
+    spyOn(schemaService, 'getBuisnessRulesBasedOnRun').withArgs(component.schemaId, '').and.returnValue(of(rules));
+
+    component.businessRulesBasedOnLastRun('');
+
+    expect(schemaService.getBuisnessRulesBasedOnRun).toHaveBeenCalledWith(component.schemaId, '');
+
+  }));
+
+  it(`searchBusinessRules(), search the rules based on search string `, async(()=>{
+
+    spyOn(component,'delayedCall');
+    component.searchBusinessRules('');
+    expect(component.delayedCall).toHaveBeenCalled();
+
+
+  }));
+
+  it(`addFilterFromBrRule(), add the filter parameters `, async(()=>{
+    // mock data
+    const br = {brIdStr:'767868768', brInfo:'Rule 1'} as CoreSchemaBrInfo;
+    component.appliedBrList = [];
+
+    component.addFilterFromBrRule(br, true);
+    expect(component.appliedBrList.length).toEqual(1);
+
+    component.addFilterFromBrRule(br, false);
+    expect(component.appliedBrList.length).toEqual(0);
+
+
+
+  }));
+
+  it(`isBrAppliedChecked() , check the br is applied or note `, async(()=>{
+    const br = {brIdStr:'767868768', brInfo:'Rule 1'} as CoreSchemaBrInfo;
+    component.appliedBrList = [br];
+
+    expect(component.isBrAppliedChecked(br)).toEqual(true);
+    br.brIdStr = '87767676767';
+    component.appliedBrList = [br];
+    expect(component.isBrAppliedChecked({brIdStr:'767868768', brInfo:'Rule 1'} as CoreSchemaBrInfo)).toEqual(false);
+
+
+  }));
+
+  it(`brRuleFilterDesc() , get the applied rule text `, async(()=>{
+    const br = {brIdStr:'767868768', brInfo:'Rule 1'} as CoreSchemaBrInfo;
+    component.appliedBrList = [br];
+
+    expect(component.brRuleFilterDesc).toEqual(br.brInfo);
+    const br1 = {brIdStr:'876778', brInfo:'Rule 2'} as CoreSchemaBrInfo;
+    component.appliedBrList.push(br1);
+    expect(component.brRuleFilterDesc).toEqual(2);
+
+    component.appliedBrList = [];
+    expect(component.brRuleFilterDesc).toEqual('All');
+
+  }));
+
+  it('applyFilterFromBrRule() , applied filter after selecting rule ', async(()=>{
+    // mock data
+    component.filterCriteria.next([]);
+    component.userDetails = {plantCode:'0', userName:'srana'} as Userdetails;
+
+    spyOn(component,'getData');
+    spyOn(component,'getSchemaExecutionTree');
+
+    component.applyFilterFromBrRule();
+
+    expect(component.getData).toHaveBeenCalled();
+    expect(component.getSchemaExecutionTree).toHaveBeenCalled();
+
+
   }));
 
 });

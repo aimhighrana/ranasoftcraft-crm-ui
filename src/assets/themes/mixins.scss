@@ -770,6 +770,11 @@
       display: none;
     }
 
+    .datascope-scroll {
+      max-height: 256px;
+      overflow-y: scroll;
+    }
+
     .search-row {
       margin: 8px;
     }
@@ -1815,6 +1820,26 @@
         mat-list.mat-list {
           mat-list-item.mat-list-item {
             border-bottom-color: $color-app-border;
+          }
+        }
+      }
+    }
+  }
+
+  pros-schema-migration {
+    div.root {
+      .colunm-box {
+        border-bottom: 1px solid $color-app-border;
+      }
+
+      .table-vertical {
+        tr.mat-row {
+          &:nth-child(odd) {
+            background: mat-color($background-palette, card);
+          }
+
+          .mat-cell {
+            border-bottom: 1px solid $color-app-border;
           }
         }
       }
