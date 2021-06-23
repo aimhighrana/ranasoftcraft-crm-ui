@@ -89,7 +89,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       || changes.metataData && changes.metataData.previousValue !== changes.metataData.currentValue
       || changes.value && changes.value.previousValue !== changes.value.currentValue
     ) {
-      console.log('CHANGES', changes);
       this.searchStr = this.value || '';
       this.loadUDRValueControl();
     }
@@ -166,7 +165,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   loadUDRValueControl(searchString = this.searchStr) {
     const metadata = this.parseMetadata(this.fieldId);
     this.selectedMetaData = metadata;
-    console.log(`${this.fieldId} displaycontroll ${this.displayControl}`);
     const pickLists = ['1', '4', '30', '35', '37'];
     if (!metadata || !pickLists.includes(metadata.picklist)) {
       this.fieldList = [];
