@@ -6,7 +6,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { GroupDataTableComponent } from '@modules/schema/_components/v2/duplicacy/group-data-table/group-data-table.component';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -632,12 +632,13 @@ describe('DuplicacyComponent', () => {
 
   it('should update on inputs changes', () => {
 
+    const obsv: any = new Observable();
     spyOn(component, 'getTableHeaders');
-    spyOn(component, 'getDataScope');
+    spyOn(component, 'getDataScope').and.returnValue(of(obsv));
     spyOn(component, 'getSchemaStatics');
     spyOn(component, 'getSchemaDetails');
     spyOn(component, 'getSchemaTableActions');
-    spyOn(component, 'getModuleInfo');
+    spyOn(component, 'getModuleInfo').and.returnValue(of(obsv));
     // spyOn(component, 'getVariantDetails');
 
     let changes: SimpleChanges = {moduleId:{currentValue:'1005', previousValue: '', firstChange:null, isFirstChange:null},
