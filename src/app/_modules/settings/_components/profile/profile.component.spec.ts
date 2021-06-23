@@ -135,9 +135,9 @@ describe('ProfileComponent', () => {
 
     component.currentUserPreferences = new UserPreferenceDetails();
     component.timeZoneList = ['IST'];
-    component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
+    component.makeLangSettingsUpdateCall('IST', 'timeZone', component.timeZoneList);
 
-    expect(component.currentUserPreferences.timezone).toEqual('IST');
+    expect(component.currentUserPreferences.timeZone).toEqual('IST');
   }));
 
   it('makeLangSettingsUpdateCall(), should make http call to update language settings', async(() => {
@@ -150,9 +150,9 @@ describe('ProfileComponent', () => {
 
     component.currentUserPreferences = new UserPreferenceDetails();
     component.timeZoneList = ['IST'];
-    component.makeLangSettingsUpdateCall('UTC', 'timezone', component.timeZoneList);
+    component.makeLangSettingsUpdateCall('UTC', 'timeZone', component.timeZoneList);
 
-    component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
+    component.makeLangSettingsUpdateCall('IST', 'timeZone', component.timeZoneList);
     expect(component.langFormErrMsg).toEqual('');
   }));
 

@@ -133,7 +133,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.plantCode = user.plantCode;
       this.roleId = user.currentRoleId;
       switch (user.dateformat) {
-        case 'MM.dd.yy':
+        case 'mm.dd.yy':
           this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
           break;
 

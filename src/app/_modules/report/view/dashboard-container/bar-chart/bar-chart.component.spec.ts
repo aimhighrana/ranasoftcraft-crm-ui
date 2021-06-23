@@ -424,12 +424,12 @@ describe('BarChartComponent', () => {
 
     spyOn(component,'getBarChartMetadata');
     spyOn(component,'getHeaderMetaData');
-    spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({displayCriteria: 'CODE'}));
+    // spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({displayCriteria: 'CODE'}));
     component.ngOnInit();
 
     expect(component.getBarChartMetadata).toHaveBeenCalled();
     expect(component.getHeaderMetaData).toHaveBeenCalled();
-    expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, component.widgetInfo.widgetType);
+    // expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, component.widgetInfo.widgetType);
   }));
 
   it('getHeaderMetaData(), get header info for bar widget', async(()=>{
