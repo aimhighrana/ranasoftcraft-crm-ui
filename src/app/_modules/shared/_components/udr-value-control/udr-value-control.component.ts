@@ -63,10 +63,10 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
           control = 'date';
           break;
         case metadata.picklist === 'DTMS' && metadata.dataType === 'CHAR':
-          control = 'datetimerange';
+          control = 'datetime';
           break;
         case metadata.picklist === 'TIMS' && metadata.dataType === 'CHAR':
-          control = 'timerange';
+          control = 'time';
           break;
       }
     }
@@ -74,6 +74,9 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   }
   subscriptions: Array<Subscription> = [];
   searchSub: Subject<string> = new Subject();
+  get dateValue() {
+    return this.value ? new Date(this.value) : null;
+  }
   constructor(
     private schemaDetailsService: SchemaDetailsService
   ) { }
@@ -90,7 +93,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       || changes.value && changes.value.previousValue !== changes.value.currentValue
     ) {
       console.log('CHANGES', changes);
-      this.searchStr = this.value;
+      this.searchStr = typeof this.value === 'string' ? this.value : '';
       this.loadUDRValueControl();
     }
   }
@@ -118,17 +121,9 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     this.valueChange.emit(this.searchStr);
   }
 
-  dateChanged(date: Date) {
+  dateChanged(date: any) {
     this.inputChanged(date.toString());
   }
-  dateRangeChanged(dateObj: {start:Date, end: Date}) {
-    this.valueChange.emit({
-      start: dateObj.start?.toString() || '',
-      end: dateObj.end?.toString() || ''
-    });
-    console.log('Date range selected:', dateObj);
-  }
-
   /**
    * Should return selected object to parent
    * @param $event current dropdown event
@@ -174,11 +169,10 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   loadUDRValueControl(searchString = this.searchStr) {
     const metadata = this.parseMetadata(this.fieldId);
     this.selectedMetaData = metadata;
-    const pickLists = ['1', '30', '35', '37'];
-    if (metadata) {
-      metadata.picklist = 'DTMS';
-      metadata.dataType = 'CHAR';
-    } else if (!metadata || !pickLists.includes(metadata.picklist)) {
+    console.log(`${this.fieldId} displaycontroll ${this.displayControl}`);
+    const pickLists = ['1', '4', '30', '35', '37'];
+  
+    if (!metadata || !pickLists.includes(metadata.picklist)) {
       this.fieldList = [];
       return;
     }

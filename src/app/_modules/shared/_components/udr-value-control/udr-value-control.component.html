@@ -3,7 +3,13 @@
     </lib-input>
 </ng-container>
 <ng-container *ngIf="displayControl==='date'">
-    <lib-date-picker [selectedDate]="value" (valueChange)="dateChanged($event)"></lib-date-picker>
+    <lib-date-picker [selectedDate]="dateValue" (valueChange)="dateChanged($event)"></lib-date-picker>
+</ng-container>
+<ng-container *ngIf="displayControl==='datetime'">
+    <lib-date-time-picker [selectedDate]="dateValue" (valueChange)="dateChanged($event)"></lib-date-time-picker>
+</ng-container>
+<ng-container *ngIf="displayControl==='time'">
+    <lib-time-picker [selectedDate]="dateValue" (timeChange)="dateChanged($event)"></lib-time-picker>
 </ng-container>
 <mat-form-field *ngIf="displayControl==='dropdown' || displayControl==='radio'" appearance="outline">
     <input matInput [value]="value" (input)="inputChanged($event.target.value)" [matAutocomplete]="fieldsCtrl"
@@ -18,10 +24,4 @@
 </mat-form-field>
 <ng-container *ngIf="displayControl==='checkbox'">
     <lib-checkbox [checked]="value==='true'" (valueChange)="checkboxChanged($event)"></lib-checkbox>
-</ng-container>
-<ng-container *ngIf="displayControl==='datetimerange'">
-    <lib-date-time-range-picker (valueChange)="dateRangeChanged($event)"></lib-date-time-range-picker>
-</ng-container>
-<ng-container *ngIf="displayControl==='timerange'">
-    timerange
 </ng-container>

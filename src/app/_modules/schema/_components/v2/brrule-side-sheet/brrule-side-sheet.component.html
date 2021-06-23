@@ -250,15 +250,21 @@
                                 </div>
                                 <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
                                     <div class="f-row">
-                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value"
+                                        <pros-udr-value-control [fieldId]="item.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@start_value" placeholder="start value"
+                                        [value]="item.value.conditionFieldStartValue"
+                                        (valueChange)="setRangeValue($event,'start',i)"></pros-udr-value-control>
+                                        <!--lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value"
                                             [value]="item.value.conditionFieldStartValue"
                                             (valueChange)="setRangeValue($event,'start',i)">
-                                        </lib-input>
+                                        </lib-input-->
                                         <div class="f-col-spacer-half"></div>
-                                        <lib-input label="‎" placeholder="end value"
+                                        <pros-udr-value-control [fieldId]="item.controls.conditionFieldId?.value" [metataData]="metataData" placeholder="end value"
+                                        [value]="item.value.conditionFieldEndValue"
+                                        (valueChange)="setRangeValue($event,'end',i)"></pros-udr-value-control>
+                                        <!--lib-input label="‎" placeholder="end value"
                                         [value]="item.value.conditionFieldEndValue"
                                         (valueChange)="setRangeValue($event,'end',i)">
-                                        </lib-input>
+                                        </lib-input-->
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
@@ -317,11 +323,11 @@
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                     <div class="f-row">
-                                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
-                                                        (valueChange)="setRangeValueForChild($event,'start',childIndex, i)"></lib-input>
+                                                        <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@start_value" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
+                                                        (valueChange)="setRangeValueForChild($event,'start',childIndex, i)"></pros-udr-value-control>
                                                         <div class="f-col-spacer-half"></div>
-                                                        <lib-input label="‎" i18n-placeholder="@@end_value" placeholder="end value" [value]="chldNode.value.conditionFieldEndValue"
-                                                        (valueChange)="setRangeValueForChild($event,'end',childIndex,i)"></lib-input>
+                                                        <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@end_value" placeholder="end value" [value]="chldNode.value.conditionFieldEndValue"
+                                                        (valueChange)="setRangeValueForChild($event,'end',childIndex,i)"></pros-udr-value-control>
                                                     </div>
                                                 </div>
                                                 <div class="col">

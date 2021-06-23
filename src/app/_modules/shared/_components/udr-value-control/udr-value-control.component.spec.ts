@@ -68,10 +68,10 @@ describe('UDRValueControlComponent', () => {
       hierarchyFields: {},
       grids: []
     }
-    component.loadDropdownValues();
+    component.loadUDRValueControl();
     expect(component.fieldList.length).toBe(1);
     schemaSpy.and.returnValue(throwError({ message: 'error' }));
-    component.loadDropdownValues();
+    component.loadUDRValueControl();
     expect(component.fieldList.length).toBe(0);
   }));
 

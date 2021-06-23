@@ -1378,9 +1378,14 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param value pass the value to set
    * @param index pass the index
    */
-  setComparisonValue(value: string, index: number) {
+  setComparisonValue(value: string | {start: string; end: string}, index: number) {
     const array = this.udrNodeArray().at(index);
-    array.get('conditionFieldValue').setValue(value);
+    if(typeof value === 'object') {
+      array.get('conditionFieldStartValue').setValue(value.start);
+      array.get('conditionFieldEndValue').setValue(value.end);
+    } else {
+      array.get('conditionFieldValue').setValue(value);
+    }
   }
 
   /**
@@ -1389,9 +1394,14 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param chldNode pass the child node
    * @param parentNode pass the parent node
    */
-  setComparisonValueForChild(value, chldNode: number, parentNode: number) {
+  setComparisonValueForChild(value: string | {start: string; end: string}, chldNode: number, parentNode: number) {
     const childArray = this.getChildAsControl(parentNode).at(chldNode);
-    childArray.get('conditionFieldValue').setValue(value);
+    if(typeof value === 'object') {
+      childArray.get('conditionFieldStartValue').setValue(value.start);
+      childArray.get('conditionFieldEndValue').setValue(value.end);
+    } else {
+      childArray.get('conditionFieldValue').setValue(value);
+    }
   }
 
   /**
