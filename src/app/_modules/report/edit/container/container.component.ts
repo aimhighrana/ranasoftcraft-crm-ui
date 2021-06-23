@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria, FilterWith, BucketFilter, AggregationOperator } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria, FilterWith, BucketFilter, AggregationOperator, DateSelectionType } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -133,6 +133,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** store workflow path for workflow dataset */
   workflowPath: WorkflowPath[];
   workflowPathOb: Observable<WorkflowPath[]> = of([]);
+  selectedWorkflowPath: WorkflowPath[] = [];
 
   datasetCtrl: FormControl = new FormControl('');
   fieldCtrl: FormControl = new FormControl('');
@@ -162,73 +163,29 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   ] as MetadataModel[];
 
-  bucketFilter = [
-    {
-      key: BucketFilter.WITHIN_1_DAY,
-      value: 'SLA Within a day'
-    }, {
-      key: BucketFilter.MORE_THEN_1_DAY,
-      value: 'SLA Within a more day'
-    }
-  ];
+  bucketFilter = this.possibleBucketFilter;
+  timeInterval = this.possibleTimeIntervalFilter
 
-  timeInterval = [
-    { key: SeriesWith.millisecond, value: 'Today' },
-    { key: TimeseriesStartDate.D7, value: TimeseriesStartDate.D7 },
-    { key: TimeseriesStartDate.D10, value: TimeseriesStartDate.D10 },
-    { key: TimeseriesStartDate.D20, value: TimeseriesStartDate.D20 },
-    { key: TimeseriesStartDate.D30, value: TimeseriesStartDate.D30 },
-  ]
+  filterType = this.possibleFilterType;
 
-  filterType = [
-    {
-      key: FilterWith.DROPDOWN_VALS,
-      value: 'Dropdown value'
-    },
-    {
-      key: FilterWith.HORIZONTAL_VALS,
-      value: 'Horizontal value'
-    },
-    {
-      key: FilterWith.VERTICAL_VALS,
-      value: 'Vertical value'
-    }
-  ];
+  orderWith = this.possibleOrderWith;
 
-  orderWith = [
-    {
-      key: OrderWith.ASC,
-      value: 'Ascending'
-    },
-    {
-      key: OrderWith.DESC,
-      value: 'Descending'
-    }
-  ];
-
-  seriesWith = [
-    { key: SeriesWith.day, value: 'Day' },
-    { key: SeriesWith.week, value: 'Week' },
-    { key: SeriesWith.month, value: 'Month' },
-    { key: SeriesWith.quarter, value: 'Quarter' },
-    { key: SeriesWith.year, value: 'Year' }
-  ]
+  seriesWith = this.possibleseriesWith;
 
   seriesFormat = ['MMM-dd-yy', 'dd-MMM-yy', 'dd MMM, yy', 'MMM d, yy'];
-  aggregrationOp = [
-    {
-      key: AggregationOperator.GROUPBY,
-      value: 'Group by'
-    },
-    {
-      key: AggregationOperator.COUNT,
-      value: 'Count'
-    },
-    {
-      key: AggregationOperator.SUM,
-      value: 'Sum'
-    }
-  ];
+  aggregrationOp = this.possibleAggregrationOperator;
+  displayCriteria = this.possibleDisplayCriteria;
+
+  chartType = this.possibleChartType;
+
+  orientation = this.possibleOrientation;
+
+  datalabelsPosition = this.possibleDataLablesPosition;
+
+  legendPosition = this.possibleLegendPosition;
+
+  dateSelectionType = this.possibleDateSelectionType;
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -301,20 +258,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isCustomdataSet: [false],
       pageDefaultSize: [''],
       isFieldDistinct: [false],
-      displayCriteria: [DisplayCriteria.TEXT],
+      displayCriteria: [{ ...this.displayCriteria[1] }],
       isEnableGlobalFilter: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
-      chartType: [ChartType.BAR],
-      orientation: [Orientation.VERTICAL],
+      chartType: [{ ...this.chartType[0] }],
+      orientation: [{ ...this.orientation[0] }],
       isEnableDatalabels: [false],
-      datalabelsPosition: [DatalabelsPosition.center],
+      datalabelsPosition: [{ ...this.datalabelsPosition[0] }],
       isEnableLegend: [false],
-      legendPosition: [LegendPosition.top],
+      legendPosition: [{ ...this.legendPosition[0] }],
       xAxisLabel: [''],
       yAxisLabel: [''],
-      orderWith: [OrderWith.ROW_DESC],
+      orderWith: [{ ...this.orderWith[3] }],
       scaleFrom: [''],
       scaleTo: [''],
       stepSize: [''],
@@ -338,10 +295,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.width = latestVal.width;
         changedWidget.widgetTitle = latestVal.widgetName;
         changedWidget.field = typeof latestVal.field === 'string' ? latestVal.field : latestVal.field.fieldId;
-        changedWidget.aggregrationOp = latestVal.aggregrationOp;
+        changedWidget.aggregrationOp = latestVal.aggregrationOp?.key ? latestVal.aggregrationOp.key : null;
         changedWidget.filterType = latestVal.filterType?.key ? latestVal.filterType.key : null;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
-        changedWidget.orderWith = latestVal.orderWith?.key ? latestVal.orderWith.key : null;
+        changedWidget.orderWith = latestVal.orderWith?.key ? latestVal.orderWith.key : this.orderWith[1];
         changedWidget.groupById = latestVal.groupById;
         changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
@@ -349,11 +306,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.imagesno = latestVal.imagesno;
         changedWidget.imageName = latestVal.imageName;
         changedWidget.isWorkflowdataSet = latestVal.isWorkflowdataSet;
-        changedWidget.workflowPath = latestVal.workflowPath;
+        changedWidget.workflowPath = this.selectedWorkflowPath.map((item: any) => item.pathname);
         changedWidget.distictWith = typeof latestVal.distictWith === 'string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
         changedWidget.isCustomdataSet = latestVal.isCustomdataSet;
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
-        changedWidget.displayCriteria = latestVal.displayCriteria;
+        changedWidget.displayCriteria = latestVal.displayCriteria?.key ? latestVal.displayCriteria.key : this.displayCriteria[1];
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
         changedWidget.isEnableGlobalFilter = latestVal.isEnableGlobalFilter;
 
@@ -383,13 +340,13 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (latestVal.dateSelectionType && strtDate) {
           changedWidget.dateFilterCtrl = {
-            dateSelectedFor: latestVal.dateSelectionType,
+            dateSelectedFor: latestVal.dateSelectionType.key,
             endDate,
             startDate: strtDate
           }
         } else if (latestVal.dateSelectionType) {
           changedWidget.dateFilterCtrl = {
-            dateSelectedFor: latestVal.dateSelectionType,
+            dateSelectedFor: latestVal.dateSelectionType.key,
           }
         } else {
           changedWidget.dateFilterCtrl = null;
@@ -404,7 +361,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selStyleWid.chartProperties = latestProp;
         this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter.key : null;
         this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : null;
-        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : null
+        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : null;
+        this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : null;
+        this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : null;
+        this.selStyleWid.chartProperties.legendPosition = latestProp.legendPosition?.key ? latestProp.legendPosition.key : this.legendPosition[0];
+        this.selStyleWid.chartProperties.orderWith = latestProp.orderWith?.key ? latestProp.orderWith.key : this.orderWith[3];
         this.preapreNewWidgetPosition(this.selStyleWid);
       }
     });
@@ -607,12 +568,26 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const selectedFilterType = this.filterType.find(type => type.key === data.filterType);
         const selectedOrderWith = this.orderWith.find(item => item.key === data.orderWith);
+        const selectedAggregrateOp = this.aggregrationOp.find(op => op.key === data.aggregrationOp);
+        const selectedDisplayCriteria = this.displayCriteria.find(display => display.key === data.displayCriteria);
+        let selectedDateSelectionType = null;
+        if (data.dateFilterCtrl?.dateSelectedFor) {
+          selectedDateSelectionType = this.dateSelectionType.find(item => item.key === data.dateFilterCtrl?.dateSelectedFor)
+        }
+        if (data.workflowPath) {
+          this.selectedWorkflowPath = [];
+          data.workflowPath.forEach(value => {
+            const filteredValue = this.workflowPath.find((item: any) => item.pathname === value);
+            this.selectedWorkflowPath.push(filteredValue);
+          })
+        }
+
         this.styleCtrlGrp.setValue({
           widgetName: data.widgetTitle ? data.widgetTitle : '',
           height: data.height ? data.height : '',
           width: data.width ? data.width : '',
           field: data.field ? data.field : '',
-          aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
+          aggregrationOp: data.aggregrationOp ? selectedAggregrateOp : '',
           filterType: data.filterType ? selectedFilterType : '',
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
           orderWith: data.orderWith ? selectedOrderWith : this.orderWith[1],
@@ -622,14 +597,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           htmlText: data.htmlText ? data.htmlText : '',
           imagesno: data.imagesno ? data.imagesno : '',
           imageName: data.imageName ? data.imageName : '',
-          dateSelectionType: data.dateFilterCtrl ? (data.dateFilterCtrl.dateSelectedFor ? data.dateFilterCtrl.dateSelectedFor : null) : null,
+          dateSelectionType: selectedDateSelectionType,
           startDate: startDate ? moment(startDate) : '',
           endDate: endDate ? moment(endDate) : '',
           workflowPath: data.workflowPath ? data.workflowPath : [],
           distictWith: data.distictWith ? data.distictWith : '',
           isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
-          displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
+          displayCriteria: data.displayCriteria ? selectedDisplayCriteria : { ...this.displayCriteria[1] },
           objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
           isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
@@ -642,15 +617,37 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           const selectedBucketFilter = this.bucketFilter.find(item => item.key === data.chartProperties.bucketFilter);
           const selectedTimeInterval = this.timeInterval.find(item => item.key === data.chartProperties.timeseriesStartDate);
           const selectedSeries = this.seriesWith.find(item => item.key === data.chartProperties.seriesWith);
+          const selectedChartType = this.chartType.find(type => type.key === data.chartProperties.chartType);
+          const selectedOrientation = this.orientation.find(orint => orint.key === data.chartProperties.orientation);
+          const selectedDataLabelPosition = this.datalabelsPosition.find(data1 => data1.key === data.chartProperties.datalabelsPosition);
+          const selectedLegendPosition = this.legendPosition.find(legend => legend.key === data.chartProperties.legendPosition);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
-          this.chartPropCtrlGrp.controls.bucketFilter.patchValue(selectedBucketFilter);
-          this.chartPropCtrlGrp.controls.timeseriesStartDate.patchValue(selectedTimeInterval);
-          this.chartPropCtrlGrp.controls.seriesWith.patchValue(selectedSeries);
+          if (selectedBucketFilter) {
+            this.chartPropCtrlGrp.controls.bucketFilter.patchValue(selectedBucketFilter);
+          }
+          if (selectedTimeInterval) {
+            this.chartPropCtrlGrp.controls.timeseriesStartDate.patchValue(selectedTimeInterval);
+          }
+          if (selectedSeries) {
+            this.chartPropCtrlGrp.controls.seriesWith.patchValue(selectedSeries);
+          }
+          if (selectedChartType) {
+            this.chartPropCtrlGrp.controls.chartType.patchValue(selectedChartType);
+          }
+          if (selectedOrientation) {
+            this.chartPropCtrlGrp.controls.orientation.patchValue(selectedOrientation);
+          }
+          if (selectedDataLabelPosition) {
+            this.chartPropCtrlGrp.controls.datalabelsPosition.patchValue(selectedDataLabelPosition);
+          }
+          if(selectedLegendPosition){
+            this.chartPropCtrlGrp.controls.legendPosition.patchValue(selectedLegendPosition)
+          } ;
         } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
           this.chartPropCtrlGrp.setValue({
-            chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
-            datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top, xAxisLabel: '', yAxisLabel: '',
-            orderWith: OrderWith.ROW_DESC, scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: SeriesWith.day, seriesFormat: '', blankValueAlias: '', timeseriesStartDate: TimeseriesStartDate.D7,
+            chartType: this.chartType[0], orientation: this.orientation[0], isEnableDatalabels: false,
+            datalabelsPosition: this.datalabelsPosition[0], isEnableLegend: false, legendPosition: this.legendPosition[0], xAxisLabel: '', yAxisLabel: '',
+            orderWith: this.orderWith[3], scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: this.seriesWith[0], seriesFormat: '', blankValueAlias: '', timeseriesStartDate: this.timeInterval[1],
             isEnabledBarPerc: false, bucketFilter: null
           });
         }
@@ -1265,10 +1262,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return opt ? opt.value : null;
   }
 
-  displaySeriesWith(opt) {
-    return opt.charAt(0).toUpperCase().concat(opt.slice(1, opt.length));
-  }
-
   getValue(value, control) {
     const searchText = control.value ? (typeof control.value === 'string' ? control.value : control.value.value) : '';
     return searchText ? value.filter(item => item.value.toLowerCase().includes(searchText.toLowerCase())) : value;
@@ -1277,5 +1270,144 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   getSeriesValue(value, control) {
     const searchText = control.value;
     return searchText ? value.filter(item => item.toLowerCase().includes(searchText.toLowerCase())) : value;
+  }
+
+  displayWithWorkflowDesc() {
+    const workflowPath = this.selectedWorkflowPath.map((item: any) => item.workflowdesc)
+    return workflowPath.join(',');
+  }
+
+  selectedWorkFlow(value) {
+    const index = this.selectedWorkflowPath.findIndex((item: any) => item.pathname === value.pathname)
+    if (index > -1) {
+      this.selectedWorkflowPath.splice(index, 1);
+    } else {
+      this.selectedWorkflowPath.push(value);
+    }
+  }
+
+  isCheckedWorkflow(value) {
+    const index = this.selectedWorkflowPath.findIndex((item: any) => item.pathname === value.pathname);
+    if (index > -1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  get possibleBucketFilter() {
+    const bucketFilter = [
+      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@SLAWithinADay:SLA Within a day` },
+      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@SLAWithinMore:SLA Within a more day` }
+    ];
+    return bucketFilter
+  }
+  get possibleTimeIntervalFilter() {
+    const timeInterval = [
+      { key: SeriesWith.millisecond, value: $localize`:@@today:Today` },
+      { key: TimeseriesStartDate.D7, value: TimeseriesStartDate.D7 },
+      { key: TimeseriesStartDate.D10, value: TimeseriesStartDate.D10 },
+      { key: TimeseriesStartDate.D20, value: TimeseriesStartDate.D20 },
+      { key: TimeseriesStartDate.D30, value: TimeseriesStartDate.D30 },
+    ]
+    return timeInterval;
+  }
+
+  get possibleFilterType() {
+    const filterType = [
+      { key: FilterWith.DROPDOWN_VALS, value: $localize`:@@dropdownValue: Dropdown value` },
+      { key: FilterWith.HORIZONTAL_VALS, value: $localize`:@@horizontalValue:Horizontal value` },
+      { key: FilterWith.VERTICAL_VALS, value: $localize`:@@verticalValue:Vertical value` }
+    ];
+    return filterType
+  }
+
+  get possibleOrderWith() {
+    const orderWith = [
+      { key: OrderWith.ASC, value: $localize`:@@ascending :Ascending` },
+      { key: OrderWith.DESC, value: $localize`:@@descending:Descending` },
+      { key: OrderWith.ROW_ASC, value: $localize`:@@rowAscending:Row ascending` },
+      { key: OrderWith.ROW_DESC, value: $localize`:@@rowDescending : Row descending` },
+      { key: OrderWith.COL_ASC, value: $localize`:@@columnAscending : Column Ascending` },
+      { key: OrderWith.COL_DESC, value: $localize`:@@columnDescending:Column Descending` }
+    ];
+    return orderWith;
+  }
+
+  get possibleseriesWith() {
+    const seriesWith = [
+      { key: SeriesWith.day, value: $localize`:@@day:Day` },
+      { key: SeriesWith.week, value: $localize`:@@week:Week` },
+      { key: SeriesWith.month, value: $localize`:@@month:Month` },
+      { key: SeriesWith.quarter, value: $localize`:@@quarter:Quarter` },
+      { key: SeriesWith.year, value: $localize`:@@year:Year` }
+    ]
+    return seriesWith;
+  }
+
+  get possibleAggregrationOperator() {
+    const aggregrationOp = [
+      { key: AggregationOperator.GROUPBY, value: $localize`:@@groupBy:Group by` },
+      { key: AggregationOperator.COUNT, value: $localize`:@@count:Count` },
+      { key: AggregationOperator.SUM, value: $localize`:@@sum:Sum` }
+    ];
+    return aggregrationOp
+  }
+
+  get possibleDisplayCriteria() {
+    const displayCriteria = [
+      { key: DisplayCriteria.CODE, value: $localize`:@@code:Code` },
+      { key: DisplayCriteria.TEXT, value: $localize`:@@text:Text` },
+      { key: DisplayCriteria.CODE_TEXT, value: $localize`:@@codeAndText:Code & Text` }
+    ];
+    return displayCriteria
+  }
+
+  get possibleChartType() {
+    const chartType = [
+      { key: ChartType.BAR, value: $localize`:@@bar:Bar` },
+      { key: ChartType.PIE, value: $localize`:@@pie:Pie` },
+      { key: ChartType.LINE, value: $localize`:@@line: Line` }
+    ];
+    return chartType;
+  }
+
+  get possibleOrientation() {
+    const orientation = [
+      { key: Orientation.VERTICAL, value: $localize`:@@vertical:Vertical` },
+      { key: Orientation.HORIZONTAL, value: $localize`:@@horizontal:Horizontal` }
+    ];
+    return orientation;
+  }
+
+  get possibleDataLablesPosition() {
+    const datalabelsPosition = [
+      { key: DatalabelsPosition.center, value: $localize`:@@center:Center` },
+      { key: DatalabelsPosition.start, value: $localize`:@@start:Start` },
+      { key: DatalabelsPosition.end, value: $localize`:@@end:End` }
+    ];
+    return datalabelsPosition;
+  }
+
+  get possibleLegendPosition() {
+    const legendPosition = [
+      { key: LegendPosition.top, value: $localize`:@@top:Top` },
+      { key: LegendPosition.left, value: $localize`:@@left:Left` },
+      { key: LegendPosition.bottom, value: $localize`:@@bottom:Bottom` },
+      { key: LegendPosition.right, value: $localize`:@@right:Right` }
+    ];
+    return legendPosition;
+  }
+
+  get possibleDateSelectionType() {
+    const dateSelectionType = [
+      { key: DateSelectionType.TODAY, value: $localize`:@@today:Today` },
+      { key: DateSelectionType.DAY_7, value: $localize`:@@7Days:7 days` },
+      { key: DateSelectionType.DAY_10, value: $localize`:@@10Days : 10 days` },
+      { key: DateSelectionType.DAY_20, value: $localize`:@@20Days:20 days` },
+      { key: DateSelectionType.DAY_30, value: $localize`:@@30Days:30 days` },
+      { key: DateSelectionType.CUSTOM, value: $localize`:@@customDate:Custom date` },
+    ]
+    return dateSelectionType;
   }
 }
