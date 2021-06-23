@@ -269,6 +269,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
    executionTreeObs: Subject<SchemaExecutionTree> = new Subject();
 
+  currentDatascopePageNo = 0;
    /**
     * Store the all filter able buisness rule which is involved
     */
@@ -309,7 +310,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       this.isRefresh = true;
-      this.getModuleInfo(this.moduleId);
       this.metadata.next(null);
     }
 
@@ -328,8 +328,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.isRefresh = true;
     }
 
+    const moduleSub = this.getModuleInfo(this.moduleId);
     const sub = this.getDataScope();
-    forkJoin({getDataScope: sub}).subscribe((res) => {
+    forkJoin({getDataScope: sub, getModuleInfo: moduleSub}).subscribe((res) => {
       if (res) {
         this.getSchemaDetails();
       }
@@ -1195,6 +1196,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       } else {
         this.filterCriteria.next([]);
       }
+    } else if (this.variantId === '0') {
+      this.variantTotalCnt = this.totalVariantsCnt;
     }
   }
 
@@ -1260,9 +1263,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Get data scopes .. or variants ...
    */
   getDataScope(activeVariantId?: string) {
-    const observable = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR');
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    const observable = this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body);
     const sub = observable.subscribe(res => {
       this.dataScope = res;
+      this.currentDatascopePageNo = 0;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
@@ -1270,6 +1279,23 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.subscribers.push(sub);
 
     return observable;
+  }
+
+  updateDataScopeList() {
+    const pageNo = this.currentDatascopePageNo + 1;
+    const body = {
+      from: pageNo,
+      size: 10,
+      variantName: null
+    };
+
+    const sub = this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        this.dataScope = [...this.dataScope, ...res];
+        this.currentDatascopePageNo = pageNo;
+      }
+    }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
+    this.subscribers.push(sub);
   }
 
   /**
@@ -1595,7 +1621,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param id module id
    */
   getModuleInfo(id) {
-    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+    this.totalVariantsCnt = 0;
+    const obsv = this.schemaService.getModuleInfoByModuleId(id);
+    obsv.subscribe(res => {
       if (res && res.length) {
         this.moduleInfo = res[0];
         this.totalVariantsCnt = this.moduleInfo.datasetCount || 0;
@@ -1603,6 +1631,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }, error => {
       console.log(`Error:: ${error.message}`)
     });
+
+    return obsv;
   }
 
   /**
