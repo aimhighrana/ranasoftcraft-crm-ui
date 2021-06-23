@@ -7,7 +7,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
 import { Router, Event, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
@@ -398,19 +398,31 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     });
     this.subscriptions.push(subscription);
     if(this.activatedPrimaryNav === 'welcome') {
-      this.getAllSchemaList(true);
+      const sub = this.getAllSchemaList(true);
+      forkJoin({schemaList: sub}).subscribe((res) => {
+        if (res && res.schemaList && res.schemaList.length) {
+          const schema = res.schemaList[0];
+          if (this.router.url.includes('home/dash/welcome')) {
+            this.router.navigate(['/home/schema/schema-details', schema.moduleId, schema.schemaId]);
+            this.updateSchemaBadgeInfo(schema);
+          }
+        }
+      });
     }
   }
 
   getAllSchemaList(reload = false) {
     console.log('Get All Schema list', this.schemaSearchString);
     const schemafromIndex = reload ? 0 : this.schemaList.length;
-    const subscription = this.schemaListService.getAllSchemaList(schemafromIndex, this.schemaSearchString).subscribe((schemaList) => {
+    const obsv = this.schemaListService.getAllSchemaList(schemafromIndex, this.schemaSearchString);
+    const subscription = obsv.subscribe((schemaList) => {
       this.schemaList = reload ? schemaList : this.schemaList.concat(schemaList);
     }, (error) => {
       console.log('Error while getting all schema list', error);
     });
     this.subscriptions.push(subscription);
+
+    return obsv;
   }
 
   updateSchemaBadgeInfo(schema: SchemaRunningDetails) {
