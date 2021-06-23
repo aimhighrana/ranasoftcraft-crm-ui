@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -11,7 +11,7 @@ import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatDialog } from '@angular/material/dialog';
 import { SaveVariantDialogComponent } from '../save-variant-dialog/save-variant-dialog.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
@@ -25,6 +25,7 @@ import { debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs/ope
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
+import { debounce } from 'lodash';
 
 @Component({
   selector: 'pros-schema-details',
@@ -269,6 +270,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    executionTreeObs: Subject<SchemaExecutionTree> = new Subject();
 
   currentDatascopePageNo = 0;
+   /**
+    * Store the all filter able buisness rule which is involved
+    */
+   filterableRulesOb: Observable<CoreSchemaBrInfo[]> = of([]);
+   appliedBrList: CoreSchemaBrInfo[] = [];
+
+   delayedCall = debounce((searchText: string) => {
+    this.businessRulesBasedOnLastRun(searchText);
+  }, 300)
 
   constructor(
     public activatedRouter: ActivatedRoute,
@@ -480,6 +490,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
 
+    // get the business rules based on
+    this.businessRulesBasedOnLastRun('');
   }
 
   selectedNodeChange(params: ParamMap) {
@@ -722,6 +734,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.nodeId = this.nodeId ? this.nodeId : '';
     request.nodeType = this.nodeType ? this.nodeType :'';
     request.isLoadMore = isLoadMore ? isLoadMore : false;
+    request.ruleSelected = this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : [];
     this.dataSource.getTableData(request);
   }
 
@@ -1810,6 +1823,62 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   isHeaderColumn(dynCols) {
     return this.columns.header?.includes(dynCols);
+  }
+
+  /**
+   * Get all the buisness rules ... based on schema last run ...
+   */
+  businessRulesBasedOnLastRun(searchString?: string) {
+    const ruleslst = this.schemaService.getBuisnessRulesBasedOnRun(this.schemaId , searchString ? searchString : '').subscribe(res=>{
+      this.filterableRulesOb = of(res);
+    }, err => console.error(`Exception : ${err.message}`));
+    this.subscribers.push(ruleslst);
+  }
+
+  /**
+   * Return all business rules based on search string ..
+   * @param searchString get the business rule bt this text ...
+   */
+  searchBusinessRules(searchString: string) {
+    this.delayedCall(searchString);
+  }
+
+  /**
+   *
+   * @param br buisness rule which going to select or deselect ....
+   * @param state checkbox state ....
+   */
+  addFilterFromBrRule(br: CoreSchemaBrInfo, state: boolean) {
+    if(state && !this.appliedBrList.some(s=> s.brIdStr === br.brIdStr)) {
+      this.appliedBrList.push(br);
+    } else {
+      this.appliedBrList.splice(this.appliedBrList.findIndex(f=> f.brIdStr === br.brIdStr),1);
+    }
+  }
+
+  /**
+   * Check whether current business rule applied or not
+   * @param ckbox the current business rule ...
+   * @returns will return true if exits otherwise return false
+   */
+  isBrAppliedChecked(ckbox: CoreSchemaBrInfo): boolean {
+    return this.appliedBrList.some(s=> s.brIdStr === ckbox.brIdStr)
+  }
+
+  /**
+   * Get the filtered applied description dynamic ...
+   */
+  get brRuleFilterDesc () {
+    return this.appliedBrList.length >0 ?  (this.appliedBrList.length === 1 ? this.appliedBrList[0].brInfo : this.appliedBrList.length) :'All';
+  }
+
+  /**
+   * Apply the selected br rule filter
+   */
+  applyFilterFromBrRule() {
+    this.fetchCount = 0;
+    this.getData(this.filterCriteria.getValue(),this.sortOrder,0,false);
+    this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
   }
 
 }
