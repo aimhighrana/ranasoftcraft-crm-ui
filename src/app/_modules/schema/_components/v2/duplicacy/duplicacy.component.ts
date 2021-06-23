@@ -985,7 +985,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   /**
-   * Function to open data scope side sheet
+   * Function to open data scope side sheet...
    */
   openDataScopeSideSheet() {
     this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }], {queryParamsHandling: 'preserve'})
