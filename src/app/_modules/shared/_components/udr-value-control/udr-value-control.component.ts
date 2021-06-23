@@ -59,13 +59,13 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
         case metadata.picklist === '35' && !metadata.dataType:
           control = 'radio';
           break;
-        case metadata.picklist === 'DATS' && metadata.dataType === 'CHAR':
+        case metadata.dataType === 'DATS':
           control = 'date';
           break;
-        case metadata.picklist === 'DTMS' && metadata.dataType === 'CHAR':
+        case metadata.dataType === 'DTMS':
           control = 'datetime';
           break;
-        case metadata.picklist === 'TIMS' && metadata.dataType === 'CHAR':
+        case metadata.dataType === 'TIMS':
           control = 'time';
           break;
       }
@@ -171,7 +171,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedMetaData = metadata;
     console.log(`${this.fieldId} displaycontroll ${this.displayControl}`);
     const pickLists = ['1', '4', '30', '35', '37'];
-  
     if (!metadata || !pickLists.includes(metadata.picklist)) {
       this.fieldList = [];
       return;

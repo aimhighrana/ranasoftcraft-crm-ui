@@ -248,7 +248,7 @@
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
-                                <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
+                                <div class="col range-col" *ngIf="item.value.conditionOperator  === 'RANGE'">
                                     <div class="f-row">
                                         <pros-udr-value-control [fieldId]="item.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@start_value" placeholder="start value"
                                         [value]="item.value.conditionFieldStartValue"
@@ -321,7 +321,7 @@
                                                     <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" [placeholder]="chldNode.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="chldNode.value.conditionFieldValue"
                                                     (valueChange)="setComparisonValueForChild($event,childIndex,i)"></pros-udr-value-control>
                                                 </div>
-                                                <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
+                                                <div class="col range-col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                     <div class="f-row">
                                                         <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@start_value" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
                                                         (valueChange)="setRangeValueForChild($event,'start',childIndex, i)"></pros-udr-value-control>
