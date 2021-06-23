@@ -1380,12 +1380,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   setComparisonValue(value: string | {start: string; end: string}, index: number) {
     const array = this.udrNodeArray().at(index);
-    if(typeof value === 'object') {
-      array.get('conditionFieldStartValue').setValue(value.start);
-      array.get('conditionFieldEndValue').setValue(value.end);
-    } else {
-      array.get('conditionFieldValue').setValue(value);
-    }
+    array.get('conditionFieldValue').setValue(value);
   }
 
   /**
@@ -1396,12 +1391,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   setComparisonValueForChild(value: string | {start: string; end: string}, chldNode: number, parentNode: number) {
     const childArray = this.getChildAsControl(parentNode).at(chldNode);
-    if(typeof value === 'object') {
-      childArray.get('conditionFieldStartValue').setValue(value.start);
-      childArray.get('conditionFieldEndValue').setValue(value.end);
-    } else {
-      childArray.get('conditionFieldValue').setValue(value);
-    }
+    childArray.get('conditionFieldValue').setValue(value);
   }
 
   /**

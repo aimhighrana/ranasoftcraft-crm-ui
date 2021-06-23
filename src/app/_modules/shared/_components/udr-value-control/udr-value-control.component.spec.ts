@@ -49,8 +49,10 @@ describe('UDRValueControlComponent', () => {
     component.value = '';
     const chnages1: import('@angular/core').SimpleChanges = { fieldId: { currentValue: '1005', previousValue: false, firstChange: true, isFirstChange: null }, value: { currentValue: '1005', previousValue: false, firstChange: true, isFirstChange: null } };
     const chnages2: import('@angular/core').SimpleChanges = { metataData: { currentValue: {}, previousValue: false, firstChange: true, isFirstChange: null } };
+    const chnages3: import('@angular/core').SimpleChanges = { value: { currentValue: null, previousValue: false, firstChange: true, isFirstChange: null } };
     component.ngOnChanges(chnages1);
     component.ngOnChanges(chnages2);
+    component.ngOnChanges(chnages3);
     expect(component.ngOnChanges).toBeTruthy();
   }));
 
@@ -68,6 +70,7 @@ describe('UDRValueControlComponent', () => {
       hierarchyFields: {},
       grids: []
     }
+
     component.loadUDRValueControl();
     expect(component.fieldList.length).toBe(1);
     schemaSpy.and.returnValue(throwError({ message: 'error' }));
@@ -103,5 +106,56 @@ describe('UDRValueControlComponent', () => {
     }
     component.selected(event);
     expect(component.searchStr).toEqual('test');
+  }));
+
+  it('displayControl() should have updated value', async(() => {
+    component.selectedMetaData = {
+      picklist: '0',
+      dataType: 'CHAR'
+    };
+    expect(component.displayControl).toEqual('text');
+    component.selectedMetaData = {
+      picklist: '22',
+      dataType: 'CHAR'
+    };
+    expect(component.displayControl).toEqual('text');
+    component.selectedMetaData = {
+      picklist: '0',
+      dataType: 'NUMC'
+    };
+    expect(component.displayControl).toEqual('number');
+    component.selectedMetaData = {
+      picklist: '2',
+      dataType: 'CHAR'
+    };
+    expect(component.displayControl).toEqual('checkbox');
+    component.selectedMetaData = {
+      picklist: '4',
+      dataType: 'CHAR'
+    };
+    expect(component.displayControl).toEqual('radio');
+    component.selectedMetaData = {
+      picklist: '35',
+      dataType: ''
+    };
+    expect(component.displayControl).toEqual('radio');
+  }));
+
+  it('dateValue() should have updated date value', async(() => {
+    component.value = undefined;
+    expect(component.dateValue).toBeNull();
+    component.value = '2021-01-01';
+    expect(component.dateValue).toBeTruthy()
+  }));
+
+  it('dateChanged() should update selected value', async(() => {
+    const event = new Date('2021-01-01');
+    component.dateChanged(event);
+    expect(component.searchStr).toEqual(event.toString());
+  }));
+  it('checkboxChanged() should update selected value', async(() => {
+    const event = true;
+    component.checkboxChanged(event);
+    expect(component.checkboxChanged).toBeTruthy();
   }));
 });

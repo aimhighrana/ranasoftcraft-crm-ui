@@ -36,9 +36,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   @Input() metataData: MetadataModeleResponse = null;
   @Input() fieldId: string;
   selectedMetaData: any;
-  get filteredList() {
-    return this.fieldList.filter(x => !this.searchStr || x.TEXT.toLowerCase().includes(this.searchStr.toLowerCase()));
-  }
 
   get displayControl(): string {
     let control = 'dropdown';
@@ -93,7 +90,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       || changes.value && changes.value.previousValue !== changes.value.currentValue
     ) {
       console.log('CHANGES', changes);
-      this.searchStr = typeof this.value === 'string' ? this.value : '';
+      this.searchStr = this.value || '';
       this.loadUDRValueControl();
     }
   }
