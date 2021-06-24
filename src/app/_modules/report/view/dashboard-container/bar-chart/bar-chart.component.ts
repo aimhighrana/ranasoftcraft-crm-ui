@@ -128,6 +128,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   returndata: any;
   subscriptions: Subscription[] = [];
   isTotalShown: boolean = true;
+  totalValue : number;
 
   constructor(
     private widgetService: WidgetService,
@@ -321,25 +322,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       };
       barChartData.push(obj)
     });
-    if (this.isTotalShown) {
-      const data = [];
-      this.dataSet.forEach((item,index) => {
-        if(index === this.dataSet.length-1) {
-          const total = this.dataSet[this.dataSet.length - 1];
-          data.push(+total);
-        } else {
-          data.push(null)
-        }
-      })
-      const obj: ChartDataSets = {
-        data,
-        label: 'Total',
-        barThickness: 'flex',
-        backgroundColor: this.getRandomColor(),
-        stack: 'a'
-      };
-      barChartData.push(obj)
-    }
     this.barChartData = barChartData;
   }
 
@@ -408,9 +390,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       default:
         this.lablels = this.chartLegend.map(map => map.code + ' -- ' + map.text);
         break;
-    }
-    if (this.isTotalShown) {
-      this.lablels.push('Total');
     }
   }
 
@@ -769,8 +748,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       });
     }
 
-    if (this.isTotalShown) {
-      finalDataSet.push(total.toString());
+    if (this.isTotalShown && !(this.filterCriteria[0] && this.filterCriteria[0].conditionFieldValue !== 'Total')) {
+      this.lablels.push('Total');
+      if(total){
+        finalDataSet.push(total.toString());
+        this.total = total;
+      } else {
+        finalDataSet.push(this.total.toString());
+      }
     }
     return finalDataSet;
   }
