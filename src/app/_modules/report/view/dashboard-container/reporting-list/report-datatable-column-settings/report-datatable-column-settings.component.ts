@@ -363,7 +363,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     if(!this.allCheckboxSelected){
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
-      this.data.selectedColumns = this.headers;
+      this.data.selectedColumns = JSON.parse(JSON.stringify(this.headers));
       this.allCheckboxSelected = true;
     }else{
       this.allIndeterminate = false;
