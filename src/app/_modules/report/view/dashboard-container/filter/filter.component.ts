@@ -164,14 +164,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     });
     this.subscriptions.push(filterWid);
 
-/*
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
- */
   }
 
   getFieldsMetadaDesc(buckets:any[], fieldId: string, reset: boolean) {

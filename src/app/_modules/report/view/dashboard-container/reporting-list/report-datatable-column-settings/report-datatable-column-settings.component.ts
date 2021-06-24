@@ -268,6 +268,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     })
     if (flag === false) {
+      if (!checkbox.displayCriteria) {
+        checkbox.displayCriteria = this.allDisplayCriteria ? this.allDisplayCriteria : this.data.displayCriteria;
+      }
       this.data.selectedColumns.push(checkbox);
     }
     this.manageStateOfCheckbox();
