@@ -6,7 +6,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { GroupDataTableComponent } from '@modules/schema/_components/v2/duplicacy/group-data-table/group-data-table.component';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -433,11 +433,16 @@ describe('DuplicacyComponent', () => {
 
   it('getDataScope(), should return all variants of a schema', async () => {
     component.schemaId = '1005';
-    spyOn(schemaVariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR')
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    spyOn(schemaVariantService, 'getDataScopesList').withArgs(component.schemaId, 'RUNFOR', body)
       .and.returnValues(of([]), of([]), throwError({status: 500}))
 
     component.getDataScope();
-    expect(schemaVariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+    expect(schemaVariantService.getDataScopesList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR', body);
 
     spyOn(component, 'variantChange');
     component.getDataScope('1');
@@ -627,11 +632,13 @@ describe('DuplicacyComponent', () => {
 
   it('should update on inputs changes', () => {
 
+    const obsv: any = new Observable();
     spyOn(component, 'getTableHeaders');
-    spyOn(component, 'getDataScope');
+    spyOn(component, 'getDataScope').and.returnValue(of(obsv));
     spyOn(component, 'getSchemaStatics');
     spyOn(component, 'getSchemaDetails');
     spyOn(component, 'getSchemaTableActions');
+    spyOn(component, 'getModuleInfo').and.returnValue(of(obsv));
     // spyOn(component, 'getVariantDetails');
 
     let changes: SimpleChanges = {moduleId:{currentValue:'1005', previousValue: '', firstChange:null, isFirstChange:null},
@@ -859,4 +866,19 @@ describe('DuplicacyComponent', () => {
 
   })
 
+  it('updateDataScopeList(), should update datascope list', async(() => {
+    component.currentDatascopePageNo = 1;
+    const body = {
+      from: 2,
+      size: 10,
+      variantName: null
+    };
+    component.schemaId = '1005';
+
+    spyOn(schemaVariantService, 'getDataScopesList').withArgs(component.schemaId, 'RUNFOR', body)
+      .and.returnValues(of([]), of([]), throwError({status: 500}))
+
+    component.updateDataScopeList();
+    expect(schemaVariantService.getDataScopesList).toHaveBeenCalledWith('1005', 'RUNFOR', body);
+  }));
 });

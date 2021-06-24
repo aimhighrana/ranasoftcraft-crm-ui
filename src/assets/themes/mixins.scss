@@ -847,6 +847,10 @@
           &:hover {
             background: $color-app-hover;
           }
+
+          &.mat-menu-item-highlighted {
+            background: $color-app-hover;
+          }
         }
       }
 
@@ -1501,6 +1505,10 @@
               background-color: $color-app-hover;
             }
           }
+
+          .mat-list-item:hover {
+            background-color: $color-app-hover;
+          }
         }
 
         .section-header {
@@ -1826,6 +1834,7 @@
     }
   }
 
+  pros-quality-rules,
   pros-schema-migration {
     div.root {
       .colunm-box {
