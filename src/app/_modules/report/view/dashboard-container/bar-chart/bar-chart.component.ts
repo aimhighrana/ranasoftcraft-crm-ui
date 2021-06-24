@@ -4,7 +4,7 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition, WidgetType } from '../../../_models/widget';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
-import { BaseChartDirective, ThemeService } from 'ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -127,7 +127,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   ];
   returndata: any;
   subscriptions: Subscription[] = [];
-  isTotalShown: boolean = true;
+  isTotalShown:boolean;
   totalValue : number;
 
   constructor(
@@ -195,7 +195,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
       this.widgetColorPalette = returndata.widgetColorPalette;
       this.isTotalShown = returndata.showTotal;
-      this.isTotalShown = true;
+      // this.isTotalShown = true;
       this.barWidget.next(returndata);
       this.getBarConfigurationData();
     }, error => {
