@@ -337,7 +337,7 @@
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
         <target>قاعدة العمل</target>
-       <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">61</context>
         </context-group>
@@ -2445,7 +2445,7 @@
           <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
-         <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
@@ -2483,12 +2483,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
-          <target> تحميل ملف تقرير mdopage </target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <source>Upload a .mdopage report file</source>
+        <target> تحميل ملف تقرير mdopage </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2523,12 +2523,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
-          <target> وصف </target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <source>Description</source>
+        <target> وصف </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
@@ -2562,7 +2562,7 @@
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="export_report" datatype="html">
+      <trans-unit id="export_report" datatype="html">
         <source> Export report </source>
         <target> تقرير التصدير </target>
         <context-group purpose="location">

@@ -18,8 +18,7 @@
     <div class="row-spacer"></div>
     <form [formGroup]="schemaSummaryForm">
         <div class="f-col schema-list">
-            <lib-banner *ngIf="schemaDetails?.isInRunning" status="info" i18n-text="@@schema_running_msg"
-                [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
+            <lib-banner *ngIf="schemaDetails?.isInRunning" status="info" i18n-text="@@schema_running_msg" [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
                 text="This schema is running Click here to either track the progress or see result">
             </lib-banner>
             <div class="f-col">
