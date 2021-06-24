@@ -44,7 +44,6 @@ import { NounModifierAutocompleteComponent } from './_components/v2/library-mapp
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
 import { DownloadExecutionDataComponent } from './_components/v2/download-execution-data/download-execution-data.component';
-import { SchemaMigrationComponent } from './_components/schema-migration/schema-migration.component';
 
 
 @NgModule({
@@ -94,8 +93,8 @@ import { SchemaMigrationComponent } from './_components/schema-migration/schema-
     NounModifierAutocompleteComponent,
     ExecutionTrendSidesheetComponent,
     SchemaProgressComponent,
-    DownloadExecutionDataComponent,
-    SchemaMigrationComponent
+    DownloadExecutionDataComponent
+    
   ],
   imports: [
     CommonModule,
