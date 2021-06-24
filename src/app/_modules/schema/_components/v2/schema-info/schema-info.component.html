@@ -5,7 +5,7 @@
             {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}</lib-text-line>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button type="minor" (click)="openSummarySideSheet()">Check data</lib-button>
+            <lib-button type="minor" i18n="@@check_data" (click)="openSummarySideSheet()">Check data</lib-button>
             <lib-button *ngIf="scheduleInfo" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="minor"
                 class="badge" icon="clock" matBadge prosStatusBadge [badgeIcon]="1"
                 [statusBadgePosition]="{ top: -10, right: -5 }" badgeIconFont="default" badgeType=""></lib-button>
@@ -18,7 +18,7 @@
     <div class="row-spacer"></div>
     <form [formGroup]="schemaSummaryForm">
         <div class="f-col schema-list">
-            <lib-banner *ngIf="schemaDetails?.isInRunning" status="info"
+            <lib-banner *ngIf="schemaDetails?.isInRunning" status="info" i18n-text="@@schema_running_msg"
                 [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
                 text="This schema is running Click here to either track the progress or see result">
             </lib-banner>
@@ -30,8 +30,8 @@
             </div>
 
             <div class="f-col mdo-field">
-                <lib-text-line type="xsmall" weight="strong">Data scope&nbsp;<mat-icon fontSet="mdo-icons"
-                        iconFontType="solid">
+                <lib-text-line type="xsmall" weight="strong">
+                    <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon fontSet="mdo-icons" iconFontType="solid">
                         question-circle
                     </mat-icon>
                 </lib-text-line>
@@ -45,7 +45,8 @@
                 </mat-form-field>
             </div>
             <div class="f-col mdo-field">
-                <lib-text-line type="xsmall" weight="strong">Threshold&nbsp;<mat-icon fontSet="mdo-icons">
+                <lib-text-line type="xsmall" weight="strong">
+                    <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon fontSet="mdo-icons">
                         question-circle
                     </mat-icon>
                 </lib-text-line>
@@ -56,12 +57,12 @@
             <div class="row-spacer"></div>
             <div class="row-spacer"></div>
             <div class="f-col">
-                <lib-text-line type="xsmall" weight="strong">Business rule
-                </lib-text-line>
+                <lib-text-line type="xsmall" i18n="@@business_rule" weight="strong">Business rule</lib-text-line>
                 <div class="mdo-auto-select">
                     <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add"
                         fieldLabel="Type rule name to add" (openCustomDialog)="openBrLibrarySideSheet()"
                         [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'"
+                        (emitExtraLabelClick)="openBusinessRuleSideSheet()"
                         (optionSelectedEmit)="addBusinessRule($event)" i18n-extraOptionLabel="@@add_br_rule"
                         extraOptionLabel="Add new business rule" [isExtraLabel]="true">
                     </pros-form-input-autoselect>
@@ -73,13 +74,13 @@
                 <div class="f-row colunm-box">
                     <div class="col"></div>
                     <div class="col col-x4">
-                        <lib-text-line type="base" weight="strong">Business rule</lib-text-line>
+                        <lib-text-line type="base" weight="strong" i18n="@@business_rule">Business rule</lib-text-line>
                     </div>
                     <div class="col col-x8 mat-item-center">
-                        <lib-text-line type="base" weight="strong">Weight</lib-text-line>
+                        <lib-text-line type="base" weight="strong" i18n="@@weight">Weight</lib-text-line>
                     </div>
                     <div class="col col-x4 mat-item-center">
-                        <lib-text-line type="base" weight="strong">Enabled</lib-text-line>
+                        <lib-text-line i18n="@@enabled" type="base" weight="strong">Enabled</lib-text-line>
                     </div>
                     <div class="col mat-item-end"></div>
                 </div>
@@ -155,7 +156,7 @@
             <div class="row-spacer"></div>
             <div class="colunm-listing">
                 <lib-text-line type="xsmall" weight="strong">
-                    <span>Collaborators</span>
+                    <span i18n="@@collaborators">Collaborators</span>
                 </lib-text-line>
                 <div class="mdo-auto-select">
                     <pros-form-input-autoselect i18n-fieldLabel="@@type_user_name" fieldLabel="Type user name to add"
