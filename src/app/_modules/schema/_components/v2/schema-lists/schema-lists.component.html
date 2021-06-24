@@ -21,8 +21,8 @@
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Last run </th>
             <td mat-cell *matCellDef="let element">
-                <lib-text-line type="base">{{ element.executionEndTime ? (element.executionEndTime | date:'MMM d, y,
-                    h:mm:ss a'): 'N/A'
+                <lib-text-line type="base">{{ element.executionEndTime ?
+                    (element.executionEndTime | date:'MMM d, y, h:mm:ss a'): 'N/A'
                     }}</lib-text-line>
             </td>
         </ng-container>
@@ -33,6 +33,8 @@
             </td>
         </ng-container>
         <mat-menu #menu="matMenu">
+            <button mat-menu-item>Schedule</button>
+            <button mat-menu-item>Statistics</button>
             <button mat-menu-item>Delete</button>
         </mat-menu>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
