@@ -195,7 +195,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
       this.widgetColorPalette = returndata.widgetColorPalette;
       this.isTotalShown = returndata.showTotal;
-      // this.isTotalShown = true;
       this.barWidget.next(returndata);
       this.getBarConfigurationData();
     }, error => {
