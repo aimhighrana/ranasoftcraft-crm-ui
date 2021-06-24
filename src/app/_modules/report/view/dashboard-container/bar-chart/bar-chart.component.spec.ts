@@ -224,7 +224,7 @@ describe('BarChartComponent', () => {
     barWidget.scaleFrom = 0;
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
-    component.filterCriteria = []
+    component.filterCriteria = [];
     component.barWidget.next(barWidget);
     const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}]
 
@@ -232,11 +232,12 @@ describe('BarChartComponent', () => {
     const actualResponse = component.transformDataSets(resBuckets);
 
     // expects
-    expect(actualResponse.length).toEqual(3,`Data should be interval in scale range`);
-    expect(component.lablels.length).toEqual(3,`Lablels length should be 2`);
+    expect(actualResponse.length).toEqual(2,`Data should be interval in scale range`);
+    expect(component.lablels.length).toEqual(2,`Lablels length should be 2`);
 
     // scenario  2
     barWidget.dataSetSize = 1;
+    component.isTotalShown = true;
     component.barWidget.next(barWidget);
 
     // call actual component method
@@ -285,6 +286,7 @@ describe('BarChartComponent', () => {
 
     component.widgetInfo = new Widget();
     component.filterCriteria = [];
+    component.isTotalShown = true;
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
