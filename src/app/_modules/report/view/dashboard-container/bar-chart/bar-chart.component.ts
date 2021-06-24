@@ -4,7 +4,7 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition, WidgetType } from '../../../_models/widget';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { BaseChartDirective, ThemeService } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -42,10 +42,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   minBarSizeThreshold = 5;
   maxBarSizeThreshold = 100;
   zoomStep = 5;
-  minBarWidth = 10 ;
+  minBarWidth = 10;
   computedSize = {
-    height : 100,
-    width : 100
+    height: 100,
+    width: 100
   }
 
   public barChartOptions: ChartOptions = {
@@ -82,11 +82,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           mode: 'x',
           speed: 10,
           threshold: 10,
-          onPan : () =>{
+          onPan: () => {
             console.log('paneed')
           },
-          onPanComplete: () =>{
-              console.log('panned')
+          onPanComplete: () => {
+            console.log('panned')
           }
         },
         zoom: {
@@ -99,18 +99,18 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }
       }
     },
-    scales : {
-      xAxes : [
+    scales: {
+      xAxes: [
         {
-          scaleLabel:{
-            display : false
+          scaleLabel: {
+            display: false
           }
         }
       ],
-      yAxes : [
+      yAxes: [
         {
-          scaleLabel:{
-            display : false
+          scaleLabel: {
+            display: false
           }
         }
       ]
@@ -127,6 +127,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   ];
   returndata: any;
   subscriptions: Subscription[] = [];
+  isTotalShown: boolean = true;
 
   constructor(
     private widgetService: WidgetService,
@@ -143,7 +144,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.chartLegend = [];
       this.barWidget.next(this.barWidget.getValue());
     }
-    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+    if (changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }
   }
@@ -158,15 +159,15 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     });
 
     // after color defined update on widget
-    const afterColorDefined = this.afterColorDefined.subscribe(res=>{
-      if(res) {
+    const afterColorDefined = this.afterColorDefined.subscribe(res => {
+      if (res) {
         this.updateColorBasedOnDefined(res);
       }
     });
     this.subscriptions.push(afterColorDefined);
 
 
-    const getDisplayCriteria =  this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
@@ -192,6 +193,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   public getBarChartMetadata(): void {
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
       this.widgetColorPalette = returndata.widgetColorPalette;
+      this.isTotalShown = returndata.showTotal;
+      this.isTotalShown = true;
       this.barWidget.next(returndata);
       this.getBarConfigurationData();
     }, error => {
@@ -213,9 +216,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     // if showLegend flag will be true it show legend on Bar widget
     if (this.barWidget.getValue().isEnableLegend) {
       this.barChartOptions.legend = {
-          ...this.barChartOptions.legend,
-          display: true,
-          position: this.barWidget.getValue().legendPosition
+        ...this.barChartOptions.legend,
+        display: true,
+        position: this.barWidget.getValue().legendPosition
       };
       if (this.chart) {
         this.chart.options.legend = this.barChartOptions.legend;
@@ -243,9 +246,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
     // set scale range and axis lebels
     this.setChartAxisAndScaleRange();
-   }
+  }
 
-   public getBarChartData(widgetId: number, critria: Criteria[]): void {
+  public getBarChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
       this.returndata = returndata;
       this.updateChart(this.returndata);
@@ -254,18 +257,18 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   private updateChart(returndata) {
     const res = Object.keys(returndata.aggregations);
-    const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
+    const arrayBuckets = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
     this.dataSet = [];
     this.lablels = [];
     this.dataSet = this.transformDataSets(arrayBuckets);
     // update barchartLabels
-    if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '0' && (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS'))) {
+    if (this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '0' && (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS'))) {
       if (this.chartLegend.length === 0) {
         this.getDateFieldsDesc(arrayBuckets);
       } else {
         this.setLabels();
       }
-    } else if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
+    } else if (this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
       if (this.chartLegend.length === 0) {
         this.getFieldsMetadaDesc(arrayBuckets);
       } else {
@@ -287,7 +290,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.computeGraphSize();
 
     // update chart after data sets change
-    if(this.chart) {
+    if (this.chart) {
       this.chart.update();
     }
   }
@@ -307,6 +310,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           data.push(null);
         }
       });
+
       dataIndex = dataIndex + 1;
       const obj: ChartDataSets = {
         data,
@@ -317,6 +321,25 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       };
       barChartData.push(obj)
     });
+    if (this.isTotalShown) {
+      const data = [];
+      this.dataSet.forEach((item,index) => {
+        if(index === this.dataSet.length-1) {
+          const total = this.dataSet[this.dataSet.length - 1];
+          data.push(+total);
+        } else {
+          data.push(null)
+        }
+      })
+      const obj: ChartDataSets = {
+        data,
+        label: 'Total',
+        barThickness: 'flex',
+        backgroundColor: this.getRandomColor(),
+        stack: 'a'
+      };
+      barChartData.push(obj)
+    }
     this.barChartData = barChartData;
   }
 
@@ -326,32 +349,32 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    */
   getFieldsDesc(buckets: any[]) {
     const fldid = this.barWidget.getValue().fieldId;
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    let locale = this.locale !== '' ? this.locale.split('-')[0] : 'EN';
     locale = locale.toUpperCase();
     const finalVal = {} as any;
-    buckets.forEach(bucket=>{
+    buckets.forEach(bucket => {
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
-        ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fldid] ?
+        (hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fldid]) ?
-        ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
-          if(v.t) {
+        val.forEach(v => {
+          if (v.t) {
             valArray.push(v.t);
           }
         });
         const finalText = valArray.toString();
-        if(finalText) {
+        if (finalText) {
           finalVal[key] = finalText
         } else {
           finalVal[key] = key;
         }
       } else {
         finalVal[key] = key;
-      } if(this.barWidget.getValue().metaData.picklist === '35') {
+      } if (this.barWidget.getValue().metaData.picklist === '35') {
         finalVal[key] = this.getFields(fldid, key);
       }
     });
@@ -359,7 +382,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     // update lablels
     this.lablels.forEach(cod => {
       let chartLegend: ChartLegend;
-      if(cod) {
+      if (cod) {
         const hasData = finalVal[cod];
         if (hasData) {
           chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
@@ -367,7 +390,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
         }
       } else {
-         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
       }
       this.chartLegend.push(chartLegend);
     });
@@ -379,12 +402,15 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       case DisplayCriteria.CODE:
         this.lablels = this.chartLegend.map(map => map.code);
         break;
-        case DisplayCriteria.TEXT:
+      case DisplayCriteria.TEXT:
         this.lablels = this.chartLegend.map(map => map.text);
         break;
-        default:
+      default:
         this.lablels = this.chartLegend.map(map => map.code + ' -- ' + map.text);
         break;
+    }
+    if (this.isTotalShown) {
+      this.lablels.push('Total');
     }
   }
 
@@ -395,22 +421,22 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   getDateFieldsDesc(buckets: any[]) {
     const fldid = this.barWidget.getValue().fieldId;
     const finalVal = {} as any;
-    buckets.forEach(bucket=>{
+    buckets.forEach(bucket => {
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
-        ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fldid] ?
+        (hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fldid]) ?
-        ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
-          if(v.c) {
+        val.forEach(v => {
+          if (v.c) {
             valArray.push(v.c);
           }
         });
         const finalText = (Number(valArray));
-        if(finalText) {
+        if (finalText) {
           finalVal[key] = new Date(finalText).toLocaleDateString();
         } else {
           finalVal[key] = new Date(Number(key)).toLocaleDateString();
@@ -423,7 +449,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     // update lablels
     this.lablels.forEach(cod => {
       let chartLegend: ChartLegend;
-      if(cod) {
+      if (cod) {
         const hasData = finalVal[cod];
         if (hasData) {
           chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
@@ -431,7 +457,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
         }
       } else {
-         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
       }
       this.chartLegend.push(chartLegend);
     });
@@ -445,36 +471,36 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   getFieldsMetadaDesc(buckets: any[]) {
     const fldid = this.barWidget.getValue().fieldId;
     const finalVal = {} as any;
-    buckets.forEach(bucket=>{
+    buckets.forEach(bucket => {
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
-        ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fldid] ?
+        (hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fldid]) ?
-        ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
-          if(v.t) {
+        val.forEach(v => {
+          if (v.t) {
             valArray.push(v.t);
           }
         });
         const finalText = valArray.toString();
-        if(finalText) {
+        if (finalText) {
           finalVal[key] = finalText
         } else {
           finalVal[key] = key;
         }
       } else {
         finalVal[key] = key;
-      } if(fldid === 'OVERDUE' || fldid === 'FORWARDENABLED' || fldid === 'TIME_TAKEN') {
+      } if (fldid === 'OVERDUE' || fldid === 'FORWARDENABLED' || fldid === 'TIME_TAKEN') {
         finalVal[key] = this.getFields(fldid, key);
       }
     });
     // update lablels
     this.lablels.forEach(cod => {
       let chartLegend: ChartLegend;
-      if(cod) {
+      if (cod) {
         const hasData = finalVal[cod];
         if (hasData) {
           chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
@@ -482,7 +508,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
         }
       } else {
-         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
       }
       this.chartLegend.push(chartLegend);
     });
@@ -490,24 +516,24 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
-    if(activeElements && activeElements.length) {
+    if (activeElements && activeElements.length) {
       const option = this.chart.chart.getElementAtEvent(event) as any;
       const clickedIndex = (option[0])._index;
       const clickedLagend = this.chartLegend[clickedIndex];
       let drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
-      if(drpCode === undefined) {
+      if (drpCode === undefined) {
         return false;
       }
-      if(drpCode === this.barWidget.value.blankValueAlias){
+      if (drpCode === this.barWidget.value.blankValueAlias) {
         drpCode = '';
       }
       const fieldId = this.barWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
       this.removeOldFilterCriteria(appliedFilters);
       if (appliedFilters.length > 0) {
-        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
-        if(res.length !== 0) {
-          res.forEach(val=> {
+        const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+        if (res.length !== 0) {
+          res.forEach(val => {
             val.conditionFieldValue = clickedLagend.code;
           })
         }
@@ -533,7 +559,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         critera1.widgetType = WidgetType.BAR_CHART;
         appliedFilters.push(critera1);
       }
-      if(this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS') {
+      if (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS') {
         appliedFilters.shift();
         appliedFilters.push(this.applyDateFilter(drpCode, fieldId));
       }
@@ -567,50 +593,50 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * After click on chart legend
    * legendItem
    */
-   legendClick(legendItem: ChartLegendLabelItem) {
-    let clickedLegend =  this.chartLegend[legendItem.datasetIndex] ? this.chartLegend[legendItem.datasetIndex].code : '';
-    if(clickedLegend === this.barWidget.value.blankValueAlias){
-      clickedLegend ='';
+  legendClick(legendItem: ChartLegendLabelItem) {
+    let clickedLegend = this.chartLegend[legendItem.datasetIndex] ? this.chartLegend[legendItem.datasetIndex].code : '';
+    if (clickedLegend === this.barWidget.value.blankValueAlias) {
+      clickedLegend = '';
     }
     const fieldId = this.barWidget.getValue().fieldId;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
 
-      if(appliedFilters.length >0) {
-        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
-        if(res.length !== 0) {
-          res.forEach(val=> {
-            val.conditionFieldValue = clickedLegend;
-          })
-        }
-        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
-        if(cri.length ===0) {
-          const critera1: Criteria = new Criteria();
-          critera1.fieldId = fieldId;
-          critera1.conditionFieldId = fieldId;
-          critera1.conditionFieldValue = clickedLegend;
-          critera1.blockType = BlockType.COND;
-          critera1.conditionOperator = ConditionOperator.EQUAL;
-          critera1.widgetType = WidgetType.BAR_CHART;
-          appliedFilters.push(critera1);
-        }
-      } else {
-        appliedFilters = [];
+    if (appliedFilters.length > 0) {
+      const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+      if (res.length !== 0) {
+        res.forEach(val => {
+          val.conditionFieldValue = clickedLegend;
+        })
+      }
+      const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
+      if (cri.length === 0) {
         const critera1: Criteria = new Criteria();
         critera1.fieldId = fieldId;
-        critera1.conditionFieldId = fieldId
+        critera1.conditionFieldId = fieldId;
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
         critera1.widgetType = WidgetType.BAR_CHART;
         appliedFilters.push(critera1);
       }
-      if(this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS') {
-        appliedFilters.shift();
-        appliedFilters.push(this.applyDateFilter(clickedLegend, fieldId));
-      }
-      appliedFilters.forEach(app => this.filterCriteria.push(app));
-      this.emitEvtFilterCriteria(this.filterCriteria);
+    } else {
+      appliedFilters = [];
+      const critera1: Criteria = new Criteria();
+      critera1.fieldId = fieldId;
+      critera1.conditionFieldId = fieldId
+      critera1.conditionFieldValue = clickedLegend;
+      critera1.blockType = BlockType.COND;
+      critera1.conditionOperator = ConditionOperator.EQUAL;
+      critera1.widgetType = WidgetType.BAR_CHART;
+      appliedFilters.push(critera1);
+    }
+    if (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS') {
+      appliedFilters.shift();
+      appliedFilters.push(this.applyDateFilter(clickedLegend, fieldId));
+    }
+    appliedFilters.forEach(app => this.filterCriteria.push(app));
+    this.emitEvtFilterCriteria(this.filterCriteria);
   }
 
   /**
@@ -633,47 +659,47 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * Use for set scale range and axis labels
    */
   setChartAxisAndScaleRange() {
-    if(this.barWidget.getValue().scaleFrom !== null && this.barWidget.getValue().scaleFrom !== undefined
-        && this.barWidget.getValue().scaleTo !== null && this.barWidget.getValue().scaleTo !== undefined
-        && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
-        const ticks = {min:this.barWidget.getValue().scaleFrom, max:this.barWidget.getValue().scaleTo, stepSize:this.barWidget.getValue().stepSize};
-        if(this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.barChartOptions.scales = {
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
-              },ticks
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
-              },
-              ticks : {
-                padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
-              }
-            }]
-          }
-        } else {
-          this.barChartOptions.scales = {
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : '',
-              },
-              ticks : {
-                padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
-              }
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
-              },ticks
-            }]
-          }
+    if (this.barWidget.getValue().scaleFrom !== null && this.barWidget.getValue().scaleFrom !== undefined
+      && this.barWidget.getValue().scaleTo !== null && this.barWidget.getValue().scaleTo !== undefined
+      && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
+      const ticks = { min: this.barWidget.getValue().scaleFrom, max: this.barWidget.getValue().scaleTo, stepSize: this.barWidget.getValue().stepSize };
+      if (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
+        this.barChartOptions.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+            }, ticks
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+            },
+            ticks: {
+              padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ? 40 : 0
+            }
+          }]
         }
+      } else {
+        this.barChartOptions.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : '',
+            },
+            ticks: {
+              padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ? 20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+            }, ticks
+          }]
+        }
+      }
     } else {
       this.barChartOptions.scales = {
         xAxes: [{
@@ -682,7 +708,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
           },
           ticks: {
-            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.VERTICAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
+            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.VERTICAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ? 20 : 0
           }
         }],
         yAxes: [{
@@ -691,7 +717,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
           },
           ticks: {
-            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
+            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ? 40 : 0
           }
         }],
       }
@@ -709,34 +735,42 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   transformDataSets(resBuckets: any[]): string[] {
     // ckeck configuration
     const finalDataSet: string[] = [];
-    if(this.barWidget.getValue().scaleFrom !== null && this.barWidget.getValue().scaleFrom !== undefined
+    let total = 0;
+    if (this.barWidget.getValue().scaleFrom !== null && this.barWidget.getValue().scaleFrom !== undefined
       && this.barWidget.getValue().scaleTo !== null && this.barWidget.getValue().scaleTo !== undefined
       && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
 
-      const insideRange = resBuckets.filter(bucket =>{
-        if(this.barWidget.getValue().scaleFrom <= bucket.doc_count && this.barWidget.getValue().scaleTo >= bucket.doc_count) {
+      const insideRange = resBuckets.filter(bucket => {
+        if (this.barWidget.getValue().scaleFrom <= bucket.doc_count && this.barWidget.getValue().scaleTo >= bucket.doc_count) {
           return bucket;
         }
       });
-      if(this.barWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.barWidget.getValue().dataSetSize; i++) {
-          if(insideRange[i]) {
-              this.lablels.push(insideRange[i].key);
-              finalDataSet.push(insideRange[i].doc_count);
+      if (this.barWidget.getValue().dataSetSize) {
+        for (let i = 0; i < this.barWidget.getValue().dataSetSize; i++) {
+          if (insideRange[i]) {
+            this.lablels.push(insideRange[i].key);
+            finalDataSet.push(insideRange[i].doc_count);
+            total = total + insideRange[i].doc_count;
           }
         }
       } else {
         insideRange.forEach(bucket => {
           this.lablels.push(bucket.key);
           finalDataSet.push(bucket.doc_count);
+          total = total + bucket.doc_count;
         });
       }
     } else {
       resBuckets.forEach(bucket => {
-        const key = bucket.key === ''?this.barWidget.value.blankValueAlias!==undefined?this.barWidget.value.blankValueAlias:'':bucket.key;
+        const key = bucket.key === '' ? this.barWidget.value.blankValueAlias !== undefined ? this.barWidget.value.blankValueAlias : '' : bucket.key;
         this.lablels.push(key);
         finalDataSet.push(bucket.doc_count);
+        total = total + bucket.doc_count;
       });
+    }
+
+    if (this.isTotalShown) {
+      finalDataSet.push(total.toString());
     }
     return finalDataSet;
   }
@@ -750,7 +784,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     req.reportId = String(this.reportId);
     req.widgetDesc = this.widgetHeader.desc;
     req.colorPalettes = [];
-    this.barChartData.forEach(legend=>{
+    this.barChartData.forEach(legend => {
       req.colorPalettes.push({
         code: legend.label,
         colorCode: legend.backgroundColor ? legend.backgroundColor : this.getRandomColor(),
@@ -775,9 +809,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * @param code resposne code
    */
   getUpdatedColorCode(code: string): string {
-    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+    if (this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
       const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
-      if(res) {
+      if (res) {
         return res.colorCode;
       }
 
@@ -797,23 +831,23 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     return color;
   }
 
-  getComputedSize(initialWidth : number){
+  getComputedSize(initialWidth: number) {
 
     if (!this.dataSet.length)
-      return initialWidth ;
+      return initialWidth;
 
-    const barWidth = initialWidth / this.dataSet.length ;
+    const barWidth = initialWidth / this.dataSet.length;
 
-    if(barWidth < this.minBarWidth){
-      return this.minBarWidth * this.dataSet.length ;
+    if (barWidth < this.minBarWidth) {
+      return this.minBarWidth * this.dataSet.length;
     } else {
       // this.minBarWidth = barWidth;
       return initialWidth;
     }
   }
 
-  computeGraphSize(){
-    if( this.orientation === 'bar'){
+  computeGraphSize() {
+    if (this.orientation === 'bar') {
       this.computedSize.height = this.widgetInfo.height;
       this.computedSize.width = this.getComputedSize(this.widgetInfo.width);
     } else {
@@ -823,16 +857,16 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   }
 
-  zoomIn(){
-    if( this.minBarWidth + this.zoomStep < this.maxBarSizeThreshold ){
-      this.minBarWidth += this.zoomStep ;
+  zoomIn() {
+    if (this.minBarWidth + this.zoomStep < this.maxBarSizeThreshold) {
+      this.minBarWidth += this.zoomStep;
       this.computeGraphSize();
     }
   }
 
-  zoomOut(){
-    if( this.minBarWidth - this.zoomStep >= this.minBarSizeThreshold ){
-      this.minBarWidth -= this.zoomStep ;
+  zoomOut() {
+    if (this.minBarWidth - this.zoomStep >= this.minBarSizeThreshold) {
+      this.minBarWidth -= this.zoomStep;
       this.computeGraphSize();
     }
   }
@@ -847,9 +881,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.subscriptions.push(saveDisplayCriteria)
   }
 
-  applyDateFilter(strtdate: string, fieldId: string) : Criteria{
+  applyDateFilter(strtdate: string, fieldId: string): Criteria {
     const strtDate = strtdate;
-    const endDate = String(Number(strtdate) + 24*60*60*1000);
+    const endDate = String(Number(strtdate) + 24 * 60 * 60 * 1000);
     const critera: Criteria = new Criteria();
     critera.fieldId = fieldId;
     critera.conditionFieldId = fieldId;
