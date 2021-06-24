@@ -45,7 +45,6 @@ import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/ex
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
 import { DownloadExecutionDataComponent } from './_components/v2/download-execution-data/download-execution-data.component';
 
-
 @NgModule({
   declarations: [
     SchemaTileComponent,
@@ -94,7 +93,6 @@ import { DownloadExecutionDataComponent } from './_components/v2/download-execut
     ExecutionTrendSidesheetComponent,
     SchemaProgressComponent,
     DownloadExecutionDataComponent
-    
   ],
   imports: [
     CommonModule,
