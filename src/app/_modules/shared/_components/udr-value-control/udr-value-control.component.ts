@@ -3,7 +3,6 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { MetadataModeleResponse, UDRDropdownValue } from '@models/schema/schemadetailstable';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'pros-udr-value-control',
@@ -88,8 +87,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   dateValue: Date;
   dateRangeValue: { start: Date; end: Date } = { start: null, end: null };
   constructor(
-    private schemaDetailsService: SchemaDetailsService,
-    private datePipe: DatePipe
+    private schemaDetailsService: SchemaDetailsService
   ) { }
 
   ngOnDestroy(): void {
@@ -114,17 +112,20 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.selectedTimeRange = (() => {
       const formatDate = (dt) => {
-        return dt ? {
-          hours: this.datePipe.transform(new Date(dt), 'HH'),
-          minutes: this.datePipe.transform(new Date(dt), 'mm'),
-        } : null;
+        let hm = dt ? dt.split(':') : [];
+        return hm.length ? {
+          hours: +hm[0],
+          minutes: +hm[1],
+        } : {
+          hours: 0,
+          minutes: 0
+        };
       }
       return {
         start: formatDate(this.rangeValue?.start),
         end: formatDate(this.rangeValue?.end)
       }
     })();
-    console.log('Date Range value:::', this.dateRangeValue, this.selectedTimeRange);
   }
 
   ngOnInit(): void {
@@ -163,14 +164,11 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  timeChanged(date: any, field = '') {
-    console.log('timeChanged', date);
-    const time = date.toString() || null;
-    if (this.range) {
-      this.inputChanged(time, 'start');
-    } else {
-      this.inputChanged(time);
-    }
+  timeRangeChanged(date: any) {
+    const pad = (no) => `${no || ''}`.padStart(2, '0');
+    this.multipleInput.start = date?.start ? `${pad(date.start.hours)}:${pad(date.start.minutes)}` : null;
+    this.multipleInput.end = date?.end ? `${pad(date.end.hours)}:${pad(date.end.minutes)}` : null;
+    this.emit();
   }
 
   /**

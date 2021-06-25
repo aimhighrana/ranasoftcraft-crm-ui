@@ -37,7 +37,7 @@
         <lib-time-picker [selectedDate]="dateValue" (timeChange)="dateChanged($event)"></lib-time-picker>
     </ng-template>
     <ng-template #timeRangeField>
-        <lib-time-range-picker (timeChange)="timeChanged($event)"></lib-time-range-picker>
+        <lib-time-range-picker [selected]="selectedTimeRange" [enableTimeInput]="true" (valueChange)="timeRangeChanged($event)"></lib-time-range-picker>
     </ng-template>
 </ng-container>
 <mat-form-field *ngIf="displayControl==='dropdown' || displayControl==='radio'" appearance="outline">
