@@ -3,6 +3,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { MetadataModeleResponse, UDRDropdownValue } from '@models/schema/schemadetailstable';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'pros-udr-value-control',
@@ -41,6 +42,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   @Output() valueChange = new EventEmitter();
   @Input() value: string;
   @Input() rangeValue: { start: string; end: string; };
+  selectedTimeRange;
   @Input() range = false;
   /**
    * Hold the metadata fields response ....
@@ -86,7 +88,8 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   dateValue: Date;
   dateRangeValue: { start: Date; end: Date } = { start: null, end: null };
   constructor(
-    private schemaDetailsService: SchemaDetailsService
+    private schemaDetailsService: SchemaDetailsService,
+    private datePipe: DatePipe
   ) { }
 
   ngOnDestroy(): void {
@@ -109,7 +112,19 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       start: this.rangeValue?.start ? new Date(this.rangeValue.start) : null,
       end: this.rangeValue?.end ? new Date(this.rangeValue.end) : null
     }
-    console.log('Date Range value:::', this.dateRangeValue);
+    this.selectedTimeRange = (() => {
+      const formatDate = (dt) => {
+        return dt ? {
+          hours: this.datePipe.transform(new Date(dt), 'HH'),
+          minutes: this.datePipe.transform(new Date(dt), 'mm'),
+        } : null;
+      }
+      return {
+        start: formatDate(this.rangeValue?.start),
+        end: formatDate(this.rangeValue?.end)
+      }
+    })();
+    console.log('Date Range value:::', this.dateRangeValue, this.selectedTimeRange);
   }
 
   ngOnInit(): void {
@@ -149,6 +164,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   timeChanged(date: any, field = '') {
+    console.log('timeChanged', date);
     const time = date.toString() || null;
     if (this.range) {
       this.inputChanged(time, 'start');
@@ -204,10 +220,10 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
    */
   loadUDRValueControl(searchString = this.singleInput) {
     const metadata = this.parseMetadata(this.fieldId);
-    /*if (metadata) {
+    if (metadata) {
       metadata.picklist = '0';
       metadata.dataType = 'TIMS';
-    }*/
+    }
     this.selectedMetaData = metadata;
     const pickLists = ['1', '4', '30', '35', '37'];
     if (!metadata || !pickLists.includes(metadata.picklist)) {

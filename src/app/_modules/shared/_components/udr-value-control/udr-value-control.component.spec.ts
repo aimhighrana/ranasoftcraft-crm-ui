@@ -51,7 +51,8 @@ describe('UDRValueControlComponent', () => {
     const chnages2: import('@angular/core').SimpleChanges = { metataData: { currentValue: {}, previousValue: false, firstChange: true, isFirstChange: null } };
     const chnages3: import('@angular/core').SimpleChanges = { value: { currentValue: null, previousValue: false, firstChange: true, isFirstChange: null } };
     const chnages4: import('@angular/core').SimpleChanges = { rangeValue: { currentValue: { start: null, end: null }, previousValue: false, firstChange: true, isFirstChange: null } };
-    const chnages5: import('@angular/core').SimpleChanges = { rangeValue: { currentValue: { start: '2020-01-01', end: '2022-01-01' }, previousValue: false, firstChange: true, isFirstChange: null } };
+    const chnages5: import('@angular/core').SimpleChanges = { rangeValue: { currentValue: null, previousValue: false, firstChange: true, isFirstChange: null } };
+    const chnages6: import('@angular/core').SimpleChanges = { rangeValue: { currentValue: { start: '2020-01-01', end: '2022-01-01' }, previousValue: false, firstChange: true, isFirstChange: null } };
     component.value = undefined;
     component.ngOnChanges(chnages1);
     component.value = '2021-01-01';
@@ -59,6 +60,7 @@ describe('UDRValueControlComponent', () => {
     component.ngOnChanges(chnages3);
     component.ngOnChanges(chnages4);
     component.ngOnChanges(chnages5);
+    component.ngOnChanges(chnages6);
     expect(component.ngOnChanges).toBeTruthy();
   }));
 

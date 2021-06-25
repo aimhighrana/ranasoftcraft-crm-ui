@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -287,6 +287,7 @@ import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loa
   ],
   providers: [
     TitleCasePipe,
+    DatePipe,
     { provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY, useFactory: scrollFactory, deps: [Overlay] }
   ],
   entryComponents: [
