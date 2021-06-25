@@ -403,6 +403,7 @@ export class BrruleSideSheetComponent implements OnInit {
               if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
                 || item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
                 const parentChildData = item;
+                const parentChildData = {...item};
                 if (item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
                   parentChildData.children = item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 });
                 }
