@@ -306,6 +306,7 @@ describe('StackedbarChartComponent', () => {
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
     component.stackBarWidget.next(barWidget);
+    component.isTotalShown = false;
     const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}];
     // call actual component method
     const actualResponse = component.transformDataSets(resBuckets);
@@ -320,11 +321,11 @@ describe('StackedbarChartComponent', () => {
     barWidget.scaleTo = 30;
     component.stackBarWidget.next(barWidget);
 
+    component.isTotalShown = true;
     // call actual component method
     const actualResponse01 = component.transformDataSets(resBuckets);
-
     // expects
-    expect(actualResponse01.length).toEqual(3,`Data should be interval in scale range`);
+    expect(actualResponse01.length).toEqual(6,`Data should be interval in scale range`);
     expect(actualResponse01[0].doc_count).toEqual(30,`Top or max doc count should be on first position`);
     expect(actualResponse01[1].doc_count).toEqual(10,`10 should be on second position`);
 
@@ -332,6 +333,7 @@ describe('StackedbarChartComponent', () => {
     // scenario  3
     barWidget.dataSetSize = 1;
     component.stackBarWidget.next(barWidget);
+    component.isTotalShown = false;
 
     // call actual component method
     const actualResponse1 = component.transformDataSets(resBuckets);

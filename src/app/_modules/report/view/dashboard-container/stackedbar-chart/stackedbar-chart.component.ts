@@ -423,9 +423,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       } if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
         this.codeTextaxis1[key] = this.getFields(fieldId, key);
       }
-      if (this.isTotalShown) {
-        this.codeTextaxis2['total'] = 'Total';
-      }
     });
     this.updateLabelsaxis1();
   }
@@ -687,6 +684,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     let finalDataSet: any[] = [];
 
     // perform sort
+    const total: any[] = [];
     const orderWith = this.stackBarWidget.getValue().orderWith;
     if (orderWith) {
       if (orderWith === OrderWith.ROW_ASC) {
@@ -703,7 +701,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
 
-      const total: any[] = [];
       const insideRange = resBuckets.filter(bucket => {
         if (this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
           return bucket;
@@ -717,18 +714,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }
       } else {
         finalDataSet = insideRange;
-        insideRange.forEach(item => {
-          const groupById = this.stackBarWidget.getValue().groupById;
-          const fieldId = this.stackBarWidget.getValue().fieldId;
-          const key = item.key[groupById];
-          const index = total.findIndex(el => el['key'][groupById] === key);
-          if (index > -1) {
-            total[index].doc_count = total[index].doc_count + item.doc_count;
-          } else {
-            total.push({ doc_count: item.doc_count, key: { [groupById]: item.key[groupById], [fieldId]: 'Total' } })
-          }
-        })
-        finalDataSet.push(...total);
       }
     } else {
       if (this.stackBarWidget.getValue().dataSetSize) {
@@ -740,6 +725,20 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       } else {
         finalDataSet = resBuckets;
       }
+    }
+    if (this.isTotalShown) {
+      finalDataSet.forEach(item => {
+        const groupById = this.stackBarWidget.getValue().groupById;
+        const fieldId = this.stackBarWidget.getValue().fieldId;
+        const key = item.key[groupById];
+        const index = total.findIndex(el => el.key[groupById] === key);
+        if (index > -1) {
+          total[index].doc_count = total[index].doc_count + item.doc_count;
+        } else {
+          total.push({ doc_count: item.doc_count, key: { [groupById]: item.key[groupById], [fieldId]: 'Total' } })
+        }
+      })
+      finalDataSet.push(...total);
     }
     return finalDataSet;
   }
