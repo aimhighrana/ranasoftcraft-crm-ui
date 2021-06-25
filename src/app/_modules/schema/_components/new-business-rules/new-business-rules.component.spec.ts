@@ -772,14 +772,6 @@ describe('NewBusinessRulesComponent', () => {
         component.ngOnInit();
         expect(component.ngOnInit).toBeTruthy();
 
-        component.data = {
-            maxWeightageLimit: 90,
-            moduleId: '1334',
-        }
-
-        component.ngOnInit();
-        expect(component.ngOnInit).toBeTruthy();
-
         component.data = null;
 
         component.ngOnInit();

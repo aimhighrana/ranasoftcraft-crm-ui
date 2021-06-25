@@ -8,7 +8,7 @@ import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperat
 import { ReportService } from '../../../_service/report.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { sortBy, groupBy, map, assign, sumBy, findIndex } from 'lodash';
+import _ from 'lodash';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -166,14 +166,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
     this.subscriptions.push(afterColorDefined);
 
-
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
-
   }
 
   public getHeaderMetaData():void{
@@ -455,6 +453,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       const lbl = this.barChartLabels[i] as any;
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
+
+
+    if (this.stackBarWidget.getValue() !== null && this.stackBarWidget.getValue().dataSetSize) {
+      this.barChartLabels = _.take(this.barChartLabels, this.stackBarWidget.getValue().dataSetSize);
+    }
   }
 
 
@@ -687,40 +690,25 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         resBuckets = this.sortByRow(groupBY,resBuckets);
       } else if(orderWith === OrderWith.ROW_DESC) {
         resBuckets = this.sortByRow(groupBY,resBuckets);
+        resBuckets.reverse();
       } else if(orderWith === OrderWith.COL_ASC) {
         resBuckets = this.sortByColumnAsc(groupBY,resBuckets);
       } else if(orderWith === OrderWith.COL_DESC) {
         resBuckets = this.sortByColumnDesc(groupBY,resBuckets);
       }
     }
-    if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
+    if (this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
 
-      const insideRange = resBuckets.filter(bucket =>{
-        if(this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
+      const insideRange = resBuckets.filter(bucket => {
+        if (this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
           return bucket;
         }
       });
-      if(this.stackBarWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
-          if(insideRange[i]) {
-              finalDataSet.push(insideRange[i]);
-          }
-        }
-      } else {
-        finalDataSet = insideRange;
-      }
+      finalDataSet = insideRange;
     } else {
-      if(this.stackBarWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
-          if(resBuckets[i]) {
-              finalDataSet.push(resBuckets[i]);
-          }
-        }
-      } else {
-        finalDataSet = resBuckets;
-      }
+      finalDataSet = resBuckets;
     }
     return finalDataSet;
   }
@@ -871,25 +859,25 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   sortByRow(groupBY: string, resBuckets: any[]) {
-    const sortedGroups = sortBy(resBuckets, (e) => {
+    const sortedGroups = _.sortBy(resBuckets, (e) => {
       return e.doc_count;
     });
 
-    const groupedArray = groupBy(sortedGroups, (e) => {
+    const groupedArray = _.groupBy(sortedGroups, (e) => {
       return e.key[groupBY];
     });
 
-    const mappedGroups = map(groupedArray, (x) => {
-      return assign({}, {
+    const mappedGroups = _.map(groupedArray, (x) => {
+      return _.assign({}, {
         name: x[0].key[groupBY],
-        total: sumBy(x, 'doc_count')
+        total: _.sumBy(x, 'doc_count')
       });
     });
 
-    const sortMapped = sortBy(mappedGroups, (e) => {
+    const sortMapped = _.sortBy(mappedGroups, (e) => {
       return e.total;
     });
-    return sortBy(resBuckets, x => findIndex(sortMapped, y => x.key[groupBY] === y.name));
+    return _.sortBy(resBuckets, x => _.findIndex(sortMapped, y => x.key[groupBY] === y.name));
   }
 
   sortByColumnAsc(groupBY: string, resBuckets: any[]) {

@@ -17,7 +17,6 @@ export class OverlayLoaderComponent implements OnInit {
 
   ngOnInit() {
     this.shared.loader.subscribe((val: boolean) => {
-      console.log('L O A D E R : ', val);
       this.loading = val;
     })
   }

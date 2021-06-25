@@ -8,6 +8,7 @@ export class Userdetails {
     dateformat: string;
     email: string;
     assignedRoles: AssignedRoles[];
+    selfServiceUserModel: UserPreferenceDetails;
 }
 export class AssignedRoles {
     sno: string;
@@ -49,7 +50,7 @@ export class UserPreferenceDetails {
     nformat: string;
     profileKey: UserPreferenceDetailsProfileKey;
     tformat: string;
-    timezone: string;
+    timeZone: string;
 }
 
 export class UserPreferenceDetailsProfileKey {

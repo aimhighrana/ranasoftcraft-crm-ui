@@ -268,6 +268,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     })
     if (flag === false) {
+      if (!checkbox.displayCriteria) {
+        checkbox.displayCriteria = this.allDisplayCriteria ? this.allDisplayCriteria : this.data.displayCriteria;
+      }
       this.data.selectedColumns.push(checkbox);
     }
     this.manageStateOfCheckbox();
@@ -360,7 +363,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     if(!this.allCheckboxSelected){
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
-      this.data.selectedColumns = this.headers;
+      this.data.selectedColumns = JSON.parse(JSON.stringify(this.headers));
       this.allCheckboxSelected = true;
     }else{
       this.allIndeterminate = false;
