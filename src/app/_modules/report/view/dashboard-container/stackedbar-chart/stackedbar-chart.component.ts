@@ -278,11 +278,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       }
     });
 
-    if (this.isTotalShown) {
-      this.stackbarLegend.push({ code: 'total', legendIndex: this.stackbarLegend.length, text: 'total' });
-      this.stachbarAxis.push({ legendIndex: this.stackbarLegend.length, code: 'total', text: 'total' });
-      this.listxAxis2.push('total');
-    }
     // maintaining alias here
     this.stackbarLegend.forEach(legend => {
       if (legend.code === '') {
@@ -299,7 +294,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     }
 
     if (Object.keys(this.dataObj).length !== 0) {
-      let totalCount = [];
       this.arrayBuckets.forEach(singleBucket => {
         const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
         let xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
@@ -309,15 +303,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const count = singleBucket.doc_count;
         arr[xpos1] = count;
         this.dataObj[xval2] = arr;
-        if (totalCount[xpos1]) {
-          totalCount[xpos1] = totalCount[xpos1] + count;
-        }
-        else {
-          totalCount[xpos1] = count;
-        }
       });
-
-      this.dataObj['total'] = totalCount;
       this.barChartData.splice(0, 1);
     }
     this.stackBardata.next(returnData);
@@ -391,10 +377,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      const val = hits ? (hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
         (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null) : null;
       if (val) {
         const valArray = [];
         val.forEach(v => {
@@ -417,10 +403,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      const val = hits ? hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
         (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null : null;
       if (val !== null) {
         const valArray = [];
         val.forEach(v => {
@@ -448,10 +434,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      const val = hits ? (hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
         (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null) : null;
       if (val !== null) {
         const valArray = [];
         val.forEach(v => {
@@ -482,10 +468,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      const val = hits ? hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
         (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null : null;
       if (val) {
         const valArray = [];
         val.forEach(v => {
@@ -500,10 +486,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       } else {
         this.codeTextaxis2[key] = key;
       }
-      if(this.isTotalShown)
-      {
-        this.codeTextaxis2['total']='Total';
-      }
     });
     this.updateLabelsaxis2();
   }
@@ -514,10 +496,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      const val = hits ? hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
         (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null : null;
       if (val) {
         const valArray = [];
         val.forEach(v => {
@@ -532,10 +514,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       } else {
         this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
       }
-      if(this.isTotalShown)
-      {
-        this.codeTextaxis2['total']='Total';
-      }
     });
     this.updateLabelsaxis2();
   }
@@ -546,10 +524,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      const val = hits ? (hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
         (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null) : null;
       if (val) {
         const valArray = [];
         val.forEach(v => {
@@ -565,10 +543,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.codeTextaxis2[key] = key;
       } if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
         this.codeTextaxis2[key] = this.getFields(fieldId, key);
-      }
-      if(this.isTotalShown)
-      {
-        this.codeTextaxis2['total']='Total';
       }
     });
     this.updateLabelsaxis2();
@@ -729,6 +703,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
 
+      const total: any[] = [];
       const insideRange = resBuckets.filter(bucket => {
         if (this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
           return bucket;
@@ -742,6 +717,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }
       } else {
         finalDataSet = insideRange;
+        insideRange.forEach(item => {
+          const groupById = this.stackBarWidget.getValue().groupById;
+          const fieldId = this.stackBarWidget.getValue().fieldId;
+          const key = item.key[groupById];
+          const index = total.findIndex(el => el['key'][groupById] === key);
+          if (index > -1) {
+            total[index].doc_count = total[index].doc_count + item.doc_count;
+          } else {
+            total.push({ doc_count: item.doc_count, key: { [groupById]: item.key[groupById], [fieldId]: 'Total' } })
+          }
+        })
+        finalDataSet.push(...total);
       }
     } else {
       if (this.stackBarWidget.getValue().dataSetSize) {
