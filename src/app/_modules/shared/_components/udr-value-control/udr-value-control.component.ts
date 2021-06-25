@@ -112,7 +112,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.selectedTimeRange = (() => {
       const formatDate = (dt) => {
-        let hm = dt ? dt.split(':') : [];
+        const hm = dt ? dt.split(':') : [];
         return hm.length ? {
           hours: +hm[0],
           minutes: +hm[1],
