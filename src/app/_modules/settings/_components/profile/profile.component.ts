@@ -100,7 +100,7 @@ export class ProfileComponent implements OnInit {
         this.currentUserPreferences = data;
         this.languageSettingsForm.patchValue({
           language: data.lang || '',
-          timeZone: data.timezone || '',
+          timeZone: data.timeZone || '',
           dateFormat: data.dFormat || '',
           timeFormat: data.tformat || '',
           numberFormat: data.nformat || ''

@@ -8,6 +8,7 @@ import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperat
 import { ReportService } from '../../../_service/report.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import _ from 'lodash';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -166,14 +167,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
     this.subscriptions.push(afterColorDefined);
 
-
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
-
   }
 
   public getHeaderMetaData(): void {
@@ -458,6 +457,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       const lbl = this.barChartLabels[i] as any;
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
+
+
+    if (this.stackBarWidget.getValue() !== null && this.stackBarWidget.getValue().dataSetSize) {
+      this.barChartLabels = _.take(this.barChartLabels, this.stackBarWidget.getValue().dataSetSize);
+    }
   }
 
 
@@ -706,25 +710,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           return bucket;
         }
       });
-      if (this.stackBarWidget.getValue().dataSetSize) {
-        for (let i = 0; i < this.stackBarWidget.getValue().dataSetSize; i++) {
-          if (insideRange[i]) {
-            finalDataSet.push(insideRange[i]);
-          }
-        }
-      } else {
-        finalDataSet = insideRange;
-      }
+      finalDataSet = insideRange;
     } else {
-      if (this.stackBarWidget.getValue().dataSetSize) {
-        for (let i = 0; i < this.stackBarWidget.getValue().dataSetSize; i++) {
-          if (resBuckets[i]) {
-            finalDataSet.push(resBuckets[i]);
-          }
-        }
-      } else {
-        finalDataSet = resBuckets;
-      }
+      finalDataSet = resBuckets;
     }
     if (this.isTotalShown) {
       finalDataSet.forEach(item => {

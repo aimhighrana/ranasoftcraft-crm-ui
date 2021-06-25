@@ -14,6 +14,8 @@ import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChartType as CType} from 'chart.js';
 import { Context } from 'chartjs-plugin-datalabels';
+import { UserService } from '@services/user/userservice.service';
+import { Userdetails } from '@models/userdetails';
 
 
 const btnArray: ButtonArr[] = [
@@ -154,10 +156,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   subscriptions: Subscription[] = [];
 
+  userDetails: Userdetails = new Userdetails();
+
   constructor(
     private widgetService: WidgetService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
+    private userService:UserService,
     public matDialog: MatDialog) {
     super(matDialog);
   }
@@ -225,6 +230,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
     });
     this.subscriptions.push(afterColorDefined);
+
+    this.userService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   /**
@@ -564,7 +573,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
    getwidgetData(widgetId: number): void {
     this.dataSet = [{ data: [] }];
-    this.widgetService.getWidgetData(String(widgetId), this.filterCriteria).subscribe(response => {
+    this.widgetService.getWidgetData(String(widgetId), this.filterCriteria, '', '', this.userDetails.selfServiceUserModel.timeZone).subscribe(response => {
       this.responseData = response;
       this.updateChart(this.responseData)
     });

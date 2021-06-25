@@ -147,7 +147,7 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
    */
   selectAll() {
     // this.data.selectedFields = [];
-    if(this.allChecked) {
+    if(!this.allChecked) {
       this.allChecked  = true;
       this.allIndeterminate = false;
       // this.data.selectedFields = this.headerArray;
