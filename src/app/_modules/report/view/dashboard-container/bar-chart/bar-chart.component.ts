@@ -278,7 +278,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.setLabels();
       }
     }
-    this.sortBarChartData(arrayBuckets);
     this.setBarChartData();
 
     // compute graph size
