@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './stackedbar-chart.component.html',
   styleUrls: ['./stackedbar-chart.component.scss']
 })
-export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit ,OnChanges, OnDestroy{
+export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   displayCriteriaOptions = [
     {
@@ -32,19 +32,19 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   ];
   displayCriteriaOption = this.displayCriteriaOptions[0];
   orientation = 'bar';
-  stackBarWidget : BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
+  stackBarWidget: BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
-  stackBardata : BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  stackbarLegend : ChartLegend[] = [];
+  stackBardata: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  stackbarLegend: ChartLegend[] = [];
   stachbarAxis: ChartLegend[] = [];
-  public codeTextaxis1 ={} as any;
-  public codeTextaxis2 ={} as any;
-   dataObj = new Object();
-   labels : string[] = new Array();
-  arrayBuckets :any[];
-  listxAxis2 :any[]=new Array();
+  public codeTextaxis1 = {} as any;
+  public codeTextaxis2 = {} as any;
+  dataObj = new Object();
+  labels: string[] = new Array();
+  arrayBuckets: any[];
+  listxAxis2: any[] = new Array();
   barChartLabels: Label[] = new Array();
-  barChartData: any[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
+  barChartData: any[] = [{ data: [0, 0, 0, 0, 0], label: 'Loading..', stack: 'a' }];
   barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -55,7 +55,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.legendClick(legendItem);
       }
     },
-    onClick: (event?: MouseEvent, activeElements?: Array<{}>) =>{
+    onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
 
       this.stackClickFilter(event, activeElements);
     },
@@ -64,18 +64,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         display: false
       }
     },
-    scales : {
-      xAxes : [
+    scales: {
+      xAxes: [
         {
-          scaleLabel:{
-            display : false
+          scaleLabel: {
+            display: false
           }
         }
       ],
-      yAxes : [
+      yAxes: [
         {
-          scaleLabel:{
-            display : false
+          scaleLabel: {
+            display: false
           }
         }
       ]
@@ -84,9 +84,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   returnData: any;
   subscriptions: Subscription[] = [];
+  isTotalShown: boolean;
 
   constructor(
-    private widgetService : WidgetService,
+    private widgetService: WidgetService,
     private reportService: ReportService,
     private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) public locale: string,
@@ -102,12 +103,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       sub.unsubscribe();
     });
   }
-  ngOnChanges(changes: SimpleChanges):void{
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue && !this.widgetHeader.isEnableGlobalFilter) {
       this.stackBarWidget.next(this.stackBarWidget.getValue());
     }
 
-    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+    if (changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }
   }
@@ -115,51 +116,51 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   ngOnInit(): void {
     this.getStackChartMetadata();
     this.getHeaderMetaData();
-    this.stackBarWidget.subscribe(res=>{
-      if(res){
+    this.stackBarWidget.subscribe(res => {
+      if (res) {
         this.resetChart();
-        this.getstackbarChartData(this.widgetId,this.filterCriteria);
+        this.getstackbarChartData(this.widgetId, this.filterCriteria);
       }
     });
 
-    this.stackBardata.subscribe(data=>{
-      if(data && this.barChartData.length=== 0){
-        if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0' && (this.stackBarWidget.getValue().groupByIdMetaData.dataType === 'DATS' || this.stackBarWidget.getValue().groupByIdMetaData.dataType === 'DTMS'))) {
+    this.stackBardata.subscribe(data => {
+      if (data && this.barChartData.length === 0) {
+        if (Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0' && (this.stackBarWidget.getValue().groupByIdMetaData.dataType === 'DATS' || this.stackBarWidget.getValue().groupByIdMetaData.dataType === 'DTMS'))) {
           this.getDateFieldsDesc1(this.stackBarWidget.getValue().groupById);
-        } else if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
+        } else if (Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')) {
           this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
         } else if (Object.keys(this.codeTextaxis1).length === 0 && this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0') {
           this.getFieldsMetadaDescaxis1ForNonFld(this.stackBarWidget.getValue().groupById);
         }
-        else{
+        else {
           this.updateLabelsaxis1();
         }
 
-        if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0' && (this.stackBarWidget.getValue().fieldIdMetaData.dataType === 'DATS' || this.stackBarWidget.getValue().fieldIdMetaData.dataType === 'DTMS'))) {
+        if (Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0' && (this.stackBarWidget.getValue().fieldIdMetaData.dataType === 'DATS' || this.stackBarWidget.getValue().fieldIdMetaData.dataType === 'DTMS'))) {
           this.getDateFieldsDesc2(this.stackBarWidget.getValue().fieldId);
-        } else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
+        } else if (Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData != null && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')) {
           this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
-        }else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
+        } else if (Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData != null && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
           this.getFieldsMetadaDescaxis2Nondef(this.stackBarWidget.getValue().fieldId);
-        } else{
+        } else {
           this.updateLabelsaxis2();
         }
-    }else{
-      this.updateLabelsaxis1();
-    }
+      } else {
+        this.updateLabelsaxis1();
+      }
 
-    // update chart after data sets change
-    if(this.chart) {
-      try{
-        this.chart.update();
-      }catch(ex){console.error(`Error : ${ex}`)}
-    }
+      // update chart after data sets change
+      if (this.chart) {
+        try {
+          this.chart.update();
+        } catch (ex) { console.error(`Error : ${ex}`) }
+      }
 
     });
 
     // after color defined update on widget
-    const afterColorDefined = this.afterColorDefined.subscribe(res=>{
-      if(res) {
+    const afterColorDefined = this.afterColorDefined.subscribe(res => {
+      if (res) {
         this.updateColorBasedOnDefined(res);
       }
     });
@@ -175,25 +176,27 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   }
 
-  public getHeaderMetaData():void{
-    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+  public getHeaderMetaData(): void {
+    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
       this.widgetHeader = returnData;
-    },error=> console.error(`Error : ${error}`));
+    }, error => console.error(`Error : ${error}`));
   }
 
-  public getStackChartMetadata():void{
-    this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData=>{
-      if(returnData){
+  public getStackChartMetadata(): void {
+    this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData => {
+      if (returnData) {
         this.widgetColorPalette = returnData.widgetColorPalette;
-          this.stackBarWidget.next(returnData);
-         this.getBarConfigurationData();
-         }
-        }, error=>{
-          console.error(`Error : ${error}`);
-      });
+        this.isTotalShown = returnData.showTotal;
+        this.isTotalShown = true;
+        this.stackBarWidget.next(returnData);
+        this.getBarConfigurationData();
+      }
+    }, error => {
+      console.error(`Error : ${error}`);
+    });
   }
 
-  public getBarConfigurationData() : void {
+  public getBarConfigurationData(): void {
     // bar orientation based on orientation value
     this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
@@ -231,8 +234,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.setChartAxisAndScaleRange();
   }
 
-  public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
-    this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
+  public getstackbarChartData(widgetId: number, criteria: Criteria[]): void {
+    this.widgetService.getWidgetData(String(widgetId), criteria).subscribe(returnData => {
       this.returnData = returnData;
       this.updateChart(this.returnData);
     });
@@ -247,65 +250,80 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.labels = [];
     this.codeTextaxis1 = {};
     this.codeTextaxis2 = {};
-    this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a',  barThickness: 'flex' }];
+    this.barChartData = [{ data: [0, 0, 0, 0, 0], label: 'Loading..', stack: 'a', barThickness: 'flex' }];
   }
 
   private updateChart(returnData) {
     const res = Object.keys(returnData.aggregations);
-    this.arrayBuckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
-     this.dataObj = new Object();
-     this.labels = [];
-     this.barChartLabels = new Array();
-     // transform data before go for render
-     this.arrayBuckets =  this.transformDataSets(this.arrayBuckets);
-    this.arrayBuckets.forEach(singleBucket=>{
-      if(this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
+    this.arrayBuckets = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
+    this.dataObj = new Object();
+    this.labels = [];
+    this.barChartLabels = new Array();
+    // transform data before go for render
+    this.arrayBuckets = this.transformDataSets(this.arrayBuckets);
+    this.arrayBuckets.forEach(singleBucket => {
+      if (this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1) {
         this.barChartLabels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
-        this.stachbarAxis.push({legendIndex: this.stachbarAxis.length,code:singleBucket.key[this.stackBarWidget.getValue().groupById],text: singleBucket.key[this.stackBarWidget.getValue().groupById]});
-        if(singleBucket.key[this.stackBarWidget.getValue().groupById] !== '' && this.labels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
+        this.stachbarAxis.push({ legendIndex: this.stachbarAxis.length, code: singleBucket.key[this.stackBarWidget.getValue().groupById], text: singleBucket.key[this.stackBarWidget.getValue().groupById] });
+        if (singleBucket.key[this.stackBarWidget.getValue().groupById] !== '' && this.labels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1) {
           this.labels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
         }
       }
-      if(this.listxAxis2.indexOf(singleBucket.key[this.stackBarWidget.getValue().fieldId]) === -1){
+      if (this.listxAxis2.indexOf(singleBucket.key[this.stackBarWidget.getValue().fieldId]) === -1) {
         const mtl = singleBucket.key[this.stackBarWidget.getValue().fieldId];
-        const arr:any[]=[0];
-        this.dataObj[mtl === ''?this.stackBarWidget.value.blankValueAlias!==undefined?this.stackBarWidget.value.blankValueAlias:mtl:mtl]=arr;
+        const arr: any[] = [0];
+        this.dataObj[mtl === '' ? this.stackBarWidget.value.blankValueAlias !== undefined ? this.stackBarWidget.value.blankValueAlias : mtl : mtl] = arr;
         this.listxAxis2.push(mtl);
-        this.stackbarLegend.push({code: mtl,legendIndex:this.stackbarLegend.length,text:mtl})
+        this.stackbarLegend.push({ code: mtl, legendIndex: this.stackbarLegend.length, text: mtl })
       }
     });
 
-     // maintaining alias here
-     this.stackbarLegend.forEach(legend=>{
-      if(legend.code === ''){
-        legend.code = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
+    if (this.isTotalShown) {
+      this.stackbarLegend.push({ code: 'total', legendIndex: this.stackbarLegend.length, text: 'total' });
+      this.stachbarAxis.push({ legendIndex: this.stackbarLegend.length, code: 'total', text: 'total' });
+      this.listxAxis2.push('total');
+    }
+    // maintaining alias here
+    this.stackbarLegend.forEach(legend => {
+      if (legend.code === '') {
+        legend.code = this.stackBarWidget.value.blankValueAlias !== undefined ? this.stackBarWidget.value.blankValueAlias : '';
       }
     });
 
-    for(let i=0;i<this.listxAxis2.length;i++){
-      if(this.listxAxis2[i] === ''){
-        this.listxAxis2[i] = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
-    }
+
+
+    for (let i = 0; i < this.listxAxis2.length; i++) {
+      if (this.listxAxis2[i] === '') {
+        this.listxAxis2[i] = this.stackBarWidget.value.blankValueAlias !== undefined ? this.stackBarWidget.value.blankValueAlias : '';
+      }
     }
 
-    if(Object.keys(this.dataObj).length!==0){
-      this.arrayBuckets.forEach(singleBucket=>{
+    if (Object.keys(this.dataObj).length !== 0) {
+      let totalCount = [];
+      this.arrayBuckets.forEach(singleBucket => {
         const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
         let xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
-        xval2 = xval2 === ''?this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:xval2:xval2;
-          const arr=  this.dataObj[xval2] ? this.dataObj[xval2] : {};
-          const xpos1 = this.barChartLabels.indexOf(xval1);
-          const count = singleBucket.doc_count;
-          arr[xpos1] = count;
-          this.dataObj[xval2] = arr;
+        xval2 = xval2 === '' ? this.stackBarWidget.value.blankValueAlias !== undefined ? this.stackBarWidget.value.blankValueAlias : xval2 : xval2;
+        const arr = this.dataObj[xval2] ? this.dataObj[xval2] : {};
+        const xpos1 = this.barChartLabels.indexOf(xval1);
+        const count = singleBucket.doc_count;
+        arr[xpos1] = count;
+        this.dataObj[xval2] = arr;
+        if (totalCount[xpos1]) {
+          totalCount[xpos1] = totalCount[xpos1] + count;
+        }
+        else {
+          totalCount[xpos1] = count;
+        }
       });
 
-      this.barChartData.splice(0,1);
+      this.dataObj['total'] = totalCount;
+      this.barChartData.splice(0, 1);
     }
     this.stackBardata.next(returnData);
   }
 
-  public getRandomColor():string {
+  public getRandomColor(): string {
     const letters = '0123456789ABCDEF';
     let color = '#';
     for (let i = 0; i < 6; i++) {
@@ -319,44 +337,44 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * legendItem
    */
   legendClick(legendItem: ChartLegendLabelItem) {
-    let clickedLegend =  this.stackbarLegend[legendItem.datasetIndex] ? this.stackbarLegend[legendItem.datasetIndex].code : '';
-    if(clickedLegend === this.stackBarWidget.value.blankValueAlias){
-      clickedLegend ='';
+    let clickedLegend = this.stackbarLegend[legendItem.datasetIndex] ? this.stackbarLegend[legendItem.datasetIndex].code : '';
+    if (clickedLegend === this.stackBarWidget.value.blankValueAlias) {
+      clickedLegend = '';
     }
     const fieldId = this.stackBarWidget.getValue().fieldId;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
-      if(appliedFilters.length >0) {
-        const res = appliedFilters.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
-        if(res.length !== 0) {
-          res.forEach(val=> {
-            val.conditionFieldValue = clickedLegend;
-          })
-        }
-        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
-        if(cri.length ===0) {
-          const critera1: Criteria = new Criteria();
-          critera1.fieldId = fieldId;
-          critera1.conditionFieldId = fieldId;
-          critera1.conditionFieldValue = clickedLegend;
-          critera1.blockType = BlockType.COND;
-          critera1.conditionOperator = ConditionOperator.EQUAL;
-          critera1.widgetType = WidgetType.STACKED_BAR_CHART;
-          appliedFilters.push(critera1);
-        }
-      } else {
-        appliedFilters = [];
+    if (appliedFilters.length > 0) {
+      const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+      if (res.length !== 0) {
+        res.forEach(val => {
+          val.conditionFieldValue = clickedLegend;
+        })
+      }
+      const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
+      if (cri.length === 0) {
         const critera1: Criteria = new Criteria();
         critera1.fieldId = fieldId;
-        critera1.conditionFieldId = fieldId
+        critera1.conditionFieldId = fieldId;
         critera1.conditionFieldValue = clickedLegend;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
         critera1.widgetType = WidgetType.STACKED_BAR_CHART;
         appliedFilters.push(critera1);
       }
-      appliedFilters.forEach(app => this.filterCriteria.push(app));
-      this.emitEvtFilterCriteria(this.filterCriteria);
+    } else {
+      appliedFilters = [];
+      const critera1: Criteria = new Criteria();
+      critera1.fieldId = fieldId;
+      critera1.conditionFieldId = fieldId
+      critera1.conditionFieldValue = clickedLegend;
+      critera1.blockType = BlockType.COND;
+      critera1.conditionOperator = ConditionOperator.EQUAL;
+      critera1.widgetType = WidgetType.STACKED_BAR_CHART;
+      appliedFilters.push(critera1);
+    }
+    appliedFilters.forEach(app => this.filterCriteria.push(app));
+    this.emitEvtFilterCriteria(this.filterCriteria);
   }
 
   /**
@@ -364,26 +382,26 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * selectedOptions as parameter
    */
   removeOldFilterCriteria(selectedOptions: Criteria[]) {
-    selectedOptions.forEach(option=>{
+    selectedOptions.forEach(option => {
       this.filterCriteria.splice(this.filterCriteria.indexOf(option), 1);
     });
   }
 
   getFieldsMetadaDescaxis1ForNonFld(fieldId: string) {
-    this.arrayBuckets.forEach(bucket=>{
+    this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
-        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+        (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
+        val.forEach(v => {
           valArray.push(this.checkTextCode(v));
         });
         const finalText = valArray.toString();
-        if(finalText) {
+        if (finalText) {
           this.codeTextaxis1[key] = finalText;
         } else {
           this.codeTextaxis1[key] = key;
@@ -396,48 +414,51 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   getFieldsMetadaDescaxis1(fieldId: string) {
-    this.arrayBuckets.forEach(bucket=>{
+    this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
-        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+        (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
-      if(val !== null) {
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if (val !== null) {
         const valArray = [];
-        val.forEach(v=>{
+        val.forEach(v => {
           valArray.push(this.checkTextCode(v));
         });
         const finalText = valArray.toString();
-        if(finalText) {
+        if (finalText) {
           this.codeTextaxis1[key] = finalText;
         } else {
           this.codeTextaxis1[key] = key;
         }
       } else {
         this.codeTextaxis1[key] = key;
-      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+      } if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
         this.codeTextaxis1[key] = this.getFields(fieldId, key);
+      }
+      if (this.isTotalShown) {
+        this.codeTextaxis2['total'] = 'Total';
       }
     });
     this.updateLabelsaxis1();
   }
 
-  getDateFieldsDesc1(fieldId: string){
-    this.arrayBuckets.forEach(bucket=>{
+  getDateFieldsDesc1(fieldId: string) {
+    this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
-        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+        (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
-      if(val !== null) {
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if (val !== null) {
         const valArray = [];
-        val.forEach(v=>{
+        val.forEach(v => {
           valArray.push(this.checkTextCode(v));
         });
         const finalText = Number(valArray);
-        if(finalText) {
+        if (finalText) {
           this.codeTextaxis1[key] = new Date(finalText).toLocaleDateString();
         } else {
           this.codeTextaxis1[key] = new Date(key).toLocaleDateString();
@@ -449,8 +470,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.updateLabelsaxis1();
   }
 
-  updateLabelsaxis1():void{
-    for(let i=0;i<this.barChartLabels.length;i++){
+  updateLabelsaxis1(): void {
+    for (let i = 0; i < this.barChartLabels.length; i++) {
       const lbl = this.barChartLabels[i] as any;
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
@@ -458,213 +479,225 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
 
   getFieldsMetadaDescaxis2Nondef(fieldId: string) {
-    this.arrayBuckets.forEach(bucket=>{
+    this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
-        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+        (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
+        val.forEach(v => {
           valArray.push(this.checkTextCode(v));
-          });
-          const finalText = valArray.toString();
-          if(finalText) {
-            this.codeTextaxis2[key] = finalText;
-          } else {
-            this.codeTextaxis2[key] = key;
-          }
+        });
+        const finalText = valArray.toString();
+        if (finalText) {
+          this.codeTextaxis2[key] = finalText;
+        } else {
+          this.codeTextaxis2[key] = key;
+        }
       } else {
         this.codeTextaxis2[key] = key;
+      }
+      if(this.isTotalShown)
+      {
+        this.codeTextaxis2['total']='Total';
       }
     });
     this.updateLabelsaxis2();
   }
 
   getDateFieldsDesc2(fieldId: string) {
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    let locale = this.locale !== '' ? this.locale.split('-')[0] : 'EN';
     locale = locale.toUpperCase();
-    this.arrayBuckets.forEach(bucket=>{
+    this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
-        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+        (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
+        val.forEach(v => {
           valArray.push(this.checkTextCode(v));
-          });
-          const finalText = Number(valArray);
-          if(finalText) {
-            this.codeTextaxis2[key] = new Date(finalText).toLocaleDateString();
-          } else {
-            this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
-          }
+        });
+        const finalText = Number(valArray);
+        if (finalText) {
+          this.codeTextaxis2[key] = new Date(finalText).toLocaleDateString();
+        } else {
+          this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
+        }
       } else {
         this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
+      }
+      if(this.isTotalShown)
+      {
+        this.codeTextaxis2['total']='Total';
       }
     });
     this.updateLabelsaxis2();
   }
 
   getFieldsMetadaDescaxis2(fieldId: string) {
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    let locale = this.locale !== '' ? this.locale.split('-')[0] : 'EN';
     locale = locale.toUpperCase();
-    this.arrayBuckets.forEach(bucket=>{
+    this.arrayBuckets.forEach(bucket => {
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
-        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+      const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+        (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
         (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
-        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
-      if(val) {
+          (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if (val) {
         const valArray = [];
-        val.forEach(v=>{
+        val.forEach(v => {
           valArray.push(this.checkTextCode(v));
-          });
-          const finalText = valArray.toString();
-          if(finalText) {
-            this.codeTextaxis2[key] = finalText;
-          } else {
-            this.codeTextaxis2[key] = key;
-          }
+        });
+        const finalText = valArray.toString();
+        if (finalText) {
+          this.codeTextaxis2[key] = finalText;
+        } else {
+          this.codeTextaxis2[key] = key;
+        }
       } else {
         this.codeTextaxis2[key] = key;
-      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+      } if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
         this.codeTextaxis2[key] = this.getFields(fieldId, key);
+      }
+      if(this.isTotalShown)
+      {
+        this.codeTextaxis2['total']='Total';
       }
     });
     this.updateLabelsaxis2();
   }
 
-  updateLabelsaxis2():void{
+  updateLabelsaxis2(): void {
     this.barChartData = [];
-    this.listxAxis2.forEach(singleLis=>{
-        const singleobj= {} as any;
-        singleobj.data=this.dataObj[singleLis];
-        if(singleLis) {
-          singleobj.label=this.codeTextaxis2[singleLis] !== undefined &&  this.codeTextaxis2[singleLis] !== null?this.codeTextaxis2[singleLis]:singleLis;
-        } else {
-          singleobj.label= singleLis;
-        }
-        singleobj.fieldCode = singleLis;
-        singleobj.stack='a';
-        // singleobj.backgroundColor=this.getRandomColor();
-        singleobj.backgroundColor=this.getUpdatedColorCode(singleobj.fieldCode);
-        singleobj.borderColor=this.getRandomColor();
-
-
-        this.barChartData.push(singleobj);
-      });
-      for(let i=0;i<this.barChartLabels.length;i++){
-        const lbl = this.barChartLabels[i] as any;
-        this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
+    this.listxAxis2.forEach(singleLis => {
+      const singleobj = {} as any;
+      singleobj.data = this.dataObj[singleLis];
+      if (singleLis) {
+        singleobj.label = this.codeTextaxis2[singleLis] !== undefined && this.codeTextaxis2[singleLis] !== null ? this.codeTextaxis2[singleLis] : singleLis;
+      } else {
+        singleobj.label = singleLis;
       }
+      singleobj.fieldCode = singleLis;
+      singleobj.stack = 'a';
+      // singleobj.backgroundColor=this.getRandomColor();
+      singleobj.backgroundColor = this.getUpdatedColorCode(singleobj.fieldCode);
+      singleobj.borderColor = this.getRandomColor();
+
+
+      this.barChartData.push(singleobj);
+    });
+    for (let i = 0; i < this.barChartLabels.length; i++) {
+      const lbl = this.barChartLabels[i] as any;
+      this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
+    }
   }
 
   /**
    * Aftre click on chart stack
    */
   stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
-     if(this.chart && activeElements.length>0) {
+    if (this.chart && activeElements.length > 0) {
       const option = this.chart.chart.getElementAtEvent(event) as any;
       const xval1Index = (option[0])._datasetIndex;
       const xval2Index = (option[0])._index;
 
       const xvalCode1 = this.stackbarLegend[xval1Index] ? this.stackbarLegend[xval1Index].code : null;
       const xvalCode2 = this.stachbarAxis[xval2Index] ? this.stachbarAxis[xval2Index].code : null;
-      if(xvalCode1 && xvalCode2) {
+      if (xvalCode1 && xvalCode2) {
         let fieldId = this.stackBarWidget.getValue().fieldId;
         let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
         this.removeOldFilterCriteria(appliedFilters);
-          // for xaxis 1
-          if(appliedFilters.length >0) {
-            const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
-            if (res.length !== 0) {
-              res.forEach(val => {
-                val.conditionFieldValue = xvalCode1;
-              })
-            }
-            const cri = appliedFilters.filter(fill => fill.conditionFieldValue === xvalCode1);
-            if(cri.length ===0) {
-              const critera1: Criteria = new Criteria();
-              critera1.fieldId = fieldId;
-              critera1.conditionFieldId = fieldId;
-              critera1.conditionFieldValue = xvalCode1;
-              critera1.blockType = BlockType.COND;
-              critera1.conditionOperator = ConditionOperator.EQUAL;
-              critera1.widgetType = WidgetType.STACKED_BAR_CHART;
-              appliedFilters.push(critera1);
-            }
-          } else {
-            appliedFilters = [];
+        // for xaxis 1
+        if (appliedFilters.length > 0) {
+          const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+          if (res.length !== 0) {
+            res.forEach(val => {
+              val.conditionFieldValue = xvalCode1;
+            })
+          }
+          const cri = appliedFilters.filter(fill => fill.conditionFieldValue === xvalCode1);
+          if (cri.length === 0) {
             const critera1: Criteria = new Criteria();
             critera1.fieldId = fieldId;
-            critera1.conditionFieldId = fieldId
+            critera1.conditionFieldId = fieldId;
             critera1.conditionFieldValue = xvalCode1;
             critera1.blockType = BlockType.COND;
             critera1.conditionOperator = ConditionOperator.EQUAL;
             critera1.widgetType = WidgetType.STACKED_BAR_CHART;
             appliedFilters.push(critera1);
           }
-          appliedFilters.forEach(app => this.filterCriteria.push(app));
-          fieldId = this.stackBarWidget.getValue().groupById;
-          appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
-          this.removeOldFilterCriteria(appliedFilters);
-          // for xaxis2
-          if(appliedFilters.length >0) {
-            const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
-            if (res.length !== 0) {
-              res.forEach(val => {
-                val.conditionFieldValue = xvalCode2;
-              })
-            }
-            const cri = appliedFilters.filter(fill => fill.conditionFieldValue === xvalCode2);
-            if(cri.length ===0) {
-              const critera1: Criteria = new Criteria();
-              critera1.fieldId = fieldId;
-              critera1.conditionFieldId = fieldId;
-              critera1.conditionFieldValue = xvalCode2;
-              critera1.blockType = BlockType.COND;
-              critera1.conditionOperator = ConditionOperator.EQUAL;
-              critera1.widgetType = WidgetType.STACKED_BAR_CHART;
-              appliedFilters.push(critera1);
-            }
-          } else {
-            appliedFilters = [];
+        } else {
+          appliedFilters = [];
+          const critera1: Criteria = new Criteria();
+          critera1.fieldId = fieldId;
+          critera1.conditionFieldId = fieldId
+          critera1.conditionFieldValue = xvalCode1;
+          critera1.blockType = BlockType.COND;
+          critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.STACKED_BAR_CHART;
+          appliedFilters.push(critera1);
+        }
+        appliedFilters.forEach(app => this.filterCriteria.push(app));
+        fieldId = this.stackBarWidget.getValue().groupById;
+        appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+        this.removeOldFilterCriteria(appliedFilters);
+        // for xaxis2
+        if (appliedFilters.length > 0) {
+          const res = appliedFilters.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.STACKED_BAR_CHART && this.widgetHeader.isEnableGlobalFilter);
+          if (res.length !== 0) {
+            res.forEach(val => {
+              val.conditionFieldValue = xvalCode2;
+            })
+          }
+          const cri = appliedFilters.filter(fill => fill.conditionFieldValue === xvalCode2);
+          if (cri.length === 0) {
             const critera1: Criteria = new Criteria();
             critera1.fieldId = fieldId;
-            critera1.conditionFieldId = fieldId
+            critera1.conditionFieldId = fieldId;
             critera1.conditionFieldValue = xvalCode2;
             critera1.blockType = BlockType.COND;
             critera1.conditionOperator = ConditionOperator.EQUAL;
             critera1.widgetType = WidgetType.STACKED_BAR_CHART;
             appliedFilters.push(critera1);
           }
-          appliedFilters.forEach(app => this.filterCriteria.push(app));
-          this.emitEvtFilterCriteria(this.filterCriteria);
+        } else {
+          appliedFilters = [];
+          const critera1: Criteria = new Criteria();
+          critera1.fieldId = fieldId;
+          critera1.conditionFieldId = fieldId
+          critera1.conditionFieldValue = xvalCode2;
+          critera1.blockType = BlockType.COND;
+          critera1.conditionOperator = ConditionOperator.EQUAL;
+          critera1.widgetType = WidgetType.STACKED_BAR_CHART;
+          appliedFilters.push(critera1);
+        }
+        appliedFilters.forEach(app => this.filterCriteria.push(app));
+        this.emitEvtFilterCriteria(this.filterCriteria);
       }
     }
   }
 
-  downloadCSV():void{
+  downloadCSV(): void {
     const excelData = [];
-    this.arrayBuckets.forEach(singleBucket=>{
+    this.arrayBuckets.forEach(singleBucket => {
       const obj = {};
-      obj[this.stackBarWidget.getValue().fieldIdMetaData ?this.stackBarWidget.getValue().fieldIdMetaData.fieldDescri : this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2 ? this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]] + '\t' : '';
-      obj[this.stackBarWidget.getValue().groupByIdMetaData ?this.stackBarWidget.getValue().groupByIdMetaData.fieldDescri : this.stackBarWidget.getValue().groupById] = this.codeTextaxis1 ? this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]] + '\t' : '';
+      obj[this.stackBarWidget.getValue().fieldIdMetaData ? this.stackBarWidget.getValue().fieldIdMetaData.fieldDescri : this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2 ? this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]] + '\t' : '';
+      obj[this.stackBarWidget.getValue().groupByIdMetaData ? this.stackBarWidget.getValue().groupByIdMetaData.fieldDescri : this.stackBarWidget.getValue().groupById] = this.codeTextaxis1 ? this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]] + '\t' : '';
       obj[this.stackBarWidget.getValue().aggregationOperator ? this.stackBarWidget.getValue().aggregationOperator === 'GROUPBY' ? 'Value' : this.stackBarWidget.getValue().aggregationOperator : this.stackBarWidget.getValue().aggregationOperator] = singleBucket.doc_count;
       excelData.push(obj);
     });
-    this.widgetService.downloadCSV('StackBar-Chart',excelData);
+    this.widgetService.downloadCSV('StackBar-Chart', excelData);
   }
 
-  downloadImage(){
-      this.widgetService.downloadImage(this.chart.toBase64Image(),'StackBar-Chart.png');
+  downloadImage() {
+    this.widgetService.downloadImage(this.chart.toBase64Image(), 'StackBar-Chart.png');
   }
 
   emitEvtFilterCriteria(critera: Criteria[]): void {
@@ -681,40 +714,40 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
     // perform sort
     const orderWith = this.stackBarWidget.getValue().orderWith;
-    if(orderWith) {
-      if(orderWith === OrderWith.ROW_ASC) {
-        resBuckets.sort((a: any, b: any) =>{
+    if (orderWith) {
+      if (orderWith === OrderWith.ROW_ASC) {
+        resBuckets.sort((a: any, b: any) => {
           return a.doc_count - b.doc_count;
         });
-      } else if(orderWith === OrderWith.ROW_DESC) {
-        resBuckets.sort((a: any, b: any) =>{
+      } else if (orderWith === OrderWith.ROW_DESC) {
+        resBuckets.sort((a: any, b: any) => {
           return b.doc_count - a.doc_count;
         });
       }
     }
-    if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
+    if (this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
 
-      const insideRange = resBuckets.filter(bucket =>{
-        if(this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
+      const insideRange = resBuckets.filter(bucket => {
+        if (this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
           return bucket;
         }
       });
-      if(this.stackBarWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
-          if(insideRange[i]) {
-              finalDataSet.push(insideRange[i]);
+      if (this.stackBarWidget.getValue().dataSetSize) {
+        for (let i = 0; i < this.stackBarWidget.getValue().dataSetSize; i++) {
+          if (insideRange[i]) {
+            finalDataSet.push(insideRange[i]);
           }
         }
       } else {
         finalDataSet = insideRange;
       }
     } else {
-      if(this.stackBarWidget.getValue().dataSetSize) {
-        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
-          if(resBuckets[i]) {
-              finalDataSet.push(resBuckets[i]);
+      if (this.stackBarWidget.getValue().dataSetSize) {
+        for (let i = 0; i < this.stackBarWidget.getValue().dataSetSize; i++) {
+          if (resBuckets[i]) {
+            finalDataSet.push(resBuckets[i]);
           }
         }
       } else {
@@ -728,47 +761,47 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * Use for set scale range and axis labels
    */
   setChartAxisAndScaleRange() {
-    if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
+    if (this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
-        const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
-        if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.barChartOptions.scales = {
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
-              },ticks
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
-              },
-              ticks : {
-                padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
-              }
-            }]
-          }
-        } else {
-          this.barChartOptions.scales = {
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
-              },
-              ticks : {
-                padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
-              }
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
-              },ticks
-            }]
-          }
+      const ticks = { min: this.stackBarWidget.getValue().scaleFrom, max: this.stackBarWidget.getValue().scaleTo, stepSize: this.stackBarWidget.getValue().stepSize };
+      if (this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
+        this.barChartOptions.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+            }, ticks
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+            },
+            ticks: {
+              padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ? 40 : 0
+            }
+          }]
         }
+      } else {
+        this.barChartOptions.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+            },
+            ticks: {
+              padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ? 20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+            }, ticks
+          }]
+        }
+      }
     } else {
       this.barChartOptions.scales = {
         xAxes: [{
@@ -806,8 +839,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     req.reportId = String(this.reportId);
     req.widgetDesc = this.widgetHeader.desc;
     req.colorPalettes = [];
-    this.barChartData.forEach(row=>{
-      req.colorPalettes.push({code:row.fieldCode,colorCode:row.backgroundColor,text:row.label});
+    this.barChartData.forEach(row => {
+      req.colorPalettes.push({ code: row.fieldCode, colorCode: row.backgroundColor, text: row.label });
     });
     console.log(req);
     super.openColorPalette(req);
@@ -829,9 +862,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * @param code resposne code
    */
   getUpdatedColorCode(code: string): string {
-    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+    if (this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
       const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
-      if(res) {
+      if (res) {
         return res.colorCode;
       }
 
@@ -842,17 +875,17 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   checkTextCode(v: { c: string; t: string; }): string {
     switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
-        if(v.c) {
+        if (v.c) {
           return v.c;
         }
         break;
-        case DisplayCriteria.TEXT:
-          if(v.t) {
-            return v.t;
-          }
+      case DisplayCriteria.TEXT:
+        if (v.t) {
+          return v.t;
+        }
         break;
-        default:
-          return `${v.c || ''} -- ${v.t || ''}`;
+      default:
+        return `${v.c || ''} -- ${v.t || ''}`;
         break;
     }
     return '';
