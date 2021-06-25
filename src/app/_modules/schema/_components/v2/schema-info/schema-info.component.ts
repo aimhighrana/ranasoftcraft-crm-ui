@@ -117,7 +117,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   brSearchString = '';
 
-  brListFetchCount = 0 ;
+  brListFetchCount = 0;
 
   schemaLoader: any = {
     loading: false,
@@ -447,7 +447,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
       this.businessRuleData.forEach(element => {
-        if(!element.dependantStatus) {
+        if (!element.dependantStatus) {
           element.dependantStatus = 'ALL';
         }
       });
@@ -706,7 +706,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     filterCtrl.selectedValues = [];
 
     event.selectedValues.forEach((value) => {
-      if(value.FIELDNAME === filterCtrl.fieldId) {
+      if (value.FIELDNAME === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
         filterCtrl.selectedValues.push(value);
@@ -722,37 +722,37 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           return;
         }
         const filCtrl = subscriber.filterCriteria.find(fc => fc.fieldId === event.fldCtrl.fieldId);
-          if (filCtrl) {
+        if (filCtrl) {
 
-            filCtrl.values =  filterCtrl.values || [];
-            filCtrl.fldCtrl = filterCtrl.fldCtrl;
+          filCtrl.values = filterCtrl.values || [];
+          filCtrl.fldCtrl = filterCtrl.fldCtrl;
 
-            filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
-            filterCtrl.selectedValues.forEach(v => {
-              if(!filCtrl.selectedValues.some(value => value.CODE === v.CODE)) {
-                filCtrl.selectedValues.push(v);
-              }
-            });
+          filCtrl.selectedValues = filCtrl.selectedValues ? filCtrl.selectedValues.filter(sVal => filterCtrl.selectedValues.some(v => v.CODE === sVal.CODE)) : [];
+          filterCtrl.selectedValues.forEach(v => {
+            if (!filCtrl.selectedValues.some(value => value.CODE === v.CODE)) {
+              filCtrl.selectedValues.push(v);
+            }
+          });
 
-            filCtrl.textValues = [];
-            filCtrl.selectedValues.forEach(v => {
-              filCtrl.textValues.push(v.TEXT);
-            });
+          filCtrl.textValues = [];
+          filCtrl.selectedValues.forEach(v => {
+            filCtrl.textValues.push(v.TEXT);
+          });
 
-            const updateSubscriber: SchemaDashboardPermission = subscriber;
+          const updateSubscriber: SchemaDashboardPermission = subscriber;
 
-            delete updateSubscriber.userMdoModel;
+          delete updateSubscriber.userMdoModel;
 
-            updateSubscriber.sno = subscriber.sno.toString();
-            updateSubscriber.schemaId = this.schemaId;
-            this.schemaDetailsService.createUpdateUserDetails(Array(updateSubscriber)).subscribe(response => {
-              this.getSubscriberList(this.schemaId);
-            })
-          } else {
-            this.updateSubscriberInfo(sNo, exitingFilterCtrl)
-          }
+          updateSubscriber.sno = subscriber.sno.toString();
+          updateSubscriber.schemaId = this.schemaId;
+          this.schemaDetailsService.createUpdateUserDetails(Array(updateSubscriber)).subscribe(response => {
+            this.getSubscriberList(this.schemaId);
+          })
+        } else {
+          this.updateSubscriberInfo(sNo, exitingFilterCtrl)
         }
-      })
+      }
+    })
   }
 
 
@@ -764,7 +764,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     if (ctrl.values && ctrl.values.length > 1) {
       return String(ctrl.values.length);
     } else {
-      if(ctrl.textValues && ctrl.textValues.length) {
+      if (ctrl.textValues && ctrl.textValues.length) {
         return ctrl.textValues[0] || 'Unknown';
       } else {
         const selected = ctrl.selectedValues && ctrl.selectedValues.find(s => s.CODE === ctrl.values[0]);
@@ -949,7 +949,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
     this.businessRuleData.forEach((businessRule) => {
       sumOfAllWeightage = Number(businessRule.brWeightage) + sumOfAllWeightage;
-      if(businessRule.dep_rules && businessRule.dep_rules.length) {
+      if (businessRule.dep_rules && businessRule.dep_rules.length) {
         businessRule.dep_rules.forEach(rule => {
           sumOfAllWeightage = Number(rule.brWeightage) + sumOfAllWeightage;
         });
@@ -1023,20 +1023,20 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   getAllBusinessRulesList(moduleId: string, searchString: string, brType: string, loadMore?) {
     console.log('loading more ', loadMore);
     this.brSearchString = searchString || '';
-    if(loadMore) {
+    if (loadMore) {
       this.brListFetchCount++;
     } else {
       this.brListFetchCount = 0;
     }
     const getAllBrSubscription = this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, `${this.brListFetchCount}`).subscribe((rules: CoreSchemaBrInfo[]) => {
-      if(loadMore) {
-        if(rules && rules.length) {
+      if (loadMore) {
+        if (rules && rules.length) {
           this.allBusinessRulesList = [...this.allBusinessRulesList, ...rules];
         } else {
           this.brListFetchCount--;
         }
       } else {
-        this.allBusinessRulesList =rules || [];
+        this.allBusinessRulesList = rules || [];
       }
     }, (error) => {
       console.error('Error while getting all business rules list', error.message);
@@ -1136,7 +1136,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           error: false
         };
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        if(field) {
+        if (field) {
           this.toasterService.open(`Schema ${field} updated successfully.`, 'ok', {
             duration: 2000
           });
@@ -1160,13 +1160,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Function to call when schema threshold is changed in slider
    * @param $event: updated schema description.
    */
-   onChangeSchemaThreshold($event) {
+  onChangeSchemaThreshold($event) {
     console.log($event);
     if (this.schemaThresholdChanged.observers.length === 0) {
       this.schemaThresholdChanged
         .pipe(debounceTime(1000), distinctUntilChanged())
         .subscribe(threshold => {
-          this.updateSchemaInfo(this.schemaDetails.schemaDescription, {value: threshold}, 'threshold');
+          this.updateSchemaInfo(this.schemaDetails.schemaDescription, { value: threshold }, 'threshold');
         });
     }
     this.schemaThresholdChanged.next($event);
@@ -1284,18 +1284,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       type: ''
     }
 
-    if(this.schemaSummaryForm.controls[controlName].touched) {
-      if(this.schemaSummaryForm.controls[controlName].value) {
+    if (this.schemaSummaryForm.controls[controlName].touched) {
+      if (this.schemaSummaryForm.controls[controlName].value) {
         status.icon = 'clock';
         status.font = '';
         status.type = '';
 
-        if(!loader.loading && loader.error) {
+        if (!loader.loading && loader.error) {
           status.icon = 'exclamation-circle';
           status.type = 'error';
           status.font = 'solid';
         }
-        if(!loader.loading && !loader.error) {
+        if (!loader.loading && !loader.error) {
           status.icon = 'check';
           status.type = 'success';
         }
