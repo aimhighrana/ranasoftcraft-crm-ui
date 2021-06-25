@@ -218,10 +218,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
    */
   loadUDRValueControl(searchString = this.singleInput) {
     const metadata = this.parseMetadata(this.fieldId);
-    if (metadata) {
-      metadata.picklist = '0';
-      metadata.dataType = 'TIMS';
-    }
     this.selectedMetaData = metadata;
     const pickLists = ['1', '4', '30', '35', '37'];
     if (!metadata || !pickLists.includes(metadata.picklist)) {
