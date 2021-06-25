@@ -871,13 +871,22 @@
                                                     || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHEN'
                                                     || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHENEQUALTO'"
                                                         [ngIfElse]="fieldvalue">
-                                                        <pros-workflowfield-control
-                                                            [objectType]="selStyleWid && selStyleWid.objectType"
-                                                            label="Field "
-                                                            [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
-                                                            (selectionChange)='onDefaultFilterChange($event,i)'
-                                                            class="field-divider">
-                                                        </pros-workflowfield-control>
+                                                        <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
+                                                            <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType" lebel="Field"
+                                                                [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
+                                                                (selectionChange)='onDefaultFilterEndValChange($event,i)'
+                                                                [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet" class="field-divider">
+                                                            </pros-metadatafield-control>
+                                                            <span class="col-spacer"></span>
+                                                        </ng-template>
+                                                        
+                                                        <ng-template
+                                                            [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
+                                                            <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType" label="Field "
+                                                                [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
+                                                                (selectionChange)='onDefaultFilterEndValChange($event,i)' class="field-divider">
+                                                            </pros-workflowfield-control>
+                                                        </ng-template>
                                                     </ng-template>
 
                                                     <ng-template #fieldvalue>
