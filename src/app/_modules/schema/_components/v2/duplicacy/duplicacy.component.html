@@ -8,13 +8,16 @@
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
 
             <mat-menu #menu="matMenu" class="navigation-menu">
+                <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateDataScopeList()">
+                    <button mat-menu-item (click)="variantChange('0')"> Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
+                    <div *ngIf="dataScope && dataScope.length">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                            {{scope.variantName}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
+                        </button>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
                 <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
-                <button mat-menu-item (click)="variantChange('0')"> Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
-                <ng-container *ngIf="dataScope && dataScope.length">
-                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                        {{scope.variantName}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
-                    </button>
-                </ng-container>
             </mat-menu>
         </ng-template>
         <div class="f-col-spacer-half"></div>

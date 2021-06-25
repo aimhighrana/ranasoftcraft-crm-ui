@@ -251,7 +251,7 @@
         <target>dados de verificação</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
@@ -333,9 +333,13 @@
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
         <target>regra de negócio</target>
+       <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">77</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
@@ -423,7 +427,7 @@
         <target>Habilitado</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">83</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -671,7 +675,7 @@
         <target>Limiar</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">50</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -687,7 +691,7 @@
         <target>escopo de dados</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">34</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\datascope-sidesheet\datascope-sidesheet.component.html</context>
@@ -703,7 +707,7 @@
         <target>escopo de dados add</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="name" datatype="html">
@@ -731,7 +735,7 @@
         <target>nome do esquema</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -2694,6 +2698,10 @@
         <source>Collaborators</source>
         <target>Colaboradores</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">210</context>
         </context-group>
@@ -2730,7 +2738,6 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-
        <trans-unit id="workFlowPath" datatype="html">
         <source>Workflow path</source>
         <target>Caminho de fluxo de trabalho</target>
@@ -2986,6 +2993,22 @@
       <trans-unit id="SLAWithinMore" datatype="html">
         <source>SLA Within More than a day</source>
         <target>SLA em mais de um dia</target>
+      </trans-unit>
+      <trans-unit id="schema_running_msg" datatype="html">
+        <source>This schema is running Click here to either track the progress or see result</source>
+        <target>Este esquema está em execução Clique aqui para acompanhar o progresso ou ver o resultado</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weight" datatype="html">
+        <source>Weight</source>
+        <target>Peso</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
       </trans-unit>
     </body>
   </file>

@@ -847,6 +847,10 @@
           &:hover {
             background: $color-app-hover;
           }
+
+          &.mat-menu-item-highlighted {
+            background: $color-app-hover;
+          }
         }
       }
 
@@ -1501,6 +1505,10 @@
               background-color: $color-app-hover;
             }
           }
+
+          .mat-list-item:hover {
+            background-color: $color-app-hover;
+          }
         }
 
         .section-header {
@@ -1820,6 +1828,27 @@
         mat-list.mat-list {
           mat-list-item.mat-list-item {
             border-bottom-color: $color-app-border;
+          }
+        }
+      }
+    }
+  }
+
+  pros-quality-rules,
+  pros-schema-migration {
+    div.root {
+      .colunm-box {
+        border-bottom: 1px solid $color-app-border;
+      }
+
+      .table-vertical {
+        tr.mat-row {
+          &:nth-child(odd) {
+            background: mat-color($background-palette, card);
+          }
+
+          .mat-cell {
+            border-bottom: 1px solid $color-app-border;
           }
         }
       }

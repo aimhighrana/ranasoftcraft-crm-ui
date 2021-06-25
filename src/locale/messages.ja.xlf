@@ -251,7 +251,7 @@
         <target>データをチェック</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
@@ -333,9 +333,13 @@
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
         <target>ビジネスルール</target>
+       <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">77</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
@@ -423,7 +427,7 @@
         <target>使用可能</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">83</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -671,7 +675,7 @@
         <target>しきい値</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">50</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -687,7 +691,7 @@
         <target>データスコープ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">34</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\datascope-sidesheet\datascope-sidesheet.component.html</context>
@@ -703,7 +707,7 @@
         <target>データスコープを追加します。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="name" datatype="html">
@@ -731,7 +735,7 @@
         <target>スキーマ名</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -2695,6 +2699,10 @@
         <source>Collaborators</source>
         <target>共同編集者</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">210</context>
         </context-group>
@@ -2731,7 +2739,6 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-
        <trans-unit id="workFlowPath" datatype="html">
         <source>Workflow path</source>
         <target>ワークフローパス</target>
@@ -2989,6 +2996,22 @@
         <target>1日以上以内のSLA</target>
       </trans-unit>
 
+      <trans-unit id="schema_running_msg" datatype="html">
+        <source>This schema is running Click here to either track the progress or see result</source>
+        <target>このスキーマは実行中です進行状況を追跡するか結果を確認するには、ここをクリックしてください</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weight" datatype="html">
+        <source>Weight</source>
+        <target>重量</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

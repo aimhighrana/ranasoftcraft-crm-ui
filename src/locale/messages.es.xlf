@@ -263,7 +263,7 @@
         <target>verificación de datos</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
@@ -347,7 +347,11 @@
         <target>De reglas de negocio</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">77</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
@@ -431,7 +435,7 @@
         <target>Activado</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">83</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -679,7 +683,7 @@
         <target>Umbral</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">50</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -695,7 +699,7 @@
         <target>alcance de datos</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">34</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\datascope-sidesheet\datascope-sidesheet.component.html</context>
@@ -711,7 +715,7 @@
         <target>Agregar datos de alcance</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="name" datatype="html">
@@ -739,7 +743,7 @@
         <target>nombre de esquema</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -1449,7 +1453,7 @@
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">379</context>
         </context-group>
-         <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">673</context>
         </context-group>
@@ -2450,7 +2454,7 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="import_report" datatype="html">
+      <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>Informe de importación</target>
         <context-group purpose="location">
@@ -2460,19 +2464,19 @@
       </trans-unit>
       <trans-unit id="upload_file" datatype="html">
         <source>Upload a file</source>
-       <target>Cargar un archivo</target>
+        <target>Cargar un archivo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
-          <target>Cargar un archivo de informe .mdopage</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <source>Upload a .mdopage report file</source>
+        <target>Cargar un archivo de informe .mdopage</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2507,12 +2511,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
-          <target>Descripción</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <source>Description</source>
+        <target>Descripción</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
@@ -2678,6 +2682,10 @@
         <source>Collaborators</source>
         <target>Colaboradores</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">210</context>
         </context-group>
@@ -2714,8 +2722,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-
-       <trans-unit id="workFlowPath" datatype="html">
+      <trans-unit id="workFlowPath" datatype="html">
         <source>Workflow path</source>
         <target>Ruta del flujo de trabajo</target>
         <context-group purpose="location">
@@ -2773,7 +2780,7 @@
       </trans-unit>
       <trans-unit id="DAY_20" datatype="html">
         <source>20 days</source>
-        <target>20 días</target>      
+        <target>20 días</target>
       </trans-unit>
       <trans-unit id="DAY_30" datatype="html">
         <source>30 days</source>
@@ -2970,8 +2977,24 @@
       <trans-unit id="SLAWithinMore" datatype="html">
         <source>SLA Within More than a day</source>
         <target>SLA en más de un día</target>
-      </trans-unit>  
+      </trans-unit>
 
+      <trans-unit id="schema_running_msg" datatype="html">
+        <source>This schema is running Click here to either track the progress or see result</source>
+        <target>Este esquema se está ejecutando Haga clic aquí para realizar un seguimiento del progreso o ver el resultado</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weight" datatype="html">
+        <source>Weight</source>
+        <target>Peso</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -251,7 +251,7 @@
         <target>검사 데이터</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
@@ -335,7 +335,11 @@
         <target>비즈니스 규칙</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">77</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
@@ -369,10 +373,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
           <context context-type="linenumber">55</context>
         </context-group>
-         <context-group purpose="location">
-         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
-         <context context-type="linenumber">22</context>
-       </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="br_category_tooltip_msg" datatype="html">
         <source>Dimension of data quality to be measured</source>
@@ -423,7 +427,7 @@
         <target>사용</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">83</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -671,7 +675,7 @@
         <target>문지방</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">50</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -687,7 +691,7 @@
         <target>데이터 범위</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">34</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\datascope-sidesheet\datascope-sidesheet.component.html</context>
@@ -703,7 +707,7 @@
         <target>추가 데이터 범위</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="name" datatype="html">
@@ -731,7 +735,7 @@
         <target>스키마 이름</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -1441,7 +1445,7 @@
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">379</context>
         </context-group>
-         <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">673</context>
         </context-group>
@@ -2434,7 +2438,7 @@
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
-         <trans-unit id="importLogs" datatype="html">
+      <trans-unit id="importLogs" datatype="html">
         <source>Import Logs</source>
         <target>로그 가져 오기</target>
         <context-group purpose="location">
@@ -2450,7 +2454,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="status" datatype="html">
+      <trans-unit id="status" datatype="html">
         <source>Status</source>
         <target>상태</target>
         <context-group purpose="location">
@@ -2458,7 +2462,7 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="updated" datatype="html">
+      <trans-unit id="updated" datatype="html">
         <source>Updated</source>
         <target>업데이트 됨</target>
         <context-group purpose="location">
@@ -2466,7 +2470,7 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="import_report" datatype="html">
+      <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>보고서 가져 오기</target>
         <context-group purpose="location">
@@ -2483,12 +2487,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
+        <source>Upload a .mdopage report file</source>
         <target>.mdopage 보고서 파일 업로드</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2523,12 +2527,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
+        <source>Description</source>
         <target>설명</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
@@ -2694,6 +2698,10 @@
         <source>Collaborators</source>
         <target>협력자</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">210</context>
         </context-group>
@@ -2730,8 +2738,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-
-       <trans-unit id="workFlowPath" datatype="html">
+      <trans-unit id="workFlowPath" datatype="html">
         <source>Workflow path</source>
         <target>워크 플로 경로</target>
         <context-group purpose="location">
@@ -2986,6 +2993,22 @@
       <trans-unit id="SLAWithinMore" datatype="html">
         <source>SLA Within More than a day</source>
         <target>하루 이상 이내 SLA</target>
+      </trans-unit>
+      <trans-unit id="schema_running_msg" datatype="html">
+        <source>This schema is running Click here to either track the progress or see result</source>
+        <target>이 스키마는 실행 중입니다. 진행 상황을 추적하거나 결과를 보려면 여기를 클릭하십시오.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weight" datatype="html">
+        <source>Weight</source>
+        <target>무게</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
       </trans-unit>
     </body>
   </file>

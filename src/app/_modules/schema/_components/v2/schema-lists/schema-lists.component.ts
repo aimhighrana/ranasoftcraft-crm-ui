@@ -33,6 +33,7 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
   outlet = 'sb';
 
   datasetCountMsg = 'There are 0 records in this dataset';
+  displayedColumns: string[] = ['schema', 'name', 'icon'];
 
   /**
    * constructor of class
