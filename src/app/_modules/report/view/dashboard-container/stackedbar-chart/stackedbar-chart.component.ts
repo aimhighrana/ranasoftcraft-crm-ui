@@ -8,6 +8,7 @@ import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperat
 import { ReportService } from '../../../_service/report.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { sortBy, groupBy, map, assign, sumBy, findIndex } from 'lodash';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -678,18 +679,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   transformDataSets(resBuckets: any[]): any[] {
     // ckeck configuration
     let finalDataSet: any[] = [];
-
+    const groupBY = this.stackBarWidget.getValue().groupById;
     // perform sort
     const orderWith = this.stackBarWidget.getValue().orderWith;
     if(orderWith) {
       if(orderWith === OrderWith.ROW_ASC) {
-        resBuckets.sort((a: any, b: any) =>{
-          return a.doc_count - b.doc_count;
-        });
+        resBuckets = this.sortByRow(groupBY,resBuckets);
       } else if(orderWith === OrderWith.ROW_DESC) {
-        resBuckets.sort((a: any, b: any) =>{
-          return b.doc_count - a.doc_count;
-        });
+        resBuckets = this.sortByRow(groupBY,resBuckets);
+      } else if(orderWith === OrderWith.COL_ASC) {
+        resBuckets = this.sortByColumnAsc(groupBY,resBuckets);
+      } else if(orderWith === OrderWith.COL_DESC) {
+        resBuckets = this.sortByColumnDesc(groupBY,resBuckets);
       }
     }
     if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
@@ -867,5 +868,49 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria);
+  }
+
+  sortByRow(groupBY: string, resBuckets: any[]) {
+    const sortedGroups = sortBy(resBuckets, (e) => {
+      return e.doc_count;
+    });
+
+    const groupedArray = groupBy(sortedGroups, (e) => {
+      return e.key[groupBY];
+    });
+
+    const mappedGroups = map(groupedArray, (x) => {
+      return assign({}, {
+        name: x[0].key[groupBY],
+        total: sumBy(x, 'doc_count')
+      });
+    });
+
+    const sortMapped = sortBy(mappedGroups, (e) => {
+      return e.total;
+    });
+    return sortBy(resBuckets, x => findIndex(sortMapped, y => x.key[groupBY] === y.name));
+  }
+
+  sortByColumnAsc(groupBY: string, resBuckets: any[]) {
+    resBuckets.sort((a, b) => {
+      if (isNaN(parseFloat(a.key[groupBY]))) {
+        return a?.key[groupBY]?.localeCompare(b.key[groupBY]);
+      } else {
+        return parseInt(a.key[groupBY], 10) - parseInt(b.key[groupBY], 10);
+      }
+    })
+    return resBuckets;
+  }
+
+  sortByColumnDesc(groupBY: string, resBuckets: any[]) {
+    resBuckets.sort((a, b) => {
+      if (isNaN(parseFloat(a.key[groupBY]))) {
+        return b?.key[groupBY]?.localeCompare(a.key[groupBY]);
+      } else {
+        return parseInt(b.key[groupBY], 10) - parseInt(a.key[groupBY], 10);
+      }
+    })
+    return resBuckets;
   }
 }
