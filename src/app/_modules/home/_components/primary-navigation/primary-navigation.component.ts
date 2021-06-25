@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenavContent } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { LoadingService } from '@services/loading.service';
   templateUrl: './primary-navigation.component.html',
   styleUrls: ['./primary-navigation.component.scss']
 })
-export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDestroy, AfterViewChecked {
   /**
    * To apply the CSS class on selection of primary navigation
    */
@@ -58,6 +58,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * To store count of notifications
    */
   notificationsCount = 0;
+  previousSideNavigationWidth : number;
   constructor(
     private userService: UserService,
     public matDialog: MatDialog,
@@ -92,8 +93,19 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngAfterViewInit() {
+    this.previousSideNavigationWidth =  this.secondaryContent.getElementRef().nativeElement.clientWidth;
   }
 
+/**
+ * angular hooks
+ */
+  ngAfterViewChecked() {
+    const currentWidth = this.secondaryContent.getElementRef().nativeElement.clientWidth;
+    if(currentWidth !== this.previousSideNavigationWidth) {
+      this.previousSideNavigationWidth = currentWidth;
+      this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
+    }
+  }
   ngOnDestroy() {
     this.udSub.unsubscribe();
     this.appStateSubject.complete();
@@ -155,6 +167,8 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       const widthPercent = ((window.innerWidth - newWidth) / window.innerWidth * 100);
       if (widthPercent > 70 && widthPercent < 94) {
         document.getElementById('secondarySidenav').style.width = newWidth + 'px';
+        document.getElementById('secondaryContent').style.marginLeft = newWidth+10+'px';
+        this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
       }
     }
   }
@@ -173,8 +187,9 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * function to modify the width of secondary sidebar
    */
   toggleSecondarySideBar() {
-    console.log('secondaryContent', this.secondaryContent);
-    this.secondarySideBarOpened =! this.secondarySideBarOpened;
+    console.log('secondaryContentet', this.secondaryContent);
+    this.secondarySideBarOpened = !this.secondarySideBarOpened;
+    this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
     this.appStateSubject.next(true);
   }
 
