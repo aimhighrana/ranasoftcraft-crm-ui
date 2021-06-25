@@ -747,13 +747,25 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       });
     }
 
-    if (this.isTotalShown && !(this.filterCriteria[0] && this.filterCriteria[0].conditionFieldValue !== 'Total')) {
-      this.lablels.push('Total');
-      if(total){
-        finalDataSet.push(total.toString());
-        this.total = total;
+    if (this.isTotalShown ) {
+      if(this.filterCriteria[0]) {
+        if(this.filterCriteria[0].conditionFieldValue === 'Total') {
+          this.lablels.push('Total');
+          if(total){
+            finalDataSet.push(total.toString());
+            this.total = total;
+          } else {
+            finalDataSet.push(this.total.toString());
+          }
+        }
       } else {
-        finalDataSet.push(this.total.toString());
+        this.lablels.push('Total');
+        if(total){
+          finalDataSet.push(total.toString());
+          this.total = total;
+        } else {
+          finalDataSet.push(this.total.toString());
+        }
       }
     }
     return finalDataSet;
