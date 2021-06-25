@@ -1,15 +1,45 @@
 <ng-container *ngIf="displayControl==='text' || displayControl==='number'">
-    <lib-input [type]="displayControl" [value]="value" (valueChange)="inputChanged($event)" [placeholder]="placeholder">
-    </lib-input>
+    <ng-template [ngIf]="!range" [ngIfElse]="textRangeField">
+        <lib-input [type]="displayControl" [value]="value" (valueChange)="inputChanged($event)"
+            [placeholder]="placeholder">
+        </lib-input>
+    </ng-template>
+    <ng-template #textRangeField>
+        <lib-input [type]="displayControl" [value]="rangeValue?.start" (valueChange)="inputChanged($event, 'start')"
+            [placeholder]="placeholder">
+        </lib-input>
+        <lib-input [type]="displayControl" [value]="rangeValue?.end" (valueChange)="inputChanged($event, 'end')"
+            [placeholder]="placeholder">
+        </lib-input>
+    </ng-template>
 </ng-container>
 <ng-container *ngIf="displayControl==='date'">
-    <lib-date-picker [selectedDate]="dateValue" (valueChange)="dateChanged($event)"></lib-date-picker>
+    <ng-template [ngIf]="!range" [ngIfElse]="dateRangeField">
+        <lib-date-picker [selectedDate]="dateValue" (valueChange)="dateChanged($event)"></lib-date-picker>
+    </ng-template>
+    <ng-template #dateRangeField>
+        <lib-date-range-picker [selectedDate]="dateRangeValue" (valueChange)="dateChanged($event)">
+        </lib-date-range-picker>
+    </ng-template>
 </ng-container>
 <ng-container *ngIf="displayControl==='datetime'">
-    <lib-date-time-picker [selectedDate]="dateValue" (valueChange)="dateChanged($event)"></lib-date-time-picker>
+    <ng-template [ngIf]="!range" [ngIfElse]="dateTimeRangeField">
+        <lib-date-time-picker [selectedDate]="dateValue" (valueChange)="dateChanged($event)"></lib-date-time-picker>
+    </ng-template>
+    <ng-template #dateTimeRangeField>
+        <lib-date-time-range-picker [selectedDate]="dateRangeValue" (valueChange)="dateChanged($event)">
+        </lib-date-time-range-picker>
+    </ng-template>
+
 </ng-container>
 <ng-container *ngIf="displayControl==='time'">
-    <lib-time-picker [selectedDate]="dateValue" (timeChange)="dateChanged($event)"></lib-time-picker>
+    <ng-template [ngIf]="!range" [ngIfElse]="timeRangeField">
+        <lib-time-picker [selectedDate]="dateValue" (timeChange)="dateChanged($event)"></lib-time-picker>
+    </ng-template>
+    <ng-template #timeRangeField>
+        <lib-time-range-picker [selectedDate]="dateValue" (timeChange)="timeChanged($event)"></lib-time-range-picker>
+    </ng-template>
+
 </ng-container>
 <mat-form-field *ngIf="displayControl==='dropdown' || displayControl==='radio'" appearance="outline">
     <input matInput [value]="value" (input)="inputChanged($event.target.value)" [matAutocomplete]="fieldsCtrl"

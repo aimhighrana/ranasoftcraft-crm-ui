@@ -27,9 +27,21 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   placeholder = 'Value';
 
   fieldList: Array<UDRDropdownValue> = [];
-  searchStr = '';
+  /**
+   * Hold single input value ....
+   */
+  singleInput = '';
+  /**
+   * Hold start and end value for range selections....
+   */
+  multipleInput = {
+    start: '',
+    end: ''
+  }
   @Output() valueChange = new EventEmitter();
   @Input() value: string;
+  @Input() rangeValue: { start: string; end: string; };
+  @Input() range = false;
   /**
    * Hold the metadata fields response ....
    */
@@ -71,9 +83,8 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   }
   subscriptions: Array<Subscription> = [];
   searchSub: Subject<string> = new Subject();
-  get dateValue() {
-    return this.value ? new Date(this.value) : null;
-  }
+  dateValue: Date;
+  dateRangeValue: { start: Date; end: Date } = { start: null, end: null };
   constructor(
     private schemaDetailsService: SchemaDetailsService
   ) { }
@@ -88,10 +99,17 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     if (changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue
       || changes.metataData && changes.metataData.previousValue !== changes.metataData.currentValue
       || changes.value && changes.value.previousValue !== changes.value.currentValue
+      || changes.rangeValue && changes.rangeValue.previousValue !== changes.rangeValue.currentValue
     ) {
-      this.searchStr = this.value || '';
+      this.singleInput = this.value || '';
       this.loadUDRValueControl();
     }
+    this.dateValue = this.value ? new Date(this.value) : null;
+    this.dateRangeValue = {
+      start: this.rangeValue?.start ? new Date(this.rangeValue.start) : null,
+      end: this.rangeValue?.end ? new Date(this.rangeValue.end) : null
+    }
+    console.log('Date Range value:::', this.dateRangeValue);
   }
 
   ngOnInit(): void {
@@ -107,32 +125,53 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Should send changed text to parent
    */
-  inputChanged(searchStr) {
-    if (this.displayControl === 'radio') {
-      this.searchStr = '';
+  inputChanged(searchStr, field = '') {
+    if (this.range) {
+      this.multipleInput[field] = searchStr;
     } else {
-      this.searchStr = searchStr;
+      if (this.displayControl === 'radio') {
+        this.singleInput = '';
+      } else {
+        this.singleInput = searchStr;
+      }
+      this.searchSub.next(searchStr);
     }
-    this.searchSub.next(searchStr);
-    this.valueChange.emit(this.searchStr);
+    this.emit();
   }
 
   dateChanged(date: any) {
-    this.inputChanged(date.toString());
+    if (this.range) {
+      this.inputChanged(date.start?.toString() || null, 'start');
+      this.inputChanged(date.end?.toString() || null, 'end');
+    } else {
+      this.inputChanged(date.toString());
+    }
   }
+
+  timeChanged(date: any, field = '') {
+    const time = date.toString() || null;
+    if (this.range) {
+      this.inputChanged(time, 'start');
+    } else {
+      this.inputChanged(time);
+    }
+  }
+
   /**
    * Should return selected object to parent
    * @param $event current dropdown event
    */
   selected($event) {
     const searchStr = $event.option.viewValue;
-    this.searchStr = searchStr;
+    this.singleInput = searchStr;
     this.searchSub.next(searchStr);
-    this.valueChange.emit(this.searchStr);
+    this.emit();
   }
+
   checkboxChanged($event) {
     this.valueChange.emit(`${$event}`);
   }
+
   /**
    * Should return required meta data field
    * @param fieldId field name string
@@ -159,11 +198,16 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     return null;
   }
+
   /**
    * Should update value control type and data
    */
-  loadUDRValueControl(searchString = this.searchStr) {
+  loadUDRValueControl(searchString = this.singleInput) {
     const metadata = this.parseMetadata(this.fieldId);
+    /*if (metadata) {
+      metadata.picklist = '0';
+      metadata.dataType = 'TIMS';
+    }*/
     this.selectedMetaData = metadata;
     const pickLists = ['1', '4', '30', '35', '37'];
     if (!metadata || !pickLists.includes(metadata.picklist)) {
@@ -179,5 +223,14 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       this.fieldList = [];
       console.error('Error while loading dropdown values', error);
     });
+  }
+
+  /**
+   * Should emit range or single value to the parent component
+   */
+  emit() {
+    this.valueChange.emit(
+      this.range ? this.multipleInput : this.singleInput
+    );
   }
 }
