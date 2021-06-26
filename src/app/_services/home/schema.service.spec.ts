@@ -598,7 +598,7 @@ describe('SchemaService', () => {
     const mockResponse = new SchemaStaticThresholdRes();
 
     // actual service call
-    schemaService.getSchemaThresholdStatics(schemaId).subscribe(actualData => {
+    schemaService.getSchemaThresholdStatics(schemaId,'556757',['2342675']).subscribe(actualData => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -700,7 +700,7 @@ describe('SchemaService', () => {
     endpointServiceSpy.getSchemaExecutionTree.and.returnValue(url);
 
     const httpMockData = new SchemaExecutionTree();
-    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus).subscribe(data => {
+    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus,['87687687785']).subscribe(data => {
       expect(data).toEqual(httpMockData);
     });
 
