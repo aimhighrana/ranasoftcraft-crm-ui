@@ -672,4 +672,9 @@ describe('EndpointsRuleService', () => {
     const serObj = new EndpointsRuleService();
     expect(serObj.getBuisnessRulesBasedOnRunUrl()).toContain('/schema/metadata/get-running-brs');
   }));
+
+  it('cancleSchemaUri()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.cancleSchemaUri()).toContain('/schema/cancle-schema');
+  }));
 });
