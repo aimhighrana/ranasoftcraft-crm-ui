@@ -1,12 +1,28 @@
+<ng-template [ngIf]="errorMessage">
+    <div class="f-col">
+        <span class="row-spacer"></span>
+        <lib-banner [text]="errorMessage" status="error"></lib-banner>
+    </div>    
+</ng-template>
 <div class="f-col state-container" *ngIf="!isFileUploading">
-    <div class="heading-text">Running data check...</div>
-    <p class="label-text">
-        Running business rule {{schemaProgress?.completedRules}} of {{schemaProgress?.totalRules}} - {{schemaProgress?.ruleDesc}}
-    </p>
-    <mat-progress-bar mode="determinate" [value]="schemaProgress?.percentage"></mat-progress-bar>
+    <ng-template [ngIf]="isInLoading" [ngIfElse]="normalState">
+        <lib-spinner type="minor"></lib-spinner>
+    </ng-template>
+
+    <ng-template #normalState>
+        <div class="heading-text">Running data check...</div>
+        <p class="label-text">
+            Running business rule {{schemaProgress?.completedRules}} of {{schemaProgress?.totalRules}} - {{schemaProgress?.ruleDesc}}
+        </p>
+        <lib-progress mode="determinate" [value]="schemaProgress?.percentage"></lib-progress>
+        <div class="f-col">
+            <span class="row-spacer"></span>
+            <lib-button type="minor" (afterClick)="cancleSchema()">Cancle</lib-button>
+        </div>
+    </ng-template>
 </div>
 
 <div class="f-col state-container" *ngIf="isFileUploading">
     <div class="heading-text">Uploading Data...</div>
-    <mat-progress-bar mode="determinate" [value]="dataUploadedPercent"></mat-progress-bar>
+    <lib-progress mode="determinate" [value]="dataUploadedPercent"></lib-progress>
 </div>

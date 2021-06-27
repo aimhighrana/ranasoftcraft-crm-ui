@@ -23,7 +23,7 @@ describe('SchemaService', () => {
     'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
     'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
     'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
-    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree', 'getModuleInfoByModuleIdUrl', 'getBuisnessRulesBasedOnRunUrl']);
+    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree', 'getModuleInfoByModuleIdUrl', 'getBuisnessRulesBasedOnRunUrl', 'cancleSchemaUri']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
     'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
     const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount', 'downloadExecutionDetailsByNodesUrl']);
@@ -603,7 +603,7 @@ describe('SchemaService', () => {
     });
     // mocking http
     const httpReq = httpTestingController.expectOne(`${url}`);
-    expect(httpReq.request.method).toEqual('GET');
+    expect(httpReq.request.method).toEqual('POST');
     httpReq.flush(mockResponse);
     // verify http
     httpTestingController.verify();
@@ -705,7 +705,7 @@ describe('SchemaService', () => {
     });
 
     const httpReq = httpTestingController.expectOne(url);
-    expect(httpReq.request.method).toEqual('GET');
+    expect(httpReq.request.method).toEqual('POST');
     httpReq.flush(httpMockData);
 
     httpTestingController.verify();
@@ -763,6 +763,22 @@ describe('SchemaService', () => {
 
     const httpReq = httpTestingController.expectOne(`${url}?schemaId=7575757`);
     expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(httpMockData);
+
+    httpTestingController.verify();
+  }));
+
+  it('cancleSchema() cancle schema ', async(() => {
+
+    const url = 'test cancle schema ';
+    endpointServiceSpy.cancleSchemaUri.and.returnValue(url);
+    const httpMockData = {acknowledge: true};
+    schemaService.cancleSchema('7575757').subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(`${url}?schemaId=7575757`);
+    expect(httpReq.request.method).toEqual('GET');
     httpReq.flush(httpMockData);
 
     httpTestingController.verify();

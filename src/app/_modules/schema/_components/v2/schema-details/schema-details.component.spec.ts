@@ -109,10 +109,11 @@ describe('SchemaDetailsComponent', () => {
 
   it('getSchemaStatics(), get schema statics .. ', async(()=>{
 
-    spyOn(schemaService,'getSchemaThresholdStatics').withArgs(component.schemaId, component.variantId)
+    component.appliedBrList = [{brIdStr:'342332'} as CoreSchemaBrInfo];
+    spyOn(schemaService,'getSchemaThresholdStatics').withArgs(component.schemaId, component.variantId,['342332'])
       .and.returnValues(of(new SchemaStaticThresholdRes()), throwError({message: 'api error'}));
     component.getSchemaStatics();
-    expect(schemaService.getSchemaThresholdStatics).toHaveBeenCalledWith(component.schemaId, component.variantId);
+    expect(schemaService.getSchemaThresholdStatics).toHaveBeenCalledWith(component.schemaId, component.variantId,['342332']);
 
     spyOn(console, 'error');
     component.getSchemaStatics();

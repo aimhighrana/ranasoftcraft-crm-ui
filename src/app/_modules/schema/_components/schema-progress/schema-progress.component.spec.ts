@@ -1,14 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SchemaProgressComponent } from './schema-progress.component';
+
 
 describe('SchemaProgressComponent', () => {
   let component: SchemaProgressComponent;
@@ -22,7 +24,8 @@ describe('SchemaProgressComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
-        SharedModule
+        SharedModule,
+        RouterTestingModule
       ]
     })
     .compileComponents();
@@ -108,5 +111,20 @@ describe('SchemaProgressComponent', () => {
     tick(component.progressHttpCallInterval);
     expect(component.getFileUploadProgress).toHaveBeenCalled();
     discardPeriodicTasks();
+  }));
+
+  it('cancleSchema(), cancle the schema execution ', async(()=>{
+    component.schemaId = '273737127';
+    // spy the service
+    spyOn(schemaService, 'cancleSchema').withArgs(component.schemaId).and.returnValue(of({acknowledge:true}, throwError('500')));
+    spyOn(component.runCompleted, 'emit');
+    component.cancleSchema();
+
+    expect(component.isInLoading).toBeFalse();
+    expect(component.runCompleted.emit).toHaveBeenCalled();
+
+    component.cancleSchema();
+    expect(component.isInLoading).toBeFalse();
+
   }));
 });

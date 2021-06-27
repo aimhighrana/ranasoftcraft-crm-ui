@@ -682,4 +682,12 @@ export class EndpointsRuleService {
   public getBuisnessRulesBasedOnRunUrl(): string {
     return `${this.origin}/schema/metadata/get-running-brs`;
   }
+
+  /**
+   * Cancle schema uri
+   * @returns will return the url
+   */
+  public cancleSchemaUri(): string{
+    return `${this.origin}/schema/cancle-schema`;
+  }
 }

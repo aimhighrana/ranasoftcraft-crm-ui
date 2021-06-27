@@ -378,4 +378,13 @@ export class SchemaService {
   public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
     return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString,from:0,size:10 } , {params:{schemaId}});
   }
+
+  /**
+   * Cancle the schema ....
+   * @param schemaId canncle the schema based on this schema id
+   * @returns the obserable as a response
+   */
+  public cancleSchema(schemaId: string): Observable<any> {
+    return this.http.get(this.endpointService.cancleSchemaUri(), {params:{schemaId}});
+  }
 }
