@@ -364,6 +364,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           this.activeNode = treeArray.find(n => n.nodeId === nodeId);
           this.selectedNodeChange(params);
       });
+
+      // get the business rules based on last execution
+      this.appliedBrList = [];
+      this.businessRulesBasedOnLastRun('');
     }
 
     this.manageStaticColumns();
@@ -490,8 +494,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
 
-    // get the business rules based on
-    this.businessRulesBasedOnLastRun('');
   }
 
   selectedNodeChange(params: ParamMap) {
@@ -521,7 +523,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
-    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
+    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId, this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : []).subscribe(res => {
       this.statics = res;
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
@@ -534,7 +536,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service to get schema execution tree
    */
   getSchemaExecutionTree(plantCode, userName) {
-    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab, this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : []).subscribe(res => {
       this.executionTreeHierarchy = res;
       this.executionTreeObs.next(res);
       }, error => {
@@ -808,7 +810,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
-    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId) {
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId && (this.activeTab === 'outdated' || this.activeTab === 'skipped')) {
       return;
     }
 
@@ -853,7 +855,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   isFieldEditable(fldid) {
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable) {
+    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable && !(this.activeTab === 'outdated') && !(this.activeTab === 'skipped')) {
       return true;
     }
 
@@ -878,7 +880,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       viewContainerRef.clear();
 
       inpCtrl.style.display = 'none';
-      viewCtrl.innerText = value;
+      viewCtrl.innerText = value !== 'undefined' ? value : '';
       viewCtrl.style.display = 'block';
 
       // DO correction call for data
@@ -1253,7 +1255,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     // binding dynamic component inputs/outputs
     componentRef.instance.fieldId = fldid;
     componentRef.instance.inputType = this.getFieldInputType(fldid);
-    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] ? row[fldid].oldData : '');
+    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] && row[fldid].oldData ? row[fldid].oldData : (row[fldid] && row[fldid].fieldData ?row[fldid].fieldData: ''));
     // componentRef.instance.value =  row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
