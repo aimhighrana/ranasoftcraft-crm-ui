@@ -1,9 +1,10 @@
 div.root {
   user-select: none;
-  padding: 0 16px;
+  padding: 10px 16px;
   overflow: hidden;
   overflow-y: auto;
   height: calc(100% - 10px);
+  box-sizing: border-box;
 
   .summary-root {
     padding: 16px 0;

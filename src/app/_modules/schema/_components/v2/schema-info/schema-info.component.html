@@ -11,6 +11,8 @@
                 [statusBadgePosition]="{ top: -10, right: -5 }" badgeIconFont="default" badgeType=""></lib-button>
             <lib-button *ngIf="!scheduleInfo" class="badge" icon="clock" (click)="openScheduleSideSheet()" type="minor">
             </lib-button>
+            <lib-button type="minor" icon="chart-line" (click)="openExecutionTrendSidesheet()">
+            </lib-button>
         </lib-button-group>
     </div>
 
@@ -19,13 +21,12 @@
         <form [formGroup]="schemaSummaryForm">
             <div class="f-col schema-list">
                 <ng-container *ngIf="schemaDetails">
-                    <lib-banner *ngIf="schemaDetails.isInRunning"
-                        status="info" i18n-text="@@schema_running_msg"
+                    <lib-banner *ngIf="schemaDetails.isInRunning" status="info" i18n-text="@@schema_running_msg"
                         [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
                         text="This schema is running Click here to either track the progress or see result">
                     </lib-banner>
-                    <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'" status="info"
-                        i18n-text="@@schema_running_msg"
+                    <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'"
+                        status="info" i18n-text="@@schema_running_msg"
                         [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
                         text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
                     </lib-banner>
@@ -41,8 +42,8 @@
 
                 <div class="f-col mdo-field">
                     <lib-text-line type="xsmall" weight="strong">
-                        <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon class="tooltip-icon" fontSet="mdo-icons"
-                            iconFontType="solid">
+                        <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon class="tooltip-icon"
+                            fontSet="mdo-icons" iconFontType="solid">
                             question-circle
                         </mat-icon>
                         <span class="mandatory">*</span>
@@ -78,7 +79,8 @@
 
                 <div class="f-col mdo-field">
                     <lib-text-line type="xsmall" weight="strong">
-                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon class="tooltip-icon" fontSet="mdo-icons">
+                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon class="tooltip-icon"
+                            fontSet="mdo-icons">
                             question-circle
                         </mat-icon>
                     </lib-text-line>
@@ -89,7 +91,8 @@
                 <div class="row-spacer"></div>
                 <div class="row-spacer"></div>
                 <div class="f-col mdo-field">
-                    <lib-text-line type="xsmall" i18n="@@business_rule" weight="strong">Business rule <span class="mandatory">*</span></lib-text-line>
+                    <lib-text-line type="xsmall" i18n="@@business_rule" weight="strong">Business rule <span
+                            class="mandatory">*</span></lib-text-line>
                     <div class="mdo-auto-select">
                         <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add"
                             fieldLabel="Type rule name to add" (openCustomDialog)="openBrLibrarySideSheet()"
@@ -124,7 +127,8 @@
                                     </lib-button>
                                 </div>
                                 <div class="col col-x4">
-                                    <lib-text-line class="br-text-line" (click)="editBr(businessRule)" type="base" textColor="link">{{businessRule.brInfo}}</lib-text-line>
+                                    <lib-text-line class="br-text-line" (click)="editBr(businessRule)" type="base"
+                                        textColor="link">{{businessRule.brInfo}}</lib-text-line>
                                 </div>
 
                                 <div class="col col-x8">
@@ -178,7 +182,8 @@
                                             </lib-button>
                                         </div>
                                         <div class="col col-x4">
-                                            <lib-text-line class="br-text-line" (click)="editBr(deps)" type="base" textColor="link">{{deps.brInfo}}</lib-text-line>
+                                            <lib-text-line class="br-text-line" (click)="editBr(deps)" type="base"
+                                                textColor="link">{{deps.brInfo}}</lib-text-line>
                                         </div>
 
                                         <div class="col col-x8">

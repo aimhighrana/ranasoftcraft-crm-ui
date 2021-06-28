@@ -1456,4 +1456,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     });
   }
 
+  openExecutionTrendSidesheet() {
+    const schema = this.schemaDetails;
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+  }
 }
