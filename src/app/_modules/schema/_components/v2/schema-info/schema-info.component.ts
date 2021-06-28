@@ -11,7 +11,7 @@ import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable'
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
+import { AddFilterOutput} from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -246,7 +246,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       if (module) {
         this.schemaDetails.moduleDescription = module.moduleDesc;
         this.schemaDetails.moduleId = module.moduleId;
-        this.module = module.datasetCount;
+        this.module = module;
       }
     }, error => {
       console.error('Error: {}', error.message);
