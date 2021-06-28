@@ -28,7 +28,7 @@
     <div class="f-spacer"></div>
 
     <div class="f-row global-menu">
-        <lib-button type="minor" class="lib-button check-data" [matMenuTriggerFor]="navigation" iconFontType="solid"
+        <lib-button type="minor" class="lib-button check-data" [matMenuTriggerFor]="navigation" iconFontType="solid" *ngIf="(isNavSelected === 'welcome' || isNavSelected==='schema')"
             icon="caret-down">Check data</lib-button>
 
         <mat-menu #navigation="matMenu" xPosition="before" class="navigation-menu">
