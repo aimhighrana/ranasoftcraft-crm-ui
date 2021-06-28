@@ -61,6 +61,7 @@ describe('SchemaInfoComponent', () => {
       ],
       providers: [{
           provide: ActivatedRoute,
+          GlobaldialogService,
           useValue: {params: of({moduleId: '1005', schemaId: '123'})}
         }]
     })
@@ -779,7 +780,7 @@ describe('SchemaInfoComponent', () => {
 
     spyOn(router, 'navigate');
     spyOn(schemaService, 'deleteSChema').and.returnValue(of(true));
-
+    spyOn(globalDialogService, 'confirm').and.callFake((a, b) => b('yes'));
     component.deleteSchema();
     expect(schemaService.deleteSChema).toHaveBeenCalled();
 
@@ -877,7 +878,7 @@ describe('SchemaInfoComponent', () => {
       brType: 'TRANSFORMATION',
       dep_rules: []
     } as CoreSchemaBrInfo
-    const event = { value: RuleDependentOn.SUCCESS };
+    const event = RuleDependentOn.SUCCESS;
     component.updateDepRule(br, event);
     expect(component.businessRuleData.length).toEqual(1);
 
@@ -950,7 +951,7 @@ describe('SchemaInfoComponent', () => {
       brType: 'TRANSFORMATION',
       dep_rules: []
     } as CoreSchemaBrInfo
-    const event = { value: RuleDependentOn.ALL };
+    const event = RuleDependentOn.ALL;
     component.updateDepRule(br, event);
     expect(component.businessRuleData.length).toEqual(2);
 
