@@ -142,6 +142,7 @@ export class FilterWidget {
     fieldId: string;
     isMultiSelect: boolean;
     metaData: MetadataModel;
+    orderWith: string;
 }
 
 export interface DropDownValues {
@@ -625,4 +626,9 @@ export enum ReportCategory {
     DUPLICATE_REPORT = 'DUPLICATE_REPORT',
     MISSING_MODULE = 'MISSING_MODULE',
     MISSING_FIELDS = 'MISSING_FIELDS',
+}
+
+export interface Buckets {
+    doc_count: string,
+    key: string,
 }
