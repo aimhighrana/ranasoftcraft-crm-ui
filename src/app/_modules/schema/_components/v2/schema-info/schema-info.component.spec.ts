@@ -1091,6 +1091,7 @@ describe('SchemaInfoComponent', () => {
       component.selectDataScope();
       expect(component.dataScopeName.value).toEqual('Entire data scope');
     }));
+
     it('getBusinessRulesLength(), should get business rules length', async(() => {
       component.businessRuleData= [{
         dep_rules: [{}]
