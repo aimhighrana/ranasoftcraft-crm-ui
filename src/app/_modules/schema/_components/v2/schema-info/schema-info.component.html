@@ -13,6 +13,11 @@
             </lib-button>
             <lib-button type="minor" icon="chart-line" (click)="openExecutionTrendSidesheet()">
             </lib-button>
+            <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="menu"></lib-button>
+            <mat-menu #menu="matMenu">
+                <button (click)="deleteSchema()" mat-menu-item>Delete</button>
+            </mat-menu>
+
         </lib-button-group>
     </div>
 

@@ -1264,14 +1264,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   deleteSchema() {
-    this.schemaService.deleteSChema(this.schemaId)
-      .subscribe(resp => {
-        this.router.navigate(['home', 'schema', this.moduleId]);
-        this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
-      }, error => {
-        this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
-      })
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response === 'yes') {
+        this.schemaService.deleteSChema(this.schemaId)
+        .subscribe(resp => {
+          this.router.navigate(['home', 'schema', this.moduleId]);
+          this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
+          this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
+        }, error => {
+          this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
+        });
+      }
+    });
   }
 
   get getBusinessRulesLength() {
