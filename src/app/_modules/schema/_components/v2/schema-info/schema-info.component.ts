@@ -56,7 +56,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /** To have variant details of a schema */
   variantDetails: VariantDetails[];
-
+  entireDataSetCount = 0;
+  /**
+   * formcontrol for data scope
+   */
+  dataScopeControl: FormControl = new FormControl('0');
+  dataScopeName: FormControl = new FormControl('Entire data scope');
+  currentVariantCnt = 0;
   /**
    * To have the info about schedule
    */
@@ -136,6 +142,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private toasterService: TransientService,
     private globalDialogService: GlobaldialogService
   ) {
+    window['abu'] = this;
   }
 
   /**
@@ -237,6 +244,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       if (module) {
         this.schemaDetails.moduleDescription = module.moduleDesc;
         this.schemaDetails.moduleId = module.moduleId;
+        this.entireDataSetCount = module.datasetCount;
       }
     }, error => {
       console.error('Error: {}', error.message);
@@ -1315,4 +1323,40 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     })
   }
 
+  setDataScopeName(variantId) {
+    if (variantId && variantId !== '0') {
+      const variant = this.variantDetails.find((x) => x.variantId === variantId);
+      if (variant && variant.variantName) {
+        this.dataScopeName.setValue(variant.variantName);
+        this.dataScopeControl.setValue(variantId);
+        this.currentVariantCnt = variant.dataScopeCount || 0;
+      }
+    } else {
+      this.dataScopeName.setValue('Entire data scope');
+      this.dataScopeControl.setValue('0');
+      this.currentVariantCnt = this.entireDataSetCount;
+    }
+  }
+
+  selectDataScope() {
+    this.setDataScopeName(this.dataScopeName.value);
+  }
+
+  resetLastScope() {
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        const variant = res.find((x) => x.variantId === this.dataScopeControl.value);
+        if (variant && variant.variantName) {
+          this.dataScopeName.setValue(variant.variantName);
+        }
+      }
+    }, error => {
+      console.log('Error while getting schema variants', error.message)
+    });
+  }
 }

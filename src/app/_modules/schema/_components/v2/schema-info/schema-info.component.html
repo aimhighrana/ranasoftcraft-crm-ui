@@ -19,31 +19,63 @@
     <div class="summary-root">
         <form [formGroup]="schemaSummaryForm">
             <div class="f-col schema-list">
-                <lib-banner *ngIf="schemaDetails?.isInRunning" status="info" i18n-text="@@schema_running_msg" [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
-                    text="This schema is running Click here to either track the progress or see result">
-                </lib-banner>
+                <ng-container *ngIf="schemaDetails">
+                    <lib-banner *ngIf="dataScopeName.value !== 'Entire data scope'" status="info"
+                        i18n-text="@@schema_running_msg"
+                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
+                        text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
+                    </lib-banner>
+                    <lib-banner *ngIf="dataScopeName.value === 'Entire data scope' && schemaDetails.isInRunning"
+                        status="info" i18n-text="@@schema_running_msg"
+                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
+                        text="This schema is running Click here to either track the progress or see result">
+                    </lib-banner>
+                </ng-container>
                 <div class="f-col">
-                    <lib-input (click)="schemaSummaryForm.controls.schemaName.markAsTouched()" formControlName="schemaName"
+                    <lib-input (click)="schemaSummaryForm.controls.schemaName.markAsTouched()"
+                        formControlName="schemaName"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
                         placeholder="Schema name" i18n-label="@@schema_name" label="Schema name"
-                        (afterBlur)="onChangeSchemaDescription(schemaSummaryForm.controls.schemaName.value);"></lib-input>
+                        (afterBlur)="onChangeSchemaDescription(schemaSummaryForm.controls.schemaName.value);">
+                    </lib-input>
                 </div>
-    
+
                 <div class="f-col mdo-field">
                     <lib-text-line type="xsmall" weight="strong">
-                        <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon fontSet="mdo-icons" iconFontType="solid">
+                        <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon fontSet="mdo-icons"
+                            iconFontType="solid">
                             question-circle
                         </mat-icon>
                     </lib-text-line>
-                    <mat-form-field appearance="outline">
-                        <mat-select>
-                            <mat-option i18n="@@add_data_scope" (click)="addDataScope()">Add data scope</mat-option>
-                            <mat-divider></mat-divider>
-                            <mat-option *ngFor="let variant of variantDetails" (click)="editDataScope(variant.variantId)">
-                                {{variant.variantName}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <div class="mdo-field-input data-scope-input">
+                        <input matInput placeholder="Type to search" #optionsInput [formControl]="dataScopeName"
+                            [matAutocomplete]="auto" (blur)="resetLastScope()" />
+                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                            (optionSelected)="selectDataScope()">
+                            <div class="datascope-scroll">
+                                <mat-option i18n="@@add_data_scope" (click)="addDataScope()">Add data scope</mat-option>
+                                <mat-divider></mat-divider>
+                                <mat-option value='0' i18n="@@entire_data_scope">
+                                    <div class="f-row">
+                                        <lib-text-line type="base">Entire data scope</lib-text-line>
+                                        <span class="f-spacer"></span>
+                                        <lib-text-line type="base">{{entireDataSetCount ? entireDataSetCount : 0}}
+                                        </lib-text-line>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
+                                    <div class="f-row">
+                                        <lib-text-line type="base">{{variant.variantName}}</lib-text-line>
+                                        <span class="f-spacer"></span>
+                                        <lib-text-line type="base">{{variant.dataScopeCount ? variant.dataScopeCount :
+                                            0}}</lib-text-line>
+                                    </div>
+                                </mat-option>
+                            </div>
+                        </mat-autocomplete>
+                    </div>
                 </div>
+
                 <div class="f-col mdo-field">
                     <lib-text-line type="xsmall" weight="strong">
                         <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon fontSet="mdo-icons">
@@ -74,7 +106,8 @@
                     <div class="f-row colunm-box">
                         <div class="col"></div>
                         <div class="col col-x4">
-                            <lib-text-line type="base" weight="strong" i18n="@@business_rule">Business rule</lib-text-line>
+                            <lib-text-line type="base" weight="strong" i18n="@@business_rule">Business rule
+                            </lib-text-line>
                         </div>
                         <div class="col col-x8 mat-item-center">
                             <lib-text-line type="base" weight="strong" i18n="@@weight">Weight</lib-text-line>
@@ -101,12 +134,14 @@
                                                 minValue="0"
                                                 (valueChange)="businessRule.brWeightage=$event;updateBr(businessRule,$event, 'slider')"
                                                 [value]="businessRule.brWeightage"
-                                                [maxValue]="availableWeightage(businessRule.brWeightage)" color="primary">
+                                                [maxValue]="availableWeightage(businessRule.brWeightage)"
+                                                color="primary">
                                             </lib-range-slider>
                                         </div>
                                     </div>
                                     <div class="col col-x4 mat-item-center">
-                                        <lib-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
+                                        <lib-checkbox color="primary"
+                                            [checked]="businessRule.status === '1' ? true : false"
                                             (valueChange)="updateBr(businessRule, $event, 'checkbox')"></lib-checkbox>
                                     </div>
                                     <div class="col mat-item-end">
@@ -126,16 +161,18 @@
                                             </div>
                                             <div class="col col-x8 mat-item-center">
                                                 <div class="f-row slider-row">
-                                                    <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1"
-                                                        minValue="0"
+                                                    <lib-range-slider class="lib-slider" thumbLabel="true"
+                                                        tickInterval="1" minValue="0"
                                                         (valueChange)="deps.brWeightage=$event; updateBr(deps,$event, 'slider')"
                                                         [value]="deps.brWeightage"
-                                                        [maxValue]="availableWeightage(deps.brWeightage)" color="primary">
+                                                        [maxValue]="availableWeightage(deps.brWeightage)"
+                                                        color="primary">
                                                     </lib-range-slider>
                                                 </div>
                                             </div>
                                             <div class="col col-x4 mat-item-center">
-                                                <lib-checkbox color="primary" [checked]="deps.status === '1' ? true : false"
+                                                <lib-checkbox color="primary"
+                                                    [checked]="deps.status === '1' ? true : false"
                                                     (valueChange)="updateBr(deps,$event, 'checkbox')"></lib-checkbox>
                                             </div>
                                             <div class="col mat-item-end">
@@ -159,16 +196,17 @@
                         <span i18n="@@collaborators">Collaborators</span>
                     </lib-text-line>
                     <div class="mdo-auto-select">
-                        <pros-form-input-autoselect i18n-fieldLabel="@@type_user_name" fieldLabel="Type user name to add"
-                            (openCustomDialog)="openSubscriberSideSheet()" [updatedOptionsList]="allSubscribers"
-                            [labelKey]="'fullName'" (optionSelectedEmit)="addSubscriber($event)"
-                            (emitSearchValue)="getCollaborators($event, 0)" i18n-extraOptionLabel="@@invite_people_to_team"
+                        <pros-form-input-autoselect i18n-fieldLabel="@@type_user_name"
+                            fieldLabel="Type user name to add" (openCustomDialog)="openSubscriberSideSheet()"
+                            [updatedOptionsList]="allSubscribers" [labelKey]="'fullName'"
+                            (optionSelectedEmit)="addSubscriber($event)" (emitSearchValue)="getCollaborators($event, 0)"
+                            i18n-extraOptionLabel="@@invite_people_to_team"
                             extraOptionLabel="Invite people to your team">
                         </pros-form-input-autoselect>
                     </div>
                     <ng-template [ngIf]="subscriberData.length>0" [ngIfElse]="subscriberNullState">
                         <div class="f-col">
-    
+
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col"></div>
                                 <div class="col col-x8">
@@ -195,11 +233,12 @@
                                         </lib-avatar>
                                         <mat-card-header *ngIf="false">
                                             <div mat-card-avatar *ngIf="subscriber.userMdoModel">
-                                                {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
+                                                {{shortName(subscriber.userMdoModel.fName,
+                                                subscriber.userMdoModel.lName)}}
                                             </div>
                                         </mat-card-header>
                                     </ng-template>
-    
+
                                     <ng-template #invitedUserProfile>
                                         <mat-card-header>
                                             <div mat-card-avatar>
@@ -208,7 +247,7 @@
                                         </mat-card-header>
                                     </ng-template>
                                 </div>
-    
+
                                 <div class="col col-x8">
                                     <mat-card-header>
                                         <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true"
@@ -217,7 +256,7 @@
                                                 {{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
                                             </mat-card-title>
                                         </ng-template>
-    
+
                                         <ng-template #isInvited>
                                             <mat-card-title>
                                                 {{subscriber.userid}}
@@ -225,7 +264,7 @@
                                         </ng-template>
                                     </mat-card-header>
                                 </div>
-    
+
                                 <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
                                     <lib-chip *ngIf="subscriber.isAdmin" i18n="@@admin" iconFontType="solid"
                                         icon="caret-down">
@@ -244,37 +283,38 @@
                                     <button mat-menu-item *ngFor="let role of roles"
                                         (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                                 </mat-menu>
-    
+
                                 <div class="col col-x16"></div>
                                 <div class="col col-x16">
                                     <mat-chip-list>
                                         <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
-    
+
                                             <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                                 [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                                 <label>
                                                     {{ ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown' }}
                                                     :
                                                 </label>
-    
+
                                                 <span class="info">
                                                     {{ prepareTextToShow(ctrl) }}
                                                 </span>
-    
-                                                <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">
+
+                                                <mat-icon matChipRemove
+                                                    (click)="removeAppliedFilter(ctrl, subscriber.sno)">
                                                     clear
                                                 </mat-icon>
                                             </mat-chip>
                                         </ng-template>
-    
+
                                         <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                             [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"
                                             *ngIf="subscriber.isInvited!==true">
                                             <mat-icon fontSet="mdo-icons">filter</mat-icon>
                                         </mat-chip>
-    
+
                                     </mat-chip-list>
-    
+
                                     <mat-menu #appliedfiltermenu="matMenu">
                                         <pros-filter-values [moduleId]="moduleId"
                                             (selectedValues)="fetchSelectedValues($event, subscriber.sno)"
@@ -282,7 +322,7 @@
                                             [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
                                         </pros-filter-values>
                                     </mat-menu>
-    
+
                                     <mat-menu #addfiltermenu="matMenu">
                                         <pros-add-filter-menu [moduleId]="moduleId"
                                             (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
@@ -290,10 +330,10 @@
                                         </pros-add-filter-menu>
                                     </mat-menu>
                                 </div>
-    
+
                                 <div class="col">
-                                    <lib-button type="plain" (click)="deleteSubscriber(subscriber.sno)" iconFontType="light"
-                                        icon="trash-alt"></lib-button>
+                                    <lib-button type="plain" (click)="deleteSubscriber(subscriber.sno)"
+                                        iconFontType="light" icon="trash-alt"></lib-button>
                                 </div>
                             </div>
                         </div>
