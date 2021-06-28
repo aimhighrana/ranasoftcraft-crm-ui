@@ -5,13 +5,12 @@
             {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}</lib-text-line>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button type="minor" i18n="@@check_data" (click)="openSummarySideSheet()">Check data</lib-button>
+            <lib-button type="minor" i18n="@@check_data" (click)="prepareData()">Check data</lib-button>
             <lib-button *ngIf="scheduleInfo" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="minor"
                 class="badge" icon="clock" matBadge prosStatusBadge [badgeIcon]="1"
                 [statusBadgePosition]="{ top: -10, right: -5 }" badgeIconFont="default" badgeType=""></lib-button>
             <lib-button *ngIf="!scheduleInfo" class="badge" icon="clock" (click)="openScheduleSideSheet()" type="minor">
             </lib-button>
-            <lib-button type="minor" icon="ellipsis-h"></lib-button>
         </lib-button-group>
     </div>
 

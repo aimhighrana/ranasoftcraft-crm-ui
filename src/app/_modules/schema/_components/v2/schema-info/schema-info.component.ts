@@ -11,7 +11,7 @@ import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable'
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddFilterOutput } from '@models/schema/schema';
+import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -19,6 +19,8 @@ import { forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
+import { SchemaExecutionRequest } from '@models/schema/schema-execution';
+import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 
 @Component({
   selector: 'pros-schema-info',
@@ -137,6 +139,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
     private schemaListService: SchemalistService,
+    private schemaExecutionService: SchemaExecutionService,
     private schemaVariantService: SchemaVariantService,
     private matSnackBar: MatSnackBar,
     private toasterService: TransientService,
@@ -1359,4 +1362,97 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       console.log('Error while getting schema variants', error.message)
     });
   }
+
+  /**
+   * Function to add business rules and subscribers
+   */
+  prepareData() {
+    const schemaId = this.schemaId;
+    const checkDataSubscriber = [];
+    const checkDataBrs = [];
+    const isFromCheckData = true;
+
+    this.subscriberData.forEach((subscriber) => {
+      subscriber.sno = subscriber.sno ? subscriber.sno : Math.floor(Math.random() * Math.pow(100000, 2));
+      subscriber.isCopied = isFromCheckData;
+      subscriber.schemaId = schemaId;
+      const subscriberObj = {} as CheckDataSubscriber;
+      subscriberObj.collaboratorId = Number(subscriber.sno);
+      checkDataSubscriber.push(subscriberObj);
+    });
+
+    const forkObj = {};
+    let counter = 0;
+    this.businessRuleData.forEach((businessRule) => {
+      businessRule.isCopied = true;
+      businessRule.brId = businessRule.brIdStr ? businessRule.brIdStr : null;
+      businessRule.brIdStr = businessRule.brIdStr ? businessRule.brIdStr : null;
+      businessRule.moduleId = this.moduleId;
+      businessRule.schemaId = schemaId;
+      businessRule.order = counter;
+      businessRule.dependantStatus = RuleDependentOn.ALL;
+      forkObj[counter] = isFromCheckData ?
+        this.schemaService.createCheckDataBusinessRule(businessRule) :
+        this.schemaService.createBusinessRule(businessRule);
+      counter++;
+      if (businessRule.dep_rules)
+        businessRule.dep_rules.forEach(element => {
+          element.order = counter;
+          forkObj[counter] = isFromCheckData ?
+            this.schemaService.createCheckDataBusinessRule(element) :
+            this.schemaService.createBusinessRule(element);
+          counter++
+        });
+
+    })
+
+    const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
+
+    forkJoin({ ...forkObj, subscriberSnos }).subscribe(res => {
+      console.log(res);
+      if (res) {
+        let keyArr: any = Object.values(res);
+        keyArr = keyArr.slice(0, keyArr.length - 1);
+        console.log(keyArr);
+        keyArr.forEach(key => {
+          const businessRuleObj = {} as CheckDataBrs;
+          businessRuleObj.brId = key.brIdStr,
+            businessRuleObj.brExecutionOrder = key.order
+
+          checkDataBrs.push(businessRuleObj);
+        })
+
+        const checkDataObj: CheckDataRequest = {
+          schemaId,
+          runId: null,
+          brs: checkDataBrs,
+          collaborators: checkDataSubscriber
+        }
+        console.log(checkDataObj)
+
+        this.schemaService.createUpdateCheckData(checkDataObj).subscribe((result) => {
+          this.runSchema();
+        }, (error) => {
+          console.log('Something went wrong while checking data', error.message);
+        });
+      }
+    })
+  }
+
+  /**
+   * Run schema now ..
+   * @param schema runable schema details .
+   */
+  runSchema() {
+    const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
+    schemaExecutionReq.schemaId = this.schemaId;
+    schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
+      this.schemaDetails.isInRunning = true;
+      this.sharedService.setSchemaRunNotif(true);
+    }, (error) => {
+      console.log('Something went wrong while running schema', error.message);
+    });
+  }
+
 }
