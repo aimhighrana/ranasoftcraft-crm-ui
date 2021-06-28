@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
-import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
+import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails, ModuleInfo } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, RuleDependentOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -58,7 +58,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /** To have variant details of a schema */
   variantDetails: VariantDetails[];
-  entireDataSetCount = 0;
+  module: ModuleInfo;
   /**
    * formcontrol for data scope
    */
@@ -246,7 +246,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       if (module) {
         this.schemaDetails.moduleDescription = module.moduleDesc;
         this.schemaDetails.moduleId = module.moduleId;
-        this.entireDataSetCount = module.datasetCount;
+        this.module = module.datasetCount;
       }
     }, error => {
       console.error('Error: {}', error.message);
@@ -1342,7 +1342,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     } else {
       this.dataScopeName.setValue('Entire data scope');
       this.dataScopeControl.setValue('0');
-      this.currentVariantCnt = this.entireDataSetCount;
+      this.currentVariantCnt = this.module?.datasetCount || 0;
     }
   }
 
@@ -1369,82 +1369,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to add business rules and subscribers
-   */
-  prepareData() {
-    const schemaId = this.schemaId;
-    const checkDataSubscriber = [];
-    const checkDataBrs = [];
-    const isFromCheckData = true;
-
-    this.subscriberData.forEach((subscriber) => {
-      subscriber.sno = subscriber.sno ? subscriber.sno : Math.floor(Math.random() * Math.pow(100000, 2));
-      subscriber.isCopied = isFromCheckData;
-      subscriber.schemaId = schemaId;
-      const subscriberObj = {} as CheckDataSubscriber;
-      subscriberObj.collaboratorId = Number(subscriber.sno);
-      checkDataSubscriber.push(subscriberObj);
-    });
-
-    const forkObj = {};
-    let counter = 0;
-    this.businessRuleData.forEach((businessRule) => {
-      businessRule.isCopied = true;
-      businessRule.brId = businessRule.brIdStr ? businessRule.brIdStr : null;
-      businessRule.brIdStr = businessRule.brIdStr ? businessRule.brIdStr : null;
-      businessRule.moduleId = this.moduleId;
-      businessRule.schemaId = schemaId;
-      businessRule.order = counter;
-      businessRule.dependantStatus = RuleDependentOn.ALL;
-      forkObj[counter] = isFromCheckData ?
-        this.schemaService.createCheckDataBusinessRule(businessRule) :
-        this.schemaService.createBusinessRule(businessRule);
-      counter++;
-      if (businessRule.dep_rules)
-        businessRule.dep_rules.forEach(element => {
-          element.order = counter;
-          forkObj[counter] = isFromCheckData ?
-            this.schemaService.createCheckDataBusinessRule(element) :
-            this.schemaService.createBusinessRule(element);
-          counter++
-        });
-
-    })
-
-    const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
-
-    forkJoin({ ...forkObj, subscriberSnos }).subscribe(res => {
-      console.log(res);
-      if (res) {
-        let keyArr: any = Object.values(res);
-        keyArr = keyArr.slice(0, keyArr.length - 1);
-        console.log(keyArr);
-        keyArr.forEach(key => {
-          const businessRuleObj = {} as CheckDataBrs;
-          businessRuleObj.brId = key.brIdStr,
-            businessRuleObj.brExecutionOrder = key.order
-
-          checkDataBrs.push(businessRuleObj);
-        })
-
-        const checkDataObj: CheckDataRequest = {
-          schemaId,
-          runId: null,
-          brs: checkDataBrs,
-          collaborators: checkDataSubscriber
-        }
-        console.log(checkDataObj)
-
-        this.schemaService.createUpdateCheckData(checkDataObj).subscribe((result) => {
-          this.runSchema();
-        }, (error) => {
-          console.log('Something went wrong while checking data', error.message);
-        });
-      }
-    })
-  }
-
-  /**
    * Run schema now ..
    * @param schema runable schema details .
    */
@@ -1452,7 +1376,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId = this.schemaId;
     schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, false).subscribe(data => {
       this.schemaDetails.isInRunning = true;
       this.sharedService.setSchemaRunNotif(true);
     }, (error) => {

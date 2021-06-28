@@ -5,7 +5,7 @@
             {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}</lib-text-line>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button type="minor" i18n="@@check_data" (click)="prepareData()">Check data</lib-button>
+            <lib-button type="minor" i18n="@@check_data" (click)="runSchema()">Check data</lib-button>
             <lib-button *ngIf="scheduleInfo" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="minor"
                 class="badge" icon="clock" matBadge prosStatusBadge [badgeIcon]="1"
                 [statusBadgePosition]="{ top: -10, right: -5 }" badgeIconFont="default" badgeType=""></lib-button>
@@ -33,7 +33,7 @@
                     <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'"
                         status="info" i18n-text="@@schema_running_msg"
                         [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
-                        text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
+                        text="{{ currentVariantCnt || 0 }} out of {{ module?.datasetCount || 0 }} records will be validated based on your data scope selection">
                     </lib-banner>
                 </ng-container>
                 <div class="f-col">
@@ -65,7 +65,7 @@
                                     <div class="f-row">
                                         <lib-text-line type="base">Entire data scope</lib-text-line>
                                         <span class="f-spacer"></span>
-                                        <lib-text-line type="base">{{entireDataSetCount ? entireDataSetCount : 0}}
+                                        <lib-text-line type="base">{{module?.datasetCount || 0}}
                                         </lib-text-line>
                                     </div>
                                 </mat-option>
