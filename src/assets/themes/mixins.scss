@@ -144,7 +144,8 @@
   }
 
   //Form-Input
-  pros-form-input {
+  pros-form-input,
+  .mdo-field {
     .error-validation-field {
       color: $color-status-error;
 

@@ -30,13 +30,14 @@
             <th mat-header-cell *matHeaderCellDef> </th>
             <td mat-cell *matCellDef="let element">
                 <lib-button icon="ellipsis-h" [matMenuTriggerFor]="menu"></lib-button>
+                <mat-menu #menu="matMenu">
+                    <button i18n="@@schedule" (click)="openScheduleSideSheet(element.schemaId)" mat-menu-item>Schedule</button>
+                    <button i18n="@@statistics" (click)="openExecutionTrendSidesheet(element)" mat-menu-item>Statistics</button>
+                    <button i18n="@@delete" (click)="deleteSchema(element.schemaId)" mat-menu-item>Delete</button>
+                </mat-menu>
             </td>
         </ng-container>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item>Schedule</button>
-            <button mat-menu-item>Statistics</button>
-            <button mat-menu-item>Delete</button>
-        </mat-menu>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
