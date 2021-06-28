@@ -9,7 +9,6 @@ import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SchemaListsComponent } from './schema-lists.component';
-import { SchemaScheduler } from '@models/schema/schemaScheduler';
 
 describe('SchemaListsComponent', () => {
   let component: SchemaListsComponent;
@@ -91,7 +90,7 @@ describe('SchemaListsComponent', () => {
   it('openScheduleSideSheet(), should open Execution Trend Sidesheet', async(() => {
     const schema: any = {
       schedulerId:'test'
-    };  
+    };
     const schemaId = 'test';
     spyOn(SchemaServiceSpy, 'getSchedule').and.returnValue(of(schema));;
     spyOn(router, 'navigate');

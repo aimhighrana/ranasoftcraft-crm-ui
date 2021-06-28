@@ -1079,7 +1079,6 @@ describe('SchemaInfoComponent', () => {
     component.runSchema();
     expect(schemaExecutionService.scheduleSChema).toHaveBeenCalled();
     }));
-  
     it('selectDataScope(), should update the selected data scope', async(() => {
       component.variantDetails = [{
         variantName: 'test',
@@ -1092,7 +1091,6 @@ describe('SchemaInfoComponent', () => {
       component.selectDataScope();
       expect(component.dataScopeName.value).toEqual('Entire data scope');
     }));
-  
     it('getBusinessRulesLength(), should get business rules length', async(() => {
       component.businessRuleData= [{
         dep_rules: [{}]
