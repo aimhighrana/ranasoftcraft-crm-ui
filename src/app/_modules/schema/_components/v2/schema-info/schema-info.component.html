@@ -5,8 +5,7 @@
             {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}</lib-text-line>
         <span class="f-spacer"></span>
         <lib-button-group>
-            <lib-button type="minor" i18n="@@check_data" (click)="openSummarySideSheet()">Check data</lib-button>
-            <lib-button *ngIf="false" type="minor" i18n="@@check_data" (click)="prepareData()">Check data</lib-button>
+            <lib-button type="minor" i18n="@@check_data" (click)="prepareData()">Check data</lib-button>
             <lib-button *ngIf="scheduleInfo" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="minor"
                 class="badge" icon="clock" matBadge prosStatusBadge [badgeIcon]="1"
                 [statusBadgePosition]="{ top: -10, right: -5 }" badgeIconFont="default" badgeType=""></lib-button>
@@ -162,7 +161,7 @@
                                                 returns</p>
                                             <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                 class="f-col" color="primary"
-                                                [value]="getCurrentBrStatusObj(businessRule.dependantStatus)"
+                                                [value]="getCurrentBrStatusObj(businessRule.dependantStatus)?.value"
                                                 (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                         </div>
                                     </mat-menu>
@@ -201,10 +200,9 @@
                                                 (valueChange)="updateBr(deps, $event, 'checkbox', true)"></lib-checkbox>
                                         </div>
 
-                                        <div class="col col-x4 text-end">
+                                        <div class="col col-x4 br-action text-end">
                                             <lib-button type="plain" [matMenuTriggerFor]="mappingdependency"
                                                 iconFontType="light" icon="link"></lib-button>
-
                                             <!-- Mapping Dropdown Menu -->
                                             <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu"
                                                 yPosition="above" xPosition="before"
@@ -216,7 +214,7 @@
                                                         returns</p>
                                                     <lib-radio-group (click)="$event.stopPropagation()"
                                                         [options]="depRuleList" class="f-col" color="primary"
-                                                        [value]="getCurrentBrStatusObj(deps.dependantStatus)"
+                                                        [value]="getCurrentBrStatusObj(deps.dependantStatus)?.value"
                                                         (valueChange)="updateDepRuleForChild(businessRule,i, $event)">
                                                     </lib-radio-group>
                                                 </div>

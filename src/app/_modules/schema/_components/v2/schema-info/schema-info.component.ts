@@ -145,7 +145,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private toasterService: TransientService,
     private globalDialogService: GlobaldialogService
   ) {
-    window['abu'] = this;
   }
 
   /**
@@ -1198,7 +1197,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.schemaValueChanged.next($event);
   }
 
-  updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+  updateDepRule(br: CoreSchemaBrInfo, value?: any) {
+    const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
     const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
     if (event.value !== RuleDependentOn.ALL) {
       const tobeChild = this.businessRuleData[index]
@@ -1236,7 +1236,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateDepRuleForChild(br: CoreSchemaBrInfo, index: number, event?: any) {
+  updateDepRuleForChild(br: CoreSchemaBrInfo, index: number, value?: any) {
+    const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
     const idx = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
     this.businessRuleData[idx].dep_rules[index].dependantStatus = event.value;
     const childIdx = this.businessRuleData[idx].dep_rules[index]

@@ -147,6 +147,11 @@ div.root {
       flex-shrink: 0;
     }
 
+    &.br-action {
+      max-width: 72px;
+      min-width: 72px;
+    }
+
     &.col-enabled {
       width: 65px;
       box-sizing: border-box;
