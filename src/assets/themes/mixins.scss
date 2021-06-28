@@ -144,7 +144,7 @@
   }
 
   //Form-Input
-  pros-form-input {
+  pros-form-input, .mdo-field, lib-text-line {
     .error-validation-field {
       color: $color-status-error;
 
@@ -157,6 +157,7 @@
       color: $color-status-error;
     }
   }
+
 
   // CDK-Dragdrop
   .cdk-drag-preview {

@@ -19,20 +19,20 @@
         <form [formGroup]="schemaSummaryForm">
             <div class="f-col schema-list">
                 <ng-container *ngIf="schemaDetails">
-                    <lib-banner *ngIf="dataScopeName.value !== 'Entire data scope'" status="info"
-                        i18n-text="@@schema_running_msg"
-                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
-                        text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
-                    </lib-banner>
-                    <lib-banner *ngIf="dataScopeName.value === 'Entire data scope' && schemaDetails.isInRunning"
+                    <lib-banner *ngIf="schemaDetails.isInRunning"
                         status="info" i18n-text="@@schema_running_msg"
                         [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
                         text="This schema is running Click here to either track the progress or see result">
                     </lib-banner>
+                    <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'" status="info"
+                        i18n-text="@@schema_running_msg"
+                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
+                        text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
+                    </lib-banner>
                 </ng-container>
                 <div class="f-col">
                     <lib-input (click)="schemaSummaryForm.controls.schemaName.markAsTouched()"
-                        formControlName="schemaName"
+                        formControlName="schemaName" [isRequired]="true"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
                         placeholder="Schema name" i18n-label="@@schema_name" label="Schema name"
                         (afterBlur)="onChangeSchemaDescription(schemaSummaryForm.controls.schemaName.value);">
@@ -41,10 +41,11 @@
 
                 <div class="f-col mdo-field">
                     <lib-text-line type="xsmall" weight="strong">
-                        <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon fontSet="mdo-icons"
+                        <span i18n="@@data_scope">Data scope</span>&nbsp;<mat-icon class="tooltip-icon" fontSet="mdo-icons"
                             iconFontType="solid">
                             question-circle
                         </mat-icon>
+                        <span class="mandatory">*</span>
                     </lib-text-line>
                     <div class="mdo-field-input data-scope-input">
                         <input matInput placeholder="Type to search" #optionsInput [formControl]="dataScopeName"
@@ -77,7 +78,7 @@
 
                 <div class="f-col mdo-field">
                     <lib-text-line type="xsmall" weight="strong">
-                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon fontSet="mdo-icons">
+                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon class="tooltip-icon" fontSet="mdo-icons">
                             question-circle
                         </mat-icon>
                     </lib-text-line>
@@ -88,7 +89,7 @@
                 <div class="row-spacer"></div>
                 <div class="row-spacer"></div>
                 <div class="f-col">
-                    <lib-text-line type="xsmall" i18n="@@business_rule" weight="strong">Business rule</lib-text-line>
+                    <lib-text-line type="xsmall" i18n="@@business_rule" weight="strong">Business rule <span class="mandatory">*</span></lib-text-line>
                     <div class="mdo-auto-select">
                         <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add"
                             fieldLabel="Type rule name to add" (openCustomDialog)="openBrLibrarySideSheet()"
@@ -125,7 +126,7 @@
                                     </lib-button>
                                 </div>
                                 <div class="col col-x4">
-                                    <lib-text-line type="base" textColor="link">{{businessRule.brInfo}}</lib-text-line>
+                                    <lib-text-line class="br-text-line" (click)="editBr(businessRule)" type="base" textColor="link">{{businessRule.brInfo}}</lib-text-line>
                                 </div>
 
                                 <div class="col col-x8">
@@ -179,7 +180,7 @@
                                             </lib-button>
                                         </div>
                                         <div class="col col-x4">
-                                            <lib-text-line type="base" textColor="link">{{deps.brInfo}}</lib-text-line>
+                                            <lib-text-line class="br-text-line" (click)="editBr(deps)" type="base" textColor="link">{{deps.brInfo}}</lib-text-line>
                                         </div>
 
                                         <div class="col col-x8">
