@@ -32,7 +32,7 @@
                 <lib-button icon="ellipsis-h" [matMenuTriggerFor]="menu"></lib-button>
                 <mat-menu #menu="matMenu">
                     <button (click)="openScheduleSideSheet(element.schemaId)" mat-menu-item>Schedule</button>
-                    <button mat-menu-item>Statistics</button>
+                    <button (click)="openExecutionTrendSidesheet(element)" mat-menu-item>Statistics</button>
                     <button (click)="deleteSchema(element.schemaId)" mat-menu-item>Delete</button>
                 </mat-menu>
             </td>

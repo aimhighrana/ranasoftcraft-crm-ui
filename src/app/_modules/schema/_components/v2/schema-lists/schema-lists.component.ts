@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaListModuleList } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaListModuleList } from '@models/schema/schemalist';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { TransientService } from 'mdo-ui-library';
@@ -162,5 +162,9 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
       console.log('Something went wrong when getting schedule information.', error.message);
     })
     this.subscriptions.push(scheduleSubscription);
+  }
+
+  openExecutionTrendSidesheet(schema: SchemaListDetails) {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
   }
 }
