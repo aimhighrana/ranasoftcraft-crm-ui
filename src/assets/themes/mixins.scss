@@ -1946,6 +1946,13 @@
                 color: $color-text-secondary;
               }
 
+              .mdo-chip-list {
+                .mdo-label {
+                  display: flex;
+                  align-items: center;
+                }
+              }
+
               mat-card-header.mat-card-header {
                 .mat-card-header-text {
                   margin: 0;
