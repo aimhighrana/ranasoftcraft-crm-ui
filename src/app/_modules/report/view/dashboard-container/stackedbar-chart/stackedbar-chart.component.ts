@@ -194,7 +194,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getBarConfigurationData() : void {
     // bar orientation based on orientation value
-    this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
+    this.orientation = this.stackBarWidget?.getValue()?.orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
     // if showLegend flag will be true it show legend on Stacked bar widget
     if (this.stackBarWidget.getValue().isEnableLegend) {
@@ -682,18 +682,19 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   transformDataSets(resBuckets: any[]): any[] {
     // ckeck configuration
     let finalDataSet: any[] = [];
-
+    const groupBY = this.stackBarWidget.getValue().groupById;
     // perform sort
     const orderWith = this.stackBarWidget.getValue().orderWith;
     if(orderWith) {
       if(orderWith === OrderWith.ROW_ASC) {
-        resBuckets.sort((a: any, b: any) =>{
-          return a.doc_count - b.doc_count;
-        });
+        resBuckets = this.sortByRow(groupBY,resBuckets);
       } else if(orderWith === OrderWith.ROW_DESC) {
-        resBuckets.sort((a: any, b: any) =>{
-          return b.doc_count - a.doc_count;
-        });
+        resBuckets = this.sortByRow(groupBY,resBuckets);
+        resBuckets.reverse();
+      } else if(orderWith === OrderWith.COL_ASC) {
+        resBuckets = this.sortByColumnAsc(groupBY,resBuckets);
+      } else if(orderWith === OrderWith.COL_DESC) {
+        resBuckets = this.sortByColumnDesc(groupBY,resBuckets);
       }
     }
     if (this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
@@ -720,7 +721,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
-        if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
+        if(this.stackBarWidget?.getValue()?.orientation === Orientation.HORIZONTAL) {
           this.barChartOptions.scales = {
             xAxes: [{
               scaleLabel: {
@@ -855,5 +856,49 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria);
+  }
+
+  sortByRow(groupBY: string, resBuckets: any[]) {
+    const sortedGroups = _.sortBy(resBuckets, (e) => {
+      return e.doc_count;
+    });
+
+    const groupedArray = _.groupBy(sortedGroups, (e) => {
+      return e.key[groupBY];
+    });
+
+    const mappedGroups = _.map(groupedArray, (x) => {
+      return _.assign({}, {
+        name: x[0].key[groupBY],
+        total: _.sumBy(x, 'doc_count')
+      });
+    });
+
+    const sortMapped = _.sortBy(mappedGroups, (e) => {
+      return e.total;
+    });
+    return _.sortBy(resBuckets, x => _.findIndex(sortMapped, y => x.key[groupBY] === y.name));
+  }
+
+  sortByColumnAsc(groupBY: string, resBuckets: any[]) {
+    resBuckets.sort((a, b) => {
+      if (isNaN(parseFloat(a.key[groupBY]))) {
+        return a?.key[groupBY]?.localeCompare(b.key[groupBY]);
+      } else {
+        return parseInt(a.key[groupBY], 10) - parseInt(b.key[groupBY], 10);
+      }
+    })
+    return resBuckets;
+  }
+
+  sortByColumnDesc(groupBY: string, resBuckets: any[]) {
+    resBuckets.sort((a, b) => {
+      if (isNaN(parseFloat(a.key[groupBY]))) {
+        return b?.key[groupBY]?.localeCompare(a.key[groupBY]);
+      } else {
+        return parseInt(b.key[groupBY], 10) - parseInt(a.key[groupBY], 10);
+      }
+    })
+    return resBuckets;
   }
 }
