@@ -438,17 +438,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    */
   public getreportList() {
     const subscription = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      const subs = this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
-        this.reportOb = of(reportList);
-        this.reportList = reportList;
-        if (this.reportList.length > 0 && !this.isPageReload) {
-          const firstReportId = this.reportList[0].reportId;
-          this.router.navigate(['home/report/dashboard', firstReportId]);
-        } else if(this.reportList.length === 0 && !this.isPageReload) {
-          this.router.navigate(['home/report/dashboard/new']);
-        }
-      }, error => console.error(`Error : ${error}`));
-      this.subscriptions.push(subs);
+      if(user?.plantCode && user?.currentRoleId){
+        const subs = this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
+          this.reportOb = of(reportList);
+          this.reportList = reportList;
+          if (this.reportList.length > 0 && !this.isPageReload) {
+            const firstReportId = this.reportList[0].reportId;
+            this.router.navigate(['home/report/dashboard', firstReportId]);
+          } else if(this.reportList.length === 0 && !this.isPageReload) {
+            this.router.navigate(['home/report/dashboard/new']);
+          }
+        }, error => console.error(`Error : ${error}`));
+        this.subscriptions.push(subs);
+      }
     });
     this.subscriptions.push(subscription);
   }
