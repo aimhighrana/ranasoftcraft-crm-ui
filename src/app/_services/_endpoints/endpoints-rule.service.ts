@@ -688,6 +688,6 @@ export class EndpointsRuleService {
    * @returns will return the url
    */
   public cancleSchemaUri(): string{
-    return `${this.origin}/schema/cancle-schema`;
+    return `${this.origin}/schema/cancel-schema`;
   }
 }
