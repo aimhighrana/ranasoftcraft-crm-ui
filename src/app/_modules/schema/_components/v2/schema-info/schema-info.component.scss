@@ -171,3 +171,11 @@ div.root {
 .br-text-line {
   max-width: 100%;
 }
+
+.data-allocation-list {
+  max-width: 100%;
+
+  .selected-text{
+    overflow: hidden;
+  }
+}
