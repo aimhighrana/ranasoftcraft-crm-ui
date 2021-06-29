@@ -183,7 +183,7 @@
                                                 <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
                                                 <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                     class="f-col" color="primary"
-                                                    [value]="getCurrentBrStatusObj(businessRule.dependantStatus)"
+                                                    [value]="getCurrentBrStatusObj(businessRule.dependantStatus)?.value"
                                                     (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                             </div>
                                         </mat-menu>
@@ -205,7 +205,7 @@
                                             <div class="col col-x8">
                                                 <div class="f-row slider-row">
                                                     <lib-range-slider minValue="0" [maxValue]="availableWeightage(deps.brWeightage)"
-                                                        (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="true"
+                                                        (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="false"
                                                         tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
                                                         [value]="deps.brWeightage" color="primary"></lib-range-slider>
                                                     <span class="f-col-spacer-half"></span>
@@ -218,7 +218,7 @@
                                                     (valueChange)="updateBr(deps, $event, 'checkbox', true)"></lib-checkbox>
                                             </div>
                 
-                                            <div class="col col-x4 text-end">
+                                            <div class="col col-x4 br-action text-end">
                                                 <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" iconFontType="light"
                                                     icon="link"></lib-button>
                 
@@ -231,7 +231,7 @@
                                                             returns</p>
                                                         <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                             class="f-col" color="primary"
-                                                            [value]="getCurrentBrStatusObj(deps.dependantStatus)"
+                                                            [value]="getCurrentBrStatusObj(deps.dependantStatus)?.value"
                                                             (valueChange)="updateDepRuleForChild(businessRule,i, $event)">
                                                         </lib-radio-group>
                                                     </div>

@@ -275,7 +275,7 @@
         <target>Borrar</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
@@ -292,6 +292,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
           <context context-type="linenumber">317</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-lists\schema-lists.component.html</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="summary" datatype="html">
@@ -333,6 +337,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">396</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-lists\schema-lists.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="statistics" datatype="html">
         <source>Statistics</source>
@@ -340,6 +348,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">426</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-lists\schema-lists.component.html</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="business_rule" datatype="html">

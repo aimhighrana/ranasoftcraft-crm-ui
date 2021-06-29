@@ -931,7 +931,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   }
 
 
-  updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+  updateDepRule(br: CoreSchemaBrInfo, value?: any) {
+    const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
     console.log('Update dep rule', br, event);
     const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
     console.log(index,br,event)
