@@ -1311,7 +1311,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate(['home','schema','schema-info',`${this.moduleId}`,`${this.schemaId}`])
   }
 
   /**
