@@ -368,7 +368,7 @@
                                 </mat-menu>
 
                                 <mat-menu #addfiltermenu="matMenu">
-                                    <pros-add-filter-menu [moduleId]="moduleId"
+                                    <pros-add-filter-menu [alreadySelectedValues]="subscriber.filterCriteria" [moduleId]="moduleId"
                                         (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
                                         [reInilize]="reInilize">
                                     </pros-add-filter-menu>
