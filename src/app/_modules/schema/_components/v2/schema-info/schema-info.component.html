@@ -368,6 +368,7 @@
                                         [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
                                     </pros-filter-values>
                                 </mat-menu>
+
                                 <mat-menu #addfiltermenu="matMenu">
                                     <pros-add-filter-menu [moduleId]="moduleId"
                                         (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
