@@ -255,13 +255,12 @@
                     </div>
                     <div class="f-row colunm-box">
                         <div class="mdo-auto-select">
-                            <pros-form-input-autoselect
-                            i18n-fieldLabel="@@type_user_name" fieldLabel="Type user name to add"
-                                (openCustomDialog)="openSubscriberSideSheet()" 
-                                [updatedOptionsList]="allSubscribers"
-                                [labelKey]="'fullName'"
-                                (optionSelectedEmit)="addSubscriber($event)"
-                                i18n-extraOptionLabel="@@invite_people_to_team" extraOptionLabel="Invite people to your team">
+                            <pros-form-input-autoselect i18n-fieldLabel="@@type_user_name"
+                            fieldLabel="Type user name to add" (openCustomDialog)="openSubscriberSideSheet()"
+                            [updatedOptionsList]="allSubscribers" [labelKey]="'fullName'"
+                            (optionSelectedEmit)="addSubscriber($event)" (emitSearchValue)="getCollaborators($event, 0)"
+                            i18n-extraOptionLabel="@@invite_people_to_team"
+                            extraOptionLabel="Invite people to your team">
                             </pros-form-input-autoselect>
                         </div>
                     </div>
