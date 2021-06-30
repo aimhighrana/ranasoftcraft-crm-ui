@@ -933,4 +933,15 @@ describe('EndpointsClassicService', () => {
     expect(URL).toContain(`duplicate/download/schema1/error`);
   });
 
+  it('getAllTemplates(), should contain getAllTemplatesUrl', async() => {
+    const serviceObj = new EndpointsClassicService();
+    const URL = serviceObj.getAllTemplates();
+    expect(URL).toContain(`report/share/email/template`);
+  });
+
+  it('getTemplateById(), should get Template By id', async() => {
+    const serviceObj = new EndpointsClassicService();
+    const url = serviceObj.getTemplateById('12345');
+    expect(url).toContain(`report/share/email/12345/template`);
+  });
 });

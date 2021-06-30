@@ -7,7 +7,7 @@ import { UserMdoModel } from '@models/collaborator';
 import { ReportService } from '../../../_service/report.service'
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { EmailRequestBody } from '@modules/report/_models/email';
 
@@ -27,7 +27,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   emailRecipients: string[] = [];
 
   /* Form control for recipients */
-  emailTo = new FormControl('', { validators: [Validators.email, Validators.required] });
+  emailTo = new FormControl(' ', { validators: [Validators.email, Validators.required] });
 
   /* List to hold filtered users */
   filteredUsers: Observable<UserMdoModel[]>;
@@ -53,6 +53,9 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   /* Error message */
   errorMsg: string;
 
+  /* Disable subject input */
+  contentEditable = true;
+
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
@@ -61,10 +64,10 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
+    this.reportService.selectedTemplate.next(null);
     this.setEmailFormGroup();
     this.getCollaboratorPermission('', 0);
     this.getSelectedTemplate();
-    this.filterUsers();
     this.getRequestParam();
   }
 
@@ -81,10 +84,10 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   /* Set Email Form group fields */
   setEmailFormGroup() {
     this.emailFormGrp = this.formBuilder.group({
-      subject: new FormControl({value:'', disabled:true}, [Validators.required]),
+      subject: new FormControl({value:'', disabled: false}, [Validators.required]),
       message: new FormControl('', [Validators.required]),
       to: new FormControl([''], [Validators.required]),
-      attachmentType: new FormControl('',),
+      attachmentType: new FormControl('PDF',),
     });
   }
 
@@ -121,6 +124,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.reportService.getCollaboratorPermission(queryString, fetchCount).subscribe(response => {
       if (response && response.users) {
         this.users = response.users;
+        this.filterUsers();
       }
     }, error => console.error(`Error: ${error}`));
   }
@@ -141,9 +145,19 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   //#region Subscription
   getSelectedTemplate() {
+
     const templateSubscription =  this.reportService.selectedTemplate.subscribe(res => {
       if (res) {
-        this.emailFormGrp.patchValue({ subject: res.emailSub, message: res.emailText });
+        if(res?.emailSubject){
+          this.emailFormGrp.controls.subject.disable()
+        }
+
+        if(res?.emailText){
+         // document.getElementById('textArea').setAttribute('contentEditable','true');
+          this.contentEditable = false;
+        }
+
+        this.emailFormGrp.patchValue({ subject: res?.emailSubject, message: res?.emailText });
       }
     })
 
@@ -171,15 +185,21 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.emailTo.setValue(null);
   }
 
-  private _filter(value: string): UserMdoModel[] {
+  public _filter(value: string): UserMdoModel[] {
     const filterValue = value?.toLowerCase();
+    if(filterValue){
+      return this.users?.filter(user => user?.email?.toLowerCase().indexOf(filterValue) === 0);
+    } else {
+      return this.users;
+    }
 
-    return this.users?.filter(user => user?.email?.toLowerCase().indexOf(filterValue) === 0);
   }
 
   public filterUsers(){
-    this.filteredUsers = this.emailTo.valueChanges.pipe(
-      map((user: string | null) => user ? this._filter(user) : this.users?.slice()));
+      this.filteredUsers = this.emailTo.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filter(value))
+      );
   }
 
   private updateEmailForm() {
@@ -197,10 +217,11 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     this.reportService.shareReport(this.emailRequestBody, this.reportId).subscribe(res =>{
       this.errorMsg = '';
     }, err => {
-     this.errorMsg = err;
+     this.errorMsg = 'Error while sending email';
     });
   }
 
+  /* To check if form is valid */
   private isFormValid(): boolean{
     this.emailFormGrp.patchValue({to: this.emailRecipients})
     if (this.emailFormGrp.invalid) {
@@ -216,6 +237,15 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     }
 
     return true;
+  }
+
+  /* Method to add user when added manually, not in the list */
+  public addUserManually(email: any) {
+    const isEmailValid = this.emailTo.invalid;
+    if(email.value && !isEmailValid){
+      this.emailTo.setErrors({email: null})
+      this.addRecipients(email.value);
+    }
   }
   //#endregion
 }

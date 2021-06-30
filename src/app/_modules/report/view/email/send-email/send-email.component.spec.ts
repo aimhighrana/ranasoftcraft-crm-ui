@@ -146,10 +146,10 @@ describe('SendEmailComponent', () => {
   });
 
   it('getSelectedTemplate(),should set template subject and message ',()=>{
-    const templates: EmailTemplateBody = {subType: 'Dashboard', emailSub: 'Subject', emailText: `<b>Test Template</b>`}
+    const templates: EmailTemplateBody = {subType: 'Dashboard', emailSubject: 'Subject', emailText: `<b>Test Template</b>`}
     reportService.selectedTemplate = new BehaviorSubject<EmailTemplateBody>(templates);
     component.getSelectedTemplate();
-    expect(component.emailFormGrp.controls.subject.value).toEqual(templates.emailSub);
+    expect(component.emailFormGrp.controls.subject.value).toEqual(templates.emailSubject);
     expect(component.emailFormGrp.controls.message.value).toEqual(templates.emailText);
 
   });
@@ -159,5 +159,21 @@ describe('SendEmailComponent', () => {
     component.emailTo.setValue('testemail@test.com');
     component.filterUsers();
     expect(component.filteredUsers).toBeTruthy();
+  });
+
+  it('addUserManually(),should add manually added user to emailrecipents ',()=>{
+    component.emailTo.setValue('testemail@test.com');
+    const event = { value : 'testemail@test.com' }
+    component.addUserManually(event);
+    expect(component.emailRecipients.length).toEqual(1);
+  });
+
+  it('_filter(),should filter users ',()=>{
+    component.users = [{email: 'testemail@test.com', userId: '1234', userName: 'Test', fName:'', lName:'', fullName:''}];
+    component._filter('test');
+    expect(component.users.length).toEqual(1);
+
+    component._filter('');
+    expect(component.users.length).toEqual(1);
   });
 });

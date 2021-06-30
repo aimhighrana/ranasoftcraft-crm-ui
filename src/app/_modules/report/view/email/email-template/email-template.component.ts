@@ -78,9 +78,8 @@ export class EmailTemplateComponent implements OnInit {
 
   /* Update the template */
   updateTemplate(event: MatAutocompleteSelectedEvent){
-    const templateId = '';
+    const templateId = event.option.value;
     this.getTemplateById(templateId);
-    this.reportService.selectedTemplate.next(this.emailTemplate);
     this.close();
   }
 
@@ -98,8 +97,11 @@ export class EmailTemplateComponent implements OnInit {
 
   /* API call to get template by Id */
   public getTemplateById(_id: string){
+    if(!_id) this.emailTemplate = {} as EmailTemplateBody;
+
     const template = this.reportService.getTemplateById(_id).subscribe((resp) => {
       this.emailTemplate = resp;
+      this.reportService.selectedTemplate.next(this.emailTemplate);
     },err => {
       console.log(`Error while getting template ${_id}`);
      });

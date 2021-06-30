@@ -78,7 +78,7 @@ describe('EmailTemplateComponent', () => {
   });
 
   it('getTemplateById(), should return template',()=>{
-    const template: EmailTemplateBody =  {emailSub: 'subject', subType: 'dashboard', emailText: 'subject' }
+    const template: EmailTemplateBody =  {emailSubject: 'subject', subType: 'dashboard', emailText: 'subject' }
     spyOn(reportService,'getTemplateById').and.returnValues(of(template), throwError('Error'));
     component.getTemplateById('_id');
     expect(component.emailTemplate ).toEqual(template);
