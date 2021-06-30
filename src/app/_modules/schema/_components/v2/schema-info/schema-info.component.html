@@ -117,10 +117,13 @@
                             <lib-text-line type="base" weight="strong" i18n="@@business_rule">Business rule
                             </lib-text-line>
                         </div>
+                        <div class="col col-x4">
+                            <lib-text-line type="base" weight="strong" i18n="@@type">Type</lib-text-line>
+                        </div>
                         <div class="col col-x8">
                             <lib-text-line type="base" weight="strong" i18n="@@weight">Weight</lib-text-line>
                         </div>
-                        <div class="col col-x4">
+                        <div class="col col-x2">
                             <lib-text-line i18n="@@enabled" type="base" weight="strong">Enabled</lib-text-line>
                         </div>
                         <div class="col mat-item-end"></div>
@@ -136,6 +139,9 @@
                                     <lib-text-line class="br-text-line" (click)="editBr(businessRule)" type="base"
                                         textColor="link">{{businessRule.brInfo}}</lib-text-line>
                                 </div>
+                                <div class="col col-x4">
+                                    {{getRuleDesc(businessRule.brType)}}
+                                </div>
 
                                 <div class="col col-x8">
                                     <div class="f-row slider-row">
@@ -150,7 +156,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col col-x4">
+                                <div class="col col-x2">
                                     <lib-checkbox color="primary" [checked]="businessRule.status === '1'"
                                         (valueChange)="updateBr(businessRule, $event, 'checkbox')"></lib-checkbox>
                                 </div>
@@ -191,7 +197,10 @@
                                             <lib-text-line class="br-text-line" (click)="editBr(deps)" type="base"
                                                 textColor="link">{{deps.brInfo}}</lib-text-line>
                                         </div>
-
+                                        <div class="col col-x4">
+                                            {{getRuleDesc(deps.brType)}}
+                                        </div>
+        
                                         <div class="col col-x8">
                                             <div class="f-row slider-row">
                                                 <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1"
@@ -205,7 +214,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col col-x4">
+                                        <div class="col col-x2">
                                             <lib-checkbox color="primary" [checked]="deps.status === '1'"
                                                 (valueChange)="updateBr(deps, $event, 'checkbox', true)"></lib-checkbox>
                                         </div>

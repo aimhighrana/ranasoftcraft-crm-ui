@@ -4,7 +4,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails, ModuleInfo } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, RuleDependentOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel, RULE_TYPES } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -480,6 +480,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
+  }
 
   /**
    * Function to open sidesheet to add subscriber
