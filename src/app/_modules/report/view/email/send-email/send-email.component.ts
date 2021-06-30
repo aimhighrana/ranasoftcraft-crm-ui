@@ -149,12 +149,15 @@ export class SendEmailComponent implements OnInit,OnDestroy {
     const templateSubscription =  this.reportService.selectedTemplate.subscribe(res => {
       if (res) {
         if(res?.emailSubject){
-          this.emailFormGrp.controls.subject.disable()
+          this.emailFormGrp.controls.subject.disable();
+        } else {
+          this.emailFormGrp.controls.subject.enable();
         }
 
         if(res?.emailText){
-         // document.getElementById('textArea').setAttribute('contentEditable','true');
           this.contentEditable = false;
+        } else {
+          this.contentEditable = true;
         }
 
         this.emailFormGrp.patchValue({ subject: res?.emailSubject, message: res?.emailText });
@@ -222,7 +225,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   }
 
   /* To check if form is valid */
-  private isFormValid(): boolean{
+  public isFormValid(): boolean{
     this.emailFormGrp.patchValue({to: this.emailRecipients})
     if (this.emailFormGrp.invalid) {
       (Object).values(this.emailFormGrp.controls).forEach(control => {

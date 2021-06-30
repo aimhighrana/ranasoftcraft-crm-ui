@@ -152,6 +152,11 @@ describe('SendEmailComponent', () => {
     expect(component.emailFormGrp.controls.subject.value).toEqual(templates.emailSubject);
     expect(component.emailFormGrp.controls.message.value).toEqual(templates.emailText);
 
+    reportService.selectedTemplate = new BehaviorSubject<EmailTemplateBody>(Object.assign({}));
+    component.getSelectedTemplate();
+    expect(component.emailFormGrp.controls.subject.value).toBeUndefined();
+    expect(component.emailFormGrp.controls.message.value).toBeUndefined();
+
   });
 
   it('filterUsers(),should filter user ',()=>{

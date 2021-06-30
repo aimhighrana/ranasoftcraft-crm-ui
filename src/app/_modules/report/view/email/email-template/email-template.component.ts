@@ -101,6 +101,9 @@ export class EmailTemplateComponent implements OnInit {
 
     const template = this.reportService.getTemplateById(_id).subscribe((resp) => {
       this.emailTemplate = resp;
+      if(!resp){
+        this.emailTemplate = {} as EmailTemplateBody
+      }
       this.reportService.selectedTemplate.next(this.emailTemplate);
     },err => {
       console.log(`Error while getting template ${_id}`);

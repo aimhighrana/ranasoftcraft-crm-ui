@@ -58,7 +58,7 @@
                         <lib-input i18n-label="@@subject" label="Subject" [type]="'text'" placeholder="Subject"
                         formControlName="subject"
                         [isRequired]="true"
-                        (afterBlur)="sendEmail()"
+                        (afterBlur)="isFormValid()"
                         [hint]="(emailFormGrp.controls.subject.touched && emailFormGrp.controls.subject.errors && emailFormGrp.controls.subject.errors.required) ? 'Subject is a required field' : ''"
                         [hasError]="emailFormGrp.controls.subject.touched && emailFormGrp.controls.subject.errors && emailFormGrp.controls.subject.errors.required"></lib-input>
                     </div>
@@ -66,7 +66,7 @@
                         <lib-textarea *ngIf="contentEditable" i18n-label="@@message" label="Message" [type]="'text'" [rows]="5"
                             placeholder="Message" formControlName="message"
                             [isRequired]="true && emailFormGrp.controls.message.touched"
-                            (afterBlur)="sendEmail()"
+                            (afterBlur)="isFormValid()"
                             [hasError]="emailFormGrp.controls.message.touched && emailFormGrp.controls.message.errors && emailFormGrp.controls.message.errors.required"
                             [hint]="(emailFormGrp.controls.message.touched && emailFormGrp.controls.message.errors && emailFormGrp.controls.message.errors.required) ? 'Message is a required field' : ''"
                             ></lib-textarea>
@@ -74,7 +74,6 @@
                             <mat-label class="mdo-field-label" i18n="@@messag" *ngIf="!contentEditable">Message</mat-label>
                             <div id="textarea" data-text="Enter text here" class="message-area"
                              [innerHTML]= "emailFormGrp.controls.message.value"
-                             formControlName="emailFormGrp.controls.message"
                              *ngIf="!contentEditable"
                              data-text="Message"></div>
                             <mat-error *ngIf="!contentEditable && emailFormGrp?.controls?.message?.touched && emailFormGrp?.controls?.message?.errors?.required">Message is required</mat-error>
