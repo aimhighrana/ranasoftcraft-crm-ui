@@ -669,7 +669,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * opens editable section for selected filter for editing filter values
+   * opens editable section for selected filter for editing filter values...
    * @param filter filter data
    * @param isUpdate will be true if there are existing value that needs to be set
    */
