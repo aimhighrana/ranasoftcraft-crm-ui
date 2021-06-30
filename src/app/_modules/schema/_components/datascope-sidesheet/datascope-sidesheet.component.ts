@@ -686,12 +686,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       const dropdownPickLists = ['1', '30', '37'];
       if (dropdownPickLists.includes(picklist)) {
         this.filterControlType = (this.currentFilter.isCheckList === 'true') ? 'dropdown_multi' : 'dropdown_single';
-      } else if (this.dynmaicFilterSchema[picklist]) {
-        const res = this.dynmaicFilterSchema[picklist].find((x) => x.dataType === dataType.toUpperCase());
-        if (res) {
-          this.filterControlType = res.type;
-        }
-      }
+      } 
+      // else if (this.dynmaicFilterSchema[picklist]) {
+        // const res = this.dynmaicFilterSchema[picklist].find((x) => x.dataType === dataType.toUpperCase());
+        // if (res) {
+        //   this.filterControlType = res.type;
+        // }
+      // }
       this.getFilterValues(filter.fieldId, isUpdate);
     }
   }

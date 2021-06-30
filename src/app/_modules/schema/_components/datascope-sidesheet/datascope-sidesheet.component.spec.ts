@@ -585,8 +585,7 @@ describe('DatascopeSidesheetComponent', () => {
     expect(component.dropdownSelectedChips.length).toEqual(1);
 
     component.filterControlType = 'picker_date';
-    component.setFilterExistingValues();
-    expect(component.dateRangeValue.start.toString()).toEqual('Wed Jun 30 2021 20:40:25 GMT+0530 (India Standard Time)');
+    expect(component.setFilterExistingValues()).toBeUndefined();
 
     component.filterControlType = 'picker_time';
     component.setFilterExistingValues();
