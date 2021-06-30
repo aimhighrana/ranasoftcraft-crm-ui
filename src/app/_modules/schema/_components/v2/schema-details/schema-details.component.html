@@ -64,12 +64,12 @@
             </lib-chip>
             <!-- Outdated -->
             <lib-chip class="mdo-filter-matchip" label="Outdated" disableRipple="true" (click)="changeTabStatus('outdated')" [selected]="activeTab && activeTab === 'outdated'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outDatedCount) ? statics.outDatedCount : 0 }}</lib-text-line>
+                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outdatedCnt) ? statics.outdatedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Skipped -->
             <lib-chip class="mdo-filter-matchip" label="Skipped" disableRipple="true" (click)="changeTabStatus('skipped')" [selected]="activeTab && activeTab === 'skipped'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics && statics.skippedCount) ? statics.skippedCount : 0 }}</lib-text-line>
+                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics && statics.skippedCnt) ? statics.skippedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Start Chip for business rule dropdown-->

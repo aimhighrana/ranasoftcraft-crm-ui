@@ -367,6 +367,33 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
         }
+        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet !== this.styleCtrlGrp.value.isWorkflowDataset) {
+          if (this.selStyleWid.isWorkflowdataSet) {
+            this.getWorkFlowFields(fillData.split(','));
+            this.getRecordCount(fillData, true);
+            this.getWorkFlowPathDetails(fillData.split(','));
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          } else {
+            this.getAllFields(fillData);
+            this.getRecordCount(fillData);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          }
+        }
+        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet !== this.styleCtrlGrp.value.isCustomdataSet) {
+          if (this.selStyleWid.isCustomdataSet) {
+            this.getCustomFields(fillData);
+            this.getRecordCount(fillData, false, true);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
+          } else {
+            this.getAllFields(fillData);
+            this.getRecordCount(fillData);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          }
+        }
       } else {
         console.log(fillData);
       }
