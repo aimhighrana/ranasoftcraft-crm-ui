@@ -282,11 +282,11 @@ export class BrruleSideSheetComponent implements OnInit {
   }
   get businessRuleTypesFiltered() {
     const searchStr = this.searchRuleTypeStr?.toLowerCase();
-    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) || x.ruleType?.toLowerCase().includes(searchStr));
   }
   get preDefinedRegexFiltered() {
     const searchStr = this.searchRegexFunctionStr?.toLowerCase();
-    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
+    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) || x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
 
   get isFormLoading() {
@@ -309,7 +309,7 @@ export class BrruleSideSheetComponent implements OnInit {
       this._transformer, node => node.level, node => node.expandable, node => node.children);
 
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    this.hasChild  =(_: number, node: { name: string, level: number, expandable: boolean, id: string, parent: string }) => node.expandable;
+    this.hasChild = (_: number, node: { name: string, level: number, expandable: boolean, id: string, parent: string }) => node.expandable;
 
     this.activatedRouter.params.subscribe(res => {
       this.routeData = res;
@@ -574,7 +574,7 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = [/* 'categoryId', */ 'rule_name', 'error_message'];
     }
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
-      requiredKeys = ['categoryId',  'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
     if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
@@ -642,7 +642,7 @@ export class BrruleSideSheetComponent implements OnInit {
     let patchList = [];
 
     if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId' ];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
       patchList = ['rule_type', /* 'categoryId', */  'rule_name', 'weightage', 'error_message'];
@@ -1023,7 +1023,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to close the dialog
    */
   close() {
-    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], {queryParamsHandling: 'preserve'});
+    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], { queryParamsHandling: 'preserve' });
   }
   /**
    * function to set form values from mat auto complete
@@ -1050,14 +1050,14 @@ export class BrruleSideSheetComponent implements OnInit {
   /**
    * function to display rule desc in mat auto complete
    */
-   displayRuleFn(value?: string) {
+  displayRuleFn(value?: string) {
     return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
   }
 
   /**
    * function to display Regex name in mat auto complete
    */
-   displayRegexFn(value?: string) {
+  displayRegexFn(value?: string) {
     return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
   }
 
@@ -1085,7 +1085,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       this.showValidationError('Please fill the required fields.');
-      if (brType!=='BR_CUSTOM_SCRIPT') {
+      if (brType !== 'BR_CUSTOM_SCRIPT') {
         return;
       }
     }
@@ -1120,7 +1120,7 @@ export class BrruleSideSheetComponent implements OnInit {
       const frm = this.udrNodeArray();
       for (let i = 0; i < frm.length; i++) {
         const row = frm.at(i) as FormGroup;
-        const value =row.value as UDRBlocksModel;
+        const value = row.value as UDRBlocksModel;
         blocks.push(value);
         if (!value.blockType) {
           row.controls.blockType.markAsTouched();
@@ -1378,9 +1378,15 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param value pass the value to set
    * @param index pass the index
    */
-  setComparisonValue(value: string, index: number) {
+  setComparisonValue(value: string | { start: string; end: string; }, index: number) {
+    console.log('Comparision value for parent', value, index);
     const array = this.udrNodeArray().at(index);
-    array.get('conditionFieldValue').setValue(value);
+    if (typeof value === 'object') {
+      array.get('conditionFieldStartValue').setValue(value.start);
+      array.get('conditionFieldEndValue').setValue(value.end);
+    } else {
+      array.get('conditionFieldValue').setValue(value);
+    }
   }
 
   /**
@@ -1389,9 +1395,15 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param chldNode pass the child node
    * @param parentNode pass the parent node
    */
-  setComparisonValueForChild(value, chldNode: number, parentNode: number) {
+  setComparisonValueForChild(value: string | { start: string; end: string; }, chldNode: number, parentNode: number) {
+    console.log('Comparision value for child', value, chldNode, parentNode);
     const childArray = this.getChildAsControl(parentNode).at(chldNode);
-    childArray.get('conditionFieldValue').setValue(value);
+    if (typeof value === 'object') {
+      childArray.get('conditionFieldStartValue').setValue(value.start);
+      childArray.get('conditionFieldEndValue').setValue(value.end);
+    } else {
+      childArray.get('conditionFieldValue').setValue(value);
+    }
   }
 
   /**
@@ -1578,8 +1590,8 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param controlIndex parent ctrl index
    * @param childElementCtrl child ctrl index ...
    */
-   udrFieldSelectionChange(field: Metadata[] , controlIndex: number, childElementCtrl?: number) {
-    if(childElementCtrl !== undefined) {
+  udrFieldSelectionChange(field: Metadata[], controlIndex: number, childElementCtrl?: number) {
+    if (childElementCtrl !== undefined) {
       this.getChildAsControl(controlIndex).at(childElementCtrl).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');
     } else {
       this.udrNodeArray().at(controlIndex).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');

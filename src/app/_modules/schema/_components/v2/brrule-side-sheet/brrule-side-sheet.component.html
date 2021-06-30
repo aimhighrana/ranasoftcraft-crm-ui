@@ -235,30 +235,16 @@
                                     </mat-select>
                                 </div>
                                 <!-- Comparison value -->
-                                <div class="col" *ngIf="i == 0 && item.value.conditionOperator !== 'RANGE'">
+                                <div [class.range-col]="item.value.conditionOperator  === 'RANGE'" class="col" *ngIf="i == 0">
                                     <div class="f-row" *ngIf="item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
-                                        <pros-udr-value-control [metataData]="metataData" [fieldId]="item.controls.conditionFieldId?.value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" (valueChange)="setComparisonValue($event,i)"></pros-udr-value-control>
+                                        <pros-udr-value-control [metataData]="metataData" [fieldId]="item.controls.conditionFieldId?.value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" [range]="item.value.conditionOperator  === 'RANGE'" [rangeValue]="{start: item.value.conditionFieldStartValue, end: item.value.conditionFieldEndValue}" (valueChange)="setComparisonValue($event,i)"></pros-udr-value-control>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
-                                <div class="col" *ngIf="i != 0 && item.value.conditionOperator !== 'RANGE' && item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
+                                <div class="col" [class.range-col]="item.value.conditionOperator  === 'RANGE'" *ngIf="i != 0 && item.value.conditionOperator !== 'EMPTY' && item.value.conditionOperator !== 'NOT_EMPTY'">
                                     <div class="f-row">
-                                        <pros-udr-value-control [fieldId]="item.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@comparison_value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue" 
+                                        <pros-udr-value-control [fieldId]="item.controls.conditionFieldId?.value" [metataData]="metataData" i18n-placeholder="@@comparison_value" [placeholder]="item.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="item.value.conditionFieldValue"  [range]="item.value.conditionOperator  === 'RANGE'" [rangeValue]="{start: item.value.conditionFieldStartValue, end: item.value.conditionFieldEndValue}" 
                                         (valueChange)="setComparisonValue($event,i)"></pros-udr-value-control>
-                                        <div class="f-col-spacer-half"></div>
-                                    </div>
-                                </div>
-                                <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
-                                    <div class="f-row">
-                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value"
-                                            [value]="item.value.conditionFieldStartValue"
-                                            (valueChange)="setRangeValue($event,'start',i)">
-                                        </lib-input>
-                                        <div class="f-col-spacer-half"></div>
-                                        <lib-input label="‎" placeholder="end value"
-                                        [value]="item.value.conditionFieldEndValue"
-                                        (valueChange)="setRangeValue($event,'end',i)">
-                                        </lib-input>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
@@ -311,18 +297,9 @@
                                                         </mat-optgroup>
                                                     </mat-select>
                                                 </div>
-                                                <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE' && chldNode.value.conditionOperator !== 'EMPTY' && chldNode.value.conditionOperator !== 'NOT_EMPTY'">
-                                                    <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" [placeholder]="chldNode.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="chldNode.value.conditionFieldValue"
+                                                <div [class.range-col]="chldNode.value.conditionOperator  === 'RANGE'" class="col" *ngIf="chldNode.value.conditionOperator !== 'EMPTY' && chldNode.value.conditionOperator !== 'NOT_EMPTY'">
+                                                    <pros-udr-value-control [fieldId]="chldNode.controls.conditionFieldId?.value" [metataData]="metataData" [placeholder]="chldNode.value.conditionOperator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'" [value]="chldNode.value.conditionFieldValue" [range]="chldNode.value.conditionOperator  === 'RANGE'" [rangeValue]="{start: chldNode.value.conditionFieldStartValue, end: chldNode.value.conditionFieldEndValue}" 
                                                     (valueChange)="setComparisonValueForChild($event,childIndex,i)"></pros-udr-value-control>
-                                                </div>
-                                                <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
-                                                    <div class="f-row">
-                                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
-                                                        (valueChange)="setRangeValueForChild($event,'start',childIndex, i)"></lib-input>
-                                                        <div class="f-col-spacer-half"></div>
-                                                        <lib-input label="‎" i18n-placeholder="@@end_value" placeholder="end value" [value]="chldNode.value.conditionFieldEndValue"
-                                                        (valueChange)="setRangeValueForChild($event,'end',childIndex,i)"></lib-input>
-                                                    </div>
                                                 </div>
                                                 <div class="col">
                                                     <lib-button [matMenuTriggerFor]="nestedMenu" type="plain" icon="ellipsis-v"></lib-button>
