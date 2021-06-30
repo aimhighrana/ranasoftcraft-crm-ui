@@ -836,7 +836,7 @@ describe('SchemaInfoComponent', () => {
 
     component.fetchSelectedValues([], 1);
 
-    const seletectedValues = [{CODE: 'region', FIELDNAME: 'region'}];
+    const seletectedValues = [{fieldId: 'region', CODE: 'region', FIELDNAME: 'region'}];
 
     component.subscriberData = [{sno: 1, filterCriteria: [{fieldId: 'region', values: []}, {fieldId: 'mtl_grp'}]},
         {sno: 2, filterCriteria: []}] as SchemaDashboardPermission[];

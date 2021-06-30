@@ -716,7 +716,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     filterCtrl.selectedValues = [];
 
     event.selectedValues.forEach((value) => {
-      if (value.FIELDNAME === filterCtrl.fieldId) {
+      if (value.fieldId === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
         filterCtrl.selectedValues.push(value);
@@ -912,7 +912,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           delete subscriber.userMdoModel;
 
           subscriber.filterCriteria.forEach((filterCtrl) => {
-            if (filterCtrl.fieldId === selectedValues[0].FIELDNAME) {
+            if (filterCtrl.fieldId === selectedValues[0].fieldId) {
               filterCtrl.values.length = 0;
               filterCtrl.textValues = [];
               filterCtrl.selectedValues = selectedValues;
