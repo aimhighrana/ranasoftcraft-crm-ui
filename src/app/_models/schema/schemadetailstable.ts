@@ -113,6 +113,9 @@ export class FilterCriteria {
     fldCtrl?: MetadataModel;
     selectedValues?: DropDownValue[];
     textValues?: string[];
+    startValue?: string;
+    endValue?: string;
+    operator?: string;
 }
 
 export class DataTableSourceResponse {
