@@ -480,6 +480,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getRuleDesc(ruleType: string) {
     return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
   }
 
