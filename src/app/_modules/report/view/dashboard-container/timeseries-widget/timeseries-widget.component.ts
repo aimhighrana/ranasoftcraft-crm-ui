@@ -1017,7 +1017,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dataSetlabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const finaldata = [];
       if (yearDoc) {
-        Object.keys(yearDoc).forEach((yr, index) => {
+        Object.keys(yearDoc).forEach((yr) => {
           const dataSet = this.bucketModify(yearDoc[yr], showInPercentage);
           dataSet.forEach((data, index) => {
             if (totalCount[index]) {
@@ -1047,7 +1047,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       if (this.isTotalShown) {
         if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
           finaldata.forEach((item, index) => {
-            const scale = {
+            const scalexAxes = {
               id: 'bar-x-' + index,
               type: 'category',
               gridLines: {
@@ -1055,7 +1055,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
               },
               display: false,
             }
-            this.timeSeriesOption.scales.xAxes.push(scale);
+            this.timeSeriesOption.scales.xAxes.push(scalexAxes);
           })
 
           const scale = {
