@@ -175,6 +175,9 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * To emit the selected values on click button
    */
   submit() {
+    this.checkedValue.forEach((value: any) => {
+      value.fieldId = this.fieldId;
+    });
     this.selectedValues.emit(this.checkedValue);
     // this.navList._stateChanges.
   }

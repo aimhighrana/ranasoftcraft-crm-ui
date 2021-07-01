@@ -275,7 +275,7 @@
                             <div class="col col-x4">
                                 <lib-text-line weight="strong" type="small" i18n="@@role">Role</lib-text-line>
                             </div>
-                            <div class="col col-x16"></div>
+                            <div class="col col-x4"></div>
                             <div class="col col-x16">
                                 <lib-text-line weight="strong" type="small" i18n="@@data_allocation">Data allocation
                                 </lib-text-line>
@@ -341,22 +341,20 @@
                                     (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                             </mat-menu>
 
-                            <div class="col col-x16"></div>
+                            <div class="col col-x4"></div>
                             <div class="col col-x16">
-                                <mat-chip-list>
+                                <mat-chip-list class="data-allocation-list">
                                     <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
-
                                         <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                             [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
-                                            <label>
-                                                {{ ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown' }}
-                                                :
-                                            </label>
-
-                                            <span class="info">
-                                                {{ prepareTextToShow(ctrl) }}
-                                            </span>
-
+                                           <lib-text-line class="selected-text">
+                                               <label>
+                                                   {{ ctrl.fldCtrl?.fieldDescri || ctrl.fldCtrl?.fieldDesc || 'Unknown' }} :
+                                               </label>
+                                                <span class="info">
+                                                    {{ prepareTextToShow(ctrl) }}
+                                                </span>
+                                            </lib-text-line>
                                             <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">
                                                 clear
                                             </mat-icon>
@@ -380,7 +378,7 @@
                                 </mat-menu>
 
                                 <mat-menu #addfiltermenu="matMenu">
-                                    <pros-add-filter-menu [moduleId]="moduleId"
+                                    <pros-add-filter-menu [alreadySelectedValues]="subscriber.filterCriteria" [moduleId]="moduleId"
                                         (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
                                         [reInilize]="reInilize">
                                     </pros-add-filter-menu>
