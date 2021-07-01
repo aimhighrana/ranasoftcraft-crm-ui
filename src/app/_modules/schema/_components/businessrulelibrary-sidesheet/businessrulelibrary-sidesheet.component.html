@@ -16,7 +16,7 @@
                 <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
                         <label><span i18n="@@business_rule_type">Business rule type</span>:</label> <span
-                            class="info">{{selectedRuleType ? selectedRuleType : 'All'}}
+                            class="info">{{selectedRuleType ? getRuleDesc(selectedRuleType) : 'All'}}
                         </span>
                     </mat-chip>
                 </mat-chip-list>
@@ -35,7 +35,11 @@
         <div class="mdo-justify">
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let brItem of businessRulesList; trackBy: trackByFn">
-                    <div class="mat-line">{{brItem.brInfo}}</div>
+                    <div class="br-info">{{brItem.brInfo}}</div>
+                    <div class="br-info">
+                        {{getRuleDesc(brItem.brType)}}
+                    </div>
+                    <span class="f-spacer"></span>
                     <span class="f-spacer"></span>
                     <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
                     (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>

@@ -196,4 +196,9 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     expect(component.getBusinessRulesList).toHaveBeenCalledWith(component.moduleId, component.searchString, component.selectedRuleType, true);
   }));
 
+  it('getRuleDesc(), should return rule description', async(() => {
+    expect(component.getRuleDesc('BR_API_RULE')).toEqual('API Rule');
+    expect(component.getRuleDesc('testRule')).toBeFalsy();
+  }));
+
 });

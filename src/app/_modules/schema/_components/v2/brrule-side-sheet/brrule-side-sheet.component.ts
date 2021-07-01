@@ -261,6 +261,10 @@ export class BrruleSideSheetComponent implements OnInit {
     return TransformationRuleType;
   }
 
+  get selectedRuleDesc() {
+    const value = this.form?.get('rule_type').value;
+    return this.brId ? this.businessRuleTypes.find(x => x.ruleType === value)?.ruleDesc : '';
+  }
   /**
    * Getter for selected transformation type
    */

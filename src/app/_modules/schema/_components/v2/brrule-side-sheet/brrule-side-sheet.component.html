@@ -4,7 +4,8 @@
         <div class="col-spacer"></div>
         <div [hidden]="isFormLoading" [class.f-col]="!isFormLoading" class="mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div i18n="@@business_rule" class="display-heading-large">Business rule</div>
+                <div *ngIf="!selectedRuleDesc" i18n="@@new_br_rule" class="display-heading-large">New business rule</div>
+                <div *ngIf="selectedRuleDesc" class="display-heading-large">{{selectedRuleDesc}}</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
@@ -34,7 +35,7 @@
 
             <form [formGroup]="form">
 
-                <div class="f-col mdo-field">
+                <div *ngIf="!selectedRuleDesc" class="f-col mdo-field">
                     <!-- label -->
                     <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type<span class="mandatory">*</span></mat-label>
                     <!-- input container -->

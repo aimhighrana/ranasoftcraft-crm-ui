@@ -1098,4 +1098,9 @@ describe('SchemaInfoComponent', () => {
       } as CoreSchemaBrInfo];
       expect(component.getBusinessRulesLength).toEqual(2);
     }));
+
+    it('getRuleDesc(), should return rule description', async(() => {
+      expect(component.getRuleDesc('BR_API_RULE')).toEqual('API Rule');
+      expect(component.getRuleDesc('testRule')).toBeFalsy();
+    }));
 });
