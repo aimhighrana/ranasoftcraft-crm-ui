@@ -780,4 +780,12 @@ export class EndpointsClassicService {
   public downloadExecutionDetailsByNodesUrl(schemaId: string, status: string, nodes: string[], variantId: string): string {
     return `${this.apiUrl}/schema/download/${schemaId}/${status.toLocaleLowerCase()}?variantId=${variantId}&nodes=${nodes.toString()}`;
   }
+
+  public getAllTemplates(): string {
+    return `${this.apiUrl}/report/share/email/template`;
+  }
+
+  public getTemplateById(_id: string): string {
+    return `${this.apiUrl}/report/share/email/${_id}/template`;
+  }
 }
