@@ -666,6 +666,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       this.searchFilters(this.selectedFilters, 'selectedList', this.searchString);
     }
     this.removeFilterCriteria(filter.fieldId);
+
+    if (this.currentFilter && this.currentFilter.fieldId === filter.fieldId) {
+      this.clearValues();
+    }
   }
 
   /**
