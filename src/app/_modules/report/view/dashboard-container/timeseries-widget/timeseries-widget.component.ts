@@ -12,12 +12,10 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import _ from 'lodash';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ChartType as CType} from 'chart.js';
+import { ChartType as CType } from 'chart.js';
 import { Context } from 'chartjs-plugin-datalabels';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
-
-
 const btnArray: ButtonArr[] = [
   { id: 0, value: 'millisecond', isActive: false },
   { id: 1, value: '7', isActive: false },
@@ -89,7 +87,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     plugins: {
       datalabels: {
         display: false,
-        formatter: ((value: any, context: Context)=> {
+        formatter: ((value: any, context: Context) => {
           return value;
         })
       },
@@ -135,7 +133,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     legend: {
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-        if(this.timeseriesData.timeSeries.chartType !== ChartType.BAR && this.timeseriesData.timeSeries.fieldId !== '') {
+        if (this.timeseriesData.timeSeries.chartType !== ChartType.BAR && this.timeseriesData.timeSeries.fieldId !== '') {
           this.legendClick(legendItem);
         }
       }
@@ -152,17 +150,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   @Input()
   hasFilterCriteria: boolean;
 
-  isLoading = true ;
+  isLoading = true;
 
   subscriptions: Subscription[] = [];
 
   userDetails: Userdetails = new Userdetails();
+  isTotalShown: boolean;
+  totalCount: any;
 
   constructor(
     private widgetService: WidgetService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private userService:UserService,
+    private userService: UserService,
     public matDialog: MatDialog) {
     super(matDialog);
   }
@@ -215,7 +215,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const widgeInf = this.widgetInf.subscribe(metadata => {
       if (metadata) {
         this.getwidgetData(this.widgetId);
-        if(this.isLoading) {
+        if (this.isLoading) {
           this.updatevalues();
           this.isLoading = false;
           this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
@@ -320,7 +320,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   emitpanAndClickevent(startdate: string, enddate: string): void {
-    if(startdate === enddate) {
+    if (startdate === enddate) {
       startdate = String(moment().startOf('day').toDate().getTime());
       enddate = String(moment().endOf('day').toDate().getTime());;
     }
@@ -365,6 +365,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getTimeSeriesMetadata(): void {
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.timeseriesData = res;
+      this.isTotalShown = res.showTotal;
+      this.isTotalShown = true;
       this.chartType = this.timeseriesData.timeSeries.chartType === ChartType.LINE ? 'line' : 'bar';
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
@@ -383,26 +385,27 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     /**
      * SET TICKS HERE
      */
+    const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
     if (this.timeseriesData.timeSeries.scaleFrom !== null && this.timeseriesData.timeSeries.scaleFrom !== undefined
       && this.timeseriesData.timeSeries.scaleTo !== null && this.timeseriesData.timeSeries.scaleTo !== undefined
       && this.timeseriesData.timeSeries.stepSize !== null && this.timeseriesData.timeSeries.stepSize !== undefined) {
       const ticks = { min: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
-      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR || (this.timeseriesData.timeSeries.chartType === ChartType.LINE && (this.isGroupByChart || metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter || (metadata.timeSeries && ((!metadata.timeSeries.fieldId || metadata.timeSeries.fieldId === '') && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith))))) {
         this.timeSeriesOption.scales = {
           xAxes: [{
             scaleLabel: {
               display: true,
               labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : '',
             },
-            ticks : {
-              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ?  20 : 0
+            ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 20 : 0
             }
           }],
           yAxes: [{
             scaleLabel: {
               display: true,
               labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
-            },ticks
+            }, ticks
           }]
         };
       } else {
@@ -429,7 +432,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         }
       }
     } else {
-      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR || (this.timeseriesData.timeSeries.chartType === ChartType.LINE && (this.isGroupByChart || metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter || (metadata.timeSeries && ((!metadata.timeSeries.fieldId || metadata.timeSeries.fieldId === '') && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith))))) {
         this.timeSeriesOption.scales = {
           xAxes: [{
             scaleLabel: {
@@ -571,7 +574,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * function to get widget data according to widgetID
    * @param widgetId ID of the widget
    */
-   getwidgetData(widgetId: number): void {
+  getwidgetData(widgetId: number): void {
     this.dataSet = [{ data: [] }];
     this.widgetService.getWidgetData(String(widgetId), this.filterCriteria, '', '', this.userDetails.selfServiceUserModel.timeZone).subscribe(response => {
       this.responseData = response;
@@ -617,6 +620,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const finalOutput = new Object();
     const codetextObj = {};
     const cordKeys = ['x', 'y'];
+    const totalCount = [];
     const aggregation = data.aggregations['date_histogram#date'] ? data.aggregations['date_histogram#date'] : data.aggregations[''];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
       aggregation.buckets.forEach(singleBucket => {
@@ -626,33 +630,101 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         })
         const arrBuckets = singleBucket[value[0]] ? singleBucket[value[0]].buckets : [];
         arrBuckets.forEach(innerBucket => {
-          const count = innerBucket.doc_count;
+          const docTotalCount = innerBucket.doc_count;
           let label = innerBucket.key;
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
-          if(textTermBucket){
+          if (textTermBucket) {
             textTermBucket.forEach(bucket => {
               const labelCode = label = this.codeTextValue(textTermBucket[0], fieldId);
               label = labelCode.t ? labelCode.t : labelCode.c ? labelCode.c : labelCode;
-          })
+            })
           }
           codetextObj[label] = innerBucket.key;
           if (Object.keys(finalOutput).includes(label)) {
             const array = finalOutput[label];
             const objdt = new Object();
             objdt[cordKeys[0]] = singleBucket.key_as_string;
-            objdt[cordKeys[1]] = count;
+            objdt[cordKeys[1]] = docTotalCount;
             array.push(objdt);
+            if (this.isTotalShown) {
+              if (totalCount.length) {
+                const index = totalCount.findIndex(item => item.x === singleBucket.key_as_string);
+                if (index > -1) {
+                  totalCount[index].y = totalCount[index].y + docTotalCount;
+                }
+                else {
+                  const total = new Object();
+                  total[cordKeys[0]] = singleBucket.key_as_string;
+                  total[cordKeys[1]] = docTotalCount;
+                  totalCount.push(total);
+                }
+              }
+              else {
+                const total = new Object();
+                total[cordKeys[0]] = singleBucket.key_as_string;
+                total[cordKeys[1]] = docTotalCount;
+                totalCount.push(total);
+              }
+            }
             finalOutput[label] = array;
+
           } else {
             const objdt = new Object();
             objdt[cordKeys[0]] = singleBucket.key_as_string;
-            objdt[cordKeys[1]] = count;
+            objdt[cordKeys[1]] = docTotalCount;
             const array = new Array();
             array.push(objdt);
+            if (this.isTotalShown) {
+              if (totalCount.length) {
+                const index = totalCount.findIndex(item => item.x === singleBucket.key_as_string);
+                if (index > -1) {
+                  totalCount[index].y = totalCount[index].y + docTotalCount;
+                }
+                else {
+                  const total = new Object();
+                  total[cordKeys[0]] = singleBucket.key_as_string;
+                  total[cordKeys[1]] = docTotalCount;
+                  totalCount.push(total);
+                }
+              }
+              else {
+                const total = new Object();
+                total[cordKeys[0]] = singleBucket.key_as_string;
+                total[cordKeys[1]] = docTotalCount;
+                totalCount.push(total);
+              }
+            }
             finalOutput[label] = array;
           }
         });
       });
+    }
+
+    if (this.isTotalShown) {
+      let showTotal = true;
+      this.filterCriteria.forEach(filter => {
+        if (filter.conditionFieldValue !== 'Total') {
+          const index = Object.keys(finalOutput).indexOf(filter.conditionFieldValue);
+          if (index > -1) {
+            showTotal = false;
+          }
+        }
+      });
+      const total = 'Total'
+      if (showTotal) {
+        if (Object.keys(totalCount).length) {
+          codetextObj[total] = 'Total';
+          finalOutput[total] = totalCount;
+          this.totalCount = totalCount;
+        }
+        else {
+          codetextObj[total] = 'Total';
+          finalOutput[total] = this.totalCount;
+        }
+      } else {
+        delete codetextObj[total];
+        delete finalOutput[total];
+      }
     }
 
     /**
@@ -661,7 +733,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.chartLegend = [];
     const arrKeys = ['data', 'id', 'label', 'fill', 'border'];
     let datasets = new Array();
-    Object.keys(finalOutput).forEach((status,index) => {
+    Object.keys(finalOutput).forEach((status, index) => {
       const dataSet = new Object();
       dataSet[arrKeys[0]] = finalOutput[status];
       dataSet[arrKeys[1]] = status;
@@ -674,9 +746,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.setLegendForChart();
     });
 
-    if(this.timeseriesData.timeSeries.dataSetSize) {
-    this.chartLegend =  _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
-    datasets =  _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
+    if (this.timeseriesData.timeSeries.dataSetSize) {
+      this.chartLegend = _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
+      datasets = _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
     }
     console.log(datasets);
 
@@ -694,6 +766,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const tempDataSetlabel = [];
     const objData = {};
     this.chartLegend = [];
+    const totalCount = {};
     const aggregation = res ? res.aggregations['date_histogram#date'] : [];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
       aggregation.buckets.forEach(singleBucket => {
@@ -743,6 +816,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           } else {
             arrcount.push(0);
           }
+          if (dataSet[key]) {
+            if (totalCount[key]) {
+              totalCount[key] = totalCount[key] + +dataSet[key];
+            } else {
+              totalCount[key] = dataSet[key];
+            }
+          }
         });
         // Prepare datasets for comparison in timeseries
         if (objData[milliVal] !== undefined) {
@@ -750,8 +830,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const lengthOfArr = arrcount.length > oldArray.length ? oldArray.length : arrcount.length;
           for (let i = 0; i < lengthOfArr.length; i++) {
             arrcount[i] = arrcount[i] + oldArray[i];
+            if (totalCount[i]) {
+              totalCount[i] = totalCount[i] + arrcount[i];
+            } else {
+              totalCount[i] = arrcount[i];
+            }
           }
         }
+        this.totalCount = totalCount;
         objData[milliVal] = arrcount;
       });
     }
@@ -769,6 +855,53 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
     this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
     this.setLegendForChart(); // calling it to set legend
+    finalOutput.forEach((label, index) => {
+      const scale = {
+        id: 'bar-x-' + index,
+        type: 'category',
+        gridLines: {
+          offsetGridLines: true
+        },
+        display: false,
+      }
+      this.timeSeriesOption.scales.xAxes.push(scale);
+    })
+    if (this.isTotalShown) {
+      if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+        const totalDataSet: ChartDataSets =
+        {
+          label: 'Total',
+          data: [],
+          xAxisID: 'bar-x-Total',
+        };
+        Object.values(totalCount).forEach((el: number) => {
+          totalDataSet.data.push(el);
+        })
+        if (!this.filterCriteria.length) {
+          finalOutput.push(totalDataSet);
+          this.totalCount = totalCount;
+        }
+        if (Object.keys(totalCount).length) {
+          finalOutput.push(totalDataSet);
+          this.totalCount = totalCount;
+        }
+        else {
+          finalOutput.push(totalDataSet);
+        }
+        const scale = {
+          id: 'bar-x-Total',
+          type: 'category',
+          gridLines: {
+            offsetGridLines: true
+          },
+          offset: true,
+          display: false,
+          barPercentage: 1.75,
+          categoryPercentage: 0.5,
+        }
+        this.timeSeriesOption.scales.xAxes.push(scale);
+      }
+    }
     return finalOutput;
   }
 
@@ -778,6 +911,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
   transformForGroupBy(res: any, forDistinct?: boolean) {
     const aggregation = res ? res.aggregations['date_histogram#date'] : [];
+    const totalCount = {};
     if (aggregation && aggregation.buckets) {
       const yearDoc = {};
       aggregation.buckets.forEach(fil => {
@@ -795,27 +929,94 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dataSetlabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const finaldata = [];
       if (yearDoc) {
-        Object.keys(yearDoc).forEach(yr => {
+        Object.keys(yearDoc).forEach((yr) => {
+          const dataSet = this.generatedDataBasedonMonth(yearDoc[yr], forDistinct);
+          dataSet.forEach((data, ind) => {
+            if (totalCount[ind]) {
+              totalCount[ind] = totalCount[ind] + data;
+            } else {
+              totalCount[ind] = data;
+            }
+          })
+          this.totalCount = totalCount;
           if (yearDoc[yr]) {
             finaldata.push({
-              data: this.generatedDataBasedonMonth(yearDoc[yr], forDistinct),
+              data: dataSet,
               label: `${yr}`,
               fill: false
             });
           }
         });
       }
-      this.dataSet = finaldata;
+
       this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
       this.setLegendForChart(); // calling it to set legend
+      const totalDataSet: ChartDataSets =
+      {
+        label: 'Total',
+        data: [],
+        fill: false
+      };
+      if (this.isTotalShown) {
+        if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+          finaldata.forEach((item, index) => {
+            const scaleAxes = {
+              id: 'bar-x-' + index,
+              type: 'category',
+              gridLines: {
+                offsetGridLines: true
+              },
+              display: false,
+            }
+            this.timeSeriesOption.scales.xAxes.push(scaleAxes);
+          })
+
+          const scale = {
+            id: 'bar-x-Total',
+            type: 'category',
+            gridLines: {
+              offsetGridLines: true
+            },
+            offset: true,
+            display: false,
+            barPercentage: 1.75,
+            categoryPercentage: 0.5,
+          }
+          this.timeSeriesOption.scales.xAxes.push(scale);
+          totalDataSet.xAxisID = 'bar-x-Total';
+        }
+        // }
+        Object.values(totalCount).forEach((el: number) => {
+          totalDataSet.data.push(el);
+        })
+        // let showTotal = true;
+        // this.filterCriteria.forEach(filter => {
+        //   const index = this.dataSetlabel.indexOf(filter.conditionFieldValue);
+        //   if (index > -1) {
+        //     showTotal = false;
+        //   }
+        // });
+        // if (showTotal) {
+          if (Object.keys(totalCount).length) {
+            finaldata.push(totalDataSet);
+            this.totalCount = totalCount;
+          }
+          // else {
+          //   finaldata.push(totalDataSet);
+          // }
+        // }
+      }
+      this.dataSet = finaldata;
     }
   }
 
 
   tarnsformForShowInPercentage(res: any, showInPercentage: boolean) {
     const aggregation = res ? res.aggregations['date_histogram#date'] : [];
+    const totalCount = {};
     if (aggregation && aggregation.buckets) {
       const yearDoc = {};
+
       aggregation.buckets.forEach(fil => {
         let date = fil.key_as_string ? fil.key_as_string : [];
         if (date) {
@@ -830,19 +1031,81 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dataSetlabel = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const finaldata = [];
       if (yearDoc) {
-        Object.keys(yearDoc).forEach(yr => {
+        Object.keys(yearDoc).forEach((yr, index) => {
+          const dataSet = this.bucketModify(yearDoc[yr], showInPercentage);
+          dataSet.forEach((data, index) => {
+            if (totalCount[index]) {
+              totalCount[index] = totalCount[index] + data;
+            } else {
+              totalCount[index] = data;
+            }
+          })
+          this.totalCount = totalCount;
           if (yearDoc[yr]) {
             finaldata.push({
-              data: this.bucketModify(yearDoc[yr], showInPercentage),
+              data: dataSet,
               label: `${yr}`,
               fill: false
             });
           }
         });
       }
-      this.dataSet = finaldata;
-      this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
+      // this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
       this.setLegendForChart(); // calling it to set legend
+      const totalDataSet: ChartDataSets =
+      {
+        label: 'Total',
+        data: [],
+        fill: false
+      };
+      if (this.isTotalShown) {
+        if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
+          finaldata.forEach((item, index) => {
+            const scale = {
+              id: 'bar-x-' + index,
+              type: 'category',
+              gridLines: {
+                offsetGridLines: true
+              },
+              display: false,
+            }
+            this.timeSeriesOption.scales.xAxes.push(scale);
+          })
+
+          const scale = {
+            id: 'bar-x-Total',
+            type: 'category',
+            gridLines: {
+              offsetGridLines: true
+            },
+            offset: true,
+            display: false,
+            barPercentage: 1.75,
+            categoryPercentage: 0.5,
+          }
+          this.timeSeriesOption.scales.xAxes.push(scale);
+          totalDataSet.xAxisID = 'bar-x-Total';
+        }
+        Object.values(totalCount).forEach((el: number) => {
+          totalDataSet.data.push(el);
+        })
+
+        let showTotal: boolean = true;
+        this.filterCriteria.forEach(filter => {
+          const index = this.dataSetlabel.indexOf(filter.conditionFieldValue);
+          if (index > -1) {
+            showTotal = false;
+          }
+        });
+        console.log('total count====',totalCount);
+        if (showTotal) {
+          if (Object.keys(totalCount).length) {
+            finaldata.push(totalDataSet);
+          }
+        }
+      }
+      this.dataSet = finaldata;
+      console.log('total data set=====',this.dataSet)
     }
   }
 
@@ -900,8 +1163,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   emitDateChangeValues() {
     if (this.startDateCtrl.value && this.endDateCtrl.value) {
-      if(this.startDateCtrl.value === this.endDateCtrl.value) {
-        this.endDateCtrl.setValue(String(Number(this.startDateCtrl.value) + 24*60*60*1000));
+      if (this.startDateCtrl.value === this.endDateCtrl.value) {
+        this.endDateCtrl.setValue(String(Number(this.startDateCtrl.value) + 24 * 60 * 60 * 1000));
       }
       const groupwith = this.timeseriesData.timeSeries.groupWith;
       let filterApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === groupwith);
@@ -973,33 +1236,33 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
   downloadCSV(): void {
     const excelData = [];
-      this.dataSet.forEach((dataArr) => {
-        const key = 'id'
-        if(dataArr[key]){
-          dataArr.data.forEach((dataObj, index) => {
-            const obj = {} as any;
-            obj[this.timeseriesData.timeSeries.metaData ? this.timeseriesData.timeSeries.metaData.fieldDescri : this.timeseriesData.timeSeries.metaData.fieldId] = dataArr[key];
-            this.dateAndCountFormat(dataObj,obj,dataArr);
-            excelData.push(obj);
-          })
-        }
-        else{
-          dataArr.data.forEach((dataObj, index) => {
-            const obj = {} as any;
-            // In case of field ID is there..
-            if(this.timeseriesData.timeSeries.metaData.fieldId){
-              obj[this.timeseriesData.timeSeries.metaData ? this.timeseriesData.timeSeries.metaData.fieldDescri : this.timeseriesData.timeSeries.metaData.fieldId] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text + '\t' : this.chartLegend[index].code + '\t'): this.dataSetlabel[index] + '\t';
-            }
-            // In case of field ID is blank - groupWith and DistinctWith are there..
-            else{
-              obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text + '\t' : this.chartLegend[index].code + '\t'): this.dataSetlabel[index] + '\t';
-            }
-            // checking format of data to be downloaded..
-            this.dateAndCountFormat(dataObj,obj,dataArr);
-            excelData.push(obj);
-          })
-        }
-      })
+    this.dataSet.forEach((dataArr) => {
+      const key = 'id'
+      if (dataArr[key]) {
+        dataArr.data.forEach((dataObj, index) => {
+          const obj = {} as any;
+          obj[this.timeseriesData.timeSeries.metaData ? this.timeseriesData.timeSeries.metaData.fieldDescri : this.timeseriesData.timeSeries.metaData.fieldId] = dataArr[key];
+          this.dateAndCountFormat(dataObj, obj, dataArr);
+          excelData.push(obj);
+        })
+      }
+      else {
+        dataArr.data.forEach((dataObj, index) => {
+          const obj = {} as any;
+          // In case of field ID is there..
+          if (this.timeseriesData.timeSeries.metaData.fieldId) {
+            obj[this.timeseriesData.timeSeries.metaData ? this.timeseriesData.timeSeries.metaData.fieldDescri : this.timeseriesData.timeSeries.metaData.fieldId] = this.chartLegend.length > 0 ? (this.chartLegend[index].text.length > 0 ? this.chartLegend[index].text + '\t' : this.chartLegend[index].code + '\t') : this.dataSetlabel[index] + '\t';
+          }
+          // In case of field ID is blank - groupWith and DistinctWith are there..
+          else {
+            obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length > 0 ? (this.chartLegend[index].text.length > 0 ? this.chartLegend[index].text + '\t' : this.chartLegend[index].code + '\t') : this.dataSetlabel[index] + '\t';
+          }
+          // checking format of data to be downloaded..
+          this.dateAndCountFormat(dataObj, obj, dataArr);
+          excelData.push(obj);
+        })
+      }
+    })
     this.widgetService.downloadCSV('Time-Chart', excelData);
   }
 
@@ -1096,7 +1359,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         align: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
         anchor: this.timeseriesData.timeSeries.datalabelsPosition || 'end',
         display: 'auto',
-        formatter: ((value: any, context: Context)=> {
+        formatter: ((value: any, context: Context) => {
           return value ? value.y ? value.y : value : value;
         })
       };
@@ -1108,7 +1371,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.setChartProperties();
   }
 
-  applyFilters(){
+  applyFilters() {
     this.emitEvtFilterCriteria(this.filterCriteria);
     // this.lablels = [];
     // this.chartLegend = [];
@@ -1123,7 +1386,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dateFilters.splice(index, 1);
       hasBtn.isActive = true;
       this.dateFilters.splice(index, 0, hasBtn);
-      if(!this.timeseriesData.timeSeries.distictWith) {
+      if (!this.timeseriesData.timeSeries.distictWith) {
         this.updateForm('date', hasBtn);
       }
     }
@@ -1161,24 +1424,24 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   checkTextCode(value: { code: string; text: string; }): string {
     switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
-        if(value.code) {
+        if (value.code) {
           return value.code;
         }
         break;
-        case DisplayCriteria.TEXT:
-          if(value.text) {
-            return value.text;
-          }
+      case DisplayCriteria.TEXT:
+        if (value.text) {
+          return value.text;
+        }
         break;
-        default:
-          return `${value.code} -- ${value.text || ''}`;
+      default:
+        return `${value.code} -- ${value.text || ''}`;
         break;
     }
     return '';
   }
 
   dateAndCountFormat(objData, obj, dataArr) {
-    switch(this.timeseriesData.timeSeries.seriesWith) {
+    switch (this.timeseriesData.timeSeries.seriesWith) {
       case SeriesWith.day:
         obj.Day = objData.x ? objData.x + '\t' : dataArr.label + '\t';
         break;
@@ -1188,7 +1451,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
 
       case SeriesWith.month:
-        obj.Month =objData.x ? objData.x + '\t' : dataArr.label + '\t';
+        obj.Month = objData.x ? objData.x + '\t' : dataArr.label + '\t';
         break;
 
       case SeriesWith.quarter:
