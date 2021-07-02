@@ -83,6 +83,11 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   searchString = '';
 
+  /**
+   * flag to identify the listed rule is only transformation rules
+   */
+  isOnlyTransformation: boolean;
+
   constructor(
     private schemaService: SchemaService,
     private router: Router,
@@ -100,7 +105,11 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
       this.outlet = params.outlet;
       this.schemaId = params.schemaId;
       this.moduleId = params.moduleId;
-    })
+    });
+    this.activatedRoute.queryParamMap.subscribe(q=>{
+      this.isOnlyTransformation = q.has('t') && q.get('t') ==='true' ? true : false;
+    });
+
     this.getBusinessRulesBySchemaId(this.schemaId);
     this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType);
 
@@ -110,7 +119,9 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
     ).subscribe(searchTxt => {
       this.searchString = searchTxt || '';
       this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType);
-    })
+    });
+
+
   }
 
 
@@ -131,7 +142,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * function to select a business rule from the list.
    */
   selectBusinessRule(rule: CoreSchemaBrInfo, action: string) {
-    const findBR = (list: Array<CoreSchemaBrInfo>) => list.find(br => br.brId === rule.brId);
+    const findBR = (list: Array<CoreSchemaBrInfo>) => list.find(br => br.brIdStr === rule.brIdStr);
     const deletedBR = findBR(this.BusinessRulesToBeDelete);
     if(deletedBR) {
       this.BusinessRulesToBeDelete.splice(this.BusinessRulesToBeDelete.indexOf(deletedBR), 1);
@@ -145,7 +156,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
     if (action === this.constants.ADD) {
       this.selectedBusinessRule.push(rule);
     } else {
-      const br = this.selectedBusinessRule.filter((businessRule) => businessRule.brId === rule.brId)[0];
+      const br = this.selectedBusinessRule.filter((businessRule) => businessRule.brIdStr === rule.brIdStr)[0];
       const index = this.selectedBusinessRule.indexOf(br);
       this.selectedBusinessRule.splice(index, 1)
     }
@@ -158,21 +169,14 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
     return GLOBALCONSTANTS;
   }
 
-  /**
-   * to convert rule type into rule description
-   * @param ruleType ruleType of a business rule object
-   */
-   public getRuleDesc(ruleType: string) {
-    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
-  }
 
   /**
    * Check if a particular rule is selected
    */
   isSelected(rule: CoreSchemaBrInfo): boolean {
-    const selected = this.selectedBusinessRule.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
-    const alreadySelected = this.alreadySelectedBrs.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
-    const deletedBRs = this.BusinessRulesToBeDelete.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
+    const selected = this.selectedBusinessRule.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brIdStr === rule.brIdStr);
+    const alreadySelected = this.alreadySelectedBrs.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brIdStr === rule.brIdStr);
+    const deletedBRs = this.BusinessRulesToBeDelete.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brIdStr === rule.brIdStr);
     return (selected.length > 0 || alreadySelected.length > 0 && !deletedBRs.length);
   }
 
@@ -189,17 +193,32 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
     } else {
       this.fetchCount = 0;
     }
-    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, `${this.fetchCount}`).subscribe((rules: CoreSchemaBrInfo[]) => {
-      if(loadMore) {
-        if(rules && rules.length) {
-          this.businessRulesList = [...this.businessRulesList, ...rules];
+    if(this.isOnlyTransformation) {
+      this.schemaService.transformationRules(moduleId, this.fetchCount, 40, searchString).subscribe(rules=>{
+        if(loadMore) {
+          if(rules && rules.length) {
+            this.businessRulesList = [...this.businessRulesList, ...rules];
+          } else {
+            this.fetchCount--;
+          }
         } else {
-          this.fetchCount--;
+          this.businessRulesList = rules || [];
         }
-      } else {
-        this.businessRulesList = rules || [];
-      }
-    });
+      });
+    } else {
+      this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, `${this.fetchCount}`).subscribe((rules: CoreSchemaBrInfo[]) => {
+        if(loadMore) {
+          if(rules && rules.length) {
+            this.businessRulesList = [...this.businessRulesList, ...rules];
+          } else {
+            this.fetchCount--;
+          }
+        } else {
+          this.businessRulesList = rules || [];
+        }
+      });
+    }
+
   }
 
   /**
@@ -223,7 +242,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
       this.selectedBusinessRule.forEach(businessRule => {
         const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
-        request.brId = '';
+        request.brIdStr = '';
         request.schemaId = this.schemaId;
         request.brInfo = businessRule.brInfo;
         request.brType = businessRule.brType;
@@ -232,7 +251,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
         request.isCopied = true;
         request.moduleId = this.moduleId;
         request.copiedFrom = businessRule.brIdStr;
-
+        console.log('--------- ', request);
         if(businessRule.brType === 'BR_DUPLICATE_CHECK') {
           forkObj[count++] = this.schemaService.copyDuplicateRule(request);
         } else {

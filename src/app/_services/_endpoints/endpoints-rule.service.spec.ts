@@ -675,6 +675,6 @@ describe('EndpointsRuleService', () => {
 
   it('cancleSchemaUri()', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.cancleSchemaUri()).toContain('/schema/cancel-schema');
+    expect(serObj.cancleSchemaUri()).toContain('/schema/cancle-schema');
   }));
 });

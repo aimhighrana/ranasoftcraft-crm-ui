@@ -32,7 +32,7 @@ describe('BrruleSideSheetComponent', () => {
       ],
       providers: [SchemaDetailsService,
         { provide: ActivatedRoute,
-          useValue: {params: of({moduleId: '1005', schemaId: 'schema1', brId: 'new'})}
+          useValue: {params: of({moduleId: '1005', schemaId: 'schema1', brId: 'new'}), queryParams:of({moduleId: '1005', schemaId: 'schema1', brId: 'new'})}
         }]
     })
       .compileComponents();
@@ -236,7 +236,7 @@ describe('BrruleSideSheetComponent', () => {
    component.updateTransformationRuleType({value: true});
    const field2=component.formField('transformationRuleType');
    delete component.form.controls;
-   expect(field2.value).toBeFalsy();
+   expect(field2.value).toEqual({ value: true });
 
   }));
 
@@ -303,6 +303,9 @@ describe('BrruleSideSheetComponent', () => {
     spyOn(component, 'getCategories');
     spyOn(component, 'getFieldsByModuleId');
     spyOn(component, 'getBusinessRuleInfo');
+    spyOn(component,'getMappedTransformationRules');
+    spyOn(component,'getTransRules');
+    component.moduleId = '1005';
     component.ngOnInit();
     expect(component.moduleId).toEqual('1005');
 
@@ -325,6 +328,13 @@ describe('BrruleSideSheetComponent', () => {
   })
 
   it('initiateAutocomplete(), should init autocomplete', async(() => {
+    spyOn(component, 'getCategories');
+    spyOn(component, 'getFieldsByModuleId');
+    spyOn(component, 'getBusinessRuleInfo');
+    spyOn(component,'getMappedTransformationRules');
+    spyOn(component,'getTransRules');
+    spyOn(component,'applyValidatorsByRuleType');
+    
     component.ngOnInit();
     component.form.controls.fields.setValue('email');
     component.allGridAndHirarchyData = [
@@ -379,6 +389,9 @@ describe('BrruleSideSheetComponent', () => {
   }));
 
   it('should setValueToElement', async(() => {
+
+    // mock data 
+    component.hasAppliedTransformationCtrl = new FormControl(true);
 
     component.buildCommonDataForm();
 

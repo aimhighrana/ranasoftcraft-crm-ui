@@ -269,9 +269,6 @@ export class SchemaStaticThresholdRes {
     exeEndDate: string;
     isInRunning: boolean;
     schemaDescription: string;
-    outdatedCnt: number;
-    skippedCnt: number;
-
 }
 
 export class SchemaDashboardPermission {

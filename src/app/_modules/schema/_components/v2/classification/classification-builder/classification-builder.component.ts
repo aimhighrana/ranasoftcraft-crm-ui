@@ -138,7 +138,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   /**
    * Store information about noun and modifier ..
    */
-  rulesNounMods: ClassificationNounMod = { mro_local_lib: { info: [] }, mro_gsn_lib: { info: [] } } as ClassificationNounMod;
+  rulesNounMods: ClassificationNounMod = { MRO_CLS_MASTER_CHECK: { info: [] }, MRO_MANU_PRT_NUM_LOOKUP: { info: [] } } as ClassificationNounMod;
 
   /**
    * Store info about user selected field and order
@@ -156,7 +156,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   startColumns = ['checkbox_select', 'assigned_bucket'];
 
 
-  dataFrm: string = 'mro_local_lib' || 'mro_gsn_lib';
+  dataFrm: string = 'MRO_CLS_MASTER_CHECK' || 'MRO_MANU_PRT_NUM_LOOKUP';
 
   /**
    * Store data of table for next suggestion
@@ -398,13 +398,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     const viewFor: string = this.viewOf.getValue();
     const sub = this.schemaDetailService.getClassificationNounMod(this.schemaId, this.schemaInfo.runId,viewFor, this.variantId, searchStrng).subscribe(res => {
       this.rulesNounMods = res;
-      if (this.rulesNounMods.mro_local_lib && this.rulesNounMods.mro_local_lib.info) {
-        const fisrtNoun = this.rulesNounMods.mro_local_lib.info[0];
+      if (this.rulesNounMods.MRO_CLS_MASTER_CHECK && this.rulesNounMods.MRO_CLS_MASTER_CHECK.info) {
+        const fisrtNoun = this.rulesNounMods.MRO_CLS_MASTER_CHECK.info[0];
         if(fisrtNoun) {
           const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
           if (modifierCode && fisrtNoun.nounCode) {
-            this.dataFrm = 'mro_local_lib';
-            this.applyFilter(fisrtNoun.nounCode, modifierCode, 'mro_local_lib');
+            this.dataFrm = 'MRO_CLS_MASTER_CHECK';
+            this.applyFilter(fisrtNoun.nounCode, modifierCode, 'MRO_CLS_MASTER_CHECK');
           }
           else {
             this.activeNounCode = '';
@@ -618,7 +618,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
                 const attrDesc = att.ATTR_DESC;
                 const attrVal = att.ATTRIBUTES_VALUES ? att.ATTRIBUTES_VALUES : [];
                 let attrValue = '';
-                if (attrVal[0] && brType!== 'mro_local_lib') {
+                if (attrVal[0] && brType!== 'MRO_CLS_MASTER_CHECK') {
                   attrValue = attrVal[0].SHORT_VALUE;
                 }
 
@@ -722,7 +722,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       viewCtrl.style.display = 'block';
 
       if(objctNumber && oldVal !== value) {
-        const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: ((this.dataFrm === 'mro_local_lib' || this.dataFrm === 'unmatched') ? true : false)} as SchemaMROCorrectionReq;
+        const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: ((this.dataFrm === 'MRO_CLS_MASTER_CHECK' || this.dataFrm === 'unmatched') ? true : false)} as SchemaMROCorrectionReq;
         if(fldid === 'NOUN_CODE') {
           correctionReq.nounCodeoc = oldVal;
           correctionReq.nounCodevc = value;
@@ -769,17 +769,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
 
       let celldataFor = CellDataFor.LOCAL_NOUN;
-      if(fldid === 'NOUN_CODE' && this.dataFrm === 'mro_local_lib') {
+      if(fldid === 'NOUN_CODE' && this.dataFrm === 'MRO_CLS_MASTER_CHECK') {
         celldataFor = CellDataFor.LOCAL_NOUN;
-      } else if(fldid === 'MODE_CODE' && this.dataFrm === 'mro_local_lib') {
+      } else if(fldid === 'MODE_CODE' && this.dataFrm === 'MRO_CLS_MASTER_CHECK') {
         celldataFor = CellDataFor.LOCAL_MODIFIER;
-      } else if(fldid === 'ATTR_CODE' && this.dataFrm === 'mro_local_lib') {
+      } else if(fldid === 'ATTR_CODE' && this.dataFrm === 'MRO_CLS_MASTER_CHECK') {
         celldataFor = CellDataFor.LOCAL_ATTRIBUTE;
-      } else if(fldid === 'NOUN_CODE' && this.dataFrm === 'mro_gsn_lib') {
+      } else if(fldid === 'NOUN_CODE' && this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP') {
         celldataFor = CellDataFor.GSN_NOUN;
-      } else if(fldid === 'MODE_CODE' && this.dataFrm === 'mro_gsn_lib') {
+      } else if(fldid === 'MODE_CODE' && this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP') {
         celldataFor = CellDataFor.GSN_MODIFIER;
-      } else if(fldid === 'ATTR_CODE' && this.dataFrm === 'mro_gsn_lib') {
+      } else if(fldid === 'ATTR_CODE' && this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP') {
         celldataFor = CellDataFor.GSN_ATTRIBUTE;
       }
 
@@ -905,7 +905,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       throw new Error(`Objectnumber is required`);
     }
 
-    this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs, this.dataFrm === 'mro_local_lib' ? true : false).subscribe(res=>{
+    this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs, this.dataFrm === 'MRO_CLS_MASTER_CHECK' ? true : false).subscribe(res=>{
       console.log(res);
       if(res)  {
         setTimeout(()=>{

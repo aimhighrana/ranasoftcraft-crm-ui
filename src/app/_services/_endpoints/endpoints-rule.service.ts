@@ -688,6 +688,22 @@ export class EndpointsRuleService {
    * @returns will return the url
    */
   public cancleSchemaUri(): string{
-    return `${this.origin}/schema/cancel-schema`;
+    return `${this.origin}/schema/cancle-schema`;
+  }
+
+  /**
+   * get all the transformation rules url
+   * @returns will return the trans uri
+   */
+  public transformationRules(): string {
+    return `${this.origin}/schema/metadata/transformationRuleLibrary`;
+  }
+
+  /**
+   * Get the url for all transformatiom inside rule
+   * @returns will return the mapped transformation rule inside the rule
+   */
+  public getMappedTransformationRulesUrl(): string {
+    return `${this.origin}/schema/metadata/getTransformationmapping`;
   }
 }
