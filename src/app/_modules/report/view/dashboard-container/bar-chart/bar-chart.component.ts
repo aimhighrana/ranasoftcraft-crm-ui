@@ -166,7 +166,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.subscriptions.push(afterColorDefined);
 
     const getDisplayCriteria =  this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = res.displayCriteria; //this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
