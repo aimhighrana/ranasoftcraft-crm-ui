@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'pros-form-range-slider',
   templateUrl: './form-range-slider.component.html',
-  // styleUrls: ['./form-range-slider.component.scss'],
+  styleUrls: ['./form-range-slider.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class FormRangeSliderComponent implements OnInit,OnChanges {
@@ -52,6 +52,7 @@ export class FormRangeSliderComponent implements OnInit,OnChanges {
    * ANGULAR HOOK
    *
    */
+
   ngOnInit(): void {
     if (!this.control) {
       this.control = new FormControl({ min: +this.minValue, max: +this.maxValue });

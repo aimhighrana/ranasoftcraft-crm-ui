@@ -119,7 +119,7 @@
 
                             <!-- For text area -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'textarea'">
-                                <lib-textarea [formControlName]="displayedColumnsId[i]"
+                                <lib-textarea class="lib-textarea" [formControlName]="displayedColumnsId[i]"
                                     [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"></lib-textarea>
                             </ng-template>
 

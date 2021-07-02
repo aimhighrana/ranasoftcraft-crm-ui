@@ -2,25 +2,21 @@
     <lib-input [value]="getSelectedRangeValue()" disabled="true">
     </lib-input>
 </div>
-<mat-menu #rangeSlider="matMenu">
-    <lib-filter-dropdown prosClickStopPropagation>
-        <div class="dropdown-search-wrapper">
-            <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder" [formControl]="fltrCtrl"
-                [hasError]="isInValidInput()"></lib-input>
+<mat-menu class="filter-mat-menu" #rangeSlider="matMenu">
+
+    <div class="f-col range-slider" prosClickStopPropagation>
+        <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder" [formControl]="fltrCtrl"
+            [hasError]="isInValidInput()"></lib-input>
+        <div class="f-col select-range">
+            <lib-text-line type="small" weight="strong">Select range</lib-text-line>
+            <lib-range-slider [formControl]="control" [maxValue]="highValue" showTicks="true" [value]="minValue"
+                [highValue]="maxValue" thumbLabel="true">
+            </lib-range-slider>
         </div>
-        <div class="dropdown-options-wrapper f-col">
-            <div class="dropdown-options-inner-container">
-                <mat-label>Select range</mat-label>
-                <lib-filter-option>
-                    <lib-range-slider [formControl]="control" [maxValue]="highValue" showTicks="true" [value]="minValue"
-                        [highValue]="maxValue" thumbLabel="true">
-                    </lib-range-slider>
-                </lib-filter-option>
-            </div>
-            <div class="filter-button-wrapper">
-                <lib-button type="minor" (click)="applyFilter();trigger.closeMenu();" i18n="@@apply">
-                    Apply</lib-button>
-            </div>
+        <div class="filter-button-wrapper">
+            <lib-button type="minor" (click)="applyFilter();trigger.closeMenu();" i18n="@@apply">
+                Apply</lib-button>
         </div>
-    </lib-filter-dropdown>
+    </div>
+
 </mat-menu>
