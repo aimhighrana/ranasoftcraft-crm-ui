@@ -836,7 +836,7 @@ describe('SchemaInfoComponent', () => {
 
     component.fetchSelectedValues([], 1);
 
-    const seletectedValues = [{CODE: 'region', FIELDNAME: 'region'}];
+    const seletectedValues = [{fieldId: 'region', CODE: 'region', FIELDNAME: 'region'}];
 
     component.subscriberData = [{sno: 1, filterCriteria: [{fieldId: 'region', values: []}, {fieldId: 'mtl_grp'}]},
         {sno: 2, filterCriteria: []}] as SchemaDashboardPermission[];
@@ -1097,5 +1097,10 @@ describe('SchemaInfoComponent', () => {
         dep_rules: [{}]
       } as CoreSchemaBrInfo];
       expect(component.getBusinessRulesLength).toEqual(2);
+    }));
+
+    it('getRuleDesc(), should return rule description', async(() => {
+      expect(component.getRuleDesc('BR_API_RULE')).toEqual('API Rule');
+      expect(component.getRuleDesc('testRule')).toBeFalsy();
     }));
 });

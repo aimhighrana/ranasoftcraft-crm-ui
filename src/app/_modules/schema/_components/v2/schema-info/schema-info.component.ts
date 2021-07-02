@@ -4,7 +4,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails, ModuleInfo } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, RuleDependentOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel, RULE_TYPES } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -480,6 +480,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * to convert rule type into rule description
+   * @param ruleType ruleType of a business rule object
+   */
+  public getRuleDesc(ruleType: string) {
+    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
+  }
 
   /**
    * Function to open sidesheet to add subscriber
@@ -716,7 +723,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     filterCtrl.selectedValues = [];
 
     event.selectedValues.forEach((value) => {
-      if (value.FIELDNAME === filterCtrl.fieldId) {
+      if (value.fieldId === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
         filterCtrl.selectedValues.push(value);
@@ -912,7 +919,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           delete subscriber.userMdoModel;
 
           subscriber.filterCriteria.forEach((filterCtrl) => {
-            if (filterCtrl.fieldId === selectedValues[0].FIELDNAME) {
+            if (filterCtrl.fieldId === selectedValues[0].fieldId) {
               filterCtrl.values.length = 0;
               filterCtrl.textValues = [];
               filterCtrl.selectedValues = selectedValues;

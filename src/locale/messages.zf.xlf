@@ -345,17 +345,13 @@
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
         <target>业务规则</target>
-       <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">61</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">77</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
-          <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -464,18 +460,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
           <context context-type="linenumber">180</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="add_br_rule" datatype="html">
-        <source>Add new business rule</source>
-        <target>添加新的业务规则</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">103</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
-          <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="rule_type" datatype="html">
@@ -2442,38 +2426,38 @@
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="importLogs" datatype="html">
-       <source>Import Logs</source>
-       <target>导入日志</target>
-       <context-group purpose="location">
-         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
-         <context context-type="linenumber">7</context>
-       </context-group>
-     </trans-unit>
-     <trans-unit id="warning" datatype="html">
-       <source>Warning</source>
-       <target>警告</target>
-       <context-group purpose="location">
-         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
-         <context context-type="linenumber">16</context>
-       </context-group>
-     </trans-unit>
+      <trans-unit id="importLogs" datatype="html">
+        <source>Import Logs</source>
+        <target>导入日志</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="warning" datatype="html">
+        <source>Warning</source>
+        <target>警告</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="status" datatype="html">
-       <source>Status</source>
-       <target>地位</target>
-       <context-group purpose="location">
-         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
-         <context context-type="linenumber">28</context>
-       </context-group>
-     </trans-unit>
+        <source>Status</source>
+        <target>地位</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="updated" datatype="html">
-       <source>Updated</source>
-       <target>更新</target>
-       <context-group purpose="location">
-         <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
-         <context context-type="linenumber">40</context>
-       </context-group>
-     </trans-unit>
+        <source>Updated</source>
+        <target>更新</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>导入报告</target>
@@ -2491,12 +2475,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
+        <source>Upload a .mdopage report file</source>
         <target>上传.mdopage报告文件</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2531,12 +2515,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
+        <source>Description</source>
         <target>描述</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
@@ -2756,6 +2740,26 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type" datatype="html">
+        <source>Type</source>
+        <target>类型</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_br_rule" datatype="html">
+        <source>New business rule</source>
+        <target>新业务规则</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">106</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
     </body>

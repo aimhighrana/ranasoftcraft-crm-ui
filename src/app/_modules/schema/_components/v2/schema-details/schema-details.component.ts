@@ -781,6 +781,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (this.userDetails) {
       this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     }
+    this.getSchemaStatics();
   }
 
   /**
@@ -1040,6 +1041,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
+        this.getSchemaStatics();
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
