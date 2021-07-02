@@ -217,11 +217,11 @@ describe('TimeseriesWidgetComponent', () => {
   }));
 
   it('tarnsformForShowInPercentage(), transform response', async(() => {
-    const data = 
+    const data =
     { _shards: { total: 1, failed: 0, successful: 1, skipped: 0 },
-     hits: { hits: [], total: { value: 1221, relation: 'eq' }, max_score: null }, took: 3, timed_out: false, 
-     aggregations: { 'date_histogram#date': { buckets: 
-      [{ key_as_string: '04.00.2020', doc_count: 52, 'sterms#term': { doc_count_error_upper_bound: 0, sum_other_doc_count: 0, buckets: [{ doc_count: 33, key: 'APP' }, 
+     hits: { hits: [], total: { value: 1221, relation: 'eq' }, max_score: null }, took: 3, timed_out: false,
+     aggregations: { 'date_histogram#date': { buckets:
+      [{ key_as_string: '04.00.2020', doc_count: 52, 'sterms#term': { doc_count_error_upper_bound: 0, sum_other_doc_count: 0, buckets: [{ doc_count: 33, key: 'APP' },
       { doc_count: 19, key: 'INP' }] }, key: 1588550400000 }, { key_as_string: '11.00.2020', doc_count: 46, 'sterms#term': { doc_count_error_upper_bound: 0, sum_other_doc_count: 0, buckets: [{ doc_count: 33, key: 'APP' }, { doc_count: 13, key: 'INP' }] }, key: 1589155200000 }] } } };
     component.timeseriesData.timeSeries = { chartType: ChartType.BAR } as WidgetTimeseries;
     component.isTotalShown = false;
