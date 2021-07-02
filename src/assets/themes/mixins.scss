@@ -228,6 +228,7 @@
       padding-bottom: 0;
       border-radius: 4px;
       background-color: $color-app-accent;
+      margin: 0;
 
       .mat-form-field-flex {
         padding-right: 0;
@@ -276,6 +277,14 @@
 
     &.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
       border-width: 1px;
+    }
+
+    &.mat-form-field-appearance-outline {
+      &.mat-focused {
+        .mat-form-field-outline-thick {
+          color: $color-app-canvas;
+        }
+      }
     }
 
     &.error-matfield {
