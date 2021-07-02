@@ -37,19 +37,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   responseData: any;
   displayCriteriaOptions = [
     {
-      key: DisplayCriteria.TEXT,
-      value: 'Text'
+      key: 'Text',
+      value: DisplayCriteria.TEXT
     },
     {
-      key: DisplayCriteria.CODE,
-      value: 'Code'
+      key: 'Code',
+      value: DisplayCriteria.CODE
     },
     {
-      key: DisplayCriteria.CODE_TEXT,
-      value: 'Code and Text'
+      key: 'Code and Text',
+      value: DisplayCriteria.CODE_TEXT
     }
   ];
-  displayCriteriaOption = this.displayCriteriaOptions[1];
+  displayCriteriaOption: DisplayCriteria = this.displayCriteriaOptions[0].value;
 
   timeDateFormat: TimeDisplayFormat;
   dataSet: ChartDataSets[] = [{ data: [] }];
@@ -205,7 +205,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.subscriptions.push(endDateCtrl);
 
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
@@ -1149,7 +1149,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   saveDisplayCriteria() {
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption).subscribe(res => {
       this.updateChart(this.responseData)
     }, error => {
       console.error(`Error : ${error}`);
@@ -1159,7 +1159,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   checkTextCode(value: { code: string; text: string; }): string {
-    switch (this.displayCriteriaOption.key) {
+    switch (this.displayCriteriaOption) {
       case DisplayCriteria.CODE:
         if(value.code) {
           return value.code;

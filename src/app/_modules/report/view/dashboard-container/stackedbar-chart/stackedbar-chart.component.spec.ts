@@ -462,16 +462,16 @@ describe('StackedbarChartComponent', () => {
   }));
 
   it('checkTextCode(), should return string from DisplayCriteria', async(()=> {
-    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.displayCriteriaOption = DisplayCriteria.TEXT;
     const test = { t: 'test', c: '1234'};
     let res = component.checkTextCode(test);
     expect(res).toEqual('test');
 
-    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    component.displayCriteriaOption = DisplayCriteria.CODE;
     res = component.checkTextCode(test);
     expect(res).toEqual('1234');
 
-    component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
+    component.displayCriteriaOption = DisplayCriteria.CODE_TEXT;
     res = component.checkTextCode(test);
     expect(res).toEqual('1234 -- test');
   }));
