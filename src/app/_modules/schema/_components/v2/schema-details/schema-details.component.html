@@ -64,12 +64,12 @@
             </lib-chip>
             <!-- Outdated -->
             <lib-chip class="mdo-filter-matchip" label="Outdated" disableRipple="true" (click)="changeTabStatus('outdated')" [selected]="activeTab && activeTab === 'outdated'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outDatedCount) ? statics.outDatedCount : 0 }}</lib-text-line>
+                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outdatedCnt) ? statics.outdatedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Skipped -->
             <lib-chip class="mdo-filter-matchip" label="Skipped" disableRipple="true" (click)="changeTabStatus('skipped')" [selected]="activeTab && activeTab === 'skipped'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics && statics.skippedCount) ? statics.skippedCount : 0 }}</lib-text-line>
+                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics && statics.skippedCnt) ? statics.skippedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Start Chip for business rule dropdown-->
@@ -87,7 +87,7 @@
                             </lib-checkbox>
                         </mat-list-item>
                     </mat-nav-list>
-                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()">Apply</lib-button>
+                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()" class="lib-button">Apply</lib-button>
                 </div>
             </mat-menu>
             <!-- End Chip for business rule dropdown-->
@@ -408,6 +408,7 @@
                                         <!-- [class.schema-header-cell] = "isHeaderColumn(dynCols)" -->
                                         <td class="schema-header-cell" mat-cell *matCellDef="let element; let rIndex = index;" [class.editable-cell] = "isFieldEditable(dynCols)"
                                             [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
+                                            [class.correction-cell]="element[dynCols] ? element[dynCols].isCorrected: false"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)" [class.edit-mode]="isEditEnabled(dynCols,element, rIndex)">
                                             <div class="f-col grid-cell-editable">
                                                 <div class="mdo-form-input f-col" style="display: none;"
@@ -451,7 +452,7 @@
                                                         </span>
                                                         <span class="error-message">
                                                             {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
-                                                        </span>
+                                                        </span>                                                       
                                                     </div>
                                                 </ng-template>
                                             </div>

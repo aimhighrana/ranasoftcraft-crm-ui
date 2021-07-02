@@ -65,6 +65,9 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   ngAfterViewInit(): void {
     this.resize();
+    this.sharedService.getSecondarySideNavBarState().subscribe(res=>{
+      this.resize();
+    })
   }
 
   ngOnInit(): void {

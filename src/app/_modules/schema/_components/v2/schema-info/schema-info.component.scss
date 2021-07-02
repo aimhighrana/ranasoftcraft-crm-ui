@@ -1,8 +1,10 @@
 div.root {
   user-select: none;
-  padding: 0 16px;
+  padding: 10px 16px;
   overflow: hidden;
+  overflow-y: auto;
   height: calc(100% - 10px);
+  box-sizing: border-box;
 
   .summary-root {
     padding: 16px 0;
@@ -63,6 +65,7 @@ div.root {
     align-items: center;
     margin: 0 16px;
     flex-wrap: wrap;
+    min-width: 72px;
 
     &.col-x4 {
       flex: 4;
@@ -145,6 +148,11 @@ div.root {
       flex-shrink: 0;
     }
 
+    &.br-action {
+      max-width: 72px;
+      min-width: 72px;
+    }
+
     &.col-enabled {
       width: 65px;
       box-sizing: border-box;
@@ -153,5 +161,21 @@ div.root {
       display: flex;
       justify-content: center;
     }
+  }
+}
+
+.tooltip-icon {
+  font-size: 12px;
+}
+
+.br-text-line {
+  max-width: 100%;
+}
+
+.data-allocation-list {
+  max-width: 100%;
+
+  .selected-text {
+    overflow: hidden;
   }
 }

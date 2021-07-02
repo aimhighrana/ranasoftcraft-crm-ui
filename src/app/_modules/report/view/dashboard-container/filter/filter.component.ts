@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType, DisplayCriteria } from '../../../_models/widget';
+import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType, DisplayCriteria, OrderWith } from '../../../_models/widget';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -164,14 +164,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     });
     this.subscriptions.push(filterWid);
 
-
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
       this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
-
   }
 
   getFieldsMetadaDesc(buckets:any[], fieldId: string, reset: boolean) {
@@ -260,11 +258,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   setFilteredOptions(reset?: boolean) {
+    /* Sort dropdown data bases on sorting criteria */
+    this.sortDropdownData(this.values);
     if (reset) {
       this.filteredOptionsSubject.next(this.values);
     } else {
       const values = this.filteredOptionsSubject.value;
       values.push(...this.values);
+      this.sortDropdownData(values);
       this.filteredOptionsSubject.next(values);
     }
   }
@@ -814,5 +815,36 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       this.toasterService.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria);
+  }
+
+  /* Sort dropdownn Data */
+  sortDropdownData(values: DropDownValues[]){
+    const sortBy = this.filterWidget.getValue()?.orderWith;
+    if(this.displayCriteriaOption.key === DisplayCriteria.TEXT){
+      if(sortBy === OrderWith.DESC){
+        values?.sort((a, b) => { return b?.TEXT.localeCompare(a?.TEXT); });
+      } else if(sortBy === OrderWith.ASC){
+        values?.sort((a, b) => { return a?.TEXT.localeCompare(b?.TEXT); });
+      }
+    } else if(this.displayCriteriaOption.key === DisplayCriteria.CODE || this.displayCriteriaOption.key === DisplayCriteria.CODE_TEXT) {
+      if(sortBy === OrderWith.DESC){
+        values?.sort((a, b) => {
+          if(isNaN(parseInt(a.CODE,10))){
+            return b?.CODE?.localeCompare(a?.CODE);
+          } else {
+            return parseInt(b.CODE, 10) - parseInt(a?.CODE, 10);
+          }
+         });
+      } else if(sortBy === OrderWith.ASC){
+        values?.sort((a, b) => {
+          if(isNaN(parseInt(a.CODE,10))){
+            return a?.CODE?.localeCompare(b?.CODE);
+          } else {
+            return parseInt(a.CODE, 10) - parseInt(b?.CODE, 10);
+          }
+         });
+      }
+    }
+
   }
 }

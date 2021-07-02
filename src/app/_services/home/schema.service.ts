@@ -200,8 +200,9 @@ export class SchemaService {
    * @param schemaId schema id
    * @param variantId variant id is an option params ..
    */
-  public getSchemaThresholdStatics(schemaId: string, variantId?: string): Observable<SchemaStaticThresholdRes> {
-    return this.http.get<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId));
+  public getSchemaThresholdStatics(schemaId: string, variantId: string, selectedRules?:string[]): Observable<SchemaStaticThresholdRes> {
+    selectedRules = selectedRules ? selectedRules : [];
+    return this.http.post<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId),selectedRules);
   }
   public uploadCorrectionData(data: DataSource[], objectType: string, schemaId: string, runId: string, plantCode: string, fileSno: string): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno), data);
@@ -329,8 +330,8 @@ export class SchemaService {
     return this.http.get<SchemaExecutionProgressResponse>(this.endpointService.schemaExecutionProgressDetailUrl(schemaId));
   }
 
-  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
-    return this.http.get<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus));
+  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string, selectedRules: string[]) {
+    return this.http.post<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus), selectedRules);
   }
 
   public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[], variantId: string): Observable<any> {
@@ -376,5 +377,14 @@ export class SchemaService {
    */
   public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
     return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString,from:0,size:10 } , {params:{schemaId}});
+  }
+
+  /**
+   * Cancle the schema ....
+   * @param schemaId canncle the schema based on this schema id
+   * @returns the obserable as a response
+   */
+  public cancleSchema(schemaId: string): Observable<any> {
+    return this.http.get(this.endpointService.cancleSchemaUri(), {params:{schemaId}});
   }
 }

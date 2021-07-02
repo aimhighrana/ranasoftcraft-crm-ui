@@ -51,6 +51,16 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
   progressHttpCallInterval = 15000;
 
   /**
+   * Show the spinner based on this flag
+   */
+  isInLoading = false;
+
+  /**
+   * Hold error message while cancle the schema
+   */
+  errorMessage: string;
+
+  /**
    * Constructor of class
    * @param schemaService: Instace of schema service
    */
@@ -138,6 +148,22 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
       sub.unsubscribe();
     });
     clearInterval(this.pollingInterval);
+  }
+
+  /**
+   * Cancle the schema and emit to go for details
+   */
+  cancleSchema() {
+    this.isInLoading = true;
+    const sub = this.schemaService.cancleSchema(this.schemaId).subscribe(res=>{
+      this.runCompleted.emit(res);
+      this.isInLoading = false;
+    }, err=>{
+      this.isInLoading = false;
+      console.error(`Error : ${err.mesage}`);
+      this.errorMessage = `${err.message}`;
+    });
+    this.subscription.push(sub);
   }
 
 }

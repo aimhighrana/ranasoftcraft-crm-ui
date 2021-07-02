@@ -57,9 +57,8 @@
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.display }}"
             matTooltipPosition="right">
             <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
-
-              <lib-checkbox prosClickStopPropagation label=" {{ option.display }}" (valueChange)="toggleSelection(option)"
-                [checked]="isSelected(option)">
+              <lib-checkbox prosClickStopPropagation (valueChange)="toggleSelection(option)" [checked]="isSelected(option)"
+                [label]="option.display">
               </lib-checkbox>
             </ng-template>
             <ng-template #singleSelection>
@@ -91,9 +90,6 @@
         </div>
       </ng-template>
     </ng-template>
-
-
-
 
     <!-- CONTROL FOR DATE PICKER -->
     <ng-template

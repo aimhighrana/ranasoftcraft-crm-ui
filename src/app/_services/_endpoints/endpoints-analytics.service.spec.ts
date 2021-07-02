@@ -157,4 +157,10 @@ describe('EndpointsAnalyticsService', () => {
     const keepCopy = false;
     expect(serviceobj.importReport(fileSno, replaceOld, keepCopy)).toContain(`/report/import?fileSno=${fileSno}&replaceOld=${replaceOld}&keepCopy=${keepCopy}`);
   }));
+
+  it('shareReport(), should get shareReport string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const reportId = '1234';
+    expect(serviceobj.shareReport(reportId)).toContain(`/report/share?reportId=${reportId}`);
+  }));
 });

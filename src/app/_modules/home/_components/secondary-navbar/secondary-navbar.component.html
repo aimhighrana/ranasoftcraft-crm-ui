@@ -87,7 +87,7 @@
                 </div>
                 <span class="f-spacer"></span>
                 <lib-spinner *ngIf="schema.running" size="24"></lib-spinner>
-                <lib-button *ngIf="!schema.viewed" disabled
+                <lib-button *ngIf="!schema.viewed && !schema.running" disabled
                 [matBadgeOverlap]="true"
                 [libBadge]="1"
                 matBadgePosition="after"

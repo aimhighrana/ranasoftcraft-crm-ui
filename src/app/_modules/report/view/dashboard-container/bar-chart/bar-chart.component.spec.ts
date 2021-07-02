@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget, Criteria, PositionType, AlignPosition, AnchorAlignPosition, WidgetType } from '../../../_models/widget';
+import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget, Criteria, PositionType, AlignPosition, AnchorAlignPosition, WidgetType,Buckets, DisplayCriteria } from '../../../_models/widget';
 import { of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
@@ -428,12 +428,12 @@ describe('BarChartComponent', () => {
 
     spyOn(component,'getBarChartMetadata');
     spyOn(component,'getHeaderMetaData');
-    spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({displayCriteria: 'CODE'}));
+    // spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({displayCriteria: 'CODE'}));
     component.ngOnInit();
 
     expect(component.getBarChartMetadata).toHaveBeenCalled();
     expect(component.getHeaderMetaData).toHaveBeenCalled();
-    expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, component.widgetInfo.widgetType);
+    // expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, component.widgetInfo.widgetType);
   }));
 
   it('getHeaderMetaData(), get header info for bar widget', async(()=>{
@@ -454,5 +454,277 @@ describe('BarChartComponent', () => {
     expect(component.getBarConfigurationData).toHaveBeenCalled();
     expect(component.widgetColorPalette.reportId).toEqual('32423423');
 
+  }));
+
+  it('sortBarChartData(), should sort bar chart ', async(()=>{
+    const buckets = [
+    {
+      doc_count: '120804',
+      key: '00104',
+      'top_hits#items': {
+        hits: {
+          hits: [
+            {
+              _index: 'dev-classic.masterdataonline.com_1005_do_0_en',
+              _type: '_doc',
+              _source: {
+                hdvs: {
+                  MATL_GROUP: {
+                    vc: [
+                      {
+                        c: '00104',
+                        t: 'Mechanics'
+                      }
+                    ]
+                  }
+                }
+              },
+              _id: 'ERSA008053',
+              _score: 1
+            }
+          ],
+          total: {
+            value: 120804,
+            relation: 'eq'
+          },
+          max_score: 1
+        }
+      }
+    },
+    {
+      doc_count: '160',
+      key: '23153100',
+      'top_hits#items': {
+        hits: {
+          hits: [
+            {
+              _index: 'dev-classic.masterdataonline.com_1005_do_0_en',
+              _type: '_doc',
+              _source: {
+                hdvs: {
+                  MATL_GROUP: {
+                    vc: [
+                      {
+                        c: '23153100',
+                        t: 'Industrial Machinery'
+                      }
+                    ]
+                  }
+                }
+              },
+              _id: 'ERSA120208',
+              _score: 1
+            }
+          ],
+          total: {
+            value: 160,
+            relation: 'eq'
+          },
+          max_score: 1
+        }
+      }
+    }]
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.ROW_ASC;
+    component.barWidget.next(barWidget);
+
+    component.sortBarChartData(buckets as Buckets[]);
+    expect(buckets).toBeDefined();
+
+
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.ROW_ASC;
+    component.barWidget.next(barWidget);
+    component.sortBarChartData(buckets as Buckets[]);
+    expect(buckets).toBeDefined();
+
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.ROW_DESC;
+    component.barWidget.next(barWidget);
+    component.sortBarChartData(buckets as Buckets[]);
+    expect(buckets).toBeDefined();
+
+
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.COL_ASC;
+    component.barWidget.next(barWidget);
+    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    component.sortBarChartData(buckets as Buckets[]);
+    expect(buckets).toBeDefined();
+
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.COL_DESC;
+    component.barWidget.next(barWidget);
+    component.sortBarChartData(buckets as Buckets[]);
+    expect(buckets).toBeDefined();
+  }));
+
+  it('sortByColumn(), should sort bar chart by column ', async(()=>{
+    const buckets = [
+    {
+      doc_count: '120804',
+      key: '00104',
+      'top_hits#items': {
+        hits: {
+          hits: [
+            {
+              _index: 'dev-classic.masterdataonline.com_1005_do_0_en',
+              _type: '_doc',
+              _source: {
+                hdvs: {
+                  MATL_GROUP: {
+                    vc: [
+                      {
+                        c: '00104',
+                        t: 'Mechanics'
+                      }
+                    ]
+                  }
+                }
+              },
+              _id: 'ERSA008053',
+              _score: 1
+            }
+          ],
+          total: {
+            value: 120804,
+            relation: 'eq'
+          },
+          max_score: 1
+        }
+      }
+    },
+    {
+      doc_count: '160',
+      key: '23153100',
+      'top_hits#items': {
+        hits: {
+          hits: [
+            {
+              _index: 'dev-classic.masterdataonline.com_1005_do_0_en',
+              _type: '_doc',
+              _source: {
+                hdvs: {
+                  MATL_GROUP: {
+                    vc: [
+                      {
+                        c: '23153100',
+                        t: 'Industrial Machinery'
+                      }
+                    ]
+                  }
+                }
+              },
+              _id: 'ERSA120208',
+              _score: 1
+            }
+          ],
+          total: {
+            value: 160,
+            relation: 'eq'
+          },
+          max_score: 1
+        }
+      }
+    }]
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.ROW_ASC;
+    component.barWidget.next(barWidget);
+
+    component.sortByColumn(buckets as Buckets[]);
+    expect(buckets).toBeDefined();
+
+  }));
+
+  it('getCodeValue(), should sort return code value', async(()=>{
+    const buckets = [
+    {
+      doc_count: '120804',
+      key: '00104',
+      'top_hits#items': {
+        hits: {
+          hits: [
+            {
+              _index: 'dev-classic.masterdataonline.com_1005_do_0_en',
+              _type: '_doc',
+              _source: {
+                hdvs: {
+                  MATL_GROUP: {
+                    vc: [
+                      {
+                        c: '00104',
+                        t: 'Mechanics'
+                      }
+                    ]
+                  }
+                }
+              },
+              _id: 'ERSA008053',
+              _score: 1
+            }
+          ],
+          total: {
+            value: 120804,
+            relation: 'eq'
+          },
+          max_score: 1
+        }
+      }
+    },
+    {
+      doc_count: '160',
+      key: '23153100',
+      'top_hits#items': {
+        hits: {
+          hits: [
+            {
+              _index: 'dev-classic.masterdataonline.com_1005_do_0_en',
+              _type: '_doc',
+              _source: {
+                hdvs: {
+                  MATL_GROUP: {
+                    vc: [
+                      {
+                        c: '23153100',
+                        t: 'Industrial Machinery'
+                      }
+                    ]
+                  }
+                }
+              },
+              _id: 'ERSA120208',
+              _score: 1
+            }
+          ],
+          total: {
+            value: 160,
+            relation: 'eq'
+          },
+          max_score: 1
+        }
+      }
+    }]
+    const barWidget: BarChartWidget = new BarChartWidget();
+    barWidget.fieldId = 'MATL_GROUP';
+    barWidget.metaData = {dataType:'1'} as MetadataModel;
+    barWidget.blankValueAlias = 'MATL_GROUP';
+    barWidget.orderWith = OrderWith.ROW_ASC;
+    component.barWidget.next(barWidget);
+    const result = component.getCodeValue(buckets as Buckets[]);
+    expect(result.length).toEqual(2);
   }));
 });

@@ -22,11 +22,12 @@ export class WidgetService {
    * Call this method for widget data
    * Provide widgetId , and filterCriteria
    */
-  public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string, searchAfter?:string): Observable<any> {
+  public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string, searchAfter?:string, timeZone?:string): Observable<any> {
     searchString = searchString===undefined?'':searchString;
     filterCriteria = filterCriteria ? filterCriteria : [];
     searchAfter = searchAfter ? searchAfter : '';
-    return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString,searchAfter}});
+    timeZone = timeZone ? timeZone :'';
+    return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString,searchAfter,timeZone}});
   }
 
   public getListdata(size,from,widgetId: string, filterCriteria: Criteria[], sortMapStr: any):Observable<any>{

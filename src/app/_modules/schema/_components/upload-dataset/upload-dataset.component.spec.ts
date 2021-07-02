@@ -492,7 +492,7 @@ describe('UploadDatasetComponent', () => {
       fullName: '',
       lastName: '',
       userName: ''
-    }
+    } as Userdetails;
     const subscriberObject = {
       dataAllocation: [],
       filterFieldIds: [],
