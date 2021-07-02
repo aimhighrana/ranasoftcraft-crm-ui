@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
-import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
+import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails, ModuleInfo } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, RuleDependentOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel, RULE_TYPES } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddFilterOutput } from '@models/schema/schema';
+import { AddFilterOutput} from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -19,6 +19,8 @@ import { forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
+import { SchemaExecutionRequest } from '@models/schema/schema-execution';
+import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 
 @Component({
   selector: 'pros-schema-info',
@@ -56,7 +58,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /** To have variant details of a schema */
   variantDetails: VariantDetails[];
-
+  module: ModuleInfo;
+  /**
+   * formcontrol for data scope
+   */
+  dataScopeControl: FormControl = new FormControl('0');
+  dataScopeName: FormControl = new FormControl('Entire data scope');
+  currentVariantCnt = 0;
   /**
    * To have the info about schedule
    */
@@ -131,6 +139,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
     private schemaListService: SchemalistService,
+    private schemaExecutionService: SchemaExecutionService,
     private schemaVariantService: SchemaVariantService,
     private matSnackBar: MatSnackBar,
     private toasterService: TransientService,
@@ -237,6 +246,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       if (module) {
         this.schemaDetails.moduleDescription = module.moduleDesc;
         this.schemaDetails.moduleId = module.moduleId;
+        this.module = module;
       }
     }, error => {
       console.error('Error: {}', error.message);
@@ -470,6 +480,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * to convert rule type into rule description
+   * @param ruleType ruleType of a business rule object
+   */
+  public getRuleDesc(ruleType: string) {
+    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
+  }
 
   /**
    * Function to open sidesheet to add subscriber
@@ -706,7 +723,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     filterCtrl.selectedValues = [];
 
     event.selectedValues.forEach((value) => {
-      if (value.FIELDNAME === filterCtrl.fieldId) {
+      if (value.fieldId === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
         filterCtrl.selectedValues.push(value);
@@ -902,7 +919,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           delete subscriber.userMdoModel;
 
           subscriber.filterCriteria.forEach((filterCtrl) => {
-            if (filterCtrl.fieldId === selectedValues[0].FIELDNAME) {
+            if (filterCtrl.fieldId === selectedValues[0].fieldId) {
               filterCtrl.values.length = 0;
               filterCtrl.textValues = [];
               filterCtrl.selectedValues = selectedValues;
@@ -1187,7 +1204,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.schemaValueChanged.next($event);
   }
 
-  updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+  updateDepRule(br: CoreSchemaBrInfo, value?: any) {
+    const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
     const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
     if (event.value !== RuleDependentOn.ALL) {
       const tobeChild = this.businessRuleData[index]
@@ -1225,7 +1243,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateDepRuleForChild(br: CoreSchemaBrInfo, index: number, event?: any) {
+  updateDepRuleForChild(br: CoreSchemaBrInfo, index: number, value?: any) {
+    const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
     const idx = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
     this.businessRuleData[idx].dep_rules[index].dependantStatus = event.value;
     const childIdx = this.businessRuleData[idx].dep_rules[index]
@@ -1252,14 +1271,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   deleteSchema() {
-    this.schemaService.deleteSChema(this.schemaId)
-      .subscribe(resp => {
-        this.router.navigate(['home', 'schema', this.moduleId]);
-        this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
-      }, error => {
-        this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
-      })
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response === 'yes') {
+        this.schemaService.deleteSChema(this.schemaId)
+        .subscribe(resp => {
+          this.router.navigate(['home', 'schema', this.moduleId]);
+          this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
+          this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
+        }, error => {
+          this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
+        });
+      }
+    });
   }
 
   get getBusinessRulesLength() {
@@ -1315,4 +1338,61 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     })
   }
 
+  setDataScopeName(variantId) {
+    if (variantId && variantId !== '0') {
+      const variant = this.variantDetails.find((x) => x.variantId === variantId);
+      if (variant && variant.variantName) {
+        this.dataScopeName.setValue(variant.variantName);
+        this.dataScopeControl.setValue(variantId);
+        this.currentVariantCnt = variant.dataScopeCount || 0;
+      }
+    } else {
+      this.dataScopeName.setValue('Entire data scope');
+      this.dataScopeControl.setValue('0');
+      this.currentVariantCnt = this.module?.datasetCount || 0;
+    }
+  }
+
+  selectDataScope() {
+    this.setDataScopeName(this.dataScopeName.value);
+  }
+
+  resetLastScope() {
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        const variant = res.find((x) => x.variantId === this.dataScopeControl.value);
+        if (variant && variant.variantName) {
+          this.dataScopeName.setValue(variant.variantName);
+        }
+      }
+    }, error => {
+      console.log('Error while getting schema variants', error.message)
+    });
+  }
+
+  /**
+   * Run schema now ..
+   * @param schema runable schema details .
+   */
+  runSchema() {
+    const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
+    schemaExecutionReq.schemaId = this.schemaId;
+    schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, false).subscribe(data => {
+      this.schemaDetails.isInRunning = true;
+      this.sharedService.setSchemaRunNotif(true);
+    }, (error) => {
+      console.log('Something went wrong while running schema', error.message);
+    });
+  }
+
+  openExecutionTrendSidesheet() {
+    const schema = this.schemaDetails;
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+  }
 }

@@ -313,8 +313,8 @@ describe('StackedbarChartComponent', () => {
 
     // expects
     expect(actualResponse.length).toEqual(2,`Data should be interval in scale range`);
-    expect(actualResponse[0].doc_count).toEqual(3,`Small doc count should be on first position`);
-    expect(actualResponse[1].doc_count).toEqual(10,`10 should be on second position`);
+    expect(actualResponse[0].doc_count).toEqual(10,`Small doc count should be on first position`);
+    expect(actualResponse[1].doc_count).toEqual(3,`10 should be on second position`);
 
     // scenario  2
     barWidget.orderWith = OrderWith.ROW_DESC;
@@ -327,7 +327,7 @@ describe('StackedbarChartComponent', () => {
     // expects
     expect(actualResponse01.length).toEqual(6,`Data should be interval in scale range`);
     expect(actualResponse01[0].doc_count).toEqual(30,`Top or max doc count should be on first position`);
-    expect(actualResponse01[1].doc_count).toEqual(10,`10 should be on second position`);
+    expect(actualResponse01[1].doc_count).toEqual(3,`10 should be on second position`);
 
 
     // scenario  3
@@ -511,5 +511,99 @@ describe('StackedbarChartComponent', () => {
     const changes2: import('@angular/core').SimpleChanges = {};
     component.ngOnChanges(changes2);
     expect(component.ngOnChanges).toBeTruthy();
+  }));
+
+  it('sortByRow(), should sort by row', async(() => {
+    // mock data
+    const barWidget = new StackBarChartWidget();
+    barWidget.orderWith = OrderWith.ROW_ASC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.stepSize = 4;
+    barWidget.groupById = 'LNAME'
+    component.stackBarWidget.next(barWidget);
+    const resBuckets = [{
+      doc_count: 1039,
+      key: { LNAME: 'User', FNAME: 'APP' },
+      FNAME: 'APP',
+      LNAME: 'User'
+    },
+    {
+      doc_count: 1050,
+      key: { LNAME: 'Logs', FNAME: 'Admin' },
+      FNAME: 'Admin',
+      LNAME: 'Logs',
+    }
+    ];
+    // call actual component method
+    const actualResponse = component.sortByRow('LNAME', resBuckets);
+
+    // expects
+    expect(actualResponse.length).toEqual(2, `Data should be interval in scale range`);
+    expect(actualResponse[0].doc_count).toEqual(1039, `Small doc count should be on first position`);
+    expect(actualResponse[1].doc_count).toEqual(1050, `10 should be on second position`);
+
+  }));
+
+  it('sortByColumnAsc(), should sort by row', async(() => {
+    // mock data
+    const barWidget = new StackBarChartWidget();
+    barWidget.orderWith = OrderWith.COL_ASC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.stepSize = 4;
+    barWidget.groupById = 'LNAME'
+    component.stackBarWidget.next(barWidget);
+    const resBuckets = [{
+      doc_count: 1039,
+      key: { LNAME: 'User', FNAME: 'APP' },
+      FNAME: 'APP',
+      LNAME: 'User'
+    },
+    {
+      doc_count: 1050,
+      key: { LNAME: 'Logs', FNAME: 'Admin' },
+      FNAME: 'Admin',
+      LNAME: 'Logs',
+    }
+    ];
+    // call actual component method
+    const actualResponse = component.sortByColumnAsc('LNAME', resBuckets);
+
+    // expects
+    expect(actualResponse.length).toEqual(2, `Data should be interval in scale range`);
+    expect(actualResponse[0].doc_count).toEqual(1050, `Small doc count should be on first position`);
+    expect(actualResponse[1].doc_count).toEqual(1039, `10 should be on second position`);
+
+  }));
+
+  it('sortByColumnDesc(), should sort by row', async(()=>{
+    // mock data
+    const barWidget =  new StackBarChartWidget();
+    barWidget.orderWith = OrderWith.COL_DESC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.groupById = 'LNAME'
+    component.stackBarWidget.next(barWidget);
+    const resBuckets = [{
+      doc_count: 1039,
+      key: { LNAME: 'User', FNAME: 'APP' },
+      FNAME: 'APP',
+      LNAME: 'User'
+    },
+    {
+      doc_count: 1050,
+      key: { LNAME: 'Logs', FNAME: 'Admin' },
+      FNAME: 'Admin',
+      LNAME: 'Logs',
+    }
+    ];
+    // call actual component method
+    const actualResponse = component.sortByColumnDesc('LNAME', resBuckets);
+    // expects
+    expect(actualResponse.length).toEqual(2,`Data should be interval in scale range`);
+    expect(actualResponse[0].doc_count).toEqual(1039,`Small doc count should be on first position`);
+    expect(actualResponse[1].doc_count).toEqual(1050,`10 should be on second position`);
+
   }));
 });

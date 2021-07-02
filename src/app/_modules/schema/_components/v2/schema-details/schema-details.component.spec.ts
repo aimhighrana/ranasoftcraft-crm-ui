@@ -109,10 +109,11 @@ describe('SchemaDetailsComponent', () => {
 
   it('getSchemaStatics(), get schema statics .. ', async(()=>{
 
-    spyOn(schemaService,'getSchemaThresholdStatics').withArgs(component.schemaId, component.variantId)
+    component.appliedBrList = [{brIdStr:'342332'} as CoreSchemaBrInfo];
+    spyOn(schemaService,'getSchemaThresholdStatics').withArgs(component.schemaId, component.variantId,['342332'])
       .and.returnValues(of(new SchemaStaticThresholdRes()), throwError({message: 'api error'}));
     component.getSchemaStatics();
-    expect(schemaService.getSchemaThresholdStatics).toHaveBeenCalledWith(component.schemaId, component.variantId);
+    expect(schemaService.getSchemaThresholdStatics).toHaveBeenCalledWith(component.schemaId, component.variantId,['342332']);
 
     spyOn(console, 'error');
     component.getSchemaStatics();
@@ -809,7 +810,7 @@ describe('SchemaDetailsComponent', () => {
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }], {queryParamsHandling: 'preserve'})
+    expect(router.navigate).toHaveBeenCalledWith(['home','schema','schema-info',`${component.moduleId}`,`${component.schemaId}`])
   })
 
   it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
@@ -1251,9 +1252,10 @@ describe('SchemaDetailsComponent', () => {
     component.userDetails = new Userdetails();
     component.userDetails.plantCode = 'test';
     component.userDetails.userName = 'test';
-    spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
+    component.appliedBrList = [{brIdStr:'768762873'}as CoreSchemaBrInfo];
+    spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab,['768762873']).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
     component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
-    expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab);
+    expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab,['768762873']);
 
     spyOn(console, 'error');
     component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);

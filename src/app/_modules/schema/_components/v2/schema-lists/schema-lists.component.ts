@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaListModuleList } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaListModuleList } from '@models/schema/schemalist';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
+import { TransientService } from 'mdo-ui-library';
 import { Subscription } from 'rxjs';
-
+import { SecondaynavType } from '@models/menu-navigation';
+import { GlobaldialogService } from '@services/globaldialog.service';
 @Component({
   selector: 'pros-schema-lists',
   templateUrl: './schema-lists.component.html',
@@ -44,6 +46,8 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
     private schemaService: SchemaService,
     private sharedService: SharedServiceService,
     private router: Router,
+    private globalDialogService: GlobaldialogService,
+    private toasterService: TransientService
   ) { }
 
   /**
@@ -99,6 +103,21 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(schmeaInfoByModuleId);
   }
+  deleteSchema(schemaId: string) {
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response === 'yes') {
+        this.schemaService.deleteSChema(schemaId)
+          .subscribe(resp => {
+            this.router.navigate(['home', 'schema', this.moduleId]);
+            this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
+            this.getSchemaList();
+            this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
+          }, error => {
+            this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
+          });
+      }
+    });
+  }
 
   public getModuleInfo() {
     const moduleInfoByModuleId = this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
@@ -127,5 +146,25 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
   public openSchemaInfo(schemaId: string) {
     this.router.navigate([`/home/schema/schema-info/${this.moduleId}/${schemaId}`]);
   }
+  /**
+   * Function to open schedule side-sheet
+   * @param schemaId: schema Id
+   */
+  openScheduleSideSheet(schemaId?: string) {
+    const scheduleSubscription = this.schemaService.getSchedule(schemaId).subscribe((scheduleInfo) => {
+      if (scheduleInfo?.schedulerId) {
+        this.router.navigate([{ outlets: { sb: `sb/schema/schedule/${schemaId}/${scheduleInfo.schedulerId}` } }])
+      }
+      else {
+        this.router.navigate([{ outlets: { sb: `sb/schema/schedule/${schemaId}/new` } }])
+      }
+    }, (error) => {
+      console.log('Something went wrong when getting schedule information.', error.message);
+    })
+    this.subscriptions.push(scheduleSubscription);
+  }
 
+  openExecutionTrendSidesheet(schema: SchemaListDetails) {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+  }
 }

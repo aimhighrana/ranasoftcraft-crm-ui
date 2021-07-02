@@ -144,7 +144,8 @@
   }
 
   //Form-Input
-  pros-form-input {
+  pros-form-input,
+  .mdo-field {
     .error-validation-field {
       color: $color-status-error;
 
@@ -1953,6 +1954,13 @@
               .notify-content,
               .mat-expand-icon {
                 color: $color-text-secondary;
+              }
+
+              .mdo-chip-list {
+                .mdo-label {
+                  display: flex;
+                  align-items: center;
+                }
               }
 
               mat-card-header.mat-card-header {

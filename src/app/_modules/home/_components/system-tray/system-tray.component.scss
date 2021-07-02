@@ -13,16 +13,7 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-        min-height: 36px;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
     }
   }
@@ -37,12 +28,12 @@ div.root {
         height: auto;
 
         .job-line {
-          font-size: 0.9rem;
           padding-left: 8px;
+          flex: 12;
         }
 
         .job-date {
-          height: auto;
+          margin-bottom: 0;
         }
 
         .time-icon {
@@ -53,39 +44,19 @@ div.root {
           width: 100%;
           padding: 8px;
 
-          .mat-line {
-            font-size: 0.8rem;
-            margin: 0;
-            font-weight: 600;
-          }
-
           .notify-row {
-            align-items: center;
+            width: calc(100% - 106px);
+            padding: 0 8px;
 
-            .notify-message-row {
-              align-items: baseline;
-              flex: 20;
-
-              .mat-expand-icon {
-                font-size: 8px;
-                height: 8px;
-                width: 8px;
-                cursor: pointer;
-              }
+            .mat-expand-icon {
+              font-size: 8px;
+              height: 8px;
+              width: 8px;
+              cursor: pointer;
             }
           }
 
           .notify-content {
-            font-size: 0.7rem;
-            line-height: 14px;
-            margin-bottom: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            word-break: break-all;
-
             &.expand-content {
               -webkit-line-clamp: inherit;
             }

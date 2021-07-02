@@ -134,6 +134,7 @@ export interface DropDownValue {
     TEXT: string;
     LANGU: string;
     isSugested?: boolean;
+    fieldId?: string;
 }
 
 export class UDRBlocksModel {

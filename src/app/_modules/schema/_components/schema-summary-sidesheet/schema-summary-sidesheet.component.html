@@ -119,8 +119,9 @@
                         <div class="mdo-auto-select">
                             <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" fieldLabel="Type rule name to add"
                                 (openCustomDialog)="openBrLibrarySideSheet()" [updatedOptionsList]="allBusinessRulesList"
+                                (emitExtraLabelClick)="openBusinessRuleSideSheet()"
                                 [labelKey]="'brInfo'" (optionSelectedEmit)="addBusinessRule($event)"
-                                i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule" [isExtraLabel]="false">
+                                i18n-extraOptionLabel="@@new_br_rule" extraOptionLabel="New business rule" [isExtraLabel]="true">
                             </pros-form-input-autoselect>
                             <!-- (emitExtraLabelClick)="openBusinessRuleSideSheet()" -->
                         </div>
@@ -183,7 +184,7 @@
                                                 <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
                                                 <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                     class="f-col" color="primary"
-                                                    [value]="getCurrentBrStatusObj(businessRule.dependantStatus)"
+                                                    [value]="getCurrentBrStatusObj(businessRule.dependantStatus)?.value"
                                                     (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                             </div>
                                         </mat-menu>
@@ -205,7 +206,7 @@
                                             <div class="col col-x8">
                                                 <div class="f-row slider-row">
                                                     <lib-range-slider minValue="0" [maxValue]="availableWeightage(deps.brWeightage)"
-                                                        (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="true"
+                                                        (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="false"
                                                         tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
                                                         [value]="deps.brWeightage" color="primary"></lib-range-slider>
                                                     <span class="f-col-spacer-half"></span>
@@ -218,7 +219,7 @@
                                                     (valueChange)="updateBr(deps, $event, 'checkbox', true)"></lib-checkbox>
                                             </div>
                 
-                                            <div class="col col-x4 text-end">
+                                            <div class="col col-x4 br-action text-end">
                                                 <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" iconFontType="light"
                                                     icon="link"></lib-button>
                 
@@ -231,7 +232,7 @@
                                                             returns</p>
                                                         <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                             class="f-col" color="primary"
-                                                            [value]="getCurrentBrStatusObj(deps.dependantStatus)"
+                                                            [value]="getCurrentBrStatusObj(deps.dependantStatus)?.value"
                                                             (valueChange)="updateDepRuleForChild(businessRule,i, $event)">
                                                         </lib-radio-group>
                                                     </div>
@@ -255,13 +256,12 @@
                     </div>
                     <div class="f-row colunm-box">
                         <div class="mdo-auto-select">
-                            <pros-form-input-autoselect
-                            i18n-fieldLabel="@@type_user_name" fieldLabel="Type user name to add"
-                                (openCustomDialog)="openSubscriberSideSheet()" 
-                                [updatedOptionsList]="allSubscribers"
-                                [labelKey]="'fullName'"
-                                (optionSelectedEmit)="addSubscriber($event)"
-                                i18n-extraOptionLabel="@@invite_people_to_team" extraOptionLabel="Invite people to your team">
+                            <pros-form-input-autoselect i18n-fieldLabel="@@type_user_name"
+                            fieldLabel="Type user name to add" (openCustomDialog)="openSubscriberSideSheet()"
+                            [updatedOptionsList]="allSubscribers" [labelKey]="'fullName'"
+                            (optionSelectedEmit)="addSubscriber($event)" (emitSearchValue)="getCollaborators($event, 0)"
+                            i18n-extraOptionLabel="@@invite_people_to_team"
+                            extraOptionLabel="Invite people to your team">
                             </pros-form-input-autoselect>
                         </div>
                     </div>
