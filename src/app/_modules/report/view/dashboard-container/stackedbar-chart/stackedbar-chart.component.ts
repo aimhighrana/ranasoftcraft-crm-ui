@@ -186,7 +186,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if (returnData) {
         this.widgetColorPalette = returnData.widgetColorPalette;
         this.isTotalShown = returnData.showTotal;
-        this.isTotalShown = true;
         this.stackBarWidget.next(returnData);
         this.getBarConfigurationData();
       }
