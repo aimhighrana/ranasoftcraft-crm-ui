@@ -29,7 +29,7 @@
             
         <mat-autocomplete #auto="matAutocomplete">  
             <mat-option *ngFor="let option of filterdOptionsObs | async" 
-                        [value]="option.CODE"> {{ option.CODE }} </mat-option>
+                        [value]="option.CODE"> {{ option.TEXT }} </mat-option>
         </mat-autocomplete>
     </mat-form-field> 
 
