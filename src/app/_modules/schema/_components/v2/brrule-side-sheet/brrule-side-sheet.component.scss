@@ -101,6 +101,10 @@ div.root {
               padding: 0;
             }
 
+            &.range-col {
+              flex: 2;
+            }
+
             button.mat-button:hover {
               background: transparent;
             }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { BusinessRuleType, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel, TransformationMappingResponse, TransformationMappingTabResponse, TransformationRuleMapped } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -34,7 +34,7 @@ class ConditionalOperator {
   templateUrl: './brrule-side-sheet.component.html',
   styleUrls: ['./brrule-side-sheet.component.scss']
 })
-export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
+export class BrruleSideSheetComponent implements OnInit {
 
   /**
    * Class contructor
@@ -45,7 +45,7 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
   constructor(
     private schemaDetailsService: SchemaDetailsService,
     private snackBar: MatSnackBar,
-    public activatedRouter: ActivatedRoute,
+    private activatedRouter: ActivatedRoute,
     private schemaService: SchemaService,
     private router: Router,
     private sharedService: SharedServiceService,
@@ -61,6 +61,10 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
     return TransformationRuleType;
   }
 
+  get selectedRuleDesc() {
+    const value = this.form?.get('rule_type').value;
+    return this.brId ? this.businessRuleTypes.find(x => x.ruleType === value)?.ruleDesc : '';
+  }
   /**
    * Getter for selected transformation type
    */
@@ -82,11 +86,11 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
   }
   get businessRuleTypesFiltered() {
     const searchStr = this.searchRuleTypeStr?.toLowerCase();
-    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) || x.ruleType?.toLowerCase().includes(searchStr));
   }
   get preDefinedRegexFiltered() {
     const searchStr = this.searchRegexFunctionStr?.toLowerCase();
-    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) ||  x.FUNC_TYPE?.toLowerCase().includes(searchStr));
+    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) || x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
 
   get isFormLoading() {
@@ -131,7 +135,7 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
   /**
    * Enable the trans for all these rules....
    */
-  get isTransEnabled() {
+   get isTransEnabled() {
     const enableFor = ['BR_METADATA_RULE','BR_MANDATORY_FIELDS','BR_REGEX_RULE','BR_CUSTOM_SCRIPT'];
     if(this.form && this.form.value.rule_type && enableFor.indexOf(this.form.value.rule_type) !==-1) {
       return true;
@@ -325,28 +329,24 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
   /**
    * Formcontrol for the enable transformation inside the rule
    */
-  hasAppliedTransformationCtrl: FormControl;
+   hasAppliedTransformationCtrl: FormControl;
 
-  /**
-   * Hold the active tab index
-   */
-  transTabIndex = 0;
+   /**
+    * Hold the active tab index
+    */
+   transTabIndex = 0;
 
-  /**
-   * All transformation rule inside ... the main rule
-   */
-  attachedTransRules: TransformationMappingResponse;
+   /**
+    * All transformation rule inside ... the main rule
+    */
+   attachedTransRules: TransformationMappingResponse;
 
-  /**
-   * Check for enable only transformation ...
-   */
-  isOnlyForTrans = false;
+   /**
+    * Check for enable only transformation ...
+    */
+   isOnlyForTrans = false;
 
-  transformationRules: CoreSchemaBrInfo[] = [];
-
-  ngAfterViewInit(): void {
-    // TODO...
-  }
+   transformationRules: CoreSchemaBrInfo[] = [];
 
   /**
    * function to format slider thumbs label.
@@ -508,7 +508,7 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
             this.allGridAndHirarchyData.forEach(item => {
               if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
                 || item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
-                const parentChildData = item;
+                const parentChildData = {...item};
                 if (item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
                   parentChildData.children = item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 });
                 }
@@ -680,7 +680,7 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
       requiredKeys = [/* 'categoryId', */ 'rule_name', 'error_message'];
     }
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
-      requiredKeys = ['categoryId',  'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
     if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
@@ -750,7 +750,7 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
     let patchList = [];
 
     if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId' ];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
       patchList = ['rule_type', /* 'categoryId', */  'rule_name', 'weightage', 'error_message'];
@@ -1156,14 +1156,14 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
   /**
    * function to display rule desc in mat auto complete
    */
-   displayRuleFn(value?: string) {
+  displayRuleFn(value?: string) {
     return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
   }
 
   /**
    * function to display Regex name in mat auto complete
    */
-   displayRegexFn(value?: string) {
+  displayRegexFn(value?: string) {
     return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
   }
 
@@ -1499,9 +1499,15 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
    * @param value pass the value to set
    * @param index pass the index
    */
-  setComparisonValue(value: string, index: number) {
+  setComparisonValue(value: string | { start: string; end: string; }, index: number) {
+    console.log('Comparision value for parent', value, index);
     const array = this.udrNodeArray().at(index);
-    array.get('conditionFieldValue').setValue(value);
+    if (typeof value === 'object') {
+      array.get('conditionFieldStartValue').setValue(value.start);
+      array.get('conditionFieldEndValue').setValue(value.end);
+    } else {
+      array.get('conditionFieldValue').setValue(value);
+    }
   }
 
   /**
@@ -1510,9 +1516,15 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
    * @param chldNode pass the child node
    * @param parentNode pass the parent node
    */
-  setComparisonValueForChild(value, chldNode: number, parentNode: number) {
+  setComparisonValueForChild(value: string | { start: string; end: string; }, chldNode: number, parentNode: number) {
+    console.log('Comparision value for child', value, chldNode, parentNode);
     const childArray = this.getChildAsControl(parentNode).at(chldNode);
-    childArray.get('conditionFieldValue').setValue(value);
+    if (typeof value === 'object') {
+      childArray.get('conditionFieldStartValue').setValue(value.start);
+      childArray.get('conditionFieldEndValue').setValue(value.end);
+    } else {
+      childArray.get('conditionFieldValue').setValue(value);
+    }
   }
 
   /**
@@ -1685,8 +1697,8 @@ export class BrruleSideSheetComponent implements OnInit, AfterViewInit {
    * @param controlIndex parent ctrl index
    * @param childElementCtrl child ctrl index ...
    */
-   udrFieldSelectionChange(field: Metadata[] , controlIndex: number, childElementCtrl?: number) {
-    if(childElementCtrl !== undefined) {
+  udrFieldSelectionChange(field: Metadata[], controlIndex: number, childElementCtrl?: number) {
+    if (childElementCtrl !== undefined) {
       this.getChildAsControl(controlIndex).at(childElementCtrl).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');
     } else {
       this.udrNodeArray().at(controlIndex).get('conditionFieldId').setValue(field[0] ? field[0].fieldId : '');

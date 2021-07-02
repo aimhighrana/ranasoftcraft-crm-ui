@@ -298,4 +298,12 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
     this.getBusinessRulesList(this.moduleId, this.searchString, this.selectedRuleType, true);
   }
 
+  /**
+   * to convert rule type into rule description
+   * @param ruleType ruleType of a business rule object
+   */
+   public getRuleDesc(ruleType: string) {
+    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
+  }
+
 }

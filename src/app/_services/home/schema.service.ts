@@ -410,7 +410,6 @@ export class SchemaService {
    */
   public getMappedTransformationRules(ruleId: string , schemaId: string ,from: any, size: any, searchString: string): Observable<TransformationMappingResponse>{
     searchString = searchString ? searchString : '';
-    // return of({success:[{ruleInfo:{brIdStr:'986868698698',brInfo:'Trans 1'},isEnabled:true,isConfigured:true}],error:[{ruleInfo:{brIdStr:'87668766678',brInfo:'Trans 3'},isEnabled:false,isConfigured:false}]} as TransformationMappingResponse);
     return this.http.post<TransformationMappingResponse>(this.endpointService.getMappedTransformationRulesUrl(), {from,size,searchString},{params:{ruleId, schemaId}});
   }
 }
