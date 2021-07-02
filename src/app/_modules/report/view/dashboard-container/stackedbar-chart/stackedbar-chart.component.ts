@@ -734,7 +734,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             total.push({ doc_count: item.doc_count, key: { [groupById]: item.key[groupById], [fieldId]: 'Total' } })
           }
         })
-        finalDataSet.push(...total);
+        finalDataSet.push(...total)
       }
     }
     return finalDataSet;
