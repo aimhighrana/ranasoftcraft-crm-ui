@@ -27,7 +27,7 @@ module.exports = function (config) {
         statements: 78,
         branches: 61.50,
         functions: 73.60,
-        lines: 78.35
+        lines: 78.30
       }
     },
     failOnEmptyTestSuite: true,
