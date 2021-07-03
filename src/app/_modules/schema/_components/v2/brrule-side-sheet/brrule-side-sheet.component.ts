@@ -23,6 +23,7 @@ import { Metadata } from '@modules/report/edit/container/metadatafield-control/m
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { TransientService } from 'mdo-ui-library';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { debounce } from 'lodash';
 
 class ConditionalOperator {
   desc: string;
@@ -373,6 +374,13 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * Search the trans rule from map lib..
+   */
+  delayedCallWithTransLib = debounce((searchText: string) => {
+    this.getTransRules(searchText);
+  }, 400)
+
+  /**
    * Angular hook
    */
   ngOnInit(): void {
@@ -428,6 +436,12 @@ export class BrruleSideSheetComponent implements OnInit {
         this.getMappedTransformationRules();
       }
       if(r && this.transformationRules.length ===0) {
+        this.getTransRules();
+      }
+    });
+
+    this.sharedService.gettransSavedBehaviourSub().subscribe(s=>{
+      if(s) {
         this.getTransRules();
       }
     });
@@ -641,7 +655,7 @@ export class BrruleSideSheetComponent implements OnInit {
       this.form.controls.transformationRuleType.valueChanges
         .pipe(distinctUntilChanged())
         .subscribe((type) => {
-          this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
+          this.applyValidatorsByRuleType(BusinessRuleType.BR_TRANSFORMATION);
         });
 
       resolve(null);
@@ -1311,7 +1325,12 @@ export class BrruleSideSheetComponent implements OnInit {
         brObject.dontMapped = true;
       }
       this.schemaService.createBusinessRule(brObject).subscribe(res => {
-        this.sharedService.setAfterBrSave(res);
+        if(this.isOnlyForTrans) {
+          this.sharedService.settransSavedBehaviourSub(true);
+          this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
+        } else {
+          this.sharedService.setAfterBrSave(res);
+        }
         this.close();
       }, err => console.error(`Error : ${err.message}`));
 
@@ -1770,8 +1789,8 @@ export class BrruleSideSheetComponent implements OnInit {
   /**
    * Get the all trans rule from lib...
    */
-  getTransRules() {
-    this.schemaService.transformationRules(this.moduleId, 0, 100,'').subscribe(rules=>{
+  getTransRules(searchStr?: string) {
+    this.schemaService.transformationRules(this.moduleId, 0, 100,searchStr ? searchStr : '').subscribe(rules=>{
       this.transformationRules = rules;
     },err=> console.error(`Execption : ${err.message}`));
   }
@@ -1812,6 +1831,22 @@ export class BrruleSideSheetComponent implements OnInit {
       moveItemInArray(this.attachedTransRules.error, event.previousIndex, event.currentIndex);
     }
 
+  }
+
+  /**
+   * Search the transformation rule ...
+   * @param searchStr search the rule based on this params
+   */
+  searchTransRules(searchStr: string) {
+    this.delayedCallWithTransLib(searchStr);
+  }
+
+  /**
+   * Edit the exiting transformation....
+   */
+  editTransRule(br: TransformationMappingTabResponse, tab: string) {
+    this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
+    outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
 }

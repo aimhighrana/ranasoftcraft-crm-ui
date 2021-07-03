@@ -362,6 +362,7 @@
                                 (openCustomDialog)="openTransRuleLib()"
                                 [updatedOptionsList]="transformationRules" [labelKey]="'brInfo'"
                                 (optionSelectedEmit)="addTransRule($event, 'success')"
+                                (emitSearchValue)="searchTransRules($event)"
                                 [isExtraLabel]="true" i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule">
                                 </pros-form-input-autoselect>
                             </div>
@@ -384,7 +385,7 @@
                                                 <lib-button cdkDragHandle icon="grip-lines"></lib-button>
                                             </div>
                                             <div class="col col-x4">
-                                                <lib-text-line type="base" textColor="link">{{ scsRule.ruleInfo &&  scsRule.ruleInfo.brInfo ? scsRule.ruleInfo.brInfo : 'Unknown'}}</lib-text-line>
+                                                <lib-text-line type="base" textColor="link" (click)="editTransRule(scsRule,'success')">{{ scsRule.ruleInfo &&  scsRule.ruleInfo.brInfo ? scsRule.ruleInfo.brInfo : 'Unknown'}}</lib-text-line>
                                             </div>
                 
                                             <div class="col col-x4">
@@ -408,6 +409,7 @@
                                 (openCustomDialog)="openTransRuleLib()" [isExtraLabel]="true" 
                                 [updatedOptionsList]="transformationRules" [labelKey]="'brInfo'"
                                 (optionSelectedEmit)="addTransRule($event, 'error')"
+                                (emitSearchValue)="searchTransRules($event)"
                                 i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule">
                                 </pros-form-input-autoselect>
                             </div>
@@ -430,7 +432,7 @@
                                                 <lib-button cdkDragHandle icon="grip-lines"></lib-button>
                                             </div>
                                             <div class="col col-x4">
-                                                <lib-text-line type="base" textColor="link">{{ errRule && errRule.ruleInfo &&  errRule.ruleInfo.brInfo ? errRule.ruleInfo.brInfo : 'Unknown'}}</lib-text-line>
+                                                <lib-text-line type="base" textColor="link" (click)="editTransRule(errRule,'error')">{{ errRule && errRule.ruleInfo &&  errRule.ruleInfo.brInfo ? errRule.ruleInfo.brInfo : 'Unknown'}}</lib-text-line>
                                             </div>
                 
                                             <div class="col col-x4">
