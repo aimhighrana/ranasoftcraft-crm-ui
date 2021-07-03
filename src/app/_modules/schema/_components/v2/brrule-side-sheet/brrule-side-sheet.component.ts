@@ -37,6 +37,115 @@ class ConditionalOperator {
 })
 export class BrruleSideSheetComponent implements OnInit {
 
+  /**
+   * Class contructor
+   * @param dialogRef refernce to matdialog
+   * @param data data recieved from parent
+   * @param schemaDetailsService service class
+   */
+  constructor(
+    private schemaDetailsService: SchemaDetailsService,
+    private snackBar: MatSnackBar,
+    private activatedRouter: ActivatedRoute,
+    private schemaService: SchemaService,
+    private router: Router,
+    private sharedService: SharedServiceService,
+    private formBuilder: FormBuilder,
+    private globalService: GlobaldialogService,
+    private transientService: TransientService
+  ) { }
+
+  /**
+   * getter for transformation types
+   */
+  get transformationType() {
+    return TransformationRuleType;
+  }
+
+  get selectedRuleDesc() {
+    const value = this.form?.get('rule_type').value;
+    return this.brId ? this.businessRuleTypes.find(x => x.ruleType === value)?.ruleDesc : '';
+  }
+  /**
+   * Getter for selected transformation type
+   */
+  get selectedTransformationType() {
+    if (this.form && this.form.controls) {
+      return this.form.controls.transformationRuleType.value;
+    }
+    return '';
+  }
+
+  /**
+   * Getter for selected transformation type for radio button
+   */
+  get selectedTransRuleTypeRadio() {
+    if (this.form && this.form.controls) {
+      return this.transRuleTypeList.find(ruleType => this.form.controls.transformationRuleType.value === ruleType.value);
+    }
+    return '';
+  }
+  get businessRuleTypesFiltered() {
+    const searchStr = this.searchRuleTypeStr?.toLowerCase();
+    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) || x.ruleType?.toLowerCase().includes(searchStr));
+  }
+  get preDefinedRegexFiltered() {
+    const searchStr = this.searchRegexFunctionStr?.toLowerCase();
+    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) || x.FUNC_TYPE?.toLowerCase().includes(searchStr));
+  }
+
+  get isFormLoading() {
+    return Boolean(this.moduleId && !this.metataData);
+  }
+
+  /**
+   * get the current weightage value
+   */
+  get currentweightageValue() {
+    return this.schemaService.currentweightageValue;
+  }
+
+  /**
+   * getter to show field on the basis of rule type
+   */
+  get isRegexType() {
+    return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
+  }
+
+  /**
+   * Check if rule type is User defined rule
+   */
+  get isUDR() {
+    return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT'
+  }
+
+  /**
+   * getter to show field on the basis of rule type
+   */
+  get isDuplicateType() {
+    return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
+  }
+
+  /**
+   * getter to check if a rule is transformation rule
+   */
+  get isTransformationRule(): boolean {
+    return (this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION || this.isOnlyForTrans);
+  }
+
+  /**
+   * Enable the trans for all these rules....
+   */
+   get isTransEnabled() {
+    const enableFor = ['BR_METADATA_RULE','BR_MANDATORY_FIELDS','BR_REGEX_RULE','BR_CUSTOM_SCRIPT'];
+    if(this.form && this.form.value.rule_type && enableFor.indexOf(this.form.value.rule_type) !==-1) {
+      return true;
+    } else if(enableFor.indexOf(this.coreSchemaBrInfo.brType) !==-1) {
+      return true;
+    }
+    return false;
+  }
+
 
   /**
    * Array to store all Grid And Hirarchy records
@@ -241,6 +350,13 @@ export class BrruleSideSheetComponent implements OnInit {
    transformationRules: CoreSchemaBrInfo[] = [];
 
   /**
+   * Search the trans rule from map lib..
+   */
+  delayedCallWithTransLib = debounce((searchText: string) => {
+    this.getTransRules(searchText);
+  }, 400)
+
+  /**
    * function to format slider thumbs label.
    * @param percent percent
    */
@@ -263,122 +379,6 @@ export class BrruleSideSheetComponent implements OnInit {
       allData: node.allData
     };
   }
-
-  /**
-   * Class contructor
-   * @param dialogRef refernce to matdialog
-   * @param data data recieved from parent
-   * @param schemaDetailsService service class
-   */
-  constructor(
-    private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar,
-    private activatedRouter: ActivatedRoute,
-    private schemaService: SchemaService,
-    private router: Router,
-    private sharedService: SharedServiceService,
-    private formBuilder: FormBuilder,
-    private globalService: GlobaldialogService,
-    private transientService: TransientService
-  ) { }
-
-  /**
-   * getter for transformation types
-   */
-  get transformationType() {
-    return TransformationRuleType;
-  }
-
-  get selectedRuleDesc() {
-    const value = this.form?.get('rule_type').value;
-    return this.brId ? this.businessRuleTypes.find(x => x.ruleType === value)?.ruleDesc : '';
-  }
-  /**
-   * Getter for selected transformation type
-   */
-  get selectedTransformationType() {
-    if (this.form && this.form.controls) {
-      return this.form.controls.transformationRuleType.value;
-    }
-    return '';
-  }
-
-  /**
-   * Getter for selected transformation type for radio button
-   */
-  get selectedTransRuleTypeRadio() {
-    if (this.form && this.form.controls) {
-      return this.transRuleTypeList.find(ruleType => this.form.controls.transformationRuleType.value === ruleType.value);
-    }
-    return '';
-  }
-  get businessRuleTypesFiltered() {
-    const searchStr = this.searchRuleTypeStr?.toLowerCase();
-    return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) || x.ruleType?.toLowerCase().includes(searchStr));
-  }
-  get preDefinedRegexFiltered() {
-    const searchStr = this.searchRegexFunctionStr?.toLowerCase();
-    return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) || x.FUNC_TYPE?.toLowerCase().includes(searchStr));
-  }
-
-  get isFormLoading() {
-    return Boolean(this.moduleId && !this.metataData);
-  }
-
-  /**
-   * get the current weightage value
-   */
-  get currentweightageValue() {
-    return this.schemaService.currentweightageValue;
-  }
-
-  /**
-   * getter to show field on the basis of rule type
-   */
-  get isRegexType() {
-    return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
-  }
-
-  /**
-   * Check if rule type is User defined rule
-   */
-  get isUDR() {
-    return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT'
-  }
-
-  /**
-   * getter to show field on the basis of rule type
-   */
-  get isDuplicateType() {
-    return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
-  }
-
-  /**
-   * getter to check if a rule is transformation rule
-   */
-  get isTransformationRule(): boolean {
-    return (this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION || this.isOnlyForTrans);
-  }
-
-  /**
-   * Enable the trans for all these rules....
-   */
-   get isTransEnabled() {
-    const enableFor = ['BR_METADATA_RULE','BR_MANDATORY_FIELDS','BR_REGEX_RULE','BR_CUSTOM_SCRIPT'];
-    if(this.form && this.form.value.rule_type && enableFor.indexOf(this.form.value.rule_type) !==-1) {
-      return true;
-    } else if(enableFor.indexOf(this.coreSchemaBrInfo.brType) !==-1) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Search the trans rule from map lib..
-   */
-  delayedCallWithTransLib = debounce((searchText: string) => {
-    this.getTransRules(searchText);
-  }, 400)
 
   /**
    * Angular hook
