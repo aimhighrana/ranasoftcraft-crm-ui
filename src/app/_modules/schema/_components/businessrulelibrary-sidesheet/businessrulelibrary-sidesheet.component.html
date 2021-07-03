@@ -37,9 +37,11 @@
         <div class="mdo-justify">
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let brItem of businessRulesList; trackBy: trackByFn">
+                    <div class="br-info">{{brItem.brInfo}}</div>
                     <div class="br-info">
                         {{getRuleDesc(brItem.brType)}}
                     </div>
+                    <span class="f-spacer"></span>
                     <span class="f-spacer"></span>
                     <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
                     (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
