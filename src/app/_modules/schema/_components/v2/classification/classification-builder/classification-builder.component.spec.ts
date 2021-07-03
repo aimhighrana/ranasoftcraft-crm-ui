@@ -338,6 +338,7 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
   it('should init component', () => {
 
     spyOn(component, 'getClassificationNounMod');
+    spyOn(component,'getModuleInfo');
     component.ngOnInit();
 
     spyOn(component, 'getDataScope');
@@ -615,4 +616,10 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     component.setNavDivPositions();
     expect(component.setNavDivPositions).toHaveBeenCalled();
   });
+
+  it('getModuleInfo(), should get module info', async(() => {
+    spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
+    component.getModuleInfo('1005');
+    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalledWith('1005');
+  }));
 });

@@ -1,23 +1,40 @@
 <div class="root">
     <div class="f-row-spacer-half"></div>
     <div class="f-row">
-        <lib-text-line type="leading">
-            {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} /
-            {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
-            {{ variantName ? variantName : 'Unknown' }}
-        </lib-text-line>
-        <lib-button type="plain" [matMenuTriggerFor]="check" icon="caret-down" iconFontType="solid"></lib-button>
-        <mat-menu #check="matMenu" class="navigation-menu">
-            <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
-            <ng-container *ngIf="dataScope && dataScope.length">
-                <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                    {{scope.variantName}}
+        <ng-template [ngIf]="schemaInfo">
+            <lib-text-line type="leading">
+                {{ moduleInfo?.moduleDesc || 'Module' }} / /
+                {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
+                {{ variantName ? variantName : 'Unknown' }}
+            </lib-text-line>
+           
+            <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
+            <mat-menu #menu="matMenu" class="navigation-menu">
+                <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20">
+                    <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset</button>
+                    <div *ngIf="dataScope && dataScope.length">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                            {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
+                        </button>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="openDataScopeSideSheet()">
+                    <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> <span i18n="@@new_data_scope">New data scope</span>
                 </button>
-            </ng-container>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="openDataScopeSideSheet()">
-                <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New data scope
-            </button>
+            </mat-menu>
+        </ng-template>
+        <span class="f-col-spacer-half"></span>
+        <span class="f-spacer"></span>
+        <lib-button-group>
+            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
+                <span class="btn-txt">Refine</span>
+            </lib-button>
+            <lib-button *ngIf="false" type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
+            <lib-button class="lib-button navbar-action" type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
+        </lib-button-group>
+        <mat-menu #moreactionfile="matMenu" class="navigation-menu">
+            <button mat-menu-item i18n="@@export_to_csv" (click)="getDownloadAbledataforMroExecution()">Export to CSV</button>
         </mat-menu>
     </div>
 
@@ -28,30 +45,7 @@
     </ng-template>
 
     <ng-template #schemaInfoTemplate>
-        <div class="f-row">
-            <lib-text-line type="leading">MRO classification</lib-text-line>
-            <div class="f-spacer"></div>
-            <div class="f-row">
-                <lib-text-line type="base" textColor="secondary">230 errors</lib-text-line>
-                &nbsp;&nbsp;
-                <lib-text-line type="base" textColor="secondary">114 warnings</lib-text-line>
-                &nbsp;&nbsp;
-                <lib-text-line type="base" textColor="secondary">22 corrections</lib-text-line>
-            </div>
-            <div class="col-spacer"></div>
-            <lib-button-group>
-                <lib-button type="plain" icon="sliders-h" iconPosition="before" (click)="openSummarySideSheet()"> Refine
-                </lib-button>
-                <lib-button type="plain" icon="chart-line" iconPosition="before"
-                    (click)="openExecutionTrendSideSheet()"> Trend</lib-button>
-                <lib-button type="plain" icon="ellipsis-h" [matMenuTriggerFor]="moreactionfile"></lib-button>
-            </lib-button-group>
-            <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="getDownloadAbledataforMroExecution()">Export to CSV</button>
-            </mat-menu>
-
-        </div>
-        <div class="row-spacer"></div>
+        
         <div class="f-col mat-tab-container">
             <div class="f-row filter-container">
                 <lib-search class="lib-search" placeholder="Search..."></lib-search>
@@ -83,11 +77,11 @@
                                         <lib-text-line type="base">Master library</lib-text-line>
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="success">
-                                            {{ rulesNounMods && rulesNounMods.mro_local_lib ?
-                                            rulesNounMods.mro_local_lib.doc_cnt : 0 }}</lib-text-line>
+                                            {{ rulesNounMods && rulesNounMods.MRO_CLS_MASTER_CHECK ?
+                                            rulesNounMods.MRO_CLS_MASTER_CHECK.doc_cnt : 0 }}</lib-text-line>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_local_lib.info">
+                                <ng-template ngFor let-noun [ngForOf]="rulesNounMods.MRO_CLS_MASTER_CHECK.info">
                                     <mat-accordion>
                                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
                                             expanded="expanded">
@@ -105,7 +99,7 @@
                                             <mat-nav-list role="navigation" class="tree-nav-list">
                                                 <mat-list-item class="f-row understep-two"
                                                     *ngFor="let modifier of noun.modifier"
-                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_local_lib')">
+                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_CLS_MASTER_CHECK')">
                                                     <!-- <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon> -->
                                                     <lib-text-line type="base">{{ modifier.modDesc ? modifier.modDesc :
                                                         'Unknown' }}</lib-text-line>
@@ -128,11 +122,11 @@
                                         <lib-text-line type="base">GSN</lib-text-line>
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="success">{{ rulesNounMods &&
-                                            rulesNounMods.mro_gsn_lib ? rulesNounMods.mro_gsn_lib.doc_cnt : 0 }}
+                                            rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP ? rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP.doc_cnt : 0 }}
                                         </lib-text-line>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_gsn_lib.info">
+                                <ng-template ngFor let-noun [ngForOf]="rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP.info">
                                     <mat-accordion>
                                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
@@ -149,7 +143,7 @@
                                             <mat-nav-list role="navigation" class="tree-nav-list">
                                                 <mat-list-item class="f-row understep-two"
                                                     *ngFor="let modifier of noun.modifier"
-                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_gsn_lib')">
+                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP')">
                                                     <lib-button type="plain" icon="link" (click)="openAttributeMapping(noun.nounCode,modifier.modCode)"></lib-button>
                                                     <lib-text-line type="base">{{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}</lib-text-line>
                                                     <span class="f-spacer"></span>
@@ -205,18 +199,18 @@
                             <!-- Checkbox Column -->
                             <ng-container matColumnDef="checkbox_select" sticky>
                                 <mat-header-cell *matHeaderCellDef>
-                                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                    <lib-checkbox (valueChange)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
                                         [indeterminate]="selection.hasValue() && !isAllSelected()"
                                         [aria-label]="checkboxLabel()" color="primary">
-                                    </mat-checkbox>
+                                    </lib-checkbox>
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row">
-                                    <mat-checkbox (click)="$event.stopPropagation()"
+                                    <lib-checkbox (valueChange)="$event.stopPropagation()"
                                         (change)="$event ? selection.toggle(row) : null"
                                         [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
                                         color="primary">
-                                    </mat-checkbox>
+                                    </lib-checkbox>
                                 </mat-cell>
                             </ng-container>
                             <!-- Name Column -->
