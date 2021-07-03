@@ -4,7 +4,9 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large" i18n="@@business_rule_library">Business rule library</div>
+                <div class="display-heading-large" i18n="@@business_rule_library">
+                    {{ isOnlyTransformation ? 'Transformation rule library' : 'Business rule library' }}
+                </div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
                 <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
@@ -13,7 +15,7 @@
             <div class="f-row">
                <lib-search (valueChange)="brSearchSubject.next($event)" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
                 <span class="col-spacer"></span>
-                <mat-chip-list>
+                <mat-chip-list *ngIf="!isOnlyTransformation">
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
                         <label><span i18n="@@business_rule_type">Business rule type</span>:</label> <span
                             class="info">{{selectedRuleType ? getRuleDesc(selectedRuleType) : 'All'}}

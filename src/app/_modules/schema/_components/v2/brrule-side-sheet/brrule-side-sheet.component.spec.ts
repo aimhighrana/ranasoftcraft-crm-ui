@@ -1,4 +1,4 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { MdoUiLibraryModule, TransientService } from 'mdo-ui-library';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { BrruleSideSheetComponent } from './brrule-side-sheet.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -9,7 +9,7 @@ import { SetupDuplicateRuleComponent } from './duplicate-rule-config/setup-dupli
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
-import { BusinessRuleType, CoreSchemaBrInfo, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, TransformationMappingTabResponse, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -23,6 +23,7 @@ describe('BrruleSideSheetComponent', () => {
   let schemaDetailsServicespy: SchemaDetailsService;
   let schemaServiceSpy: SchemaService;
   let router: Router;
+  let transientService: TransientService
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,7 +33,7 @@ describe('BrruleSideSheetComponent', () => {
       ],
       providers: [SchemaDetailsService,
         { provide: ActivatedRoute,
-          useValue: {params: of({moduleId: '1005', schemaId: 'schema1', brId: 'new'})}
+          useValue: {params: of({moduleId: '1005', schemaId: 'schema1', brId: 'new'}), queryParams:of({moduleId: '1005', schemaId: 'schema1', brId: 'new'})}
         }]
     })
       .compileComponents();
@@ -46,6 +47,7 @@ describe('BrruleSideSheetComponent', () => {
     ];
     schemaDetailsServicespy = fixture.debugElement.injector.get(SchemaDetailsService);
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
+    transientService = fixture.debugElement.injector.get(TransientService);
     router = fixture.debugElement.injector.get(Router);
     // router = TestBed.inject(Router);
     // fixture.detectChanges();
@@ -236,7 +238,7 @@ describe('BrruleSideSheetComponent', () => {
    component.updateTransformationRuleType({value: true});
    const field2=component.formField('transformationRuleType');
    delete component.form.controls;
-   expect(field2.value).toBeFalsy();
+   expect(field2.value).toEqual({ value: true });
 
   }));
 
@@ -303,6 +305,9 @@ describe('BrruleSideSheetComponent', () => {
     spyOn(component, 'getCategories');
     spyOn(component, 'getFieldsByModuleId');
     spyOn(component, 'getBusinessRuleInfo');
+    spyOn(component,'getMappedTransformationRules');
+    spyOn(component,'getTransRules');
+    component.moduleId = '1005';
     component.ngOnInit();
     expect(component.moduleId).toEqual('1005');
 
@@ -325,6 +330,13 @@ describe('BrruleSideSheetComponent', () => {
   })
 
   it('initiateAutocomplete(), should init autocomplete', async(() => {
+    spyOn(component, 'getCategories');
+    spyOn(component, 'getFieldsByModuleId');
+    spyOn(component, 'getBusinessRuleInfo');
+    spyOn(component,'getMappedTransformationRules');
+    spyOn(component,'getTransRules');
+    spyOn(component,'applyValidatorsByRuleType');
+
     component.ngOnInit();
     component.form.controls.fields.setValue('email');
     component.allGridAndHirarchyData = [
@@ -379,6 +391,9 @@ describe('BrruleSideSheetComponent', () => {
   }));
 
   it('should setValueToElement', async(() => {
+
+    // mock data
+    component.hasAppliedTransformationCtrl = new FormControl(true);
 
     component.buildCommonDataForm();
 
@@ -701,6 +716,70 @@ describe('BrruleSideSheetComponent', () => {
     component.blockCtrl(udr);
     expect(result.get('conditionFieldValue').value).toEqual('Google');
 
-  })
+  });
+
+  it('isTransEnabled, check whether trans aplicabe for this rule or not', (() => {
+    component.buildCommonDataForm();
+    component.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
+    expect(component.isTransEnabled).toBeTrue();
+  }));
+
+  it('openTransRuleLib(), open the trans lib .. ', (() => {
+    spyOn(router,'navigate');
+    component.openTransRuleLib();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/business-rule/${component.moduleId}/${component.schemaId}/${component.brId}`,
+    outer: `outer/schema/businessrule-library/${component.moduleId}/${component.schemaId}/outer` }}],{queryParams:{t:true,s:component.transTabIndex === 0 ? 'success' : 'error'}});
+
+  }));
+
+  it('getMappedTransformationRules(), get mapped trans rule inside the main rule', (() => {
+    spyOn(schemaServiceSpy,'getMappedTransformationRules').withArgs(component.brId, component.schemaId, 0, 100, '').and.returnValue(of());
+    component.getMappedTransformationRules();
+    expect(schemaServiceSpy.getMappedTransformationRules).toHaveBeenCalledWith(component.brId, component.schemaId, 0, 100, '');
+  }));
+
+  it('updateTransStatus(), update the transformation added rule status', (() => {
+    // mock data
+    component.attachedTransRules = {error:[{isConfigured:false,isEnabled:true,ruleInfo:{brIdStr:'775755'} as CoreSchemaBrInfo}],success:[
+      {isConfigured:false,isEnabled:false,ruleInfo:{brIdStr:'9866757'} as CoreSchemaBrInfo}
+    ]};
+
+    component.updateTransStatus({isConfigured:false,isEnabled:false,ruleInfo:{brIdStr:'9866757'} as CoreSchemaBrInfo} as TransformationMappingTabResponse, 'success',true);
+
+    expect(component.attachedTransRules.success[0].isEnabled).toBeTrue();
+
+    component.updateTransStatus({isConfigured:false,isEnabled:true,ruleInfo:{brIdStr:'775755'} as CoreSchemaBrInfo} as TransformationMappingTabResponse, 'error',false);
+
+    expect(component.attachedTransRules.error[0].isEnabled).toBeFalse();
+
+
+  }));
+
+  it('addTransRule(), add the transformation rule ... ', async(()=>{
+    // mock data
+    component.attachedTransRules = {error:[{isConfigured:false,isEnabled:true,ruleInfo:{brIdStr:'775755'} as CoreSchemaBrInfo}],success:[
+      {isConfigured:false,isEnabled:false,ruleInfo:{brIdStr:'9866757'} as CoreSchemaBrInfo}
+    ]};
+
+
+    spyOn(transientService,'open').and.callFake(()=>of());
+
+    component.addTransRule({brIdStr:'87676786878'} as CoreSchemaBrInfo, 'success');
+    expect(component.attachedTransRules.success.length).toEqual(2);
+
+    component.addTransRule({brIdStr:'9866757'} as CoreSchemaBrInfo, 'success');
+    expect(transientService.open).toHaveBeenCalled();
+
+    component.addTransRule({brIdStr:'35657637683'} as CoreSchemaBrInfo, 'error');
+    expect(component.attachedTransRules.error.length).toEqual(2);
+
+    component.addTransRule({brIdStr:'775755'} as CoreSchemaBrInfo, 'error');
+    expect(transientService.open).toHaveBeenCalled();
+
+
+
+
+
+  }));
 
 });

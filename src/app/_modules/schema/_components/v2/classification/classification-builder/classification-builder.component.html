@@ -80,11 +80,11 @@
                                             </div>
                                             <span class="f-spacer"></span>
                                             <div class="default-badge success-badge">
-                                                {{ rulesNounMods && rulesNounMods.mro_local_lib ? rulesNounMods.mro_local_lib.doc_cnt : 0 }}
+                                                {{ rulesNounMods && rulesNounMods.MRO_CLS_MASTER_CHECK ? rulesNounMods.MRO_CLS_MASTER_CHECK.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
-                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_local_lib.info">
+                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.MRO_CLS_MASTER_CHECK.info">
                                         <mat-accordion>
                                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
                                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
@@ -103,7 +103,7 @@
                                                 </mat-expansion-panel-header>
     
                                                 <mat-nav-list role="navigation" class="tree-nav-list">
-                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_local_lib')">
+                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_CLS_MASTER_CHECK')">
                                                         <!-- <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon> -->
                                                         <div mat-line>
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
@@ -132,11 +132,11 @@
                                             </div>
                                             <span class="f-spacer"></span>
                                             <div class="default-badge success-badge">
-                                                {{ rulesNounMods && rulesNounMods.mro_gsn_lib ? rulesNounMods.mro_gsn_lib.doc_cnt : 0 }}
+                                                {{ rulesNounMods && rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP ? rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
-                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_gsn_lib.info">
+                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP.info">
                                         <mat-accordion>
                                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
@@ -155,7 +155,7 @@
                                                 </mat-expansion-panel-header>
     
                                                 <mat-nav-list role="navigation" class="tree-nav-list">
-                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_gsn_lib')">
+                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP')">
                                                         <button mat-button  mat-list-icon  (click)="openAttributeMapping(noun.nounCode,modifier.modCode)">
                                                             <mat-icon fontSet="mdo-icons">mapping</mat-icon>
                                                         </button>
