@@ -812,10 +812,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    * Open dialog for import a report
    */
   importReport() {
-    this.matDialog.open(ImportComponent, {
+    const dialogRef = this.matDialog.open(ImportComponent, {
       width: '600px',
       minHeight: '250px',
       disableClose: false,
+    });
+
+    // Reload once import is successfull
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.getreportList();
+      }
     });
   }
 }
