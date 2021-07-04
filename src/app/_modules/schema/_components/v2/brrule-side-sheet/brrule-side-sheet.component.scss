@@ -115,9 +115,12 @@ div.root {
 }
 
 .skeleton-loading {
-  width: 712px;
-  padding: 16px;
-  display: block;
+  width: 100%;
+  margin-right: 50px;
+
+  > div {
+    flex-grow: 1;
+  }
 }
 
 .colunm-box {

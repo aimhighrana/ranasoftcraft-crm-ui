@@ -10,8 +10,25 @@
                 <span class="f-spacer"></span>
                 <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
             </div>
-        </div>  
+        </div>
+        <div *ngIf="isFormLoading" class="f-row skeleton-loading">
+            <div>
+                <lib-skeleton type="line-half"></lib-skeleton>
+            </div>
+            <span class="f-spacer"></span>
+            <lib-skeleton type="button"></lib-skeleton>
+        </div>
     </div>
+    <div *ngIf="isFormLoading" class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify">
+            <div class="f-col mdo-form-field" *ngFor="let a of [].constructor(5)">
+                <lib-skeleton type="line"></lib-skeleton>
+                <lib-skeleton type="line"></lib-skeleton>
+                <lib-skeleton type="line-half"></lib-skeleton>
+            </div>
+        </div>
+    </div>
+
     <div [hidden]="isFormLoading" class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
 
@@ -436,5 +453,3 @@
         </div>
     </div>
 </div>
-
-<lib-skeleton-overview *ngIf="isFormLoading" class="skeleton-loading"></lib-skeleton-overview> 

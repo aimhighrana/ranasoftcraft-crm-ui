@@ -24,7 +24,7 @@
                 </lib-tab>
                 <lib-tab label="Synonyms">
                     <div class="f-col">
-                        <lib-search placeholder="Search word" (value)="searchWords($event)"></lib-search>
+                        <lib-search placeholder="Search word" (valueChange)="searchWords($event)"></lib-search>
 
                         <div class="mdo-field">
                             <lib-text-line type="base" (click)="enableGroupCreation()" textColor="link">
