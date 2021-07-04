@@ -49,8 +49,7 @@
 
             <div class="f-col mdo-field">
                 <lib-text-line i18n="@@data_scope" type="xsmall" weight="strong" class="field-label">
-                    Data scope 
-                    <span class="mandatory">*</span>
+                    Data scope <span class="mandatory">*</span> &nbsp;
                     <mat-icon fontSet="mdo-icons" iconFontType="solid">question-circle</mat-icon>                    
                 </lib-text-line>
                 <div class="mdo-field-input">
@@ -136,7 +135,7 @@
                             </div>
 
                             <div class="col col-x4">
-                                <lib-text-line  (click)="editBr(businessRule)" type="base"
+                                <lib-text-line  enableWrap="true" (click)="editBr(businessRule)" type="base"
                                     textColor="link">{{businessRule.brInfo}}</lib-text-line>
                             </div>
                             
@@ -194,7 +193,7 @@
                                         </lib-button>
                                     </div>
                                     <div class="col col-x4">
-                                        <lib-text-line class="br-text-line" (click)="editBr(deps)" type="base"
+                                        <lib-text-line enableWrap="true" (click)="editBr(deps)" type="base"
                                             textColor="link">{{deps.brInfo}}</lib-text-line>
                                     </div>
                                     <div class="col col-x4">
