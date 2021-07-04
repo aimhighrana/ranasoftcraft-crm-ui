@@ -455,21 +455,21 @@ export class EndpointsRuleService {
    * URI for get all available nouns ..from local library
    */
   public getAvailableNounsUri(): string {
-    return `${this.origin}/mro/noun`;
+    return `${this.classicOrigin}/mro/noun`;
   }
 
   /**
    * URI for get all available modifiers  ..from local library
    */
   public getAvailableModifierUri(): string {
-    return `${this.origin}/mro/modifier`;
+    return `${this.classicOrigin}/mro/modifier`;
   }
 
   /**
    * URI for get all available attributes  ..from local library
    */
   public getAvailableAttributeUri(): string {
-    return `${this.origin}/mro/attribute`;
+    return `${this.classicOrigin}/mro/attribute`;
   }
 
 
@@ -521,7 +521,7 @@ export class EndpointsRuleService {
   }
 
   public getFetchAttributesMappingUrl() : string{
-    return this.origin + `/schema/get-mappings`;
+    return this.origin + `/schema/metadata/get-mappings`;
   }
 
   /**
@@ -601,14 +601,14 @@ export class EndpointsRuleService {
    * @param schemaid append on request path ..
    */
   public downloadMroExceutionUri(schemaid: string): string {
-    return `${this.origin}/schema/download/mro/${schemaid}`;
+    return `${this.classicOrigin}/schema/download/mro/${schemaid}`;
   }
 
   /**
    * Uri for generate mro classification description ..
    */
   public generateMroClassificationDescriptionUri(): string {
-    return `${this.origin}/schema/mro/generate-description`;
+    return `${this.classicOrigin}/schema/mro/generate-description`;
   }
   public getCreateUpdateSchemaActionUrl(): string {
     return this.origin + `/schema/actions/create-update`;

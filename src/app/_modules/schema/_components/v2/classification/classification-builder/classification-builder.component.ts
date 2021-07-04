@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
-import { SchemaListDetails, SchemaNavGrab, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { ModuleInfo, SchemaListDetails, SchemaNavGrab, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
@@ -246,6 +246,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   variantName = 'Entire dataset';
 
+  /**
+   * holds module info
+   */
+   moduleInfo: ModuleInfo;
+
+   /**
+    * Hold the breadcurmb information ...
+    */
+   innerBreadcurmbtxt = '';
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -337,7 +347,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       distinctUntilChanged()
     ).subscribe(value => {
         this.filterTableData(value);
-    })
+    });
+
+    /**
+     * Get the module information
+     */
+    this.getModuleInfo(this.moduleId);
   }
 
   ngAfterViewInit(){
@@ -400,10 +415,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       this.rulesNounMods = res;
       if (this.rulesNounMods.MRO_CLS_MASTER_CHECK && this.rulesNounMods.MRO_CLS_MASTER_CHECK.info) {
         const fisrtNoun = this.rulesNounMods.MRO_CLS_MASTER_CHECK.info[0];
+        this.innerBreadcurmbtxt = `Master library`;
         if(fisrtNoun) {
           const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
+          this.innerBreadcurmbtxt+= ` / ${fisrtNoun?.nounSortDesc}`;
           if (modifierCode && fisrtNoun.nounCode) {
             this.dataFrm = 'MRO_CLS_MASTER_CHECK';
+            this.innerBreadcurmbtxt+= ` / ${fisrtNoun.modifier[0]?.modText}`;
             this.applyFilter(fisrtNoun.nounCode, modifierCode, 'MRO_CLS_MASTER_CHECK');
           }
           else {
@@ -431,6 +449,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   applyFilter(nounCode: string, modifierCode: string, brType: string, isSearchActive?: boolean, objectNumberAfter?: string,fromShowMore?: boolean) {
+
     this.dataFrm = brType;
     this.activeNounCode = nounCode; this.activeModeCode = modifierCode;
 
@@ -992,7 +1011,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate(['home','schema','schema-info',`${this.moduleId}`,`${this.schemaId}`])
   }
 
   /**
@@ -1140,5 +1159,19 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     grabberElement.style.right = '0%';
     this.navscroll.nativeElement.appendChild(grabberElement);
 
+  }
+
+  /**
+   * get module info based on module id
+   * @param id module id
+   */
+   getModuleInfo(id) {
+    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+      if (res && res.length) {
+        this.moduleInfo = res[0];
+      }
+    }, error => {
+      console.log(`Error:: ${error.message}`)
+    });
   }
 }
