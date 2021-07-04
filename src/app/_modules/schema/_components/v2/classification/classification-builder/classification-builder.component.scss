@@ -38,7 +38,7 @@ div.root {
     }
 
     .listing-container {
-      height: 100%;
+      height: calc(100% - 56px - 50px - 8px * 2);
       overflow: hidden;
       align-items: flex-start;
 
@@ -102,10 +102,11 @@ div.root {
       .listset-grid {
         width: calc(100% - 292px - 24px);
         overflow: hidden;
+        height: 100%;
 
         .datasource {
           overflow-x: auto;
-          height: calc(100% - 200px);
+          height: calc(100% - 24px);
 
           mat-table.mat-table {
             display: table;

@@ -3,7 +3,7 @@
     <div class="f-row">
         <ng-template [ngIf]="schemaInfo">
             <lib-text-line type="leading">
-                {{ moduleInfo?.moduleDesc || 'Module' }} / /
+                {{ moduleInfo?.moduleDesc || 'Module' }} / 
                 {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
                 {{ variantName ? variantName : 'Unknown' }}
             </lib-text-line>
@@ -99,12 +99,13 @@
                                             <mat-nav-list role="navigation" class="tree-nav-list">
                                                 <mat-list-item class="f-row understep-two"
                                                     *ngFor="let modifier of noun.modifier"
-                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_CLS_MASTER_CHECK')">
+                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_CLS_MASTER_CHECK'); 
+                                                    innerBreadcurmbtxt = 'Master library' + ' / ' + noun?.nounDesc + ' / ' + modifier?.modDesc">
                                                     <!-- <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon> -->
                                                     <lib-text-line type="base">{{ modifier.modDesc ? modifier.modDesc :
                                                         'Unknown' }}</lib-text-line>
                                                     <span class="f-spacer"></span>
-                                                    <lib-text-line type="base" textColor="warning">0</lib-text-line>
+                                                    <!-- <lib-text-line type="base" textColor="warning">0</lib-text-line> -->
                                                     <lib-text-line type="base" textColor="success">{{ modifier.doc_count
                                                         ? modifier.doc_count : 0 }}</lib-text-line>
                                                 </mat-list-item>
@@ -119,7 +120,7 @@
                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                                     <mat-panel-title>
-                                        <lib-text-line type="base">GSN</lib-text-line>
+                                        <lib-text-line type="base">Connekthub library</lib-text-line>
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="success">{{ rulesNounMods &&
                                             rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP ? rulesNounMods.MRO_MANU_PRT_NUM_LOOKUP.doc_cnt : 0 }}
@@ -143,11 +144,12 @@
                                             <mat-nav-list role="navigation" class="tree-nav-list">
                                                 <mat-list-item class="f-row understep-two"
                                                     *ngFor="let modifier of noun.modifier"
-                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP')">
+                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP');
+                                                    innerBreadcurmbtxt = 'Connekthub library' + ' / ' + noun?.nounDesc + ' / ' + modifier?.modDesc">
                                                     <lib-button type="plain" icon="link" (click)="openAttributeMapping(noun.nounCode,modifier.modCode)"></lib-button>
                                                     <lib-text-line type="base">{{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}</lib-text-line>
                                                     <span class="f-spacer"></span>
-                                                    <lib-text-line type="base" textColor="warning">0</lib-text-line>
+                                                    <!-- <lib-text-line type="base" textColor="warning">0</lib-text-line> -->
                                                     <div class="col-spacer"></div>
                                                     <lib-text-line type="base" textColor="success">{{ modifier.doc_count ? modifier.doc_count : 0 }}</lib-text-line> 
                                                     <div class="f-col-spacer-half"></div>
@@ -161,7 +163,7 @@
                         <mat-accordion>
                             <mat-expansion-panel hideToggle class="mat-elevation-z0">
                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                                    <mat-panel-title (click)="applyFilter('', '', 'unmatched')">
+                                    <mat-panel-title (click)="applyFilter('', '', 'unmatched'); innerBreadcurmbtxt = 'Unmatched'">
                                         <lib-text-line type="base">Unmatched</lib-text-line>
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="error">{{rulesNounMods.unmatched ?
@@ -178,7 +180,7 @@
                 </div>
 
                 <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">
-                    <lib-text-line type="leading">Header</lib-text-line>
+                    <lib-text-line type="leading">{{ innerBreadcurmbtxt }}</lib-text-line>
                     <!-- Filters  -->
                     <!-- <div class="f-row">
                         <pros-search-input #tableSearchInput placeholder="Search spare parts"
@@ -206,8 +208,7 @@
                                     </lib-checkbox>
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row">
-                                    <lib-checkbox (valueChange)="$event.stopPropagation()"
-                                        (change)="$event ? selection.toggle(row) : null"
+                                    <lib-checkbox prosClickStopPropagation (valueChange)="$event ? selection.toggle(row) : null"
                                         [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
                                         color="primary">
                                     </lib-checkbox>
@@ -256,7 +257,7 @@
 
                             <!-- Material number Column -->
                             <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                                <mat-header-cell *matHeaderCellDef> Material number </mat-header-cell>
+                                <mat-header-cell *matHeaderCellDef> {{moduleInfo?.moduleDesc || 'Object number'}} </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldValue : '' }}
                                 </mat-cell>

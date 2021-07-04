@@ -102,9 +102,9 @@ export class NounModifierService {
       throw new Error('Nouncode must be required ');
     }
 
-    if(!modifierCode) {
-      throw new Error('Modifier must be required ');
-    }
+    // if(!modifierCode) {
+    //   throw new Error('Modifier must be required ');
+    // }
 
     searchString = searchString ? searchString : '';
     return this.http.get<NounModifier>(this.endpointDataplay.getAvailableAttributeUri(), {params:{nounCode, modifierCode, searchString, plantCode}})

@@ -409,6 +409,14 @@ export class BrruleSideSheetComponent implements OnInit {
         this.initUDRForm();
         if (this.brId) {
           this.getBusinessRuleInfo(this.brId);
+          // set is trans edit only
+          this.activatedRouter.queryParams.subscribe(q=>{
+            if(q.r && q.r === 'BR_TRANSFORMATION') {
+              this.isOnlyForTrans = true;
+            } else {
+              this.isOnlyForTrans = false;
+            }
+          });
         } else {
           this.getFieldsByModuleId();
           this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);

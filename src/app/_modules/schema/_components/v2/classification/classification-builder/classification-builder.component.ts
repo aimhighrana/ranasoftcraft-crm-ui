@@ -251,6 +251,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
    moduleInfo: ModuleInfo;
 
+   /**
+    * Hold the breadcurmb information ...
+    */
+   innerBreadcurmbtxt = '';
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -410,10 +415,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       this.rulesNounMods = res;
       if (this.rulesNounMods.MRO_CLS_MASTER_CHECK && this.rulesNounMods.MRO_CLS_MASTER_CHECK.info) {
         const fisrtNoun = this.rulesNounMods.MRO_CLS_MASTER_CHECK.info[0];
+        this.innerBreadcurmbtxt = `Master library`;
         if(fisrtNoun) {
           const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
+          this.innerBreadcurmbtxt+= ` / ${fisrtNoun?.nounSortDesc}`;
           if (modifierCode && fisrtNoun.nounCode) {
             this.dataFrm = 'MRO_CLS_MASTER_CHECK';
+            this.innerBreadcurmbtxt+= ` / ${fisrtNoun.modifier[0]?.modText}`;
             this.applyFilter(fisrtNoun.nounCode, modifierCode, 'MRO_CLS_MASTER_CHECK');
           }
           else {
@@ -441,6 +449,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   applyFilter(nounCode: string, modifierCode: string, brType: string, isSearchActive?: boolean, objectNumberAfter?: string,fromShowMore?: boolean) {
+
     this.dataFrm = brType;
     this.activeNounCode = nounCode; this.activeModeCode = modifierCode;
 

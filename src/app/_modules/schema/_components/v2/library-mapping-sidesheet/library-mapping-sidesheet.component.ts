@@ -285,15 +285,18 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openNounSidesheet() {
     // need material group
-    this.router.navigate(['', { outlets: { outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` } }])
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}]);
   }
 
   openModifierSidesheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` } }])
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}]);
   }
 
   openAttributeSidesheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/attribute/${this.selectedNounCode}` } }])
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
   }
 
   close() {
