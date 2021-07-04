@@ -4,12 +4,6 @@ div.root {
   overflow: hidden;
   width: 768px;
 
-  .mat-error {
-    font-size: 11.2px;
-    margin-top: 6px;
-    line-height: 12px;
-  }
-
   .breadcrum-toolbar {
     padding: 8px 16px;
 
@@ -21,13 +15,6 @@ div.root {
       .breadcrum-head {
         align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
     }
   }
@@ -39,36 +26,33 @@ div.root {
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        margin: 8px 0;
-
-        mat-label {
-          font-weight: 500;
-          font-size: 0.8rem;
-        }
-
-        .slider-row {
-          align-items: center;
-          flex-wrap: wrap;
-          justify-content: center;
-          flex: 1;
-
-          .lib-slider {
-            flex: 1;
-            height: 48px;
-          }
-        }
+      .field-label {
+        margin-bottom: 6px;
       }
 
-      mat-divider.mat-divider {
-        position: relative;
-        margin: 16px 0;
-        border-top-style: dashed;
+      .lib-slider {
+        height: 36px;
+      }
+
+      .lib-divider {
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .mat-error {
+        margin-top: 6px;
+      }
+
+      .mat-head-icon {
+        font-size: 12px;
+        height: 14px;
+        width: 12px;
+        margin-left: 4px;
       }
 
       .user-defined-set {
         position: relative;
-        margin-top: 8px;
+        margin: 0 0 12px 0;
 
         &::before {
           display: block;
@@ -105,23 +89,12 @@ div.root {
               flex: 2;
             }
 
-            button.mat-button:hover {
-              background: transparent;
-            }
-
-            button.mat-flat-button {
-              height: 54px;
-              border-radius: 0;
-              width: 100px;
-            }
-
             &.select-col {
               width: 68px;
               padding: 0 16px;
               height: 54px;
               align-items: center;
               display: flex;
-              background: whitesmoke;
               z-index: 1;
             }
           }
@@ -137,61 +110,45 @@ div.root {
           margin-top: -17px;
         }
       }
-
-      .tarns-root {
-        height: 100%;
-        overflow: hidden;
-        width: 100%;
-
-        .colunm-box {
-          padding: 6px 0;
-
-          .col {
-            display: flex;
-            flex: 1 0 auto;
-            width: 1px;
-            align-items: center;
-            flex-wrap: wrap;
-
-            &.col-x4 {
-              flex: 4;
-            }
-
-            &.mat-item-end {
-              justify-content: flex-end;
-            }
-          }
-        }
-      }
     }
   }
 }
 
 .skeleton-loading {
-  width: 100%;
-  margin-right: 50px;
+  width: 712px;
+  padding: 16px;
+  display: block;
+}
 
-  > div {
-    flex-grow: 1;
+.colunm-box {
+  box-sizing: border-box;
+  min-height: 48px;
+
+  .col {
+    display: flex;
+    flex: 1 0 auto;
+    width: 1px;
+    align-items: center;
+    margin: 0 6px;
+    flex-wrap: wrap;
+
+    &.col-x4 {
+      flex: 4;
+    }
+
+    &.mat-item-center {
+      justify-content: center;
+    }
+
+    &.mat-item-end {
+      justify-content: flex-end;
+    }
   }
 }
 
 .add-block {
   text-align: center;
   width: 100%;
-}
-
-.fields-menu {
-  padding: 12px;
-  height: 100%;
-
-  mat-nav-list {
-    padding-top: 0;
-    margin: 8px -12px;
-    overflow: auto;
-    // height: calc(100% - 36px - 16px * 2 - 8px * 2 - 36px);
-    max-height: 180px;
-  }
 }
 
 @media (min-width: 1024px) {

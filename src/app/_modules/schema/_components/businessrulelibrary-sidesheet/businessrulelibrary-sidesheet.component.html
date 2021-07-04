@@ -3,17 +3,15 @@
         <lib-button type="plain" (click)="closeDialogComponent()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
-            <div class="f-row breadcrum-head">
-                <div class="display-heading-large" i18n="@@business_rule_library">
-                    {{ isOnlyTransformation ? 'Transformation rule library' : 'Business rule library' }}
-                </div>
+            <div class="f-row">
+                <lib-text-line type="leading" i18n="@@business_rule_library">{{ isOnlyTransformation ? 'Transformation rule library' : 'Business rule library' }}</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
                 <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-               <lib-search (valueChange)="brSearchSubject.next($event)" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
+               <lib-search class="lib-search" (valueChange)="brSearchSubject.next($event)" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
                 <span class="col-spacer"></span>
                 <mat-chip-list *ngIf="!isOnlyTransformation">
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
@@ -37,16 +35,12 @@
         <div class="mdo-justify">
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let brItem of businessRulesList; trackBy: trackByFn">
-                    <div class="br-info">{{brItem.brInfo}}</div>
-                    <div class="br-info">
-                        {{getRuleDesc(brItem.brType)}}
-                    </div>
-                    <span class="f-spacer"></span>
-                    <span class="f-spacer"></span>
-                    <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
+                    <lib-text-line type="base" class="br-info">{{brItem.brInfo}}</lib-text-line>
+                    <lib-text-line type="base" class="br-info">{{getRuleDesc(brItem.brType)}}</lib-text-line>
+                    <lib-button class="transformation-button" *ngIf="!isSelected(brItem); else doneButton"
                     (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
                     <ng-template #doneButton>
-                        <lib-button class="br-sidesheet-btn" (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
+                        <lib-button class="transformation-button" (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
                     </ng-template>
                 </mat-list-item>
             </mat-list>
