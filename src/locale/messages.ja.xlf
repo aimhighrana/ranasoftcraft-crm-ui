@@ -2466,7 +2466,6 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-<<<<<<< HEAD
       <trans-unit id="resetFilters" datatype="html">
         <source>Reset all filters</source>
         <target>すべてのフィルターをリセットする</target>
@@ -2484,9 +2483,6 @@
         </context-group>
       </trans-unit>
        <trans-unit id="import_report" datatype="html">
-=======
-      <trans-unit id="import_report" datatype="html">
->>>>>>> 136cae48a1b800a73251559f85967a872721719d
         <source>Import Report</source>
         <target>レポートのインポート</target>
         <context-group purpose="location">
