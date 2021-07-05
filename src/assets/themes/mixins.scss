@@ -784,31 +784,6 @@
 
       .mat-menu-content:not(:empty) {
         padding: 0;
-
-        .multiselect-checkbox {
-          mat-list-item {
-            .mat-list-item-content {
-              padding: 0 8px;
-            }
-          }
-        }
-
-        .search {
-          .mat-radio-button {
-              width: 100%;
-
-              .mat-radio-label {
-                margin-right: 0px;
-              }
-
-              .mat-radio-label-content.mat-radio-label-before {
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-                width: 100%;
-              }
-           }
-         }
       }
 
       &.date-picker-menu {
@@ -901,7 +876,6 @@
         }
       }
     }
-    
   }
 
   //Mat Slider
@@ -1565,8 +1539,6 @@
     }
   }
 
-
-
   pros-welcome-mdo,
   pros-schema-lists {
     pros-svg-icon.welcome-logo {
@@ -1817,15 +1789,6 @@
       }
     }
   }
-  
-  pros-form-checkbox,
-  pros-form-radio-button-group,
-  pros-form-range-slider,
-  pros-form-single-select {
-    .mdo-field {
-         margin-bottom: 0px;
-    }
-  }
 
   pros-reporting-list {
     mat-paginator.mat-paginator {
@@ -1862,24 +1825,6 @@
         }
       }
     }
-    lib-input .mdo-field {
-      margin-bottom: 0px;
-    }
-    lib-textarea.lib-textarea {
-         .mdo-field {
-           margin-bottom: 0;
-           .mdo-field-input {
-             max-height: 34px;
-             min-height: 0px;
-
-             textarea {
-              text-overflow: ellipsis;
-              overflow: hidden;
-              white-space: nowrap;
-             }
-           }
-         }
-      }
   }
 
   pros-widget-color-palette {
