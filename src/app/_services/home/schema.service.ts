@@ -4,7 +4,7 @@ import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse, SchemaTableViewDto } from 'src/app/_models/schema/schema';
-import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel, TransformationMappingResponse } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
@@ -386,5 +386,30 @@ export class SchemaService {
    */
   public cancleSchema(schemaId: string): Observable<any> {
     return this.http.get(this.endpointService.cancleSchemaUri(), {params:{schemaId}});
+  }
+
+  /**
+   * Get all the transformation rules ...
+   * @param moduleId filter on based on module id
+   * @param from help for scrolling
+   * @param size how many rec at a time
+   * @param searchString filter the rules based on this params
+   * @returns the CoreSchemaBrInfo[] rules
+   */
+  public transformationRules(moduleId: string, from: any, size: any, searchString: string): Observable<CoreSchemaBrInfo[]> {
+    searchString = searchString ? searchString : '';
+    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.transformationRules(), {from, size, searchString}, {params:{moduleId}});
+  }
+
+  /**
+   * Get all mapped transformation rule inside the mail rule
+   * @param from use for pagination
+   * @param size get the total rules
+   * @param searchString search the rule based on this key
+   * @returns all the transformation rule inside the main rule
+   */
+  public getMappedTransformationRules(ruleId: string , schemaId: string ,from: any, size: any, searchString: string): Observable<TransformationMappingResponse>{
+    searchString = searchString ? searchString : '';
+    return this.http.post<TransformationMappingResponse>(this.endpointService.getMappedTransformationRulesUrl(), {from,size,searchString},{params:{ruleId, schemaId}});
   }
 }

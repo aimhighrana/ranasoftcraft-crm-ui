@@ -1,57 +1,29 @@
 mat-accordion {
-  margin-bottom: 24px;
-
-  .panel-title {
-    font-weight: 500;
-  }
+  margin-bottom: 12px;
 }
 
 .colunm-box {
-  align-items: center;
   box-sizing: border-box;
   min-height: 48px;
-  font-size: 0.8rem;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 8px;
 
     &.col-x4 {
       flex: 4;
-    }
-
-    &.col-x16 {
-      flex: 16;
     }
 
     &.mat-item-end {
       justify-content: flex-end;
     }
 
-    strong {
-      align-items: center;
-    }
-
     .mat-head-icon {
-      margin-left: 4px;
-    }
-
-    .mat-line {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-    }
-
-    .info-link {
-      font-size: 0.9rem;
-      cursor: pointer;
+      font-size: 12px;
+      height: 14px;
+      width: 12px;
     }
   }
 }

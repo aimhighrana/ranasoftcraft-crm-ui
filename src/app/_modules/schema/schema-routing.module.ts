@@ -32,7 +32,6 @@ import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/n
 import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
-import { QualityRulesComponent } from './_components/quality-rules/quality-rules.component';
 
 const routes: Routes = [
   { path: 'schema-details/:moduleId/:schemaId', component: DetailBuilderComponent },
@@ -59,7 +58,7 @@ const routes: Routes = [
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
-  { path: 'business-rule/:moduleId/:schemaId/:brId/:outlet', component: BrruleSideSheetComponent },
+  { path: 'business-rule/:moduleId/:schemaId/:brId/:outlet',pathMatch:'full', component: BrruleSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId/:outlet', component: SubscriberSideSheetComponent },
   { path: 'data-scope/:moduleId/:schemaId/:variantId/:outlet', component: DatascopeSidesheetComponent },
@@ -73,8 +72,6 @@ const routes: Routes = [
   { path: ':moduleId/statics/:schemaId', component: StaticsComponent },
   { path: 'invite-subscriber/:moduleId/:schemaId/:outlet', component: SubscriberInviteSidesheetComponent},
   { path: 'system/schema-progress', component: SchemaProgressComponent },
-  { path: 'system/quality-rules', component: QualityRulesComponent },
-
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 

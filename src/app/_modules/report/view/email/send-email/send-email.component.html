@@ -19,6 +19,7 @@
                 <div class="f-col">
                     <lib-banner *ngIf="errorMsg" status="error" [text]="errorMsg"></lib-banner>
                     <lib-banner *ngIf="emailTo.touched && emailTo.hasError('email')" status="error" [text]="'Email is invalid'"></lib-banner>
+                    <lib-banner *ngIf="successMsg" status="success" [text]="successMsg"></lib-banner>
                     <div class="f-col mdo-form-field">
                          <!-- Multiselect -->
                         <mat-label  i18n="@@email_invalid" i18n="@@send_to">Send to</mat-label>

@@ -68,6 +68,11 @@ export class SharedServiceService {
 
   private isSecondaySideNavBarOpen : Subject<boolean> = new Subject();
 
+  /**
+   * Subject for after saved  trans and reload in br map ...
+   */
+  private transSavedBehaviourSub:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor() {}
 
   public setChooseColumnData(data: any) {
@@ -256,4 +261,13 @@ export class SharedServiceService {
   public getSecondarySideNavBarState():Observable<any> {
     return this.isSecondaySideNavBarOpen.asObservable();
   }
+
+  public settransSavedBehaviourSub(flag: boolean) {
+    this.transSavedBehaviourSub.next(flag);
+  }
+
+  public gettransSavedBehaviourSub(): Observable<boolean> {
+    return this.transSavedBehaviourSub.asObservable();
+  }
+
 }

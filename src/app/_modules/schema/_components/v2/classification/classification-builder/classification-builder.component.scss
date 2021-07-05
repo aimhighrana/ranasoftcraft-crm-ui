@@ -5,19 +5,6 @@ div.root {
   overflow: hidden;
 
   .breadcrum-toolbar {
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 0;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 40px;
-      align-items: center;
-    }
-
     .counts::after {
       content: "\a";
       width: 2px;
@@ -40,15 +27,20 @@ div.root {
       flex-wrap: wrap;
       margin: 8px 0;
 
-      pros-search-input {
+      .lib-search {
         width: 213px;
         margin-right: 4px;
+      }
+
+      .mdo-filter-matchip {
+        margin: 0 4px;
       }
     }
 
     .listing-container {
-      height: 100%;
+      height: calc(100% - 56px - 50px - 8px * 2);
       overflow: hidden;
+      align-items: flex-start;
 
       .listset-navigation {
         height: 100%;
@@ -67,7 +59,7 @@ div.root {
           mat-accordion.mat-accordion {
             mat-expansion-panel {
               .mat-expansion-panel-header {
-                padding: 0 0 0 8px;
+                padding: 0 8px;
 
                 mat-panel-title {
                   width: 100%;
@@ -77,7 +69,6 @@ div.root {
                     text-overflow: ellipsis;
                     overflow: hidden;
                     white-space: nowrap;
-                    font-size: 0.9rem;
                   }
                 }
               }
@@ -85,20 +76,7 @@ div.root {
               .undertree-expansion-panel {
                 padding-left: 42px;
               }
-
-              mat-nav-list {
-                mat-list-item {
-                  font-size: 0.9rem;
-                  height: 48px;
-                }
-              }
             }
-          }
-
-          .default-badge {
-            margin: 0 8px;
-            min-width: 24px;
-            text-align: right;
           }
         }
 
@@ -124,15 +102,11 @@ div.root {
       .listset-grid {
         width: calc(100% - 292px - 24px);
         overflow: hidden;
-
-        .listset-text {
-          font-size: 1.2rem;
-          line-height: 48px;
-        }
+        height: 100%;
 
         .datasource {
           overflow-x: auto;
-          height: calc(100% - 107px);
+          height: calc(100% - 24px);
 
           mat-table.mat-table {
             display: table;

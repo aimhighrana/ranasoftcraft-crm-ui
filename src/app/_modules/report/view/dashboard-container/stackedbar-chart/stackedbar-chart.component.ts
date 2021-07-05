@@ -19,19 +19,19 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   displayCriteriaOptions = [
     {
-      key: DisplayCriteria.TEXT,
-      value: 'Text'
+      key: 'Text',
+      value: DisplayCriteria.TEXT
     },
     {
-      key: DisplayCriteria.CODE,
-      value: 'Code'
+      key: 'Code',
+      value: DisplayCriteria.CODE
     },
     {
-      key: DisplayCriteria.CODE_TEXT,
-      value: 'Code and Text'
+      key: 'Code and Text',
+      value: DisplayCriteria.CODE_TEXT
     }
   ];
-  displayCriteriaOption = this.displayCriteriaOptions[0];
+  displayCriteriaOption: DisplayCriteria = this.displayCriteriaOptions[0].value;
   orientation = 'bar';
   stackBarWidget: BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
@@ -168,7 +168,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.subscriptions.push(afterColorDefined);
 
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
@@ -856,7 +856,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   checkTextCode(v: { c: string; t: string; }): string {
-    switch (this.displayCriteriaOption.key) {
+    switch (this.displayCriteriaOption) {
       case DisplayCriteria.CODE:
         if (v.c) {
           return v.c;
@@ -875,7 +875,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   saveDisplayCriteria() {
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption).subscribe(res => {
       this.resetChart();
       this.updateChart(this.returnData);
     }, error => {
