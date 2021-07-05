@@ -155,7 +155,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   subscriptions: Subscription[] = [];
 
   userDetails: Userdetails = new Userdetails();
-  totalCount: any;
+  // totalCount: any;
 
   constructor(
     private widgetService: WidgetService,
@@ -365,6 +365,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.timeseriesData = res;
       this.chartType = this.timeseriesData.timeSeries.chartType === ChartType.LINE ? 'line' : 'bar';
+      res.showTotal = true;
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
         this.isGroupByChart = true;
@@ -709,15 +710,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       });
       const total = 'Total'
       if (showTotal) {
-        if (Object.keys(totalCount).length) {
-          codetextObj[total] = 'Total';
-          finalOutput[total] = totalCount;
-          this.totalCount = totalCount;
-        }
-        else {
-          codetextObj[total] = 'Total';
-          finalOutput[total] = this.totalCount;
-        }
+        codetextObj[total] = 'Total';
+        finalOutput[total] = totalCount;
       } else {
         delete codetextObj[total];
         delete finalOutput[total];
@@ -834,7 +828,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             }
           }
         }
-        this.totalCount = totalCount;
+        // this.totalCount = totalCount;
         objData[milliVal] = arrcount;
       });
     }
@@ -876,7 +870,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         })
         if (Object.keys(totalCount).length) {
           finalOutput.push(totalDataSet);
-          this.totalCount = totalCount;
+          // this.totalCount = totalCount;
         }
         else {
           finalOutput.push(totalDataSet);
@@ -931,7 +925,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
               totalCount[ind] = data;
             }
           })
-          this.totalCount = totalCount;
+          // this.totalCount = totalCount;
           if (yearDoc[yr]) {
             finaldata.push({
               data: dataSet,
@@ -983,7 +977,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         })
         if (Object.keys(totalCount).length) {
           finaldata.push(totalDataSet);
-          this.totalCount = totalCount;
+          // this.totalCount = totalCount;
         }
         else {
           finaldata.push(totalDataSet);
@@ -1023,7 +1017,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
               totalCount[index] = data;
             }
           })
-          this.totalCount = totalCount;
           if (yearDoc[yr]) {
             finaldata.push({
               data: dataSet,
