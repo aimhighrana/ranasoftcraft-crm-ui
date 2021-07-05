@@ -155,7 +155,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   subscriptions: Subscription[] = [];
 
   userDetails: Userdetails = new Userdetails();
-  isTotalShown: boolean;
   totalCount: any;
 
   constructor(
@@ -365,8 +364,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getTimeSeriesMetadata(): void {
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.timeseriesData = res;
-      this.isTotalShown = res.showTotal;
-      // this.isTotalShown = true;
       this.chartType = this.timeseriesData.timeSeries.chartType === ChartType.LINE ? 'line' : 'bar';
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
@@ -646,7 +643,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             objdt[cordKeys[0]] = singleBucket.key_as_string;
             objdt[cordKeys[1]] = docTotalCount;
             array.push(objdt);
-            if (this.isTotalShown) {
+            if (this.widgetInf.getValue().showTotal) {
               if (totalCount.length) {
                 const index = totalCount.findIndex(item => item.x === singleBucket.key_as_string);
                 if (index > -1) {
@@ -674,7 +671,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             objdt[cordKeys[1]] = docTotalCount;
             const array = new Array();
             array.push(objdt);
-            if (this.isTotalShown) {
+            if (this.widgetInf.getValue().showTotal) {
               if (totalCount.length) {
                 const index = totalCount.findIndex(item => item.x === singleBucket.key_as_string);
                 if (index > -1) {
@@ -700,7 +697,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       });
     }
 
-    if (this.isTotalShown) {
+    if (this.widgetInf.getValue().showTotal) {
       let showTotal = true;
       this.filterCriteria.forEach(filter => {
         if (filter.conditionFieldValue !== 'Total') {
@@ -866,7 +863,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
       this.timeSeriesOption.scales.xAxes.push(scale);
     })
-    if (this.isTotalShown) {
+    if (this.widgetInf.getValue().showTotal) {
       if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
         const totalDataSet: ChartDataSets =
         {
@@ -953,7 +950,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         data: [],
         fill: false
       };
-      if (this.isTotalShown) {
+      if (this.widgetInf.getValue().showTotal) {
         if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
           finaldata.forEach((item, index) => {
             const scaleAxes = {
@@ -1044,7 +1041,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         data: [],
         fill: false
       };
-      if (this.isTotalShown) {
+      if (this.widgetInf.getValue().showTotal) {
         if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
           finaldata.forEach((item, index) => {
             const scalexAxes = {
