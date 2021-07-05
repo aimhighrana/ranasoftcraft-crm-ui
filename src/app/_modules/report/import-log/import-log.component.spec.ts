@@ -82,7 +82,7 @@ describe('ImportLogComponent', () => {
     component.getWarningList();
     expect(component.dataSource.length).toEqual(2);
     expect(component.frmArray.length).toEqual(2);
-    
+
     component.getWarningList(true);
     expect(component.dataSource.length).toEqual(4);
     expect(component.frmArray.length).toEqual(4);
