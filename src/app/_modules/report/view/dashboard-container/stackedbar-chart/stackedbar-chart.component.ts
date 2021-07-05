@@ -85,7 +85,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   returnData: any;
   subscriptions: Subscription[] = [];
-  isTotalShown: boolean;
 
   constructor(
     private widgetService: WidgetService,
@@ -185,7 +184,6 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData => {
       if (returnData) {
         this.widgetColorPalette = returnData.widgetColorPalette;
-        this.isTotalShown = returnData.showTotal;
         this.stackBarWidget.next(returnData);
         this.getBarConfigurationData();
       }
@@ -714,7 +712,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     } else {
       finalDataSet = resBuckets;
     }
-    if (this.isTotalShown) {
+    if (this.stackBarWidget.getValue().showTotal) {
       let showTotal = true;
       this.filterCriteria.forEach(item => {
         const ind = this.labels.indexOf(item.conditionFieldValue);

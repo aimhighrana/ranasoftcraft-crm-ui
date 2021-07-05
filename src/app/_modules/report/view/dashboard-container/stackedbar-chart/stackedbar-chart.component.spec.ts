@@ -305,8 +305,9 @@ describe('StackedbarChartComponent', () => {
     barWidget.scaleFrom = 0;
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
+    barWidget.showTotal = false;
     component.stackBarWidget.next(barWidget);
-    component.isTotalShown = false;
+    component.filterCriteria = [];
     const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}];
     // call actual component method
     const actualResponse = component.transformDataSets(resBuckets);
@@ -319,9 +320,9 @@ describe('StackedbarChartComponent', () => {
     // scenario  2
     barWidget.orderWith = OrderWith.ROW_DESC;
     barWidget.scaleTo = 30;
+    barWidget.showTotal = true;
     component.stackBarWidget.next(barWidget);
 
-    component.isTotalShown = true;
     // call actual component method
     const actualResponse01 = component.transformDataSets(resBuckets);
     // expects
@@ -332,8 +333,8 @@ describe('StackedbarChartComponent', () => {
 
     // scenario  3
     barWidget.dataSetSize = 1;
+    barWidget.showTotal = false
     component.stackBarWidget.next(barWidget);
-    component.isTotalShown = false;
 
     // call actual component method
     const actualResponse1 = component.transformDataSets(resBuckets);

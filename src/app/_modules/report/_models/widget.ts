@@ -231,6 +231,7 @@ export class StackBarChartWidget{
     dataSetSize: number;
     blankValueAlias : string;
     widgetColorPalette: WidgetColorPalette;
+    showTotal:boolean;
 }
 
 export class PieChartWidget {
