@@ -237,7 +237,7 @@ describe('BarChartComponent', () => {
 
     // scenario  2
     barWidget.dataSetSize = 1;
-    component.isTotalShown = true;
+    barWidget.showTotal = true;
     component.barWidget.next(barWidget);
 
     // call actual component method
@@ -281,12 +281,11 @@ describe('BarChartComponent', () => {
     const barWidget: BarChartWidget = new BarChartWidget();
     barWidget.fieldId = 'MATL_GROUP';
     barWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
-
+    barWidget.showTotal = true;
     component.barWidget.next(barWidget);
 
     component.widgetInfo = new Widget();
     component.filterCriteria = [];
-    component.isTotalShown = true;
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
