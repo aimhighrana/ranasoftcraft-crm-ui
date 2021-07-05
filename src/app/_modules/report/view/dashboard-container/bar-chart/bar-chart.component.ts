@@ -127,8 +127,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   ];
   returndata: any;
   subscriptions: Subscription[] = [];
-  isTotalShown:boolean;
-  totalValue : number;
 
   constructor(
     private widgetService: WidgetService,
@@ -192,7 +190,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   public getBarChartMetadata(): void {
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
       this.widgetColorPalette = returndata.widgetColorPalette;
-      this.isTotalShown = returndata.showTotal;
       this.barWidget.next(returndata);
       this.getBarConfigurationData();
     }, error => {
@@ -744,23 +741,17 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       });
     }
 
-    if (this.isTotalShown ) {
+    if (this.barWidget.getValue().showTotal ) {
       let showTotal = true;
         this.filterCriteria.forEach(item=>{
           const ind = this.lablels.indexOf(item.conditionFieldValue);
           if(ind > -1) {
             showTotal = false;
           }
-          console.log('lable-----',this.lablels)
         })
         if(showTotal) {
           this.lablels.push('Total');
-          if(total){
             finalDataSet.push(total.toString());
-            this.total = total;
-          } else {
-            finalDataSet.push(this.total.toString());
-          }
         }
     }
     return finalDataSet;
