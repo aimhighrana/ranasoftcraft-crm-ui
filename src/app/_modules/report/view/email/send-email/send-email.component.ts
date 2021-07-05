@@ -56,6 +56,9 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   /* Disable subject input */
   contentEditable = true;
 
+  /* message to print if email sent successfully */
+  successMsg: string;
+
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private userService: UserService,
@@ -218,7 +221,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   public shareReport(){
     this.reportService.shareReport(this.emailRequestBody, this.reportId).subscribe(res =>{
-      this.errorMsg = '';
+      this.successMsg = 'Email sent successfully';
     }, err => {
      this.errorMsg = 'Error while sending email';
     });
