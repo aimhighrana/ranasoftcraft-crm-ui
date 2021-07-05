@@ -58,7 +58,7 @@ const routes: Routes = [
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
-  { path: 'business-rule/:moduleId/:schemaId/:brId/:outlet', component: BrruleSideSheetComponent },
+  { path: 'business-rule/:moduleId/:schemaId/:brId/:outlet',pathMatch:'full', component: BrruleSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId/:outlet', component: SubscriberSideSheetComponent },
   { path: 'data-scope/:moduleId/:schemaId/:variantId/:outlet', component: DatascopeSidesheetComponent },
@@ -72,7 +72,6 @@ const routes: Routes = [
   { path: ':moduleId/statics/:schemaId', component: StaticsComponent },
   { path: 'invite-subscriber/:moduleId/:schemaId/:outlet', component: SubscriberInviteSidesheetComponent},
   { path: 'system/schema-progress', component: SchemaProgressComponent },
-
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 

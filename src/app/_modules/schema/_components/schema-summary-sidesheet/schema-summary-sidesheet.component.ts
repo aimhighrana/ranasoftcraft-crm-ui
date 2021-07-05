@@ -56,7 +56,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * To have variant details of a schema
    */
-  variantDetails: VariantDetails[];
+  variantDetails: VariantDetails[] = [];
 
   /**
    * Outlet name in which side sheet to be opened
@@ -139,6 +139,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
   submitted = false;
 
+  entireDataSetCount = 0;
+
+  variantListPage = 0;
+
+  currentVariantCnt = 0;
+
+  dataScopeName: FormControl = new FormControl('Entire data scope');
+
   /**
    * function to format slider thumbs label.
    * @param percent percent
@@ -169,6 +177,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
 
+    this.dataScopeName.valueChanges.subscribe((res) => {
+      this.updateDataScopeList(0);
+    });
+
     this.getRouteParams();
 
     const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
@@ -189,12 +201,28 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.sharedService.getDataScope().subscribe(res => {
       if(res) {
         this.dataScopeControl.setValue(res);
+        this.setDataScopeName(this.dataScopeControl.value);
         this.getSchemaVariants(this.schemaId, 'RUNFOR');
       }
     })
 
     this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
     this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To fetch all BRs details (will use to show in auto complete)
+  }
+
+  setDataScopeName(variantId) {
+    if (variantId && variantId !== '0') {
+      const variant = this.variantDetails.find((x) => x.variantId === variantId);
+      if (variant && variant.variantName) {
+        this.dataScopeName.setValue(variant.variantName);
+        this.dataScopeControl.setValue(variantId);
+        this.currentVariantCnt = variant.dataScopeCount || 0;
+      }
+    } else {
+      this.dataScopeName.setValue('Entire data scope');
+      this.dataScopeControl.setValue('0');
+      this.currentVariantCnt = this.entireDataSetCount;
+    }
   }
 
   /**
@@ -249,6 +277,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       if (module) {
         this.schemaDetails.moduleDescription = module.moduleDesc;
         this.schemaDetails.moduleId = module.moduleId;
+        this.entireDataSetCount = module.datasetCount;
+        if (this.dataScopeControl.value === '0') {
+          this.currentVariantCnt = module.datasetCount;
+        }
       }
     }, error => {
       console.error('Error: {}', error.message);
@@ -261,7 +293,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param schemaId : ID of schema
    */
   getSchemaVariants(schemaId: string, type: string) {
-    const schemaVariantList = this.schemaVariantService.getAllDataScopeList(schemaId, type).subscribe(response => {
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    const schemaVariantList = this.schemaVariantService.getDataScopesList(schemaId, type, body).subscribe(response => {
       this.variantDetails = response;
     }, error => {
       console.log('Error while getting schema variants', error.message)
@@ -269,6 +306,52 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.subscriptions.push(schemaVariantList);
   }
 
+  updateDataScopeList(page?: number, name?: string) {
+    const scopeName = name || ((this.dataScopeName.value.trim() !== '' && this.dataScopeName.value !== 'Entire data scope') ? this.dataScopeName.value.trim() : null);
+    const pageNo = (page || page === 0) ? page : (this.variantListPage + 1);
+    const body = {
+      from: pageNo,
+      size: 10,
+      variantName: scopeName
+    };
+    const schemaVariantList = this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        this.variantListPage = pageNo;
+        if (pageNo === 0) {
+          this.variantDetails = res;
+        } else {
+          this.variantDetails = [...this.variantDetails, ...res];
+        }
+      } else if (pageNo === 0) {
+        this.variantDetails = [];
+      }
+    }, error => {
+      console.log('Error while getting schema variants', error.message)
+    });
+    this.subscriptions.push(schemaVariantList);
+  }
+
+  selectDataScope() {
+    this.setDataScopeName(this.dataScopeName.value);
+  }
+
+  resetLastScope() {
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        const variant = res.find((x) => x.variantId === this.dataScopeControl.value);
+        if (variant && variant.variantName) {
+          this.dataScopeName.setValue(variant.variantName);
+        }
+      }
+    }, error => {
+      console.log('Error while getting schema variants', error.message)
+    });
+  }
 
   /**
    * Function to Api call to get subscribers according to schema ID
@@ -848,7 +931,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   }
 
 
-  updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+  updateDepRule(br: CoreSchemaBrInfo, value?: any) {
+    const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
     console.log('Update dep rule', br, event);
     const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
     console.log(index,br,event)

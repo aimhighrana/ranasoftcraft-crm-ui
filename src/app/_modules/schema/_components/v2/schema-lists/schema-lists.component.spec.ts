@@ -85,5 +85,16 @@ describe('SchemaListsComponent', () => {
     expect(component.moduleId).toEqual('1005');
     expect(component.getSchemaList).toHaveBeenCalledTimes(1);
 
-  })
+  });
+
+  it('openScheduleSideSheet(), should open Execution Trend Sidesheet', async(() => {
+    const schema: any = {
+      schedulerId:'test'
+    };
+    const schemaId = 'test';
+    spyOn(SchemaServiceSpy, 'getSchedule').and.returnValue(of(schema));;
+    spyOn(router, 'navigate');
+    component.openScheduleSideSheet(schemaId);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/schedule/${schemaId}/${schema.schedulerId}` } }]);
+   }));
 });

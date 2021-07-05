@@ -573,7 +573,7 @@ describe('ReportingListComponent', () => {
 
   it('getUsetDetails()', async(() => {
 
-    const res = { dateformat: 'MM.dd.yy' } as Userdetails;
+    const res = { dateformat: 'mm.dd.yy' } as Userdetails;
     spyOn(userService, 'getUserDetails').and.returnValue(of(res));
     component.getUserDetails();
     expect(component.getUserDetails).toBeTruthy();

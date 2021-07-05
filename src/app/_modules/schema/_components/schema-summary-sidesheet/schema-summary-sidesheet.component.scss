@@ -18,6 +18,10 @@ div.root {
     }
   }
 
+  .cnt-banner {
+    padding: 0 65px;
+  }
+
   .sidesheetcontent-listing {
     height: calc(100% - 52px);
     overflow: auto;
@@ -31,10 +35,13 @@ div.root {
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        mat-label {
-          font-weight: 600;
-          font-size: 14px;
+      .field-label {
+        margin-bottom: 6px;
+
+        mat-icon.mat-icon {
+          width: 12px;
+          font-size: 12px;
+          height: 14px;
         }
       }
 
@@ -46,22 +53,15 @@ div.root {
 }
 
 .colunm-box {
-  align-items: center;
   box-sizing: border-box;
-  padding: 4px 0;
-  min-height: 54px;
-  font-size: 0.8rem;
-
-  .mdo-auto-select {
-    width: 100%;
-  }
+  min-height: 48px;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 16px;
+    margin: 0 6px;
     flex-wrap: wrap;
 
     &.col-x4 {
@@ -72,70 +72,30 @@ div.root {
       flex: 8;
     }
 
-    &.text-center {
-      justify-content: center;
-    }
-
-    .info-link {
-      align-items: center;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    mat-slider {
-      width: 100%;
-    }
-
     &.col-x16 {
       flex: 16;
     }
 
-    strong {
-      align-items: center;
+    &.mat-item-center {
+      justify-content: center;
     }
 
-    .mat-head-icon {
-      margin-left: 6px;
-    }
-
-    .mat-line {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-      font-size: 0.9rem;
-    }
-
-    button.mat-stroked-button {
-      margin: 2px 0;
+    &.mat-item-end {
+      justify-content: flex-end;
     }
   }
 }
 
-.slider-row {
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
-
-  .lib-slider {
-    flex: 1;
-    height: 48px;
-  }
-}
-
-.colunm-box.rule-border-row strong {
-  font-size: 14px;
+.lib-slider {
+  height: 40px;
+  flex: 1;
+  display: inline-table;
 }
 
 .colunm-box .col.br-action {
-  width: 50px;
-}
-
-.mat-tooltip-icon {
-  font-size: 12px;
+  max-width: 72px;
+  min-width: 72px;
+  margin-right: initial;
 }
 
 @media (min-width: 1024px) {

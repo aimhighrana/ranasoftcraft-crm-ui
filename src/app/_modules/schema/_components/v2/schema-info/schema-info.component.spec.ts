@@ -9,7 +9,7 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CoreSchemaBrInfo, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of, throwError } from 'rxjs';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -30,12 +30,14 @@ import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { StaticsComponent } from '../statics/statics.component';
 import { FormControl, FormGroup } from '@angular/forms';
+import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
   let fixture: ComponentFixture<SchemaInfoComponent>;
   let router: Router;
   let schemaDetailsService: SchemaDetailsService;
+  let schemaExecutionService: SchemaExecutionService;
   let schemaVariantService: SchemaVariantService;
   let schemaService: SchemaService;
   let schemaListService: SchemalistService;
@@ -61,6 +63,7 @@ describe('SchemaInfoComponent', () => {
       ],
       providers: [{
           provide: ActivatedRoute,
+          GlobaldialogService,
           useValue: {params: of({moduleId: '1005', schemaId: '123'})}
         }]
     })
@@ -72,6 +75,7 @@ describe('SchemaInfoComponent', () => {
     fixture = TestBed.createComponent(SchemaInfoComponent);
     component = fixture.componentInstance;
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    schemaExecutionService = fixture.debugElement.injector.get(SchemaExecutionService);
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
@@ -584,7 +588,7 @@ describe('SchemaInfoComponent', () => {
    });
 
    it('should open delete variant confirm', () => {
-    spyOn(globalDialogService, 'confirm');
+    spyOn(globalDialogService, 'confirm').and.callFake((a, b) => b('yes'));
     component.deleteVariant('123');
     expect(globalDialogService.confirm).toHaveBeenCalled();
    });
@@ -626,11 +630,14 @@ describe('SchemaInfoComponent', () => {
 
     const data = [{userid: 'admin', filterCriteria: [{fieldId: 'mtl_grp', type: 'DROPDOWN', values: ['1701']}]}] as SchemaDashboardPermission[];
 
-    spyOn(schemaDetailsService, 'getCollaboratorDetails').and.returnValue(of(data));
+    const schemaSpy = spyOn(schemaDetailsService, 'getCollaboratorDetails').and.returnValue(of(data));
 
     component.getSubscriberList('123');
     expect(component.subscriberData.length).toEqual(1);
+    schemaSpy.and.returnValue(throwError({ message: 'error' }));
 
+    component.getSubscriberList('123');
+    expect(schemaDetailsService.getCollaboratorDetails).toHaveBeenCalled();
    });
 
    it('should updateBr', () => {
@@ -779,7 +786,7 @@ describe('SchemaInfoComponent', () => {
 
     spyOn(router, 'navigate');
     spyOn(schemaService, 'deleteSChema').and.returnValue(of(true));
-
+    spyOn(globalDialogService, 'confirm').and.callFake((a, b) => b('yes'));
     component.deleteSchema();
     expect(schemaService.deleteSChema).toHaveBeenCalled();
 
@@ -829,7 +836,7 @@ describe('SchemaInfoComponent', () => {
 
     component.fetchSelectedValues([], 1);
 
-    const seletectedValues = [{CODE: 'region', FIELDNAME: 'region'}];
+    const seletectedValues = [{fieldId: 'region', CODE: 'region', FIELDNAME: 'region'}];
 
     component.subscriberData = [{sno: 1, filterCriteria: [{fieldId: 'region', values: []}, {fieldId: 'mtl_grp'}]},
         {sno: 2, filterCriteria: []}] as SchemaDashboardPermission[];
@@ -877,7 +884,7 @@ describe('SchemaInfoComponent', () => {
       brType: 'TRANSFORMATION',
       dep_rules: []
     } as CoreSchemaBrInfo
-    const event = { value: RuleDependentOn.SUCCESS };
+    const event = RuleDependentOn.SUCCESS;
     component.updateDepRule(br, event);
     expect(component.businessRuleData.length).toEqual(1);
 
@@ -950,7 +957,7 @@ describe('SchemaInfoComponent', () => {
       brType: 'TRANSFORMATION',
       dep_rules: []
     } as CoreSchemaBrInfo
-    const event = { value: RuleDependentOn.ALL };
+    const event = RuleDependentOn.ALL;
     component.updateDepRule(br, event);
     expect(component.businessRuleData.length).toEqual(2);
 
@@ -1048,4 +1055,52 @@ describe('SchemaInfoComponent', () => {
         type: 'error'
       });
   })
+
+  it('openExecutionTrendSidesheet(), should open Execution Trend Sidesheet', async(() => {
+    component.schemaDetails = {
+      moduleId: '1',
+      variantId: '2',
+      schemaId:'3'
+    } as SchemaListDetails;
+    const schema = component.schemaDetails;
+    spyOn(router, 'navigate');
+    component.openExecutionTrendSidesheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+   }));
+
+   it('runSchema(), should start running schema', async(() => {
+    component.schemaId = 'test';
+    component.schemaDetails = {isInRunning: false} as SchemaListDetails;
+    component.dataScopeControl.setValue(1);
+    const schemaSpy = spyOn(schemaExecutionService, 'scheduleSChema').and.returnValue(of([]));;
+    component.runSchema();
+    expect(component.schemaDetails.isInRunning).toBeTrue();
+    schemaSpy.and.returnValue(throwError({ message: 'error' }));
+    component.runSchema();
+    expect(schemaExecutionService.scheduleSChema).toHaveBeenCalled();
+    }));
+    it('selectDataScope(), should update the selected data scope', async(() => {
+      component.variantDetails = [{
+        variantName: 'test',
+        variantId: '1'
+      } as VariantDetails];
+      component.dataScopeName.setValue('1');
+      component.selectDataScope();
+      expect(component.dataScopeName.value).toEqual('test');
+      component.dataScopeName.setValue('0');
+      component.selectDataScope();
+      expect(component.dataScopeName.value).toEqual('Entire data scope');
+    }));
+
+    it('getBusinessRulesLength(), should get business rules length', async(() => {
+      component.businessRuleData= [{
+        dep_rules: [{}]
+      } as CoreSchemaBrInfo];
+      expect(component.getBusinessRulesLength).toEqual(2);
+    }));
+
+    it('getRuleDesc(), should return rule description', async(() => {
+      expect(component.getRuleDesc('BR_API_RULE')).toEqual('API Rule');
+      expect(component.getRuleDesc('testRule')).toBeFalsy();
+    }));
 });

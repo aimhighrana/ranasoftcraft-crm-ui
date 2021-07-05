@@ -126,14 +126,14 @@ export class ReportService {
   }
 
   public shareReport(request: EmailRequestBody, reportId:string): Observable<EmailResponseBody[]> {
-    return this.http.post<EmailResponseBody[]>(this.endpointAnalyticService.shareReport(reportId), request);
+    return this.http.put<EmailResponseBody[]>(this.endpointAnalyticService.shareReport(reportId), request);
   }
 
   public getAllTemplates(): Observable<EmailTemplate[]> {
-    return this.http.get<EmailTemplate[]>(this.endpointAnalyticService.getAllTemplates());
+    return this.http.get<EmailTemplate[]>(this.endpointService.getAllTemplates());
   }
 
   public getTemplateById(_id:string): Observable<EmailTemplateBody> {
-    return this.http.get<EmailTemplateBody>(this.endpointAnalyticService.getTemplateById(_id));
+    return this.http.get<EmailTemplateBody>(this.endpointService.getTemplateById(_id));
   }
 }

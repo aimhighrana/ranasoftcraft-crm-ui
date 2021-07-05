@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition, WidgetType } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria, AlignPosition, WidgetType, Buckets, FieldCodeText, OrderWith } from '../../../_models/widget';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -17,19 +17,19 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   displayCriteriaOptions = [
     {
-      key: DisplayCriteria.TEXT,
-      value: 'Text'
+      key: 'Text',
+      value: DisplayCriteria.TEXT
     },
     {
-      key: DisplayCriteria.CODE,
-      value: 'Code'
+      key: 'Code',
+      value: DisplayCriteria.CODE
     },
     {
-      key: DisplayCriteria.CODE_TEXT,
-      value: 'Code and Text'
+      key: 'Code and Text',
+      value: DisplayCriteria.CODE_TEXT
     }
   ];
-  displayCriteriaOption = this.displayCriteriaOptions[0];
+  displayCriteriaOption: DisplayCriteria = this.displayCriteriaOptions[0].value;
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend: ChartLegend[] = [];
@@ -165,14 +165,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     });
     this.subscriptions.push(afterColorDefined);
 
-
     const getDisplayCriteria =  this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
-
   }
 
   ngOnDestroy() {
@@ -257,6 +255,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
     this.dataSet = [];
     this.lablels = [];
+    this.sortBarChartData(arrayBuckets);
+
     this.dataSet = this.transformDataSets(arrayBuckets);
     // update barchartLabels
     if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '0' && (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS'))) {
@@ -278,12 +278,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.setLabels();
       }
     }
-
     this.setBarChartData();
 
-
     // compute graph size
-
     this.computeGraphSize();
 
     // update chart after data sets change
@@ -375,7 +372,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   setLabels() {
-    switch (this.displayCriteriaOption.key) {
+    switch (this.displayCriteriaOption) {
       case DisplayCriteria.CODE:
         this.lablels = this.chartLegend.map(map => map.code);
         break;
@@ -838,7 +835,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   saveDisplayCriteria() {
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption).subscribe(res => {
       this.updateChart(this.returndata);
     }, error => {
       console.error(`Error : ${error}`);
@@ -860,4 +857,67 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     critera.widgetType = WidgetType.BAR_CHART;
     return critera;
   }
+
+  /*  This methods sorts the bar chart rowwsie/ column wise. depending on sorting criteria */
+  sortBarChartData(buckets: Buckets[]){
+    const fields = this.sortByColumn(buckets);
+    const sortBy = this.barWidget?.getValue()?.orderWith;
+    if(sortBy === OrderWith.ROW_DESC) {
+      buckets?.sort((a, b) => parseFloat(b.doc_count) - parseFloat(a.doc_count));
+    } else if( sortBy === OrderWith.ROW_ASC){
+      buckets?.sort((a, b) => parseFloat(a.doc_count) - parseFloat(b.doc_count));
+    } else if(sortBy === OrderWith.COL_ASC){
+      buckets.sort((a, b) =>
+       {return fields.indexOf(a.key) - fields.indexOf(b.key)}
+      );
+    } else {
+      buckets.sort((a, b)=> {
+        return fields.indexOf(b.key) - fields.indexOf(a.key)
+      });
+    }
+  }
+
+  /* This method sorts the chart based on Column */
+  sortByColumn(buckets: Buckets[]) : string[]{
+    let fields: string[]= [];
+    if(this.displayCriteriaOption === DisplayCriteria.TEXT){
+      const codeValues = this.getCodeValue(buckets);
+      fields = codeValues.sort((a, b) => a?.t?.localeCompare(b.t)).map(x=> { return x.c });
+    } else if(this.displayCriteriaOption === DisplayCriteria.CODE || this.displayCriteriaOption === DisplayCriteria.CODE_TEXT){
+      const codeValues = this.getCodeValue(buckets);
+      const sortedCodes = codeValues.sort((a, b)=> {
+        if(isNaN(parseFloat(a.c))){
+          return a?.c?.localeCompare(b.c);
+        } else {
+          return parseInt(a.c, 10) - parseInt(b.c, 10);
+        }
+      })
+      fields = sortedCodes.map(x=> { return x.c });
+    }
+
+    return fields;
+  }
+
+  /*  Get Code values */
+   getCodeValue(buckets: Buckets[]) : FieldCodeText[]{
+    const fieldCodeText: FieldCodeText[] = [];
+    const fldid = this.barWidget.getValue().fieldId;
+    buckets.forEach(bucket=>{
+    const key = bucket.key;
+    const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+    const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
+      ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+      (hits._source.staticFields && hits._source.staticFields[fldid]) ?
+      ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
+
+      const fieldCode: FieldCodeText = {
+        c: val[0].c,
+        t:val[0].t,
+        p:''
+      }
+      fieldCodeText.push(fieldCode);
+    });
+
+    return fieldCodeText;
+   }
 }

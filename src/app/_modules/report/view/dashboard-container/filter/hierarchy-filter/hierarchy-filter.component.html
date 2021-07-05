@@ -3,7 +3,8 @@
     <mat-tree-node *matTreeNodeDef="let data">
         <li class="mat-tree-node">
             <lib-button disabled="true"></lib-button>
-            <lib-checkbox label="{{data.nodeDesc}}" [checked]="data.checked" (valueChange)="clickedActive(data)"></lib-checkbox>
+            <lib-checkbox [checked]="data.checked" (valueChange)="clickedActive(data)" [label]="data.nodeDesc">
+            </lib-checkbox>
         </li>
     </mat-tree-node>
 
@@ -18,12 +19,9 @@
 
                 <!-- <span *ngIf="getCheckedAmount(data) > 0">
                     +{{getCheckedAmount(data)}} childs checked</span> -->
-                <!-- <mat-checkbox [checked]="data.checked" [indeterminate]="!data.checked && getCheckedAmount(data) > 0"
-                    (change)="clickedActive(data)" color="primary">
-                    <span>{{data.nodeDesc}}</span>
-                </mat-checkbox> -->
-                <lib-checkbox label="{{data.nodeDesc}}" [checked]="data.checked" [indeterminate]="!data.checked && getCheckedAmount(data) > 0"
-                (valueChange)="clickedActive(data)"></lib-checkbox>
+                <lib-checkbox [checked]="data.checked" [indeterminate]="!data.checked && getCheckedAmount(data) > 0"
+                    (valueChange)="clickedActive(data)" [label]="data.nodeDesc">
+                </lib-checkbox>
             </div>
             <ul [class.mdo-location-tree-invisible]="!data.expanded">
                 <ng-container matTreeNodeOutlet></ng-container>

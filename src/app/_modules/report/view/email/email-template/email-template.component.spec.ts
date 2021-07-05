@@ -78,12 +78,15 @@ describe('EmailTemplateComponent', () => {
   });
 
   it('getTemplateById(), should return template',()=>{
-    const template: EmailTemplateBody =  {emailSub: 'subject', subType: 'dashboard', emailText: 'subject' }
-    spyOn(reportService,'getTemplateById').and.returnValues(of(template), throwError('Error'));
+    const template: EmailTemplateBody =  {emailSubject: 'subject', subType: 'dashboard', emailText: 'subject' }
+    spyOn(reportService,'getTemplateById').and.returnValues(of(template), throwError('Error'), of(null));
     component.getTemplateById('_id');
     expect(component.emailTemplate ).toEqual(template);
 
     component.getTemplateById('');
     expect(component.getTemplateById).toThrowError();
+
+    component.getTemplateById('');
+    expect(component.emailTemplate).toBeDefined();
   });
 });

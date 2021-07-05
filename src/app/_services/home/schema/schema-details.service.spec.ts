@@ -2,7 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaDetailsService } from './schema-details.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CategoryInfo, ClassificationNounMod, Noun, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
+import { CategoryInfo, ClassificationNounMod, Noun, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, UDRDropdownValue } from '@models/schema/schemadetailstable';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { HttpResponse } from '@angular/common/http';
 import { Any2tsService } from '@services/any2ts.service';
@@ -22,7 +22,7 @@ describe('SchemaDetailsService', () => {
     'saveNewSchemaUrl', 'getClassificationDataTableUrl', 'generateCrossEntryUri', 'doClassificationCorrectionUri', 'approveClassificationUri', 'rejectClassificationUri',
     'generateMroClassificationDescriptionUri', 'downloadMroExceutionUri', 'getSchemaDataTableColumnInfoUrl', 'getSchemaDetailsBySchemaId', 'getShowMoreSchemaTableDataUrl',
     'getOverviewChartDataUrl', 'getCategoryInfoUrl', 'getSchemaStatusUrl', 'categoryChartData', 'getMetadataFields', 'getClassificationNounMod',
-    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds', 'uploadCsvFileDataUrl', 'getUploadProgressUrl']);
+    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds', 'uploadCsvFileDataUrl', 'getUploadProgressUrl', 'getUDRDropdownValues']);
 
     const mapperSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaDataTableResponse', 'any2OverviewChartData', 'any2CategoryInfo', 'any2SchemaStatus', 'any2CategoryChartData',
       'any2MetadataResponse']);
@@ -791,13 +791,13 @@ describe('SchemaDetailsService', () => {
     endpointServiceSpy.getClassificationNounMod.and.returnValue(url);
 
     let mockHttpResponse = [
-      {ruleType: 'mro_local_lib', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
-      {ruleType: 'mro_gsn_lib', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      {ruleType: 'MRO_CLS_MASTER_CHECK', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      {ruleType: 'MRO_MANU_PRT_NUM_LOOKUP', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
       {ruleType: 'unmatched', doc_count: 1}
     ]
     let response = {
-      mro_local_lib: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
-      mro_gsn_lib: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      MRO_CLS_MASTER_CHECK: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      MRO_MANU_PRT_NUM_LOOKUP: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
       unmatched: {doc_count: 1}
     } as ClassificationNounMod;
 
@@ -818,8 +818,8 @@ describe('SchemaDetailsService', () => {
     ];
 
     response = {
-      mro_local_lib: {doc_cnt: 0, info: []},
-      mro_gsn_lib: {doc_cnt: 0, info: []},
+      MRO_CLS_MASTER_CHECK: {doc_cnt: 0, info: []},
+      MRO_MANU_PRT_NUM_LOOKUP: {doc_cnt: 0, info: []},
       unmatched: {doc_count: 0}
     } as ClassificationNounMod;
 
@@ -936,6 +936,29 @@ describe('SchemaDetailsService', () => {
 
     // actual service call
     schemaDetaService.getUploadProgressPercent(schemId, runId).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getUDRDropdownValues(): getUDRDropdownValues ', async(() => {
+    const fieldId = '';
+    const searchStr = '';
+
+    const url = `udr dropdown values url`;
+    // mock url
+    endpointServiceSpy.getUDRDropdownValues.and.returnValue(url);
+
+    const action: Array<UDRDropdownValue> = [];
+
+    // actual service call
+    schemaDetaService.getUDRDropdownValues(fieldId, searchStr).subscribe(actualResponse => {
       expect(actualResponse).toEqual(action);
     });
     // mock http call

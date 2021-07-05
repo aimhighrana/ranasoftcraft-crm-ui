@@ -1,15 +1,13 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">tmes</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="close()" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Create new noun</div>
+                <lib-text-line type="leading">Create new noun</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <button (click)="save()" mat-flat-button color="primary">Save</button>
+                <lib-button type="major" (click)="save()">Save</lib-button>
             </div>
         </div>
     </div>
@@ -44,11 +42,9 @@
                 </div>
     
                 <div class="mdo-form-field">
-                    <div class="f-row-spacer-half"></div>
-                    <mat-slide-toggle formControlName="shortDescActive" color="primary">Short description active</mat-slide-toggle>
+                    <lib-slide-toggle theme="primary" labelPosition="after" formControlName="shortDescActive" label="Short description active"></lib-slide-toggle>
                     <div class="row-spacer"></div>
-                    <mat-slide-toggle formControlName="active" color="primary">Noun active</mat-slide-toggle>
-                    <div class="f-row-spacer-half"></div>
+                    <lib-slide-toggle theme="primary" labelPosition="after" formControlName="active" label="Noun active"></lib-slide-toggle>
                 </div>
             </form>
         </div>

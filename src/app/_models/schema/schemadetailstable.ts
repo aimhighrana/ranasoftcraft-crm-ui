@@ -101,6 +101,7 @@ export class RequestForSchemaDetailsWithBr {
     isLoadMore: boolean;
     nodeId?: string;
     nodeType?: string;
+    ruleSelected?: string[];
 
 }
 
@@ -470,8 +471,8 @@ export interface NewBrDialogResponse {
     lookupData: LookupFields[];
 }
 export interface ClassificationNounMod {
-    mro_gsn_lib: {doc_cnt: number, info : Noun[]};
-    mro_local_lib: {doc_cnt: number, info : Noun[]};
+    MRO_MANU_PRT_NUM_LOOKUP: {doc_cnt: number, info : Noun[]};
+    MRO_CLS_MASTER_CHECK: {doc_cnt: number, info : Noun[]};
     unmatched: {doc_count: number};
 }
 

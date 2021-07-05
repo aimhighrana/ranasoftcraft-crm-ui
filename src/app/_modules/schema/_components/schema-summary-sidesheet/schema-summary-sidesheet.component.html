@@ -8,113 +8,103 @@
                     {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
                     {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
                 </lib-text-line>
-
-                <!-- <button mat-button [matMenuTriggerFor]="check">
-                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
-                </button> -->
-    
-                <!-- <mat-menu #check="matMenu"> 
-                    <button mat-menu-item [matMenuTriggerFor]="customermenu">Customer</button>
-                    <button mat-menu-item>Material</button>
-                    <button mat-menu-item>Order</button>
-                    <button mat-menu-item>Vendor</button>
-                  </mat-menu>
-    
-                  <mat-menu #customermenu="matMenu">
-                    <button mat-menu-item>Customer one</button>
-                    <button mat-menu-item>Customer two</button>
-                    <button mat-menu-item>Customer three</button>
-                    <button mat-menu-item>Customer four</button>
-                  </mat-menu> -->
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before">
-                    <mat-icon fontSet="mdo-icons" class="mat-head-icon">upload</mat-icon>&nbsp;
-                    <span>Upload data</span>
+                <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before" icon="upload">
+                    Upload data
                 </lib-button>
                 <span class="f-col-spacer-half"></span>
                 <lib-button (click)="saveCheckData()" type="major">Check</lib-button>
             </div>
         </div>
     </div>
+    <div class="cnt-banner">
+        <lib-banner status="info" text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection"></lib-banner>
+    </div>
     <div class="f-col summary-sidesheet sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
-                <lib-text-line type="small" weight="strong">
-                    <span i18n-label="@@schema_name">Schema name</span>
-                </lib-text-line>
-                <div class="f-col mdo-form-field mdo-field">
-                    <lib-input class="lib-input" label="" [type]="'text'"  placeholder="Schema name" [formControl]="schemaName">
+                
+                <div class="f-col mdo-field">
+                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n-label="@@schema_name">
+                        Schema name
+                    </lib-text-line>
+                    <lib-input label="" [type]="'text'"  placeholder="Schema name" [formControl]="schemaName">
                     </lib-input>
                     <mat-error i18n="@@schema_name_required" *ngIf="submitted && schemaName.invalid">
                         Schema name is required
                     </mat-error>
                 </div>
 
-                <div class="f-col mdo-form-field mdo-field">
-                    <lib-text-line type="small" weight="strong">
-                        <span i18n="@@data_scope">Data scope</span>&nbsp;
-                        <mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">question-circle</mat-icon>
-                        <span class="mandatory">*</span>
+                <div class="f-col mdo-field">
+                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@data_scope">
+                        Data Scope
                     </lib-text-line>
-                    <mat-form-field appearance="outline">
-                        <mat-select [formControl]="dataScopeControl">
-                            <mat-option i18n="@@add_data_scope" (click)="openDataScopeSideSheet()">Add data scope</mat-option>
-                            <mat-divider></mat-divider>
-                            <mat-option value='0' i18n="@@entire_data_scope">Entire data scope</mat-option>
-                            <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
-                                {{variant.variantName}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+        
+                    <div class="mdo-field-input">
+                        <input matInput placeholder="Type to search" #optionsInput [formControl]="dataScopeName" [matAutocomplete]="auto" (blur)="resetLastScope()"/>
+                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete" (optionSelected)="selectDataScope()">
+                            <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateDataScopeList()">
+                                <mat-option i18n="@@add_data_scope" (click)="openDataScopeSideSheet()">Add data scope</mat-option>
+                                <mat-divider></mat-divider>
+                                <mat-option value='0' i18n="@@entire_data_scope">
+                                    <div class="f-row">
+                                        <lib-text-line type="base">Entire data scope</lib-text-line>
+                                        <span class="f-spacer"></span>
+                                        <lib-text-line type="base">{{entireDataSetCount ? entireDataSetCount : 0}}</lib-text-line>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
+                                    <div class="f-row">
+                                        <lib-text-line type="base">{{variant.variantName}}</lib-text-line>
+                                        <span class="f-spacer"></span>
+                                        <lib-text-line type="base">{{variant.dataScopeCount ? variant.dataScopeCount : 0}}</lib-text-line>
+                                    </div>
+                                </mat-option>
+                            </div>
+                        </mat-autocomplete>
+                    </div>
                 </div>
-                <div class="f-col mdo-form-field mdo-field">
-                    <lib-text-line type="small" weight="strong">
-                        <span i18n="@@threshold">Threshold</span>&nbsp;<mat-icon libTooltip="Data scope" fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">question-circle</mat-icon>
-                    </lib-text-line>
-                    <div class="f-row slider-row">
-                    <lib-range-slider class="lib-slider" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
-                    <span class="f-col-spacer-half"></span>
-                    <div>{{schemaThresholdControl.value}}%</div>
-                    </div>
-                </div>  
-                <div class="colunm-listing">
-                    <div class="f-row mdo-form-field">
-                        <lib-text-line type="small" weight="strong">
-                            <span i18n="@@business_rules">Business rules</span>
-                        </lib-text-line>
-                    </div>
 
-                    <div class="f-row colunm-box">
-                        <div class="mdo-auto-select">
-                            <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" fieldLabel="Type rule name to add"
-                                (openCustomDialog)="openBrLibrarySideSheet()" [updatedOptionsList]="allBusinessRulesList"
-                                [labelKey]="'brInfo'" (optionSelectedEmit)="addBusinessRule($event)"
-                                i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule" [isExtraLabel]="false">
-                            </pros-form-input-autoselect>
-                            <!-- (emitExtraLabelClick)="openBusinessRuleSideSheet()" -->
-                        </div>
-                    </div>
-                
+                <div class="f-col mdo-field">
+                    <lib-text-line class="field-label" type="small" weight="strong" i18n="@@threshold">
+                        Threshold &nbsp;<mat-icon libTooltip="Threshold" fontSet="mdo-icons">question-circle</mat-icon>
+                    </lib-text-line>
+                    <lib-range-slider class="lib-slider" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
+                </div>  
+
+                <div class="f-col mdo-field">
+                    <lib-text-line class="field-label" type="small" weight="strong" i18n="@@business_rules">
+                        Business rules
+                    </lib-text-line>
+                    <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" fieldLabel="Type rule name to add"
+                            (openCustomDialog)="openBrLibrarySideSheet()" [updatedOptionsList]="allBusinessRulesList"
+                            (emitExtraLabelClick)="openBusinessRuleSideSheet()"
+                            [labelKey]="'brInfo'" (optionSelectedEmit)="addBusinessRule($event)"
+                            i18n-extraOptionLabel="@@new_br_rule" extraOptionLabel="New business rule" [isExtraLabel]="true">
+                        </pros-form-input-autoselect>
+                        <!-- (emitExtraLabelClick)="openBusinessRuleSideSheet()" -->
+                </div>
+
+                <div class="colunm-listing">
                     <ng-template [ngIf]="businessRuleData.length>0">
                         <div class="f-row colunm-box rule-border-row">
                             <div class="col"></div>
                             <div class="col col-x8">
                                 <lib-text-line weight="strong" type="small" i18n="@@business_rule">Business rule</lib-text-line>
                             </div>
-                            <div class="col col-x8 text-center">
-                                <lib-text-line weight="strong" type="small">
-                                    <span i18n="@@weightage">Weightage</span>
+                            <div class="col col-x8 mat-item-center">
+                                <lib-text-line weight="strong" type="small" i18n="@@weightage">Weightage                         
                                     <mat-icon i18n-libTooltip="@@br_weightage_tooltip_msg"
                                         libTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100"
-                                        fontSet="mdo-icons" class="mat-head-icon mat-tooltip-icon">
+                                        fontSet="mdo-icons">
                                         question-circle</mat-icon>
                                 </lib-text-line>
                             </div>
-                            <div class="col col-x4">
+                            <div class="col col-x4 mat-item-center">
                                 <lib-text-line weight="strong" type="small" i18n="@@enabled">Enabled</lib-text-line>
                             </div>
-                            <div class="col br-action text-end"></div>
+                            <div class="col col-x4 mat-item-end"></div>
                         </div>
                         <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
                             <div cdkDrag *ngFor="let businessRule of businessRuleData; let i=index">
@@ -123,25 +113,21 @@
                                         <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
                                     </div>
                                     <div class="col col-x8">
-                                        <lib-text-line type="base" textColor="link">{{businessRule.brInfo}}</lib-text-line>
+                                        <lib-text-line type="base" enableWrap="true" textColor="link">{{businessRule.brInfo}}</lib-text-line>
                                     </div>
                 
-                                    <div class="col col-x8">
-                                        <div class="f-row slider-row">
-                                            <lib-range-slider minValue="0" (valueChange)="updateBr(businessRule,$event)"
+                                    <div class="col col-x8 mat-item-center">
+                                        <lib-range-slider minValue="0" (valueChange)="updateBr(businessRule,$event)"
                                                 [maxValue]="availableWeightage(businessRule.brWeightage)" class="lib-slider" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
                                                 [value]="businessRule.brWeightage" color="primary"></lib-range-slider>
-                                            <span class="f-col-spacer-half"></span>
-                                            <div class="percent-count">{{businessRule.brWeightage}}%</div>
-                                        </div>
                                     </div>
                 
-                                    <div class="col col-x4">
+                                    <div class="col col-x4 mat-item-center">
                                         <lib-checkbox color="primary" [checked]="businessRule.status === '1'"
                                             (valueChange)="updateBr(businessRule, $event, 'checkbox')"></lib-checkbox>
                                     </div>
                 
-                                    <div class="col br-action text-end">
+                                    <div class="col col-x4 mat-item-end">
                                         <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '
                                             iconFontType="light" icon="link"></lib-button>
                 
@@ -153,7 +139,7 @@
                                                 <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
                                                 <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                     class="f-col" color="primary"
-                                                    [value]="getCurrentBrStatusObj(businessRule.dependantStatus)"
+                                                    [value]="getCurrentBrStatusObj(businessRule.dependantStatus)?.value"
                                                     (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                             </div>
                                         </mat-menu>
@@ -169,26 +155,22 @@
                                                 </lib-button>
                                             </div>
                                             <div class="col col-x8">
-                                                <lib-text-line type="base" textColor="link">{{deps.brInfo}}</lib-text-line>
+                                                <lib-text-line type="base" enableWrap="true" textColor="link">{{deps.brInfo}}</lib-text-line>
                                             </div>
                 
-                                            <div class="col col-x8">
-                                                <div class="f-row slider-row">
-                                                    <lib-range-slider minValue="0" [maxValue]="availableWeightage(deps.brWeightage)"
-                                                        (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="true"
+                                            <div class="col col-x8 mat-item-center">
+                                                <lib-range-slider minValue="0" [maxValue]="availableWeightage(deps.brWeightage)"
+                                                        (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="false"
                                                         tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
                                                         [value]="deps.brWeightage" color="primary"></lib-range-slider>
-                                                    <span class="f-col-spacer-half"></span>
-                                                    <div class="percent-count">{{deps.brWeightage}}%</div>
-                                                </div>
                                             </div>
                 
-                                            <div class="col col-x4">
+                                            <div class="col col-x4 mat-item-center">
                                                 <lib-checkbox color="primary" [checked]="deps.status === '1'"
                                                     (valueChange)="updateBr(deps, $event, 'checkbox', true)"></lib-checkbox>
                                             </div>
                 
-                                            <div class="col col-x4 text-end">
+                                            <div class="col col-x4 mat-item-end">
                                                 <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" iconFontType="light"
                                                     icon="link"></lib-button>
                 
@@ -201,7 +183,7 @@
                                                             returns</p>
                                                         <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
                                                             class="f-col" color="primary"
-                                                            [value]="getCurrentBrStatusObj(deps.dependantStatus)"
+                                                            [value]="getCurrentBrStatusObj(deps.dependantStatus)?.value"
                                                             (valueChange)="updateDepRuleForChild(businessRule,i, $event)">
                                                         </lib-radio-group>
                                                     </div>
@@ -216,26 +198,19 @@
                         </div>
                     </ng-template>
                 </div>
-                <div class="row-spacer"></div>
-                <div class="colunm-listing">
-                    <div class="f-row mdo-form-field">
-                        <lib-text-line type="small" weight="strong">
-                            <span i18n="@@collaborators">Collaborators</span>
-                        </lib-text-line>
-                    </div>
-                    <div class="f-row colunm-box">
-                        <div class="mdo-auto-select">
-                            <pros-form-input-autoselect
-                            i18n-fieldLabel="@@type_user_name" fieldLabel="Type user name to add"
-                                (openCustomDialog)="openSubscriberSideSheet()" 
-                                [updatedOptionsList]="allSubscribers"
-                                [labelKey]="'fullName'"
-                                (optionSelectedEmit)="addSubscriber($event)"
-                                i18n-extraOptionLabel="@@invite_people_to_team" extraOptionLabel="Invite people to your team">
-                            </pros-form-input-autoselect>
-                        </div>
-                    </div>
 
+                <div class="f-col mdo-field">
+                    <lib-text-line class="field-label" type="small" weight="strong" i18n="@@collaborators">Collaborators</lib-text-line>
+                    <pros-form-input-autoselect i18n-fieldLabel="@@type_user_name"
+                        fieldLabel="Type user name to add" (openCustomDialog)="openSubscriberSideSheet()"
+                        [updatedOptionsList]="allSubscribers" [labelKey]="'fullName'"
+                        (optionSelectedEmit)="addSubscriber($event)" (emitSearchValue)="getCollaborators($event, 0)"
+                        i18n-extraOptionLabel="@@invite_people_to_team"
+                        extraOptionLabel="Invite people to your team">
+                        </pros-form-input-autoselect>
+                </div>
+
+                <div class="colunm-listing">
                     <ng-template [ngIf]="subscriberData.length>0">
                         <div class="f-row colunm-box rule-border-row">
                             <div class="col"></div>
@@ -244,7 +219,6 @@
                             <div class="col col-x4">
                                 <lib-text-line weight="strong" type="small" i18n="@@role">Role</lib-text-line>
                             </div>
-                            <div class="col col-x16"></div>
                             <div class="col col-x16">
                                 <lib-text-line weight="strong" type="small" i18n="@@data_allocation">Data allocation</lib-text-line>
                             </div>
@@ -299,7 +273,6 @@
                                 <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                             </mat-menu>
 
-                            <div class="col col-x16"></div>
                             <div class="col col-x16">
                                 <mat-chip-list>
                                     <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">

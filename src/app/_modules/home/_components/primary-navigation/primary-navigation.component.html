@@ -71,7 +71,7 @@
             <pros-secondary-navbar [activatedPrimaryNav]="isNavSelected" [secondarySideBarOpened]="secondarySideBarOpened" (toggleEmitter)="toggleSecondarySideBar()"></pros-secondary-navbar>
         </mat-sidenav>
       <mat-sidenav-content id="secondaryContent" #secondaryContent
-        [ngStyle]="{'marginLeft.px': secondarySideBarOpened ? '200' : '73'}">
+        [ngStyle]="{'marginLeft.px': secondarySideBarOpened ? '260' : '73'}">
         <div #grabberElement class="resizable-grabber"
             (mousedown)="resizableMousedown($event)"></div>
         <router-outlet></router-outlet>

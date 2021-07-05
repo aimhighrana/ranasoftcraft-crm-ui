@@ -205,7 +205,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.plantCode = user.plantCode;
       this.roleId = user.currentRoleId;
       switch (user.dateformat) {
-        case 'MM.dd.yy':
+        case 'mm.dd.yy':
           this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
           break;
 
@@ -464,12 +464,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * function to open column setting side-sheet
    */
   openTableColumnSideSheet() {
-    const sortedColumns = this.sortDisplayedColumns(this.tableColumnMetaData);
+    const sortedColumns: ReportingWidget[] = this.sortDisplayedColumns(this.tableColumnMetaData)
     const data = {
       objectType: this.widgetHeader.objectType,
       selectedColumns: sortedColumns.map(columnMetaData => {
-        columnMetaData.fldMetaData.sno = columnMetaData.sno;
-        columnMetaData.fldMetaData.displayCriteria = columnMetaData.displayCriteria ? columnMetaData.displayCriteria : this.widgetHeader.displayCriteria;
+        (columnMetaData as any).fldMetaData.sno = columnMetaData.sno;
+        if (columnMetaData.fldMetaData.picklist === '1' || columnMetaData.fldMetaData.picklist === '30' || columnMetaData.fldMetaData.picklist === '37') {
+          columnMetaData.fldMetaData.displayCriteria = columnMetaData.displayCriteria ? columnMetaData.displayCriteria : this.widgetHeader.displayCriteria;
+        }
         return columnMetaData.fldMetaData
       }),
       isWorkflowdataSet: this.widgetHeader.isWorkflowdataSet,

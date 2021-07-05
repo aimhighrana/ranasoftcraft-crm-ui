@@ -384,6 +384,10 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/metadata/variant/create-update-single`;
   }
 
+  public getDataScopeCount(moduleId: string): string {
+    return `${this.origin}/schema/datascope-count?moduleId=${moduleId}`;
+  }
+
   /**
    * endpoint for get schema data scope
    * @param schemaId: ID of schema
@@ -451,21 +455,21 @@ export class EndpointsRuleService {
    * URI for get all available nouns ..from local library
    */
   public getAvailableNounsUri(): string {
-    return `${this.origin}/mro/noun`;
+    return `${this.classicOrigin}/mro/noun`;
   }
 
   /**
    * URI for get all available modifiers  ..from local library
    */
   public getAvailableModifierUri(): string {
-    return `${this.origin}/mro/modifier`;
+    return `${this.classicOrigin}/mro/modifier`;
   }
 
   /**
    * URI for get all available attributes  ..from local library
    */
   public getAvailableAttributeUri(): string {
-    return `${this.origin}/mro/attribute`;
+    return `${this.classicOrigin}/mro/attribute`;
   }
 
 
@@ -517,7 +521,7 @@ export class EndpointsRuleService {
   }
 
   public getFetchAttributesMappingUrl() : string{
-    return this.origin + `/schema/get-mappings`;
+    return this.origin + `/schema/metadata/get-mappings`;
   }
 
   /**
@@ -597,14 +601,14 @@ export class EndpointsRuleService {
    * @param schemaid append on request path ..
    */
   public downloadMroExceutionUri(schemaid: string): string {
-    return `${this.origin}/schema/download/mro/${schemaid}`;
+    return `${this.classicOrigin}/schema/download/mro/${schemaid}`;
   }
 
   /**
    * Uri for generate mro classification description ..
    */
   public generateMroClassificationDescriptionUri(): string {
-    return `${this.origin}/schema/mro/generate-description`;
+    return `${this.classicOrigin}/schema/mro/generate-description`;
   }
   public getCreateUpdateSchemaActionUrl(): string {
     return this.origin + `/schema/actions/create-update`;
@@ -669,5 +673,37 @@ export class EndpointsRuleService {
    */
   public getallFieldsbynodeId(): string {
     return  `${this.classicOrigin}/schema/getallFieldsbynodeId`;
+  }
+
+  /**
+   * Get the uri for return all business rules in schema based on last run
+   * @returns will return the url
+   */
+  public getBuisnessRulesBasedOnRunUrl(): string {
+    return `${this.origin}/schema/metadata/get-running-brs`;
+  }
+
+  /**
+   * Cancle schema uri
+   * @returns will return the url
+   */
+  public cancleSchemaUri(): string{
+    return `${this.origin}/schema/cancel-schema`;
+  }
+
+  /**
+   * get all the transformation rules url
+   * @returns will return the trans uri
+   */
+  public transformationRules(): string {
+    return `${this.origin}/schema/metadata/transformationRuleLibrary`;
+  }
+
+  /**
+   * Get the url for all transformatiom inside rule
+   * @returns will return the mapped transformation rule inside the rule
+   */
+  public getMappedTransformationRulesUrl(): string {
+    return `${this.origin}/schema/metadata/getTransformationmapping`;
   }
 }

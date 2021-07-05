@@ -144,7 +144,8 @@
   }
 
   //Form-Input
-  pros-form-input {
+  pros-form-input,
+  .mdo-field {
     .error-validation-field {
       color: $color-status-error;
 
@@ -227,6 +228,7 @@
       padding-bottom: 0;
       border-radius: 4px;
       background-color: $color-app-accent;
+      margin: 0;
 
       .mat-form-field-flex {
         padding-right: 0;
@@ -275,6 +277,14 @@
 
     &.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
       border-width: 1px;
+    }
+
+    &.mat-form-field-appearance-outline {
+      &.mat-focused {
+        .mat-form-field-outline-thick {
+          color: $color-app-canvas;
+        }
+      }
     }
 
     &.error-matfield {
@@ -770,6 +780,11 @@
       display: none;
     }
 
+    .datascope-scroll {
+      max-height: 256px;
+      overflow-y: scroll;
+    }
+
     .search-row {
       margin: 8px;
     }
@@ -840,6 +855,10 @@
           }
 
           &:hover {
+            background: $color-app-hover;
+          }
+
+          &.mat-menu-item-highlighted {
             background: $color-app-hover;
           }
         }
@@ -1496,6 +1515,10 @@
               background-color: $color-app-hover;
             }
           }
+
+          .mat-list-item:hover {
+            background-color: $color-app-hover;
+          }
         }
 
         .section-header {
@@ -1839,6 +1862,27 @@
     }
   }
 
+  pros-quality-rules,
+  pros-schema-migration {
+    div.root {
+      .colunm-box {
+        border-bottom: 1px solid $color-app-border;
+      }
+
+      .table-vertical {
+        tr.mat-row {
+          &:nth-child(odd) {
+            background: mat-color($background-palette, card);
+          }
+
+          .mat-cell {
+            border-bottom: 1px solid $color-app-border;
+          }
+        }
+      }
+    }
+  }
+
   pros-bar-chart,
   pros-count,
   pros-filter,
@@ -1939,6 +1983,13 @@
                 color: $color-text-secondary;
               }
 
+              .mdo-chip-list {
+                .mdo-label {
+                  display: flex;
+                  align-items: center;
+                }
+              }
+
               mat-card-header.mat-card-header {
                 .mat-card-header-text {
                   margin: 0;
@@ -1953,31 +2004,22 @@
 
   pros-classification-builder {
     div.root {
-      .dataset-grid-navigation {
+      .listset-navigation {
+        border-right-color: $color-app-border;
+
         .nav-tree {
           mat-nav-list.mat-nav-list.tree-nav-list {
             .understep-two {
               .mat-list-item-content {
-                padding: 0 0 0 72px;
-
-                .mat-list-text {
-                  padding-left: 0;
-                }
+                padding: 0 0 0 64px;
               }
             }
           }
+        }
 
-          .error-badge {
-            color: $color-status-error;
-          }
-
-          .success-badge {
-            color: $color-status-success;
-          }
-
-          .warning-badge {
-            color: $color-status-warning;
-          }
+        .split-panel-mark {
+          box-shadow: $box-shadow;
+          background-color: mat-color($background-palette, card);
         }
       }
     }
@@ -2377,16 +2419,12 @@ mat-tooltip-component {
   user-select: none;
 }
 
-.schema-info-tabs {
-  mat-tab-group {
-    height: calc(100% - 75px);
-  }
-}
+// .schema-info-tabs {
+//   mat-tab-group {
+//     height: calc(100% - 75px);
+//   }
+// }
 
 .br-sidesheet-btn button {
   width: 60px;
-}
-
-.lib-chip-list.vertical > .mdo-chip-list {
-  flex-direction: column;
 }

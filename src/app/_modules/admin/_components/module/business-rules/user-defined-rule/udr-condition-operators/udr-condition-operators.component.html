@@ -22,8 +22,8 @@
         #auto1="matAutocomplete" (optionSelected)="operatorSelectionChng($event)">
             <mat-optgroup *ngFor="let object of conditionalOperatorsOb | async" [label]="object.desc">
                 <mat-option class="mdo-option" *ngFor="let operator of object.childs" [value]="operator"
-                    matTooltip="{{operator}}" matTooltipPosition="right">
-                    {{ operator }}
+                    matTooltip="{{operator.value ? operator.value : operator.code}}" matTooltipPosition="right">
+                    {{ operator.value ? operator.value : operator.code }}
                 </mat-option>
             </mat-optgroup>
         </mat-autocomplete>

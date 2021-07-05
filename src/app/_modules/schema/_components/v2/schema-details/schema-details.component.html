@@ -7,12 +7,14 @@
            
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
             <mat-menu #menu="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
-                <ng-container *ngIf="dataScope && dataScope.length">
-                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                        {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope._totalDoc ? scope._totalDoc : 0 }})
-                    </button>
-                </ng-container>
+                <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateDataScopeList()">
+                    <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
+                    <div *ngIf="dataScope && dataScope.length">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                            {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
+                        </button>
+                    </div>
+                </div>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="openDataScopeSideSheet()">
                     <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> <span i18n="@@new_data_scope">New data scope</span>
@@ -44,7 +46,7 @@
     <ng-template #schemaInfoTemplate>
         <div class="empty-state" *ngIf="!statics || (statics && !statics.totalCnt)">
             <lib-empty-state class="lib-empty-state" primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
-                <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Check data </lib-button>
+                <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Refine </lib-button>
             </lib-empty-state>
         </div>
         <div class="f-row filter-container">
@@ -60,36 +62,67 @@
             <lib-chip class="mdo-filter-matchip" i18n-label="@@corrections" label="Corrections" disableRipple="true" (click)="changeTabStatus('review')" [selected]="activeTab && activeTab === 'review'" [selectable]="true">
                 <lib-text-line [textColor]="(activeTab && activeTab === 'review') ? 'plain' : 'info'">{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}</lib-text-line>
             </lib-chip>
+            <!-- Outdated -->
+            <lib-chip class="mdo-filter-matchip" label="Outdated" disableRipple="true" (click)="changeTabStatus('outdated')" [selected]="activeTab && activeTab === 'outdated'" [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outdatedCnt) ? statics.outdatedCnt : 0 }}</lib-text-line>
+            </lib-chip>
 
-            <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
-                <ng-template [ngIf]="ctrl.type !== 'INLINE'">
-                    <lib-chip class="mdo-filter-matchip" disableRipple="true"
-                        [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
-                        {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}:&nbsp;
-                        <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1" [ngIfElse]="showText">
-                            <span class="chip-text-correct">
-                                {{ prepareTextToShow(ctrl) }}
-                            </span>
-                        </ng-template>
-                        <ng-template #showText>
-                            <span class="chip-text-correct">
-                                <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
-                                {{ prepareTextToShow(ctrl)}}
-                            </span>
-                        </ng-template>
-                        <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
-                    </lib-chip>
-                    <!-- Append dynamic filter MatMenu -->
-                    <mat-menu #appliedfiltermenu="matMenu">
-                        <pros-filter-values [moduleId]="moduleId"
-                            [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                            [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
-                            (selectedValues)="updateFilterCriteria($event)">
-                        </pros-filter-values>
-                    </mat-menu>
+            <!-- Skipped -->
+            <lib-chip class="mdo-filter-matchip" label="Skipped" disableRipple="true" (click)="changeTabStatus('skipped')" [selected]="activeTab && activeTab === 'skipped'" [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics && statics.skippedCnt) ? statics.skippedCnt : 0 }}</lib-text-line>
+            </lib-chip>
+
+            <!-- Start Chip for business rule dropdown-->
+            <lib-chip class="mdo-filter-matchip" disableRipple="true" label="Business rule :" [matMenuTriggerFor]="buisnessRuleDrop">
+                <lib-text-line [textColor]="'plain'">
+                    {{ brRuleFilterDesc }}
+                </lib-text-line>
+            </lib-chip>
+            <mat-menu #buisnessRuleDrop="matMenu">
+                <div class="f-col b-root">
+                    <lib-search prosClickStopPropagation (valueChange)="searchBusinessRules($event)"></lib-search>
+                    <mat-nav-list prosClickStopPropagation>
+                        <mat-list-item *ngFor="let ckbox of filterableRulesOb | async;">
+                            <lib-checkbox (valueChange)="addFilterFromBrRule(ckbox, $event)" [checked]="isBrAppliedChecked(ckbox)" [label]="ckbox.brInfo ? ckbox.brInfo : ''">
+                            </lib-checkbox>
+                        </mat-list-item>
+                    </mat-nav-list>
+                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()" class="lib-button">Apply</lib-button>
+                </div>
+            </mat-menu>
+            <!-- End Chip for business rule dropdown-->
+
+            <mat-chip-list>
+                <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
+                    <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                            [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                            {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}:&nbsp;
+                            <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1" [ngIfElse]="showText">
+                                <span class="chip-text-correct">
+                                    {{ prepareTextToShow(ctrl) }}
+                                </span>
+                            </ng-template>
+                            <ng-template #showText>
+                                <span class="chip-text-correct">
+                                    <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
+                                    {{ prepareTextToShow(ctrl)}}
+                                </span>
+                            </ng-template>
+                            <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
+                        </mat-chip>
+                        <!-- Append dynamic filter MatMenu -->
+                        <mat-menu #appliedfiltermenu="matMenu">
+                            <pros-filter-values [moduleId]="moduleId"
+                                [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+                                (selectedValues)="updateFilterCriteria($event)">
+                            </pros-filter-values>
+                        </mat-menu>
+                    </ng-template>
                 </ng-template>
-            </ng-template>
-
+            </mat-chip-list>
+            
             <!-- Add filter control -->
             <lib-button class="filter-btn" type="plain" icon="filter" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize" rounded="true"></lib-button>
             <!-- Add filter control MatMenu -->
@@ -176,7 +209,7 @@
                         <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
                     </div>
                     <div class="schema-details-table f-col datasource" (scroll)="onTableScroll($event)">
-                        <table mat-table [dataSource]="dataSource" matSort>
+                        <table mat-table [dataSource]="dataSource" #table matSort>
                             <ng-container matColumnDef="_select_columns" sticky>
                                 <th mat-header-cell *matHeaderCellDef>
                                     <lib-checkbox (valueChange)="$event ? masterToggle() : null"
@@ -375,6 +408,7 @@
                                         <!-- [class.schema-header-cell] = "isHeaderColumn(dynCols)" -->
                                         <td class="schema-header-cell" mat-cell *matCellDef="let element; let rIndex = index;" [class.editable-cell] = "isFieldEditable(dynCols)"
                                             [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
+                                            [class.correction-cell]="element[dynCols] ? element[dynCols].isCorrected: false"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)" [class.edit-mode]="isEditEnabled(dynCols,element, rIndex)">
                                             <div class="f-col grid-cell-editable">
                                                 <div class="mdo-form-input f-col" style="display: none;"
@@ -418,7 +452,7 @@
                                                         </span>
                                                         <span class="error-message">
                                                             {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
-                                                        </span>
+                                                        </span>                                                       
                                                     </div>
                                                 </ng-template>
                                             </div>

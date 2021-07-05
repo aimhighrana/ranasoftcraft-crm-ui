@@ -667,4 +667,24 @@ describe('EndpointsRuleService', () => {
     const serObj = new EndpointsRuleService();
     expect(serObj.getUploadProgressUrl('', '')).toContain('/schema/uploadStatus?schemaId');
   }));
+
+  it('getBuisnessRulesBasedOnRunUrl()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getBuisnessRulesBasedOnRunUrl()).toContain('/schema/metadata/get-running-brs');
+  }));
+
+  it('cancleSchemaUri()', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.cancleSchemaUri()).toContain('/schema/cancel-schema');
+  }));
+
+  it('transformationRules() should return the tarnsformation rule lib. ', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.transformationRules()).toContain('/schema/metadata/transformationRuleLibrary');
+  }));
+
+  it('getMappedTransformationRulesUrl() get the mapped transformation rules ... ', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getMappedTransformationRulesUrl()).toContain('/schema/metadata/getTransformationmapping');
+  }));
 });

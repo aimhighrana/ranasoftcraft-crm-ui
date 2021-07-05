@@ -138,11 +138,11 @@ export class SchemaDetailsService {
     requestStatus = requestStatus ? requestStatus : '';
     return this.http.get<any>(this.endpointService.getClassificationNounMod(schemaId, runId, variantId), {params:{searchString, requestStatus}}).pipe(map(res=>{
       const  finalRes = {} as ClassificationNounMod;
-      const mro = res.filter(fil => fil.ruleType === 'mro_local_lib');
-      finalRes.mro_local_lib = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
+      const mro = res.filter(fil => fil.ruleType === 'MRO_CLS_MASTER_CHECK');
+      finalRes.MRO_CLS_MASTER_CHECK = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
 
-      const gsn = res.filter(fil => fil.ruleType === 'mro_gsn_lib');
-      finalRes.mro_gsn_lib = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};
+      const gsn = res.filter(fil => fil.ruleType === 'MRO_MANU_PRT_NUM_LOOKUP');
+      finalRes.MRO_MANU_PRT_NUM_LOOKUP = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};
 
       const unmatched = res.filter(fil => fil.ruleType === 'unmatched');
       finalRes.unmatched = {doc_count: unmatched[0].doc_count ? unmatched[0].doc_count : 0};

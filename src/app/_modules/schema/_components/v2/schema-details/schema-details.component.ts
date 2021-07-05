@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter, NgZone } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -11,7 +11,7 @@ import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatDialog } from '@angular/material/dialog';
 import { SaveVariantDialogComponent } from '../save-variant-dialog/save-variant-dialog.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
@@ -25,6 +25,8 @@ import { debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs/ope
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
+import { debounce } from 'lodash';
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'pros-schema-details',
@@ -180,6 +182,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   @ViewChild('navscroll')navscroll:ElementRef;
   @ViewChild('listingContainer')listingContainer:ElementRef;
+  @ViewChild('table') table: MatTable<any>;
 
   FIELD_TYPE = FieldInputType;
 
@@ -268,7 +271,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
    executionTreeObs: Subject<SchemaExecutionTree> = new Subject();
 
+  currentDatascopePageNo = 0;
+   /**
+    * Store the all filter able buisness rule which is involved
+    */
+   filterableRulesOb: Observable<CoreSchemaBrInfo[]> = of([]);
+   appliedBrList: CoreSchemaBrInfo[] = [];
+
+   delayedCall = debounce((searchText: string) => {
+    this.businessRulesBasedOnLastRun(searchText);
+  }, 300)
+
   constructor(
+    private ngZone: NgZone,
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
     private router: Router,
@@ -298,7 +313,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       this.isRefresh = true;
-      this.getModuleInfo(this.moduleId);
       this.metadata.next(null);
     }
 
@@ -317,8 +331,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.isRefresh = true;
     }
 
+    const moduleSub = this.getModuleInfo(this.moduleId);
     const sub = this.getDataScope();
-    forkJoin({getDataScope: sub}).subscribe((res) => {
+    forkJoin({getDataScope: sub, getModuleInfo: moduleSub}).subscribe((res) => {
       if (res) {
         this.getSchemaDetails();
       }
@@ -352,6 +367,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           this.activeNode = treeArray.find(n => n.nodeId === nodeId);
           this.selectedNodeChange(params);
       });
+
+      // get the business rules based on last execution
+      this.appliedBrList = [];
+      this.businessRulesBasedOnLastRun('');
     }
 
     this.manageStaticColumns();
@@ -383,6 +402,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     });
     // this.setNavDivPositions();
     // this.enableResize();
+  }
+
+  /**
+   * use this method to update the UI after dynamic columns are displayed
+   */
+  updateTableColumnSize() {
+    this.ngZone.onMicrotaskEmpty.pipe(take(3)).subscribe(() => this.table.updateStickyColumnStyles());
   }
 
   ngOnInit(): void {
@@ -507,7 +533,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
-    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
+    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId, this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : []).subscribe(res => {
       this.statics = res;
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
@@ -520,7 +546,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service to get schema execution tree
    */
   getSchemaExecutionTree(plantCode, userName) {
-    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab, this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : []).subscribe(res => {
       this.executionTreeHierarchy = res;
       this.executionTreeObs.next(res);
       }, error => {
@@ -720,7 +746,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.nodeId = this.nodeId ? this.nodeId : '';
     request.nodeType = this.nodeType ? this.nodeType :'';
     request.isLoadMore = isLoadMore ? isLoadMore : false;
+    request.ruleSelected = this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : [];
     this.dataSource.getTableData(request);
+    this.updateTableColumnSize();
   }
 
 
@@ -753,6 +781,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (this.userDetails) {
       this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     }
+    this.getSchemaStatics();
   }
 
   /**
@@ -793,7 +822,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
-    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId) {
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId && (this.activeTab === 'outdated' || this.activeTab === 'skipped')) {
       return;
     }
 
@@ -838,7 +867,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   isFieldEditable(fldid) {
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable) {
+    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable && !(this.activeTab === 'outdated') && !(this.activeTab === 'skipped')) {
       return true;
     }
 
@@ -863,7 +892,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       viewContainerRef.clear();
 
       inpCtrl.style.display = 'none';
-      viewCtrl.innerText = value;
+      viewCtrl.innerText = value !== 'undefined' ? value : '';
       viewCtrl.style.display = 'block';
 
       // DO correction call for data
@@ -1012,6 +1041,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
+        this.getSchemaStatics();
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -1175,12 +1205,14 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.variantId = variantId;
       const scope = this.dataScope.find(v => v.variantId === this.variantId);
       this.variantName = this.variantId === '0' ? 'Entire dataset' : scope?.variantName;
-      this.variantTotalCnt = this.variantId === '0' ? this.totalVariantsCnt : scope?._totalDoc;
+      this.variantTotalCnt = this.variantId === '0' ? this.totalVariantsCnt : scope?.dataScopeCount;
       if (this.variantId !== '0') {
         this.getVariantDetails();
       } else {
         this.filterCriteria.next([]);
       }
+    } else if (this.variantId === '0') {
+      this.variantTotalCnt = this.totalVariantsCnt;
     }
   }
 
@@ -1236,7 +1268,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     // binding dynamic component inputs/outputs
     componentRef.instance.fieldId = fldid;
     componentRef.instance.inputType = this.getFieldInputType(fldid);
-    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] ? row[fldid].oldData : '');
+    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] && row[fldid].oldData ? row[fldid].oldData : (row[fldid] && row[fldid].fieldData ?row[fldid].fieldData: ''));
     // componentRef.instance.value =  row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
@@ -1246,9 +1278,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Get data scopes .. or variants ...
    */
   getDataScope(activeVariantId?: string) {
-    const observable = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR');
+    const body = {
+      from: 0,
+      size: 10,
+      variantName: null
+    };
+    const observable = this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body);
     const sub = observable.subscribe(res => {
       this.dataScope = res;
+      this.currentDatascopePageNo = 0;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
@@ -1256,6 +1294,23 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.subscribers.push(sub);
 
     return observable;
+  }
+
+  updateDataScopeList() {
+    const pageNo = this.currentDatascopePageNo + 1;
+    const body = {
+      from: pageNo,
+      size: 10,
+      variantName: null
+    };
+
+    const sub = this.schemaVariantService.getDataScopesList(this.schemaId, 'RUNFOR', body).subscribe(res => {
+      if (res && res.length) {
+        this.dataScope = [...this.dataScope, ...res];
+        this.currentDatascopePageNo = pageNo;
+      }
+    }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
+    this.subscribers.push(sub);
   }
 
   /**
@@ -1269,7 +1324,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate(['home','schema','schema-info',`${this.moduleId}`,`${this.schemaId}`])
   }
 
   /**
@@ -1581,7 +1636,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param id module id
    */
   getModuleInfo(id) {
-    this.schemaService.getModuleInfoByModuleId(id).subscribe(res => {
+    this.totalVariantsCnt = 0;
+    const obsv = this.schemaService.getModuleInfoByModuleId(id);
+    obsv.subscribe(res => {
       if (res && res.length) {
         this.moduleInfo = res[0];
         this.totalVariantsCnt = this.moduleInfo.datasetCount || 0;
@@ -1589,6 +1646,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }, error => {
       console.log(`Error:: ${error.message}`)
     });
+
+    return obsv;
   }
 
   /**
@@ -1779,6 +1838,62 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   isHeaderColumn(dynCols) {
     return this.columns.header?.includes(dynCols);
+  }
+
+  /**
+   * Get all the buisness rules ... based on schema last run ...
+   */
+  businessRulesBasedOnLastRun(searchString?: string) {
+    const ruleslst = this.schemaService.getBuisnessRulesBasedOnRun(this.schemaId , searchString ? searchString : '').subscribe(res=>{
+      this.filterableRulesOb = of(res);
+    }, err => console.error(`Exception : ${err.message}`));
+    this.subscribers.push(ruleslst);
+  }
+
+  /**
+   * Return all business rules based on search string ..
+   * @param searchString get the business rule bt this text ...
+   */
+  searchBusinessRules(searchString: string) {
+    this.delayedCall(searchString);
+  }
+
+  /**
+   *
+   * @param br buisness rule which going to select or deselect ....
+   * @param state checkbox state ....
+   */
+  addFilterFromBrRule(br: CoreSchemaBrInfo, state: boolean) {
+    if(state && !this.appliedBrList.some(s=> s.brIdStr === br.brIdStr)) {
+      this.appliedBrList.push(br);
+    } else {
+      this.appliedBrList.splice(this.appliedBrList.findIndex(f=> f.brIdStr === br.brIdStr),1);
+    }
+  }
+
+  /**
+   * Check whether current business rule applied or not
+   * @param ckbox the current business rule ...
+   * @returns will return true if exits otherwise return false
+   */
+  isBrAppliedChecked(ckbox: CoreSchemaBrInfo): boolean {
+    return this.appliedBrList.some(s=> s.brIdStr === ckbox.brIdStr)
+  }
+
+  /**
+   * Get the filtered applied description dynamic ...
+   */
+  get brRuleFilterDesc () {
+    return this.appliedBrList.length >0 ?  (this.appliedBrList.length === 1 ? this.appliedBrList[0].brInfo : this.appliedBrList.length) :'All';
+  }
+
+  /**
+   * Apply the selected br rule filter
+   */
+  applyFilterFromBrRule() {
+    this.fetchCount = 0;
+    this.getData(this.filterCriteria.getValue(),this.sortOrder,0,false);
+    this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
   }
 
 }
