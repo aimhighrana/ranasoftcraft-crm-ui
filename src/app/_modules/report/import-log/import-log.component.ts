@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-
-interface ImportLogs {
-  warning: string;
-  category: string;
-  status: string;
-  updated: string;
-}
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { TransientService } from 'mdo-ui-library';
+import { ReportService } from '../_service/report.service';
+import { ImportLogs } from '../_models/import-log';
 
 @Component({
   selector: 'pros-import-log',
@@ -21,17 +16,21 @@ export class ImportLogComponent implements OnInit {
   /**
    * warning status
    */
-  status: string[] = ['Open', 'Closed'];
+  status: string[] = ['OPEN', 'CLOSED'];
   warningForm: FormGroup;
 
-  dataSource: ImportLogs[] = [
-    { warning: 'Customer Module', category: 'Missing Module', status: 'Open', updated: '12/12/20' },
-    { warning: 'BOM', category: 'Missing Module', status: 'Open', updated: '12/12/20' }
-  ];
+  dataSource: ImportLogs[] = [];
+
+  pageSize = 10;
+  currentPage = 0;
+  reportId: string;
 
   constructor(
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private reportService: ReportService,
+    private activatedRoute: ActivatedRoute,
+    private toasterService: TransientService
   ) { }
 
 
@@ -41,6 +40,9 @@ export class ImportLogComponent implements OnInit {
   }
 
   initializeForm() {
+    this.activatedRoute.params.subscribe(params => {
+      this.reportId = params.reportId
+    })
     this.warningForm = this.formBuilder.group({
       statusArray: this.formBuilder.array([])
     })
@@ -60,7 +62,11 @@ export class ImportLogComponent implements OnInit {
    */
   changeStatus(index, value) {
     console.log(index, value);
-    this.dataSource[index].status = value;
+    this.reportService.updateImportLogStatus(this.dataSource[index].messageId, value).subscribe(res => {
+      this.dataSource[index].status = res.status;
+    }, error => {
+      this.toasterService.open('Something went wrong', 'Close', { duration: 2000 });
+    })
   }
 
 
@@ -69,14 +75,20 @@ export class ImportLogComponent implements OnInit {
    * @param isLoadMore wants to load more data
    */
   getWarningList(isLoadMore?) {
-    // if(isLoadMore) {
+    if (isLoadMore) {
+      this.currentPage = this.currentPage + 1;
+    }
     const formArray = this.frmArray;
-    this.dataSource.forEach(item => {
-      formArray.push(this.formBuilder.group({
-        status: item.status
-      }))
+    this.reportService.getImportLogList(this.reportId, this.currentPage, this.pageSize).subscribe((res:ImportLogs[]) => {
+      this.dataSource = this.dataSource.concat(...res);
+      res.forEach(item => {
+        formArray.push(this.formBuilder.group({
+          status: item.status
+        }))
+      })
+    }, error => {
+      this.toasterService.open('Something went wrong', 'Close', { duration: 2000 });
     })
-    // }
   }
 
   get frmArray() {
