@@ -1,7 +1,10 @@
-.search {
-  padding: 8px;
-}
+.multipickcheck {
+  .menu-spacing {
+    padding: 12px;
+  }
 
-.filter-button-wrapper {
-  padding: 8px;
+  .multiselect-checkbox {
+     max-height: 190px;
+     overflow: auto;
+  }
 }

@@ -48,11 +48,14 @@
                             </ng-template>
                             <ng-template
                                 [ngIf]="getFormFieldType(filter.fieldId) === 'multiselectDropdown' || getFormFieldType(filter.fieldId) === 'checkbox' || getFormFieldType(filter.fieldId) === 'dropdown'|| getFormFieldType(filter.fieldId) === 'radio'">
-                                <span *ngFor="let filt of filterApplied[filter.fieldId]; let i=index "
+                                <div class="subline-row">
+                                    <span *ngFor="let filt of filterApplied[filter.fieldId]; let i=index "
                                     class="sub-text-line">
                                     <lib-text-line type="base" textColor="secondary"> {{filt.TEXT}}</lib-text-line>
                                     <span *ngIf="i < filter.conditionFieldValue.length-1">,</span>
                                 </span>
+                                </div>
+                               
                             </ng-template>
                         </div>
                     </mat-list-item>
@@ -98,11 +101,11 @@
 
                 <div class="f-row-spacer-half"></div>
 
-                <div class="f-col"
+                <div class="f-row selectedchips"
                     *ngIf="getFormFieldType(selectedFilter.fieldId) === 'multiselectDropdown' || getFormFieldType(selectedFilter.fieldId) === 'radio' || getFormFieldType(selectedFilter.fieldId) === 'dropdown'">
-                    <div class="f-row"
+                    <div
                         *ngFor="let selected of filterApplied[this.selectedFilter.fieldId];let i = index">
-                        <lib-chip [selectable]="true" [removable]="true"
+                        <lib-chip [selectable]="true" [removable]="true" class="lib-chip"
                             (removed)="removedSelectedFilter(selected.CODE,i)">
                             {{
                             selected.TEXT }}</lib-chip>

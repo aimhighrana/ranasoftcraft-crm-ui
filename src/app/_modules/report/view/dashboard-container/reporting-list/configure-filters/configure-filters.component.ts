@@ -401,10 +401,10 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       }
       else if (hasFld.fldMetaData.picklist === '1' || hasFld.fldMetaData.picklist === '30' || hasFld.fldMetaData.picklist === '37') {
         if (hasFld.fldMetaData.isCheckList === 'true') {
-          return FormControlType.MULTI_SELECT;
+          return FormControlType.DROP_DOWN;
         }
         else
-          return FormControlType.DROP_DOWN;
+          return FormControlType.MULTI_SELECT;
       } else if (hasFld.fldMetaData.picklist === '0') {
         if (hasFld.fldMetaData.dataType === 'CHAR' || hasFld.fldMetaData.dataType === 'ALTN' || hasFld.fldMetaData.dataType === 'ICSN' || hasFld.fldMetaData.dataType === 'REQ' || hasFld.fldMetaData.dataType === 'TEXT') {
           return FormControlType.TEXT;
@@ -487,5 +487,16 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     });
     this.subscription.push(sub);
   }
+
+
+
+ /**
+ * return number value for the date
+ * @param val string value
+ * @returns convert string into number
+*/
+getDateTypeValue(val: string): string {
+  return Number(val) ? val : '';
+ }
 
 }

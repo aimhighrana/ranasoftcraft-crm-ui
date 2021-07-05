@@ -1,12 +1,11 @@
-.range-slider {
-  height: 100%;
-  padding: 8px;
-
-  .select-range {
-    margin-bottom: 44px;
+.rangeslider {
+  .menu-spacing {
+    padding: 12px;
   }
 
-  .filter-button-wrapper {
-    padding: 0;
+  .selectrange {
+    padding: 0 12px;
+    min-height: 50px;
   }
 }
+

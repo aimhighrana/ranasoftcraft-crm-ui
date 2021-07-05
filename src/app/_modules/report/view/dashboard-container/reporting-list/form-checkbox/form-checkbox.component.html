@@ -5,10 +5,11 @@
         <!-- </div> -->
     </div>
     <mat-menu #datasearch="matMenu">
-        <div class="f-col form-checkbox" prosClickStopPropagation>
-            <lib-checkbox [label]="label" [checked]="isChecked()" [formControl]="control">
-            </lib-checkbox>
-            <div class="row-spacer"></div>
+        <div class="f-col singlepickcheck" prosClickStopPropagation>
+            <div class="menu-spacing">
+                <lib-checkbox [label]="label" [checked]="isChecked()" [formControl]="control">
+                </lib-checkbox>
+            </div>
             <div class="filter-button-wrapper">
                 <lib-button type="minor" (click)="trigger.closeMenu();applyFilter()" i18n="@@apply">Apply
                 </lib-button>

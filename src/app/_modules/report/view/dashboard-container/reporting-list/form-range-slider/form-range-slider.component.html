@@ -4,10 +4,12 @@
 </div>
 <mat-menu class="filter-mat-menu" #rangeSlider="matMenu">
 
-    <div class="f-col range-slider" prosClickStopPropagation>
-        <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder" [formControl]="fltrCtrl"
-            [hasError]="isInValidInput()"></lib-input>
-        <div class="f-col select-range">
+    <div class="f-col rangeslider" prosClickStopPropagation>
+        <div class="f-col  menu-spacing">
+            <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder" [formControl]="fltrCtrl"
+                [hasError]="isInValidInput()"></lib-input>
+        </div>
+        <div class="selectrange">
             <lib-text-line type="small" weight="strong">Select range</lib-text-line>
             <lib-range-slider [formControl]="control" [maxValue]="highValue" showTicks="true" [value]="minValue"
                 [highValue]="maxValue" thumbLabel="true">

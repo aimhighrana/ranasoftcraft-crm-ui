@@ -1,3 +1,11 @@
-.search {
-  padding: 8px;
+.multipickradio {
+  .menu-spacing {
+    padding: 12px;
+  }
+
+  .multiselect-radio {
+    max-height: 190px;
+    overflow: auto;
+    padding: 0 12px;
+ }
 }

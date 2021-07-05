@@ -4,11 +4,11 @@
     <lib-search [formControl]="fltrCtrl" [placeholder]="placeholder" *ngIf="!isTableFilter"></lib-search>
 </div>
 <mat-menu #datasearch="matMenu">
-    <div class="f-col" prosClickStopPropagation>
-        <div class="f-row search">
+    <div class="f-col multipickradio" prosClickStopPropagation>
+        <div class="menu-spacing">
             <lib-search [formControl]="fltrCtrl" [placeholder]="placeholder"></lib-search>
         </div>
-        <div class="f-col search">
+        <div class="multiselect-radio">
             <lib-radio-group [options]="optionList" layout="vertical" [formControl]="control" labelPosition="before">
             </lib-radio-group>
         </div>

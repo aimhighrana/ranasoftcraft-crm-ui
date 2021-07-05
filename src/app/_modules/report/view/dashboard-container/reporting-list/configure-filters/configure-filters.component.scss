@@ -40,6 +40,14 @@ div.root {
               width: 100%;
             }
 
+            .subline-row {
+              overflow: hidden;
+              -webkit-line-clamp: 2;
+              display: -webkit-box;
+              text-overflow: ellipsis;
+              -webkit-box-orient: vertical;
+            }
+
             .sub-text-line {
               display: flex;
               overflow: hidden;
@@ -59,6 +67,15 @@ div.root {
 
         .field-label {
           padding-bottom: 6px;
+        }
+
+        .selectedchips {
+          flex-wrap: wrap;
+
+          .lib-chip {
+            margin-bottom: 4px;
+            display: block;
+          }
         }
       }
     }
