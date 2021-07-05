@@ -80,8 +80,8 @@ export class ImportLogComponent implements OnInit {
     }
     const formArray = this.frmArray;
     this.reportService.getImportLogList(this.reportId, this.currentPage, this.pageSize).subscribe((res:ImportLogs[]) => {
-      this.dataSource = this.dataSource.concat(...res)
-      this.dataSource.forEach(item => {
+      this.dataSource = this.dataSource.concat(...res);
+      res.forEach(item => {
         formArray.push(this.formBuilder.group({
           status: item.status
         }))

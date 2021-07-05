@@ -67,7 +67,7 @@ describe('ImportLogComponent', () => {
         messageId: '23682364',
         reportId: '87347237573',
         category: 'Missing Module',
-        status: 'Open',
+        status: 'OPEN',
         updatedAt: '12/12/20',
         createdAt: '13/04/2020',
         updatedBy: '123',
