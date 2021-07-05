@@ -271,14 +271,28 @@ describe('ImportComponent', () => {
   it('addReport(),should add report',async(()=>{
     const mockImportData = { alreadyExits: false, acknowledge: true, reportId: 'extract_from_file', reportName: 'extract_from_file', importedBy: '${current_userid_who_imported}', importedAt: 16887879908, updatedAt: 16887879908, fileSno: 872234723674 };
     component.importData = mockImportData;
+    const mockRes = {
+      acknowledge: true,
+      alreadyExits: false,
+      reportId: '87347237573',
+      reportName: 'Inprogress tickets',
+      importedBy: '${current_userid_who_imported}',
+      importedAt: 16887879908,
+      updatedAt: 16887879908,
+      fileSno: 872234723674,
+      logs: [ ]
+    };
     spyOn(mockDialogRef, 'addPanelClass').withArgs('display-dialog');
     dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').withArgs(ConfirmationDialogComponent, { width: '600px',
     data:   {
       label : 'Existing schedule will not be duplicated. Schedule will need to be reconfigued. '
     } }).and.returnValue({} as MatDialogRef<any, any>);
-    spyOn(WidgetServiceSpy, 'importReport').withArgs(component.importData.fileSno,true,true).and.returnValue(of());
+    spyOn(WidgetServiceSpy, 'importReport').withArgs(component.importData.fileSno,true,true).and.returnValues(of(mockRes), throwError({ error: {} }));
 
     component.addReport(true,true);
     expect(dialogSpy).toBeTruthy();
+
+    component.addReport(true,true);
+    expect(component.errorMsg).toBeTruthy();
   }))
 });
