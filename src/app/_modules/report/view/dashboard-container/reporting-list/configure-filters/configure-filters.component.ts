@@ -115,9 +115,9 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue(this.selectedFilter.conditionFieldValue);
       } else if (type === FormControlType.NUMBER) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ min: this.selectedFilter.conditionFieldStartValue, max: this.selectedFilter.conditionFieldEndValue })
-      } else if (type === FormControlType.DATE || type === FormControlType.DATE_TIME) {
+      } else if ((type === FormControlType.DATE || type === FormControlType.DATE_TIME) && this.selectedFilter.conditionFieldStartValue && this.selectedFilter.conditionFieldEndValue ) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ end: new Date(Number(this.selectedFilter.conditionFieldEndValue)), start: new Date(Number(this.selectedFilter.conditionFieldStartValue)) });
-      } else if (type === FormControlType.TIME) {
+      } else if (type === FormControlType.TIME && this.selectedFilter.conditionFieldStartValue && this.selectedFilter.conditionFieldEndValue ) {
         const startTime = new Date(this.selectedFilter.conditionFieldStartValue);
         const endTime = new Date(this.selectedFilter.conditionFieldEndValue);
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ start: { hours: startTime.getHours(), minutes: startTime.getMinutes() }, end: { hours: endTime.getHours(), minutes: endTime.getMinutes() } })
@@ -148,7 +148,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       const formFieldType = this.getFormFieldType(filter.fieldId);
       if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX) && filter.conditionFieldValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue(filter.conditionFieldValue);
-      } else if (formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME) {
+      } else if ((formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME) && filter.conditionFieldStartValue && filter.conditionFieldEndValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue({ start: new Date(Number(filter.conditionFieldStartValue)), end: new Date(Number(filter.conditionFieldEndValue)) });
       } else if (formFieldType === FormControlType.TIME) {
         const startValue = new Date(Number(filter.conditionFieldStartValue));
@@ -236,8 +236,8 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     const filterCriteriaIndex = this.filterCriteria.findIndex(item => item.fieldId === this.selectedFilter.fieldId);
     if (!this.filterCriteria[filterCriteriaIndex].conditionFieldStartValue) {
       const filteredCriteria = new Criteria();
-      filteredCriteria.fieldId = this.selectedFilter.conditionFieldId;
-      filteredCriteria.conditionFieldId = this.selectedFilter.conditionFieldId;
+      filteredCriteria.fieldId = this.selectedFilter.fieldId;
+      filteredCriteria.conditionFieldId = this.selectedFilter.fieldId;
       filteredCriteria.blockType = BlockType.COND;
       filteredCriteria.conditionOperator = ConditionOperator.RANGE;
       this.filterCriteria[filterCriteriaIndex] = { ...filteredCriteria };
@@ -486,6 +486,10 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       console.log('Something went wrong while getting user details.', error.message)
     });
     this.subscription.push(sub);
+  }
+
+  getDateTypeValue(val: string): string {
+    return Number(val) ? val : '';
   }
 
 }
