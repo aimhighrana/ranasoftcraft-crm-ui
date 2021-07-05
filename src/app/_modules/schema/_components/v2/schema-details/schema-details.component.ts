@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter, NgZone } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
@@ -26,6 +26,7 @@ import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 import { debounce } from 'lodash';
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'pros-schema-details',
@@ -181,6 +182,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   @ViewChild('navscroll')navscroll:ElementRef;
   @ViewChild('listingContainer')listingContainer:ElementRef;
+  @ViewChild('table') table: MatTable<any>;
 
   FIELD_TYPE = FieldInputType;
 
@@ -281,6 +283,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }, 300)
 
   constructor(
+    private ngZone: NgZone,
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
     private router: Router,
@@ -364,6 +367,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
           this.activeNode = treeArray.find(n => n.nodeId === nodeId);
           this.selectedNodeChange(params);
       });
+
+      // get the business rules based on last execution
+      this.appliedBrList = [];
+      this.businessRulesBasedOnLastRun('');
     }
 
     this.manageStaticColumns();
@@ -395,6 +402,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     });
     // this.setNavDivPositions();
     // this.enableResize();
+  }
+
+  /**
+   * use this method to update the UI after dynamic columns are displayed
+   */
+  updateTableColumnSize() {
+    this.ngZone.onMicrotaskEmpty.pipe(take(3)).subscribe(() => this.table.updateStickyColumnStyles());
   }
 
   ngOnInit(): void {
@@ -490,8 +504,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
 
-    // get the business rules based on
-    this.businessRulesBasedOnLastRun('');
   }
 
   selectedNodeChange(params: ParamMap) {
@@ -521,7 +533,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
-    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
+    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId, this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : []).subscribe(res => {
       this.statics = res;
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
@@ -534,7 +546,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service to get schema execution tree
    */
   getSchemaExecutionTree(plantCode, userName) {
-    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab, this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : []).subscribe(res => {
       this.executionTreeHierarchy = res;
       this.executionTreeObs.next(res);
       }, error => {
@@ -736,6 +748,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.isLoadMore = isLoadMore ? isLoadMore : false;
     request.ruleSelected = this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : [];
     this.dataSource.getTableData(request);
+    this.updateTableColumnSize();
   }
 
 
@@ -768,6 +781,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (this.userDetails) {
       this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     }
+    this.getSchemaStatics();
   }
 
   /**
@@ -808,7 +822,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
-    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId) {
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId && (this.activeTab === 'outdated' || this.activeTab === 'skipped')) {
       return;
     }
 
@@ -853,7 +867,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   isFieldEditable(fldid) {
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable) {
+    if (field && this.activeNode.nodeId === field.nodeId && field.isEditable && !(this.activeTab === 'outdated') && !(this.activeTab === 'skipped')) {
       return true;
     }
 
@@ -878,7 +892,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       viewContainerRef.clear();
 
       inpCtrl.style.display = 'none';
-      viewCtrl.innerText = value;
+      viewCtrl.innerText = value !== 'undefined' ? value : '';
       viewCtrl.style.display = 'block';
 
       // DO correction call for data
@@ -1027,6 +1041,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
+        this.getSchemaStatics();
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -1253,7 +1268,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     // binding dynamic component inputs/outputs
     componentRef.instance.fieldId = fldid;
     componentRef.instance.inputType = this.getFieldInputType(fldid);
-    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] ? row[fldid].oldData : '');
+    componentRef.instance.value =  this.activeTab !== 'review' ?( row[fldid] ? row[fldid].fieldData : '') : ( row[fldid] && row[fldid].oldData ? row[fldid].oldData : (row[fldid] && row[fldid].fieldData ?row[fldid].fieldData: ''));
     // componentRef.instance.value =  row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
@@ -1309,7 +1324,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate(['home','schema','schema-info',`${this.moduleId}`,`${this.schemaId}`])
   }
 
   /**

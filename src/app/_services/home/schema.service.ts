@@ -4,7 +4,7 @@ import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse, SchemaTableViewDto } from 'src/app/_models/schema/schema';
-import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel, TransformationMappingResponse } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
@@ -200,8 +200,9 @@ export class SchemaService {
    * @param schemaId schema id
    * @param variantId variant id is an option params ..
    */
-  public getSchemaThresholdStatics(schemaId: string, variantId?: string): Observable<SchemaStaticThresholdRes> {
-    return this.http.get<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId));
+  public getSchemaThresholdStatics(schemaId: string, variantId: string, selectedRules?:string[]): Observable<SchemaStaticThresholdRes> {
+    selectedRules = selectedRules ? selectedRules : [];
+    return this.http.post<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId),selectedRules);
   }
   public uploadCorrectionData(data: DataSource[], objectType: string, schemaId: string, runId: string, plantCode: string, fileSno: string): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno), data);
@@ -329,8 +330,8 @@ export class SchemaService {
     return this.http.get<SchemaExecutionProgressResponse>(this.endpointService.schemaExecutionProgressDetailUrl(schemaId));
   }
 
-  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
-    return this.http.get<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus));
+  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string, selectedRules: string[]) {
+    return this.http.post<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus), selectedRules);
   }
 
   public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[], variantId: string): Observable<any> {
@@ -376,5 +377,39 @@ export class SchemaService {
    */
   public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
     return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString,from:0,size:10 } , {params:{schemaId}});
+  }
+
+  /**
+   * Cancle the schema ....
+   * @param schemaId canncle the schema based on this schema id
+   * @returns the obserable as a response
+   */
+  public cancleSchema(schemaId: string): Observable<any> {
+    return this.http.get(this.endpointService.cancleSchemaUri(), {params:{schemaId}});
+  }
+
+  /**
+   * Get all the transformation rules ...
+   * @param moduleId filter on based on module id
+   * @param from help for scrolling
+   * @param size how many rec at a time
+   * @param searchString filter the rules based on this params
+   * @returns the CoreSchemaBrInfo[] rules
+   */
+  public transformationRules(moduleId: string, from: any, size: any, searchString: string): Observable<CoreSchemaBrInfo[]> {
+    searchString = searchString ? searchString : '';
+    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.transformationRules(), {from, size, searchString}, {params:{moduleId}});
+  }
+
+  /**
+   * Get all mapped transformation rule inside the mail rule
+   * @param from use for pagination
+   * @param size get the total rules
+   * @param searchString search the rule based on this key
+   * @returns all the transformation rule inside the main rule
+   */
+  public getMappedTransformationRules(ruleId: string , schemaId: string ,from: any, size: any, searchString: string): Observable<TransformationMappingResponse>{
+    searchString = searchString ? searchString : '';
+    return this.http.post<TransformationMappingResponse>(this.endpointService.getMappedTransformationRulesUrl(), {from,size,searchString},{params:{ruleId, schemaId}});
   }
 }

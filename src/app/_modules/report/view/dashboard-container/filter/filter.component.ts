@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType, DisplayCriteria } from '../../../_models/widget';
+import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType, DisplayCriteria, OrderWith } from '../../../_models/widget';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -20,19 +20,19 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   displayCriteriaOptions = [
     {
-      key: DisplayCriteria.TEXT,
-      value: 'Text'
+      key: 'Text',
+      value: DisplayCriteria.TEXT
     },
     {
-      key: DisplayCriteria.CODE,
-      value: 'Code'
+      key: 'Code',
+      value: DisplayCriteria.CODE
     },
     {
-      key: DisplayCriteria.CODE_TEXT,
-      value: 'Code and Text'
+      key: 'Code and Text',
+      value: DisplayCriteria.CODE_TEXT
     }
   ];
-  displayCriteriaOption = this.displayCriteriaOptions[0];
+  displayCriteriaOption: DisplayCriteria = this.displayCriteriaOptions[0].value;
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
   filteredOptionsSubject: BehaviorSubject<DropDownValues[]> = new BehaviorSubject([]);
@@ -164,14 +164,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     });
     this.subscriptions.push(filterWid);
 
-
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscriptions.push(getDisplayCriteria);
-
   }
 
   getFieldsMetadaDesc(buckets:any[], fieldId: string, reset: boolean) {
@@ -260,11 +258,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   setFilteredOptions(reset?: boolean) {
+    /* Sort dropdown data bases on sorting criteria */
+    this.sortDropdownData(this.values);
     if (reset) {
       this.filteredOptionsSubject.next(this.values);
     } else {
       const values = this.filteredOptionsSubject.value;
       values.push(...this.values);
+      this.sortDropdownData(values);
       this.filteredOptionsSubject.next(values);
     }
   }
@@ -769,7 +770,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Return the value of DisplayCriteria
    */
   setDisplayCriteria(code: string, text: string): string {
-    switch (this.displayCriteriaOption.key) {
+    switch (this.displayCriteriaOption) {
       case DisplayCriteria.CODE:
         return code || '';
         case DisplayCriteria.TEXT:
@@ -786,7 +787,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Save DisplayCriteria and update filter widget
    */
   saveDisplayCriteria() {
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption).subscribe(res => {
       this.filteredOptionsSubject.value.forEach(v => {
         v.display = this.setDisplayCriteria(v.CODE, v.TEXT);
       });
@@ -814,5 +815,36 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       this.toasterService.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
     this.subscriptions.push(saveDisplayCriteria);
+  }
+
+  /* Sort dropdownn Data */
+  sortDropdownData(values: DropDownValues[]){
+    const sortBy = this.filterWidget.getValue()?.orderWith;
+    if(this.displayCriteriaOption === DisplayCriteria.TEXT){
+      if(sortBy === OrderWith.DESC){
+        values?.sort((a, b) => { return b?.TEXT.localeCompare(a?.TEXT); });
+      } else if(sortBy === OrderWith.ASC){
+        values?.sort((a, b) => { return a?.TEXT.localeCompare(b?.TEXT); });
+      }
+    } else if(this.displayCriteriaOption === DisplayCriteria.CODE || this.displayCriteriaOption === DisplayCriteria.CODE_TEXT) {
+      if(sortBy === OrderWith.DESC){
+        values?.sort((a, b) => {
+          if(isNaN(parseInt(a.CODE,10))){
+            return b?.CODE?.localeCompare(a?.CODE);
+          } else {
+            return parseInt(b.CODE, 10) - parseInt(a?.CODE, 10);
+          }
+         });
+      } else if(sortBy === OrderWith.ASC){
+        values?.sort((a, b) => {
+          if(isNaN(parseInt(a.CODE,10))){
+            return a?.CODE?.localeCompare(b?.CODE);
+          } else {
+            return parseInt(a.CODE, 10) - parseInt(b?.CODE, 10);
+          }
+         });
+      }
+    }
+
   }
 }

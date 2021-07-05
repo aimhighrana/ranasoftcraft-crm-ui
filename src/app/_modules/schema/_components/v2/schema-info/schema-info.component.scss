@@ -3,41 +3,15 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
   overflow-y: auto;
-  height: calc(100% - 10px);
+  height: calc(100% - 16px);
 
-  .summary-root {
-    padding: 16px 0;
+  .field-label {
+    margin-bottom: 6px;
 
-    .mdo-form-field {
-      mat-label {
-        font-weight: 500;
-        font-size: 0.8rem;
-      }
-    }
-
-    .schedule-row {
-      align-items: center;
-    }
-
-    .panel-title {
-      font-weight: 500;
-    }
-
-    .summary-rowlist {
-      mat-list-item.mat-list-item {
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-        font-size: 0.8rem;
-      }
-    }
-
-    mat-divider {
-      margin: 16px 0;
-      position: relative;
-
-      &.divider-dashed {
-        border-top-style: dashed;
-      }
+    mat-icon.mat-icon {
+      width: 12px;
+      font-size: 12px;
+      height: 14px;
     }
   }
 
@@ -47,22 +21,15 @@ div.root {
 }
 
 .colunm-box {
-  align-items: center;
   box-sizing: border-box;
-  padding: 4px 0;
-  min-height: 54px;
-  font-size: 0.9rem;
-
-  .mdo-auto-complete {
-    width: 100%;
-  }
+  min-height: 48px;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 16px;
+    margin: 0 6px;
     flex-wrap: wrap;
 
     &.col-x4 {
@@ -73,6 +40,10 @@ div.root {
       flex: 8;
     }
 
+    &.col-x16 {
+      flex: 16;
+    }
+
     &.mat-item-center {
       justify-content: center;
     }
@@ -80,79 +51,19 @@ div.root {
     &.mat-item-end {
       justify-content: flex-end;
     }
-
-    .info-link {
-      align-items: center;
-      font-size: 0.9rem;
-    }
-
-    &.col-x16 {
-      flex: 16;
-    }
-
-    strong {
-      align-items: center;
-    }
-
-    .mat-line {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-    }
-
-    button.mat-stroked-button {
-      margin-right: 4px;
-      min-width: auto;
-    }
   }
 }
 
-.slider-row {
-  align-items: center;
-  flex-wrap: wrap;
+.lib-slider {
+  height: 40px;
   flex: 1;
-
-  .lib-slider {
-    flex: 1;
-    width: 1px;
-    height: 48px;
-  }
+  display: inline-table;
 }
 
-@media (min-width: 1200px) {
-  .summary-root {
-    width: 62%;
-    margin: 0 auto;
-  }
-}
+.data-allocation-list {
+  max-width: 100%;
 
-.rule-border-row {
-  div {
-    &.col-reorder {
-      width: 45px;
-      box-sizing: border-box;
-      flex-grow: 0;
-      flex-shrink: 0;
-    }
-
-    &.col-action {
-      width: 75px;
-      box-sizing: border-box;
-      flex-grow: 0;
-      flex-shrink: 0;
-    }
-
-    &.col-enabled {
-      width: 65px;
-      box-sizing: border-box;
-      flex-grow: 0;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: center;
-    }
+  .selected-text {
+    overflow: hidden;
   }
 }

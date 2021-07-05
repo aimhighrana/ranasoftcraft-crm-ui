@@ -38,15 +38,16 @@ div.root {
       height: 100%;
 
       .mdo-justify {
-        margin: 0 16px;
+        margin: 0 66px;
 
         mat-list.rule-list {
           mat-list-item {
             border-bottom-width: 1px;
             border-bottom-style: solid;
 
-            button.mat-flat-button {
-              min-width: 60px;
+            .lib-button {
+              display: flex;
+              width: 48px;
             }
           }
         }

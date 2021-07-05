@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenavContent } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
@@ -9,12 +9,14 @@ import { HomeService } from '@services/home/home.service';
 import { UserService } from '@services/user/userservice.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoadingService } from '@services/loading.service';
+import { SchemaService } from '@services/home/schema.service';
+import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 @Component({
   selector: 'pros-primary-navigation',
   templateUrl: './primary-navigation.component.html',
   styleUrls: ['./primary-navigation.component.scss']
 })
-export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDestroy, AfterViewChecked {
   /**
    * To apply the CSS class on selection of primary navigation
    */
@@ -58,13 +60,15 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * To store count of notifications
    */
   notificationsCount = 0;
+  previousSideNavigationWidth : number;
   constructor(
     private userService: UserService,
     public matDialog: MatDialog,
     private sharedService: SharedServiceService,
     private router: Router,
     public homeService: HomeService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private schemaService: SchemaService
   ) { }
 
   ngOnInit(): void {
@@ -92,8 +96,19 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngAfterViewInit() {
+    this.previousSideNavigationWidth =  this.secondaryContent.getElementRef().nativeElement.clientWidth;
   }
 
+/**
+ * angular hooks
+ */
+  ngAfterViewChecked() {
+    const currentWidth = this.secondaryContent.getElementRef().nativeElement.clientWidth;
+    if(currentWidth !== this.previousSideNavigationWidth) {
+      this.previousSideNavigationWidth = currentWidth;
+      this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
+    }
+  }
   ngOnDestroy() {
     this.udSub.unsubscribe();
     this.appStateSubject.complete();
@@ -155,6 +170,8 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       const widthPercent = ((window.innerWidth - newWidth) / window.innerWidth * 100);
       if (widthPercent > 70 && widthPercent < 94) {
         document.getElementById('secondarySidenav').style.width = newWidth + 'px';
+        document.getElementById('secondaryContent').style.marginLeft = newWidth+10+'px';
+        this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
       }
     }
   }
@@ -173,8 +190,9 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
    * function to modify the width of secondary sidebar
    */
   toggleSecondarySideBar() {
-    console.log('secondaryContent', this.secondaryContent);
-    this.secondarySideBarOpened =! this.secondarySideBarOpened;
+    console.log('secondaryContentet', this.secondaryContent);
+    this.secondarySideBarOpened = !this.secondarySideBarOpened;
+    this.sharedService.setSecondarySideNavBarState(this.secondarySideBarOpened);
     this.appStateSubject.next(true);
   }
 
@@ -258,7 +276,18 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${schemaId}` } }], { queryParams: { name: moduleDesc } })
     }
     if (moduleId && !schemaId) {
-      this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/new` } }], { queryParams: { name: moduleDesc } })
+      const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+      schemaReq.moduleId = moduleId;
+      schemaReq.discription = 'New schema';
+      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+        const receivedSchemaId = response;
+         this.router.navigate(
+           [`/home/schema/schema-info/${moduleId}/${receivedSchemaId}`],
+           { queryParams: {isCheckData: false} }
+         );
+      }, (error) => {
+        console.log('Something went wrong while creating schema', error.message);
+      });
     }
   }
 

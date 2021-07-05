@@ -142,6 +142,7 @@ export class FilterWidget {
     fieldId: string;
     isMultiSelect: boolean;
     metaData: MetadataModel;
+    orderWith: string;
 }
 
 export interface DropDownValues {
@@ -625,6 +626,7 @@ export enum ReportCategory {
     DUPLICATE_REPORT = 'DUPLICATE_REPORT',
     MISSING_MODULE = 'MISSING_MODULE',
     MISSING_FIELDS = 'MISSING_FIELDS',
+    MISSING_WRKFLOW = 'MISSING_WORKFLOW'
 }
 
 export enum FilterWith {
@@ -636,4 +638,9 @@ export enum FilterWith {
 export enum BucketFilter {
     WITHIN_1_DAY = 'within_1_day',
     MORE_THEN_1_DAY = 'more_then_1_day'
+}
+
+export interface Buckets {
+    doc_count: string,
+    key: string,
 }

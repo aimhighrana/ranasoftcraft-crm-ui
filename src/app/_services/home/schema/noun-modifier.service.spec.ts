@@ -146,7 +146,7 @@ describe('NounModifierService', () => {
     spyOn(endpointDataplay, 'getAvailableAttributeUri').and.returnValue('getAvailableAttributeUri');
 
     expect(() => service.getGsnAttribute('', 'Ball', '0')).toThrowError('Nouncode must be required ');
-    expect(() => service.getGsnAttribute('Bearing', '', '0')).toThrowError('Modifier must be required ');
+    // expect(() => service.getGsnAttribute('Bearing', '', '0')).toThrowError('Modifier must be required ');
 
     service.getGsnAttribute('Bearing', 'Ball', '0').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);

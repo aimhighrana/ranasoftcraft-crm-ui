@@ -152,12 +152,11 @@
                                             <!-- label -->
                                             <!-- input container -->
                                             <div class="mdo-field-input">
-                                                <input matInput #optionsInput [formControl]="objectType"
-                                                    [matAutocomplete]="dataSetCtrl"
-                                                    (keyup)="searchDataSet($event.target.value)" id="dataSets" />
-                                                <!-- autocomplete -->
-                                                <mat-autocomplete class="mdo-autocomplete"
-                                                    #dataSetCtrl="matAutocomplete" [displayWith]="displayWithDataSet">
+                                                <input matInput #datasetTrigger="matAutocompleteTrigger"
+                                                    [formControl]="datasetCtrl" [matAutocomplete]="datasetList"
+                                                    (click)="openAutoComplete(datasetTrigger)"
+                                                    (keyup)="openAutoComplete(datasetTrigger); searchDataSet($event.target.value)">
+                                                <mat-autocomplete #datasetList="matAutocomplete" [displayWith]="displayWithDataSet">
                                                     <mat-optgroup label="Module">
                                                         <mat-option class="mdo-option"
                                                             *ngFor="let object of dataSetOb | async" [value]="object"
@@ -342,6 +341,7 @@
                                                     </mat-autocomplete>
                                                 </div>
                                             </div>
+         
 
 
                                             <!-- when user choose custom date then start and end date should appear -->
@@ -409,25 +409,35 @@
                                             <mat-label class="mdo-field-label">Choose columns</mat-label>
                                             <!-- input container -->
                                             <div class="mdo-field-input">
-                                                <input matInput #optionsInput [formControl]="optionCtrl"
-                                                    [matAutocomplete]="chooseColumn"
-                                                    (keyup)="searchChooseColumn($event.target.value)" />
+                                                <input matInput [matAutocomplete]="chooseColumnM" [formControl]="fieldCtrl"
+                                                    #columnsTriggerM="matAutocompleteTrigger"
+                                                    (click)="openAutoComplete(columnsTriggerM)"
+                                                    (keyup)="openAutoComplete(columnsTriggerM); searchChooseColumn($event.target.value)">
                                                 <!-- autocomplete -->
-                                                <mat-autocomplete class="mdo-autocomplete"
-                                                    #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith"
-                                                    (optionSelected)="selectSingle($event)">
-                                                    <mat-option class="mdo-option"
-                                                        *ngFor="let field of headerFields | async"
-                                                        value="{{ field.fieldId }}">
-                                                        <div (click)="optionClicked($event, field)">
-                                                            <lib-checkbox label="{{ field.fieldDescri }}"
-                                                                prosClickStopPropagation
-                                                                (valueChange)="toggleSelection(field)"
-                                                                [checked]="isSelected(field)">
-
-                                                            </lib-checkbox>
-                                                        </div>
-                                                    </mat-option>
+                                                <mat-autocomplete #chooseColumnM="matAutocomplete"
+                                                    [displayWith]="chooseColumnDisWith" (opened)="removeError('fieldCtrl')">
+                                                    <mat-optgroup label="System fileds">
+                                                        <mat-option *ngFor="let field of systemFields
+                                                        " value="{{ field.fieldId }}">
+                                                            <div (click)="optionClicked($event, field)">
+                                                                <lib-checkbox prosClickStopPropagation
+                                                                    (valueChange)="toggleSelection(field)"
+                                                                    [checked]="isSelected(field)" [label]="field.fieldDescri">
+                                                                </lib-checkbox>
+                                                            </div>
+                                                        </mat-option>
+                                                    </mat-optgroup>
+                                                    <mat-optgroup label="Header fileds">
+                                                        <mat-option *ngFor="let field of headerFields | async"
+                                                            value="{{ field.fieldId }}">
+                                                            <div (click)="optionClicked($event, field)">
+                                                                <lib-checkbox prosClickStopPropagation
+                                                                    (valueChange)="toggleSelection(field)"
+                                                                    [checked]="isSelected(field)" [label]="field.fieldDescri">
+                                                                </lib-checkbox>
+                                                            </div>
+                                                        </mat-option>
+                                                    </mat-optgroup>
                                                 </mat-autocomplete>
                                             </div>
                                             <!-- hint -->
@@ -446,39 +456,32 @@
                                             <mat-label class="mdo-field-label">Choose columns</mat-label>
                                             <!-- input container -->
                                             <div class="mdo-field-input">
-                                                <input matInput #optionsInput [formControl]="optionCtrl"
-                                                    [matAutocomplete]="chooseColumnWF"
-                                                    (keyup)="searchChooseColumnWorkflow($event.target.value)" />
+                                                <input matInput [matAutocomplete]="chooseColumnWF" [formControl]="fieldCtrl"
+                                                    #columnsTriggerWM="matAutocompleteTrigger"
+                                                    (click)="openAutoComplete(columnsTriggerWM)"
+                                                    (keyup)="openAutoComplete(columnsTriggerWM); searchChooseColumnWorkflow($event.target.value)">
                                                 <!-- autocomplete -->
-                                                <mat-autocomplete class="mdo-autocomplete"
-                                                    #chooseColumnWF="matAutocomplete"
-                                                    [displayWith]="chooseColumnDisWith"
-                                                    (optionSelected)="selectSingle($event)">
+                                                <mat-autocomplete #chooseColumnWF="matAutocomplete"
+                                                    (opened)="removeError('fieldCtrl')" [displayWith]="chooseColumnDisWith">
                                                     <mat-optgroup label="System fileds">
-                                                        <mat-option class="mdo-option"
-                                                            *ngFor="let field of (workflowFieldsObs | async).static"
+                                                        <mat-option *ngFor="let field of (workflowFieldsObs | async).static"
                                                             value="{{ field.fieldId }}">
                                                             <div (click)="optionClicked($event, field)">
-                                                                <lib-checkbox label="{{ field.fieldDescri }}"
-                                                                    prosClickStopPropagation
+                                                                <lib-checkbox prosClickStopPropagation
                                                                     (valueChange)="toggleSelection(field)"
-                                                                    [checked]="isSelected(field)">
-
+                                                                    [checked]="isSelected(field)" [label]="field.fieldDescri">
                                                                 </lib-checkbox>
                                                             </div>
                                                         </mat-option>
                                                     </mat-optgroup>
 
                                                     <mat-optgroup label="Module fileds">
-                                                        <mat-option class="mdo-option"
-                                                            *ngFor="let field of (workflowFieldsObs | async).dynamic"
+                                                        <mat-option *ngFor="let field of (workflowFieldsObs | async).dynamic"
                                                             value="{{ field.fieldId }}">
                                                             <div (click)="optionClicked($event, field)">
-                                                                <lib-checkbox label="{{ field.fieldDescri }}"
-                                                                    prosClickStopPropagation
+                                                                <lib-checkbox prosClickStopPropagation
                                                                     (valueChange)="toggleSelection(field)"
-                                                                    [checked]="isSelected(field)">
-
+                                                                    [checked]="isSelected(field)" [label]="field.fieldDescri">
                                                                 </lib-checkbox>
                                                             </div>
                                                         </mat-option>
@@ -501,21 +504,19 @@
                                             <mat-label class="mdo-field-label">Choose columns</mat-label>
                                             <!-- input container -->
                                             <div class="mdo-field-input">
-                                                <input matInput #optionsInput [formControl]="optionCtrl"
-                                                    [matAutocomplete]="chooseColumn"
-                                                    (keyup)="searchCustomChooseColumn($event.target.value)" />
+                                                <input matInput [matAutocomplete]="chooseColumnCM" [formControl]="fieldCtrl"
+                                                    #columnsTriggerCM="matAutocompleteTrigger"
+                                                    (click)="openAutoComplete(columnsTriggerCM)"
+                                                    (keyup)="openAutoComplete(columnsTriggerCM); searchCustomChooseColumn($event.target.value)">
                                                 <!-- autocomplete -->
-                                                <mat-autocomplete class="mdo-autocomplete"
-                                                    #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith"
-                                                    (optionSelected)="selectSingle($event)">
-                                                    <mat-option class="mdo-option"
-                                                        *ngFor="let fld of CustomfieldsObs | async"
+                                                <mat-autocomplete #chooseColumnCM="matAutocomplete"
+                                                    (opened)="removeError('fieldCtrl')" [displayWith]="chooseColumnDisWith">
+                                                    <mat-option *ngFor="let fld of CustomfieldsObs | async"
                                                         value="{{ fld.fieldId }}">
                                                         <div (click)="optionClicked($event, fld)">
-                                                            <lib-checkbox label="{{ fld.fieldDescri }}"
-                                                                prosClickStopPropagation
-                                                                (valueChange)="toggleSelection(fld)"
-                                                                [checked]="isSelected(fld)">
+                                                            <lib-checkbox prosClickStopPropagation
+                                                                (valueChange)="toggleSelection(fld)" [checked]="isSelected(fld)"
+                                                                [label]="fld.fieldDescri">
                                                             </lib-checkbox>
                                                         </div>
                                                     </mat-option>
@@ -926,13 +927,22 @@
                                                     || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHEN'
                                                     || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHENEQUALTO'"
                                                         [ngIfElse]="fieldvalue">
-                                                        <pros-workflowfield-control
-                                                            [objectType]="selStyleWid && selStyleWid.objectType"
-                                                            label="Field "
-                                                            [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
-                                                            (selectionChange)='onDefaultFilterChange($event,i)'
-                                                            class="field-divider">
-                                                        </pros-workflowfield-control>
+                                                        <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
+                                                            <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType" lebel="Field"
+                                                                [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
+                                                                (selectionChange)='onDefaultFilterEndValChange($event,i)'
+                                                                [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet" class="field-divider">
+                                                            </pros-metadatafield-control>
+                                                            <span class="col-spacer"></span>
+                                                        </ng-template>
+                                                        
+                                                        <ng-template
+                                                            [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
+                                                            <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType" label="Field "
+                                                                [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
+                                                                (selectionChange)='onDefaultFilterEndValChange($event,i)' class="field-divider">
+                                                            </pros-workflowfield-control>
+                                                        </ng-template>
                                                     </ng-template>
 
                                                     <ng-template #fieldvalue>

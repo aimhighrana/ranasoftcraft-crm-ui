@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType, DisplayCriteria, WidgetHeader } from '../../../_models/widget';
+import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType, DisplayCriteria, WidgetHeader, OrderWith } from '../../../_models/widget';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
@@ -327,20 +327,20 @@ describe('FilterComponent', () => {
   }));
 
   it('setDisplayCriteria(), should return string from DisplayCriteria', async(()=> {
-    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.displayCriteriaOption = DisplayCriteria.TEXT;
     const test = { t: 'test', c: '1234'};
     let res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('test');
 
-    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    component.displayCriteriaOption = DisplayCriteria.CODE;
     res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234');
 
-    component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
+    component.displayCriteriaOption = DisplayCriteria.CODE_TEXT;
     res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('1234 -- test');
 
-    component.displayCriteriaOption.key = undefined;
+    component.displayCriteriaOption = undefined;
     res = component.setDisplayCriteria(test.c, test.t);
     expect(res).toEqual('test');
 
@@ -366,13 +366,13 @@ describe('FilterComponent', () => {
     const filterWidget = new FilterWidget();
     filterWidget.fieldId = 'ZMRO';
     component.filterWidget.next(filterWidget);
-    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.displayCriteriaOption = DisplayCriteria.TEXT;
     component.widgetId = 12345;
     component.widgetInfo = new Widget();
     component.widgetInfo.widgetType = WidgetType.FILTER;
     component.widgetInfo.widgetId = component.widgetId.toString();
     component.filterCriteria = [];
-    spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption.key).and.returnValue(of({}));
+    spyOn(widgetService,'saveDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType, component.displayCriteriaOption).and.returnValue(of({}));
     component.saveDisplayCriteria();
     expect(widgetService.saveDisplayCriteria).toHaveBeenCalledWith('12345', WidgetType.FILTER, DisplayCriteria.TEXT);
   }));
@@ -402,5 +402,44 @@ describe('FilterComponent', () => {
   it('showHeadingTooltip() should set tooltipDirective disabled', async(()=> {
     component.showHeadingTooltip();
     expect(component.tooltipDirective.disabled).toBeTruthy();
+
+  }))
+
+  it('sortDropdownData() should ssort the dropdownData', async(()=> {
+    const dropdownData: DropDownValues[] = [];
+    const dropdownOption = {
+      CODE: '00104',
+      FIELDNAME: 'MATL_GROUP',
+      TEXT: 'Mechanics',
+      display: 'Mechanics'
+    } as DropDownValues;
+
+    dropdownData.push(dropdownOption);
+    dropdownOption.CODE = 'ABCDEF';
+    dropdownData.push(dropdownOption);
+    const filterWidget= new FilterWidget()
+    filterWidget.orderWith= OrderWith.DESC;
+    component.filterWidget.next(filterWidget);
+    component.displayCriteriaOption = DisplayCriteria.TEXT;
+    component.sortDropdownData(dropdownData);
+    expect(dropdownData.length).toEqual(2);
+
+    filterWidget.orderWith= OrderWith.ASC;
+    component.filterWidget.next(filterWidget);
+    component.displayCriteriaOption = DisplayCriteria.TEXT;
+    component.sortDropdownData(dropdownData);
+    expect(dropdownData.length).toEqual(2);
+
+    filterWidget.orderWith= OrderWith.ASC;
+    component.filterWidget.next(filterWidget);
+    component.displayCriteriaOption = DisplayCriteria.CODE;
+    component.sortDropdownData(dropdownData);
+    expect(dropdownData.length).toEqual(2);
+
+    filterWidget.orderWith= OrderWith.DESC;
+    component.filterWidget.next(filterWidget);
+    component.displayCriteriaOption = DisplayCriteria.CODE;
+    component.sortDropdownData(dropdownData);
+    expect(dropdownData.length).toEqual(2);
   }))
 });

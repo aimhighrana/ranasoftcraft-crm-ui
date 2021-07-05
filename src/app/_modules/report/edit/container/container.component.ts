@@ -399,6 +399,33 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
         }
+        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet !== this.styleCtrlGrp.value.isWorkflowDataset) {
+          if (this.selStyleWid.isWorkflowdataSet) {
+            this.getWorkFlowFields(fillData.split(','));
+            this.getRecordCount(fillData, true);
+            this.getWorkFlowPathDetails(fillData.split(','));
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          } else {
+            this.getAllFields(fillData);
+            this.getRecordCount(fillData);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          }
+        }
+        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet !== this.styleCtrlGrp.value.isCustomdataSet) {
+          if (this.selStyleWid.isCustomdataSet) {
+            this.getCustomFields(fillData);
+            this.getRecordCount(fillData, false, true);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
+          } else {
+            this.getAllFields(fillData);
+            this.getRecordCount(fillData);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          }
+        }
       } else {
         console.log(fillData);
       }
@@ -512,9 +539,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
     const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
     if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
-      dropableWidget.x = boxX;
-      dropableWidget.y = boxY;
-
+      if (boxX + dropableWidget.width <= 200) {
+        dropableWidget.x = boxX;
+        dropableWidget.y = boxY;
+      }
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }
@@ -899,7 +927,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         };
 
         if (!widget.objectType && (!widget.widgetTableFields || widget.widgetTableFields.length === 0)) {
-          this.toasterService.open(`Fields to be highlighted :  Data set, Choose columns.`, 'Close', { duration: 2000 });
+          this.toasterService.open(`Highlighted fields can’t be empty`, 'Close', { duration: 2000 });
           this.showStyle(widget);
           this.ref.detectChanges(); // This is needed if the right sidebar is close
           setDatesetError();
@@ -1120,8 +1148,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param value width entered by user..
    */
   widthCount(value: number) {
-    if (value > 200) {
-      return this.styleCtrlGrp.get('width').setValue(200);
+    const marginCount = this.selStyleWid.x;
+    if (marginCount + Number(value) > 200) {
+      const width = 200 - marginCount;
+      return this.styleCtrlGrp.get('width').setValue(width);
     }
   }
 
@@ -1169,6 +1199,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         const lastWidget = this.widgetList[this.widgetList.length - 1];
         dropableWidget.x = boxX + lastWidget.x + 11;
         dropableWidget.y = boxY + lastWidget.y + 11;
+        if (dropableWidget.x + dropableWidget.width > 200) {
+          dropableWidget.x = boxX;
+          dropableWidget.y = boxY;
+        }
       } else {
         dropableWidget.x = boxX;
         dropableWidget.y = boxY;
