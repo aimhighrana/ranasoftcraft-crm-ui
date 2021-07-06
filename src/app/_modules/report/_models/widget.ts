@@ -206,6 +206,7 @@ export class BarChartWidget {
     blankValueAlias : string;
     widgetColorPalette: WidgetColorPalette;
     isEnabledBarPerc : boolean;
+    showTotal:boolean;
 }
 
 export class StackBarChartWidget{
@@ -231,6 +232,7 @@ export class StackBarChartWidget{
     dataSetSize: number;
     blankValueAlias : string;
     widgetColorPalette: WidgetColorPalette;
+    showTotal:boolean;
 }
 
 export class PieChartWidget {
