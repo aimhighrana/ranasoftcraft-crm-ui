@@ -309,12 +309,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnInit(): void {
-
+  if(!this.isInRunning) {
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
         this.getDataScope(res);
       }
     })
+  }
 
     const definedColumnOrder = Object.keys(definedColumnsMetadata);
     const previousCls = this.displayedColumns.getValue();
