@@ -22,6 +22,7 @@
         </ng-template>
         <div class="f-col-spacer-half"></div>
         <div class="f-spacer"></div>
+        <pros-global-count [schemaId]="schemaId"></pros-global-count>
         <div class="f-row">
             <lib-button-group>
                 <lib-button type="plain" icon="chart-line" iconPosition="before" (click)="openExecutionTrendSideSheet()"><span class="btn-txt">Stats</span></lib-button>
@@ -47,7 +48,7 @@
                     {{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }} errors
                 </mat-chip>
                 <mat-chip (click)="changeTabStatus('success')" disableRipple="true" class="warning-status">
-                    {{ (statics && statics.successCnt) ? statics.successCnt : 0 }} warnings
+                    {{ (statics && statics.successCnt) ? statics.successCnt : 0 }} success
                 </mat-chip>
                 <mat-chip (click)="changeTabStatus('review')" disableRipple="true" class="info-status">
                     {{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }} corrections

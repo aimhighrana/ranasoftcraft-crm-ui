@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { GlobalCounts } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './global-count.component.html',
   styleUrls: ['./global-count.component.scss'],
 })
-export class GlobalCountComponent implements OnInit, OnDestroy {
+export class GlobalCountComponent implements OnInit, OnDestroy, OnChanges {
   globalCount: GlobalCounts = {
     successCount: 0,
     errorCount: 0,
@@ -24,6 +24,13 @@ export class GlobalCountComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getGlobalCounts();
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges): void {
+    // get latest count on schema changes
+    if (simpleChanges && simpleChanges.schemaId.currentValue) {
+      this.getGlobalCounts();
+    }
   }
 
   getGlobalCounts() {

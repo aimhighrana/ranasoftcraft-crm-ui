@@ -1,7 +1,3 @@
-<div class="global-count-chip-list">
-  <lib-chip-list>
-    <lib-chip label="Error:" type="error">{{globalCount.errorCount}}</lib-chip>
-    <lib-chip label="Skipped:" type="warning">{{globalCount.skippedCount}}</lib-chip>
-    <lib-chip label="Success:" type="info">{{globalCount.successCount}}</lib-chip>
-  </lib-chip-list>
+<div>
+  <label><span>Σ</span>{{globalCount.errorCount}}&nbsp;error<span class="dot">.</span>{{globalCount.successCount}}&nbsp;success<span class="dot">.</span>{{globalCount.skippedCount}}&nbsp;skipped</label>
 </div>

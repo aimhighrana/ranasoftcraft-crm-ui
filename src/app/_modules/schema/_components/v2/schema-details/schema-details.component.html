@@ -23,6 +23,8 @@
         </ng-template>
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
+        <pros-global-count [schemaId]="schemaId"></pros-global-count>
+        
         <lib-button-group>
             <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
                 <span class="btn-txt">Refine</span>
@@ -140,10 +142,6 @@
                 <button mat-menu-item i18n="@@reset" (click)="resetAppliedFilter()">Reset</button>
             </mat-menu>
         </div>
-
-        <div class="f-row-spacer-half"></div>
-
-        <pros-global-count [schemaId]="schemaId"></pros-global-count>
 
         <div class="f-row-spacer-half"></div>
 

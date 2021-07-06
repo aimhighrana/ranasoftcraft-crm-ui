@@ -66,35 +66,3 @@ a {
   flex-grow: 1;
 }
 
-.global-count-chip-list {
-
-  lib-chip button.mdo-filter-pill.info .filter-value,
-  lib-chip button.mdo-filter-pill.info .filter-text {
-    color: #3e8dec;
-  }
-
-  .info {
-    background: #e7f5ff !important;
-    border-color: #e7f5ff !important;
-  }
-
-  lib-chip button.mdo-filter-pill.warning .filter-value,
-  lib-chip button.mdo-filter-pill.warning .filter-text {
-    color: #f89b02;
-  }
-
-  .warning {
-    background: #fff4e6 !important;
-    border-color: #fff4e6 !important;
-  }
-
-  lib-chip button.mdo-filter-pill.error .filter-value,
-  lib-chip button.mdo-filter-pill.error .filter-text {
-    color: #d81e22;
-  }
-
-  .error {
-    background: #fff5f5 !important;
-    border-color: #fff5f5 !important;
-  }
-}
