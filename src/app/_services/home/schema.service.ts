@@ -10,6 +10,7 @@ import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
 import { SchemaExecutionNodeType, SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { GlobalCounts } from '@models/schema/schemadetailstable';
 
 @Injectable({
   providedIn: 'root'
@@ -411,5 +412,14 @@ export class SchemaService {
   public getMappedTransformationRules(ruleId: string , schemaId: string ,from: any, size: any, searchString: string): Observable<TransformationMappingResponse>{
     searchString = searchString ? searchString : '';
     return this.http.post<TransformationMappingResponse>(this.endpointService.getMappedTransformationRulesUrl(), {from,size,searchString},{params:{ruleId, schemaId}});
+  }
+
+  /**
+   * Get global counts such as success, error and skipped for schema
+   * @param schemaId Selected schemaId
+   * @returns global counts for particular schema
+   */
+  public getSchemaGlobalCounts(schemaId: string): Observable<GlobalCounts> {
+    return this.http.get<GlobalCounts>(this.endpointService.getSchemaGlobalCounts(schemaId));
   }
 }
