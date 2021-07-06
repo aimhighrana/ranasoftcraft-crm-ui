@@ -367,6 +367,7 @@ export interface SchemaCorrectionReq {
     gridId: string;
     heirerchyId: string;
     vc: string;
+    vt?: string;
     rowSno: string;
     isReviewed: boolean;
 }

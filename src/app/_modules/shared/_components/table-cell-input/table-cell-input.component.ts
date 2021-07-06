@@ -79,9 +79,9 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
   }
 
   submitSingleSelectValue(event) {
-    const selectedOption = this.selectFieldOptions.find(option => option.CODE.toLocaleLowerCase() === event.target.value.toLowerCase());
-    const selectedValue = selectedOption ? selectedOption.CODE : this.value;
-    this.emitInputBlur(selectedValue);
+    const selectedOption = this.selectFieldOptions.find(option => option.TEXT.toLocaleLowerCase() === event.target.value.toLowerCase());
+   // const selectedValue = selectedOption ? selectedOption.CODE : this.value;
+    this.emitInputBlur(selectedOption || this.value);
   }
 
   formatMultiSelectValue(value) {
@@ -112,4 +112,7 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
     this.emitInputBlur(this.formatDate(this.dateControl.value));
   }
 
+  singleSelectDisplayFn(value: DropDownValue) {
+    return value?.TEXT || '';
+  }
 }
