@@ -136,6 +136,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   datasetCtrl: FormControl = new FormControl('');
   fieldCtrl: FormControl = new FormControl('');
+  lastSelectedWidget: Widget;
 
   /** system fields for Transactional module dataset */
   systemFields = [
@@ -348,51 +349,24 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData => {
       if (fillData && typeof fillData === 'string') {
-        if (fillData !== this.styleCtrlGrp.value.objectType && !this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
+        if ((fillData !== this.styleCtrlGrp.value.objectType || (fillData === this.styleCtrlGrp.value.objectType && (this.selStyleWid.isWorkflowdataSet !== this.lastSelectedWidget.isWorkflowdataSet || this.selStyleWid.isCustomdataSet !== this.lastSelectedWidget?.isCustomdataSet))) && !this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
           this.getAllFields(fillData);
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if (fillData !== this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
+        if ((fillData !== this.styleCtrlGrp.value.objectType || (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet !== this.lastSelectedWidget.isWorkflowdataSet)) && this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
           this.getWorkFlowFields(fillData.split(','));
           this.getRecordCount(fillData, true);
           this.getWorkFlowPathDetails(fillData.split(','));
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if (fillData !== this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet && !this.selStyleWid.isWorkflowdataSet) {
+        if ((fillData !== this.styleCtrlGrp.value.objectType || (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet !== this.lastSelectedWidget.isCustomdataSet)) && this.selStyleWid.isCustomdataSet && !this.selStyleWid.isWorkflowdataSet) {
           this.getCustomFields(fillData);
           this.getRecordCount(fillData, false, true);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
-        }
-        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet !== this.styleCtrlGrp.value.isWorkflowDataset) {
-          if (this.selStyleWid.isWorkflowdataSet) {
-            this.getWorkFlowFields(fillData.split(','));
-            this.getRecordCount(fillData, true);
-            this.getWorkFlowPathDetails(fillData.split(','));
-            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
-            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
-          } else {
-            this.getAllFields(fillData);
-            this.getRecordCount(fillData);
-            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
-            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
-          }
-        }
-        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet !== this.styleCtrlGrp.value.isCustomdataSet) {
-          if (this.selStyleWid.isCustomdataSet) {
-            this.getCustomFields(fillData);
-            this.getRecordCount(fillData, false, true);
-            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
-            this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
-          } else {
-            this.getAllFields(fillData);
-            this.getRecordCount(fillData);
-            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
-            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
-          }
         }
       } else {
         console.log(fillData);
@@ -546,6 +520,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if (data) {
       this.removeError('fieldCtrl');
       this.removeError('datasetCtrl');
+      this.lastSelectedWidget = this.selStyleWid ? this.selStyleWid : {} as Widget;
       this.selStyleWid = data;
       if (this.styleCtrlGrp) {
         // convert miliis to date
@@ -564,6 +539,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.styleCtrlGrp.setValue({
           widgetName: data.widgetTitle ? data.widgetTitle : '',
+          isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
+          isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
           height: data.height ? data.height : '',
           width: data.width ? data.width : '',
           field: data.field ? data.field : '',
@@ -572,7 +549,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
           orderWith: data.orderWith ? data.orderWith : OrderWith.DESC,
           groupById: data.groupById ? data.groupById : '',
-          isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
           imageUrl: data.imageUrl ? data.imageUrl : '',
           htmlText: data.htmlText ? data.htmlText : '',
           imagesno: data.imagesno ? data.imagesno : '',
@@ -582,7 +558,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           endDate: endDate ? moment(endDate) : '',
           workflowPath: data.workflowPath ? data.workflowPath : [],
           distictWith: data.distictWith ? data.distictWith : '',
-          isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
           displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
           objectType: data.objectType ? data.objectType : '',
