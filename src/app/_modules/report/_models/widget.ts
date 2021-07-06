@@ -207,7 +207,8 @@ export class BarChartWidget {
     dataSetSize: number;
     blankValueAlias: string;
     widgetColorPalette: WidgetColorPalette;
-    isEnabledBarPerc: boolean;
+    isEnabledBarPerc : boolean;
+    showTotal:boolean;
 }
 
 export class StackBarChartWidget {
