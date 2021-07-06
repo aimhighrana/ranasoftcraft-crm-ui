@@ -643,7 +643,7 @@
                                 <div class="f-col mdo-field" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                     <mat-label i18n="@@orientation">Orientation</mat-label>
                                     <div class="mdo-field-input"
-                                        *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value.key === 'BAR'">
+                                        *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value?.key === 'BAR'">
                                         <input matInput #optionsInput
                                             formControlName="orientation" [matAutocomplete]="auto" />
                                         <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
@@ -658,7 +658,7 @@
                                 </div>
 
                                 <ng-template
-                                    [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value.key === 'BAR' || chartPropCtrlGrp.get('chartType').value.key === 'LINE'">
+                                    [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value?.key === 'BAR' || chartPropCtrlGrp.get('chartType').value?.key === 'LINE'">
                                     <div class="f-col">
 
 
@@ -691,7 +691,7 @@
                                         </div>
                                     </div>
                                     <ng-template
-                                        [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value.key === 'LINE'">
+                                        [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value?.key === 'LINE'">
                                         <div class="f-col">
                                             <div class="f-row">
                                                 <div class="f-col">
@@ -733,7 +733,7 @@
                                 </div>
                                 <div class="f-row-spacer-half"></div>
                                 <div class="f-col mdo-field"
-                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value.key !== 'PIE'">
+                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value?.key !== 'PIE'">
                                     <mat-label i18n="@@datalabelsPosition">Datalabels position</mat-label>
                                     <div class="mdo-field-input">
                                         <input matInput placeholder="Type to search" #optionsInput
@@ -751,7 +751,7 @@
 
                                 <!-- PIE CHART PERCETAGE CONFIG -->
                                 <div class="f-col"
-                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value.key === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
+                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value?.key === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
 
                                     <lib-checkbox label="Show data in %" formControlName="isEnabledBarPerc">
                                     </lib-checkbox>
