@@ -650,7 +650,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           const selectedOrientation = this.orientation.find(orint => orint.key === data.chartProperties.orientation);
           const selectedDataLabelPosition = this.datalabelsPosition.find(data1 => data1.key === data.chartProperties.datalabelsPosition);
           const selectedLegendPosition = this.legendPosition.find(legend => legend.key === data.chartProperties.legendPosition);
-          const selectedOrderWith = this.orderWith.find(order => order.key === data.chartProperties.orderWith);
+          const selectedOrderWithValues = this.orderWith.find(order => order.key === data.chartProperties.orderWith);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
           this.chartPropCtrlGrp.patchValue({
             bucketFilter: selectedBucketFilter ? selectedBucketFilter : null,
@@ -660,7 +660,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
             orientation: selectedOrientation ? selectedOrientation : null,
             datalabelsPosition: selectedDataLabelPosition ? selectedDataLabelPosition : null,
             legendPosition: selectedLegendPosition ? selectedLegendPosition : null,
-            orderWith: selectedOrderWith ? selectedOrderWith : null
+            orderWith: selectedOrderWithValues ? selectedOrderWithValues : null
           })
         } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
           this.chartPropCtrlGrp.setValue({
