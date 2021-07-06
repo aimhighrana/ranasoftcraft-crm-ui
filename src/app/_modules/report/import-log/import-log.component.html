@@ -45,7 +45,7 @@
         <ng-container matColumnDef="updated" sticky>
           <th mat-header-cell *matHeaderCellDef mat-sort-header i18n="@@updated">Updated</th>
           <td mat-cell *matCellDef="let element" class="text-end">
-            {{element.updatedAt | date:'dd-MM-yyyy'}}
+            {{element.updatedAt | dateFormatPipe:'dd-MM-yyyy'}}
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -54,10 +54,8 @@
     </div>
   </div>
 
-  <!-- <div> -->
     <ng-template #emptyState>
       <lib-empty-state primaryText="Nothing to see here" icon="table" iconSize=200>
       </lib-empty-state>
     </ng-template>
-  <!-- </div> -->
 </div>

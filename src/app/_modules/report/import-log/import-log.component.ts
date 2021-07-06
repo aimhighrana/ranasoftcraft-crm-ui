@@ -87,7 +87,7 @@ export class ImportLogComponent implements OnInit {
         }))
       })
     }, error => {
-      this.toasterService.open('Something went wrong', 'Close', { duration: 2000 });
+      console.log('Error: '+error.error.errorMsg);
     })
   }
 
