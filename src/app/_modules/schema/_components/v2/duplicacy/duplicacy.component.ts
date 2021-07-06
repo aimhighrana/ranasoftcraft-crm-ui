@@ -236,7 +236,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     let isRefresh = false;
 
-    if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
+    if (changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
       this.isInRunning = changes.isInRunning.currentValue;
     }
 
@@ -253,11 +253,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     /* if(changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue ? changes.variantId.currentValue : '0';
     } */
-
     const moduleSub = this.getModuleInfo(this.moduleId);
-    const sub = this.getDataScope();
-    forkJoin({getDataScope: sub, getModuleInfo: moduleSub}).subscribe((res) => {
-      if (res) {
+    forkJoin({ getModuleInfo: moduleSub, ...!this.isInRunning && { getDataScope: this.getDataScope() } }).subscribe((res) => {
+      if (res && !this.isInRunning) {
         this.getSchemaDetails();
       }
     });
@@ -303,7 +301,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit(): void {
 
-    this.sharedServices.getDataScope().subscribe(res => {
+    !this.isInRunning && this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
         this.getDataScope(res);
       }
@@ -400,10 +398,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
         if (res) {
           this.metadataFldLst = res[0];
           const selcteFlds = res[1] ? res[1] : [];
-          if(!selcteFlds.length) {
+          if (!selcteFlds.length) {
             const orderFld: SchemaTableViewFldMap[] = [];
-            Object.keys(res[0].headers).forEach((header, index)=>{
-              if(index <= 9) {
+            Object.keys(res[0].headers).forEach((header, index) => {
+              if (index <= 9) {
                 const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
                 choosenField.order = index;
                 choosenField.fieldId = header;
@@ -414,7 +412,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
             });
             const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
             schemaTableViewRequest.schemaId = this.schemaId;
-            schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
+            schemaTableViewRequest.variantId = this.variantId ? this.variantId : '0';
             schemaTableViewRequest.schemaTableViewMapping = orderFld;
             this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
               console.log(response);
@@ -429,7 +427,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
           }
           this.calculateDisplayFields();
         }
-    });
+      });
   }
 
 
@@ -506,7 +504,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     const request = new RequestForCatalogCheckData();
     request.schemaId = this.schemaId;
     request.groupId = this.groupId;
-    request.page = this.pageIndex ;
+    request.page = this.pageIndex;
     request.size = 20;
     request.key = this.groupKey;
     request.runId = this.schemaInfo && this.schemaInfo.runId ? this.schemaInfo.runId : '';
@@ -561,7 +559,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     this.activeTab = status;
     this.groupId = null;
     // this.getData();
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status} });
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status } });
 
   }
 
@@ -574,19 +572,19 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       selectedFields: this.selectedFields, editActive: true
     }
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], { queryParamsHandling: 'preserve' });
   }
 
   /**
    * Method for download error or execution logs
    */
   downloadExecutionDetails() {
-    if(!this.groupId) {
+    if (!this.groupId) {
       return;
     }
     const downloadLink = document.createElement('a');
     const queryParams = `?runId=${this.schemaInfo.runId}&variantId=${this.variantId}&groupId=${this.groupId}`
-    downloadLink.href = this.endpointservice.downloadDuplicateExecutionDetailsUrl(this.schemaId, this.activeTab) + queryParams ;
+    downloadLink.href = this.endpointservice.downloadDuplicateExecutionDetailsUrl(this.schemaId, this.activeTab) + queryParams;
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -662,10 +660,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
     console.log(objNumbs);
 
-    this.catalogService.approveDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs,this.userDetails.userName)
-    .subscribe(res => {
+    this.catalogService.approveDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs, this.userDetails.userName)
+      .subscribe(res => {
         // this.getData();
-        this.snackBar.open('Successfully approved !', 'close', {duration: 1500});
+        this.snackBar.open('Successfully approved !', 'close', { duration: 1500 });
 
         if (type === 'inline') {
           row.OBJECTNUMBER.isReviewed = true;
@@ -675,10 +673,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
           })
         }
         this.selection.clear();
-    }, error => {
-      this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
-      console.error(`Error :: ${error.message}`);
-    });
+      }, error => {
+        this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
+        console.error(`Error :: ${error.message}`);
+      });
   }
 
   /**
@@ -705,8 +703,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
     console.log(objNumbs);
 
-    this.catalogService.rejectDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs,this.userDetails.userName)
-    .subscribe(res => {
+    this.catalogService.rejectDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs, this.userDetails.userName)
+      .subscribe(res => {
         this.selection.clear();
         this.getData();
         /* if (type === 'inline') {
@@ -717,10 +715,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
           })
         } */
 
-    }, error => {
-      this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
-      console.error(`Error :: ${error.message}`);
-    });
+      }, error => {
+        this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
+        console.error(`Error :: ${error.message}`);
+      });
   }
 
   /**
@@ -897,7 +895,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
     this.catalogService.markForDeletion(objectNumber, this.moduleId, this.schemaId, this.schemaInfo.runId)
       .subscribe(resp => {
-        this.snackBar.open('Successfully marked for deletion !', 'close', {duration: 1500});
+        this.snackBar.open('Successfully marked for deletion !', 'close', { duration: 1500 });
         row[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.DELETABLE;
         console.log(resp);
       }, error => {
@@ -960,7 +958,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     obsv.subscribe(res => {
       this.dataScope = res;
       this.currentDatascopePageNo = 0;
-      if(activeVariantId) {
+      if (activeVariantId) {
         this.variantChange(activeVariantId);
       }
     }, (error) => console.error(`Something went wrong while getting variants : ${error.message}`));
@@ -988,14 +986,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Function to open data scope side sheet...
    */
   openDataScopeSideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }], { queryParamsHandling: 'preserve' })
   }
 
   /**
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], { queryParamsHandling: 'preserve' })
   }
 
   /**
@@ -1092,7 +1090,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
         } as DoCorrectionRequest;
         this.catalogService.doCorrection(this.schemaId, this.schemaInfo.runId, request).subscribe(res => {
           // row[fldid].fieldData = value;
-          if(res && res.count) {
+          if (res && res.count) {
             this.statics.correctedCnt = res.count;
           }
         }, error => {
@@ -1164,7 +1162,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Function to open trend execution side sheet
    */
   openExecutionTrendSideSheet() {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }], {queryParamsHandling: 'preserve'})
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }], { queryParamsHandling: 'preserve' })
   }
 
   /**
@@ -1173,7 +1171,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   getSchemaTableActions() {
     this.schemaDetailService.getTableActionsBySchemaId(this.schemaId).subscribe(actions => {
       console.log(actions);
-      if(actions && actions.length) {
+      if (actions && actions.length) {
         this.tableActionsList = actions;
       }
     });
