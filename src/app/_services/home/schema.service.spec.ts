@@ -871,7 +871,7 @@ describe('SchemaService', () => {
       skippedCount: 0,
     };
 
-    let schemaId = '7944828395059';
+    const schemaId = '7944828395059';
 
     console.log('endpointServiceSpy.getSchemaGlobalCounts', endpointServiceSpy);
 
