@@ -552,11 +552,13 @@ describe('ReportingListComponent', () => {
 
 
   it('ngOnInit()', async(()=>{
-    component.ngOnInit();
+    // component.ngOnInit();
     component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
-    expect(component.ngOnInit).toBeTruthy();
     spyOn(reportServiceSpy,'sideSheetStatusChange')
     .withArgs().and.returnValue(of(true));
+    spyOn(component,'getUserDetails').and.callFake(()=>of([]));
+    spyOn(component,'getHeaderMetaData').and.callFake(()=>of([]))
+    expect(component.ngOnInit).toBeTruthy();
     component.ngOnInit();
   }));
 
