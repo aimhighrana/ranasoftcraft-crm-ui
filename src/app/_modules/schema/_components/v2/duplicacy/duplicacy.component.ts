@@ -301,11 +301,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit(): void {
 
-    !this.isInRunning && this.sharedServices.getDataScope().subscribe(res => {
-      if (res) {
-        this.getDataScope(res);
-      }
-    })
+    if(!this.isInRunning) {
+      this.sharedServices.getDataScope().subscribe(res => {
+        if (res) {
+          this.getDataScope(res);
+        }
+      });
+    }
 
     /**
      * After choose columns get updated columns ..
