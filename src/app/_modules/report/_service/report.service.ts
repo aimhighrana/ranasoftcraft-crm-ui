@@ -113,6 +113,6 @@ export class ReportService {
   }
 
   public updateImportLogStatus(messageId:string, status:string) : Observable<ImportLogs> {
-    return this.http.get<ImportLogs>(this.endpointAnalyticService.updateImportLog(messageId, status));
+    return this.http.put<ImportLogs>(this.endpointAnalyticService.updateImportLog(messageId, status),{});
   }
 }

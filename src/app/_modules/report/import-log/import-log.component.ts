@@ -16,7 +16,7 @@ export class ImportLogComponent implements OnInit {
   /**
    * warning status
    */
-  status: string[] = ['OPEN', 'CLOSED'];
+  status: string[] = ['OPEN', 'CLOSE'];
   warningForm: FormGroup;
 
   dataSource: ImportLogs[] = [];
