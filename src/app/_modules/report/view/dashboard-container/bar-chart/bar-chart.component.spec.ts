@@ -553,7 +553,7 @@ describe('BarChartComponent', () => {
     barWidget.blankValueAlias = 'MATL_GROUP';
     barWidget.orderWith = OrderWith.COL_ASC;
     component.barWidget.next(barWidget);
-    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    component.displayCriteriaOption = DisplayCriteria.CODE;
     component.sortBarChartData(buckets as Buckets[]);
     expect(buckets).toBeDefined();
 

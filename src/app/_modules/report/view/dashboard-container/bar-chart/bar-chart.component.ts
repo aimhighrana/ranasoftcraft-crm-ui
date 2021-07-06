@@ -17,19 +17,19 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   displayCriteriaOptions = [
     {
-      key: DisplayCriteria.TEXT,
-      value: 'Text'
+      key: 'Text',
+      value: DisplayCriteria.TEXT
     },
     {
-      key: DisplayCriteria.CODE,
-      value: 'Code'
+      key: 'Code',
+      value: DisplayCriteria.CODE
     },
     {
-      key: DisplayCriteria.CODE_TEXT,
-      value: 'Code and Text'
+      key: 'Code and Text',
+      value: DisplayCriteria.CODE_TEXT
     }
   ];
-  displayCriteriaOption = this.displayCriteriaOptions[0];
+  displayCriteriaOption: DisplayCriteria = this.displayCriteriaOptions[0].value;
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend: ChartLegend[] = [];
@@ -166,7 +166,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.subscriptions.push(afterColorDefined);
 
     const getDisplayCriteria =  this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
@@ -372,7 +372,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   setLabels() {
-    switch (this.displayCriteriaOption.key) {
+    switch (this.displayCriteriaOption) {
       case DisplayCriteria.CODE:
         this.lablels = this.chartLegend.map(map => map.code);
         break;
@@ -835,7 +835,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   saveDisplayCriteria() {
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption).subscribe(res => {
       this.updateChart(this.returndata);
     }, error => {
       console.error(`Error : ${error}`);
@@ -880,10 +880,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   /* This method sorts the chart based on Column */
   sortByColumn(buckets: Buckets[]) : string[]{
     let fields: string[]= [];
-    if(this.displayCriteriaOption.key === DisplayCriteria.TEXT){
+    if(this.displayCriteriaOption === DisplayCriteria.TEXT){
       const codeValues = this.getCodeValue(buckets);
       fields = codeValues.sort((a, b) => a?.t?.localeCompare(b.t)).map(x=> { return x.c });
-    } else if(this.displayCriteriaOption.key === DisplayCriteria.CODE || this.displayCriteriaOption.key === DisplayCriteria.CODE_TEXT){
+    } else if(this.displayCriteriaOption === DisplayCriteria.CODE || this.displayCriteriaOption === DisplayCriteria.CODE_TEXT){
       const codeValues = this.getCodeValue(buckets);
       const sortedCodes = codeValues.sort((a, b)=> {
         if(isNaN(parseFloat(a.c))){

@@ -4,8 +4,8 @@
         <div class="col-spacer"></div>
         <div [hidden]="isFormLoading" [class.f-col]="!isFormLoading" class="mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div *ngIf="!selectedRuleDesc" i18n="@@new_br_rule" class="display-heading-large">New business rule</div>
-                <div *ngIf="selectedRuleDesc" class="display-heading-large">{{selectedRuleDesc}}</div>
+                <lib-text-line type="leading" *ngIf="!selectedRuleDesc || isOnlyForTrans" i18n="@@new_br_rule">{{ isOnlyForTrans ? 'Transformation rule' :'New business rule'}}</lib-text-line>
+                <lib-text-line type="leading" *ngIf="selectedRuleDesc">{{selectedRuleDesc}}</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
@@ -28,16 +28,15 @@
             </div>
         </div>
     </div>
+
     <div [hidden]="isFormLoading" class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
 
             <lib-banner *ngIf="validationError.status" status="error" [text]="validationError.message"></lib-banner>
 
             <form [formGroup]="form">
-
-                <div *ngIf="!selectedRuleDesc" class="f-col mdo-field">
-                    <!-- label -->
-                    <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type<span class="mandatory">*</span></mat-label>
+                <div *ngIf="!selectedRuleDesc && !isOnlyForTrans" class="f-col mdo-field">
+                    <lib-text-line type="xsmall" class="field-label" weight="strong" i18n="@@rule_type">Rule type <span class="mandatory">*</span></lib-text-line>
                     <!-- input container -->
                     <div class="mdo-field-input">
                             <input matInput [(ngModel)]="searchRuleTypeStr" formControlName="rule_type" i18n-placeholder="@@rule_type" placeholder="Rule type"
@@ -52,23 +51,20 @@
                     </div>
                 </div>
     
-                <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-                    <mat-label i18n="@@weightage">Weightage<span class="mandatory">*</span></mat-label>
-                
-                    <div class="f-row slider-row">
-                        <lib-range-slider class="lib-slider" formControlName="weightage"  tickInterval="1" minValue="0" [formatLabelFn]="rangeSliderLabelFormat"
-                            [value]="form.controls.weightage.value" [maxValue]="currentweightageValue" color="primary"></lib-range-slider><span class="f-col-spacer-half"></span>
-                            <div class="percent-count">{{form.controls.weightage.value}}%</div>
-                    </div>
+                <div class="f-col mdo-field" *ngIf="!isDuplicateType">
+                    <lib-text-line type="xsmall" class="field-label" weight="strong" i18n="@@weightage">Weightage <span class="mandatory">*</span></lib-text-line>
+                  
+                    <lib-range-slider class="lib-slider" formControlName="weightage"  tickInterval="1" minValue="0" [formatLabelFn]="rangeSliderLabelFormat"
+                            [value]="form.controls.weightage.value" [maxValue]="currentweightageValue" color="primary"></lib-range-slider>
+
                     <mat-error i18n="@@weightage_missing_msg"
                         *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
-                        Please enter Weightage</mat-error>
+                        <lib-text-line type="small">Please enter weightage</lib-text-line>
+                    </mat-error>
                 </div>
     
                 <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType && !isUDR">
-                    <!-- label -->
-                    <mat-label class="mdo-field-label" i18n="@@category">Category<span class="mandatory">*</span></mat-label>
-                    <!-- input container -->
+                    <lib-text-line class="field-label" type="xsmall"  weight="strong" i18n="@@category">Category <span class="mandatory">*</span></lib-text-line>
                     <div class="mdo-field-input">
                             <input matInput formControlName="categoryId"  i18n-placeholder="@@category" placeholder="Category"
                             [matAutocomplete]="categoryIDAuto"/>
@@ -78,28 +74,31 @@
                             </mat-option>
                         </mat-autocomplete>
                     </div>
-                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value))">Please select category</mat-error>
+                    <mat-error i18n="@@please_select_category" *ngIf="submitted && (submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value))">
+                        <lib-text-line type="small">Please select category</lib-text-line>
+                    </mat-error>
                 </div>
                 
-                <div class="f-col mdo-form-field">
-                    <lib-input  [isRequired]="true" i18n-label="@@rule_name_desc" label="Rule name (Description)" formControlName="rule_name" [hint]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required ? 'Please enter Rule name' : ''" [hasError]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
+                <div class="f-col">
+                    <lib-input [isRequired]="true" i18n-label="@@rule_name_desc" label="Rule name (Description)" formControlName="rule_name" [hint]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required ? 'Please enter Rule name' : ''" [hasError]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
                     </lib-input>
                 </div>
 
-                <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
+                <div class="f-col" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
                     <pros-form-input  [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
                         i18n-label="@@enter_access_token" [label]="'Enter access token'" [isHelpIcon]="true" i18n-toolTipInfo="@@access_token_tooltip" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
                     </pros-form-input>
                     <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required" i18n="@@access_token_msg">
-                        Please enter access token</mat-error>
+                        <lib-text-line type="small">Please enter access token</lib-text-line></mat-error>
                 </div>
 
-                <lib-section></lib-section>
+                <lib-section class="lib-divider"></lib-section>
 
-                <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
-                    <lib-radio-group [options]="transRuleTypeList" class="f-col" color="primary" (valueChange)="updateTransformationRuleType($event)" [value]="selectedTransRuleTypeRadio"></lib-radio-group>
+                <div class="mdo-field" *ngIf="isTransformationRule">
+                    <lib-radio-group [options]="transRuleTypeList" class="f-col" color="primary" (valueChange)="updateTransformationRuleType($event)" [value]="selectedTransRuleTypeRadio?.key"></lib-radio-group>
                 </div>
-                <!-- transformation rule -->
+                
+
                 <pros-transformation-rule
                     *ngIf="isTransformationRule && selectedTransformationType === transformationType.REGEX"
                     [selectedRuleType]="currentSelectedRule" [targetFieldsObject]="targetFieldsObject"
@@ -107,14 +106,15 @@
                     [initialTransformationData]="transformationData"
                     (transformationFormOutput)="setTransformationFormData($event)">
                 </pros-transformation-rule>
-                <!-- transformation lookup rule -->
+
+                
                 <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
                     [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData" [allGridAndHirarchyData]="allGridAndHirarchyData"
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
 
-                <div class="f-col mdo-form-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
-                    <mat-label i18n="@@fields">Fields<span class="mandatory">*</span></mat-label>
+                <div class="f-col mdo-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
+                    <lib-text-line class="field-label"type="xsmall" weight="strong" i18n="@@fields">Fields <span class="mandatory">*</span></lib-text-line>
                     <mat-form-field appearance="outline">
                         <mat-chip-list #chipList>
                             <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
@@ -152,13 +152,13 @@
                         </mat-autocomplete>
                     </mat-form-field>
                     <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
-                        Please select the fields
+                        <lib-text-line type="small">Please select the fields</lib-text-line> 
                     </mat-error>
                 </div>
+
                 <div class="f-col mdo-field" *ngIf="isRegexType">
-                    <!-- label -->
-                    <mat-label class="mdo-field-label" i18n="@@standard_function">Standard function<span class="mandatory">*</span></mat-label>
-                    <!-- input container -->
+                    <lib-text-line type="xsmall" weight="strong" i18n="@@standard_function">Standard function <span class="mandatory">*</span></lib-text-line>
+                    
                     <div class="mdo-field-input">
                             <input matInput [(ngModel)]="searchRegexFunctionStr" [ngModelOptions]="{standalone: true}" i18n-placeholder="@@standard_function" placeholder="Standard function"
                             [matAutocomplete]="regexNameAuto"/>
@@ -172,22 +172,24 @@
                     </div>
                     <mat-error
                         *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required" i18n="@@standard_fn_missing">
-                        Please select the standard function</mat-error>
+                        <lib-text-line type="small">Please select the standard function</lib-text-line></mat-error>
                 </div>
 
-                <div class="f-col mdo-form-field" *ngIf="isRegexType">
+                <div class="f-col" *ngIf="isRegexType">
                     <lib-input label="Regex value" formControlName="regex"
                         [hint]="submitted && form.controls.regex.errors && form.controls.regex.errors.required ? 'Please enter regex' : ''"
                         [hasError]="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
                     </lib-input>
                 </div>
-                <div class="f-col mdo-form-field" *ngIf="!isDuplicateType && !isUDR">
-                    <lib-input  [isRequired]="true" i18n-label="@@error_message" label="Error message" formControlName="error_message"
+
+                <div class="f-col" *ngIf="!isDuplicateType && !isUDR">
+                    <lib-input [isRequired]="true" i18n-label="@@error_message" label="Error message" formControlName="error_message"
                     [hint]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required ? 'Please enter Error message' : ''"
                     [hasError]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
                     </lib-input>
                 </div>
-            </form>    
+            </form> 
+
             <form [formGroup]="udrNodeForm" *ngIf="isUDR">
                 <div class="f-col user-defined-set" formArrayName="frmArray">
                     <ng-container *ngFor="let item of udrNodeForm.get('frmArray').controls; let i = index">
@@ -330,17 +332,124 @@
                     </div>
                 </div>
             </form>
-            <div *ngIf="isUDR" class="f-col mdo-form-field">
+
+            <div *ngIf="isUDR" class="f-col">
                 <lib-input [isRequired]="true" i18n-label="@@error_message" label="Error message" [formControl]="formField('error_message')"
                 [hint]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required ? 'Please enter Error message' : ''"
                 [hasError]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
                 </lib-input>
             </div>
+
             <!-- Duplicate Rule form group  -->
             <ng-container *ngIf="isDuplicateType">
                 <pros-setup-duplicate-rule [coreSchemaBrInfo]="coreSchemaBrInfo" [fieldsList]="fieldsList"
                     [submitted]="submitted" (formChange)="setDuplicateFormRef($event)"></pros-setup-duplicate-rule>
             </ng-container>
+
+            <!-- Attach transformation rule in main rule -->
+            <div class="f-col">
+                <div class="f-row" *ngIf="isTransEnabled && !isOnlyForTrans">
+                    <lib-slide-toggle label="Apply data transformation" labelPosition="after" theme="primary" [formControl]="hasAppliedTransformationCtrl"></lib-slide-toggle>
+                    <mat-icon fontSet="mdo-icons" class="mat-head-icon">question-circle</mat-icon>
+                </div>
+
+                <ng-template [ngIf]="hasAppliedTransformationCtrl.value">
+                    <div class="row-spacer"></div>            
+                    <lib-tab-group class="schema-info-tabs" disableRipple="true" animationDuration="0ms" (selectedIndexChange)="transTabIndex = $event" [selectedIndex]="transTabIndex">
+                        <lib-tab label="On success" [badgeCount]="attachedTransRules && attachedTransRules.success ? attachedTransRules.success.length : 0">
+                            <div class="f-col mdo-field">
+                                <lib-text-line class="field-label" type="xsmall" weight="strong">Business rule</lib-text-line>
+                                <pros-form-input-autoselect fieldLabel="Type rule name to add" 
+                                (emitExtraLabelClick)="openBusinessRuleSideSheet()" 
+                                (openCustomDialog)="openTransRuleLib()"
+                                [updatedOptionsList]="transformationRules" [labelKey]="'brInfo'"
+                                (optionSelectedEmit)="addTransRule($event, 'success')"
+                                (emitSearchValue)="searchTransRules($event)"
+                                [isExtraLabel]="true" i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule">
+                                </pros-form-input-autoselect>
+                            </div>
+                            <div class="f-col">
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col"></div>
+                                    <div class="col col-x4">
+                                        <lib-text-line type="small" weight="strong">Business rule</lib-text-line>
+                                    </div>
+                                    <div class="col col-x4 mat-item-center">
+                                        <lib-text-line type="small" weight="strong">Enable</lib-text-line>
+                                    </div>
+                                    <div class="col mat-item-end"></div>
+                                </div>
+                
+                                <div cdkDropList (cdkDropListDropped)="reorderTrans($event, 'success')">
+                                    <div cdkDrag class="f-row colunm-box rule-border-row" *ngFor="let scsRule of attachedTransRules?.success">
+                                        <div class="col">
+                                            <lib-button cdkDragHandle icon="grip-lines"></lib-button>
+                                        </div>
+                                        <div class="col col-x4">
+                                            <lib-text-line type="base" textColor="link" (click)="editTransRule(scsRule,'success')">{{ scsRule.ruleInfo &&  scsRule.ruleInfo.brInfo ? scsRule.ruleInfo.brInfo : 'Unknown'}}</lib-text-line>
+                                        </div>
+            
+                                        <div class="col col-x4 mat-item-center">
+                                            <lib-checkbox color="primary" [checked]="scsRule?.isEnabled" (valueChange)="updateTransStatus(scsRule,'success',$event)"></lib-checkbox>
+                                        </div>
+            
+                                        <div class="col mat-item-end">
+                                            <lib-button icon="trash-alt" (afterClick)="removeTrans(scsRule,'success',$event)"></lib-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </lib-tab>
+                
+                        <lib-tab label="On failure" [badgeCount]="attachedTransRules && attachedTransRules.error ? attachedTransRules.error.length : 0">
+                            <div class="f-col mdo-field">
+                                <lib-text-line class="field-label" type="xsmall" weight="strong">Business rule</lib-text-line>
+                                <pros-form-input-autoselect fieldLabel="Type rule name to add" 
+                                (emitExtraLabelClick)="openBusinessRuleSideSheet()" 
+                                (openCustomDialog)="openTransRuleLib()" [isExtraLabel]="true" 
+                                [updatedOptionsList]="transformationRules" [labelKey]="'brInfo'"
+                                (optionSelectedEmit)="addTransRule($event, 'error')"
+                                (emitSearchValue)="searchTransRules($event)"
+                                i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule">
+                                </pros-form-input-autoselect>
+                            </div>
+
+                            <div class="f-col">
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col"></div>
+                                    <div class="col col-x4">
+                                        <lib-text-line type="small" weight="strong">Business rule</lib-text-line>
+                                    </div>
+                                    <div class="col col-x4 mat-item-center">
+                                        <lib-text-line type="small" weight="strong">Enable</lib-text-line>
+                                    </div>
+                                    <div class="col mat-item-end"></div>
+                                </div>
+                
+                                <div cdkDropList (cdkDropListDropped)="reorderTrans($event, 'success')">
+                                    <div cdkDrag class="f-row colunm-box rule-border-row" *ngFor="let errRule of attachedTransRules?.error">
+                                        <div class="col">
+                                            <lib-button cdkDragHandle icon="grip-lines"></lib-button>
+                                        </div>
+                                        <div class="col col-x4">
+                                            <lib-text-line type="base" textColor="link" (click)="editTransRule(errRule,'error')">{{ errRule && errRule.ruleInfo &&  errRule.ruleInfo.brInfo ? errRule.ruleInfo.brInfo : 'Unknown'}}</lib-text-line>
+                                        </div>
+            
+                                        <div class="col col-x4 mat-item-center">
+                                            <lib-checkbox color="primary" [checked]="errRule?.isEnabled" (valueChange)="updateTransStatus(errRule,'error',$event)"></lib-checkbox>
+                                        </div>
+            
+                                        <div class="col mat-item-end">
+                                            <lib-button icon="trash-alt" (afterClick)="removeTrans(errRule,'error',$event)"></lib-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </lib-tab>
+                    </lib-tab-group>
+                </ng-template>                
+            </div>
+            
         </div>
     </div>
 </div>

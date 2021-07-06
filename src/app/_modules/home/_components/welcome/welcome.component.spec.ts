@@ -141,9 +141,7 @@ describe('WelcomeComponent', () => {
     component.data.objectid = '123';
     component.selectschema({ schemaId: null, schemaDescription: null });
     expect(schemaServiceSpy.createUpdateSchema).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/456` } }],{
-      queryParams: {isCheckData: false}
-    });
+    expect(router.navigate).toHaveBeenCalledWith([`/home/schema/schema-info/123/456`], { queryParams: {isCheckData: false} });
 
     component.selectschema({ schemaId: '789', schemaDescription: null });
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/789` } }],{

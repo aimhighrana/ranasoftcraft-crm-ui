@@ -209,7 +209,7 @@
                         <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
                     </div>
                     <div class="schema-details-table f-col datasource" (scroll)="onTableScroll($event)">
-                        <table mat-table [dataSource]="dataSource" matSort>
+                        <table mat-table [dataSource]="dataSource" #table matSort>
                             <ng-container matColumnDef="_select_columns" sticky>
                                 <th mat-header-cell *matHeaderCellDef>
                                     <lib-checkbox (valueChange)="$event ? masterToggle() : null"

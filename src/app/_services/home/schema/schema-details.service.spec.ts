@@ -791,13 +791,13 @@ describe('SchemaDetailsService', () => {
     endpointServiceSpy.getClassificationNounMod.and.returnValue(url);
 
     let mockHttpResponse = [
-      {ruleType: 'mro_local_lib', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
-      {ruleType: 'mro_gsn_lib', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      {ruleType: 'MRO_CLS_MASTER_CHECK', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      {ruleType: 'MRO_MANU_PRT_NUM_LOOKUP', doc_count: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
       {ruleType: 'unmatched', doc_count: 1}
     ]
     let response = {
-      mro_local_lib: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
-      mro_gsn_lib: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      MRO_CLS_MASTER_CHECK: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
+      MRO_MANU_PRT_NUM_LOOKUP: {doc_cnt: 1, info: [{nounCode: 'Bearing'}] as Noun[]},
       unmatched: {doc_count: 1}
     } as ClassificationNounMod;
 
@@ -818,8 +818,8 @@ describe('SchemaDetailsService', () => {
     ];
 
     response = {
-      mro_local_lib: {doc_cnt: 0, info: []},
-      mro_gsn_lib: {doc_cnt: 0, info: []},
+      MRO_CLS_MASTER_CHECK: {doc_cnt: 0, info: []},
+      MRO_MANU_PRT_NUM_LOOKUP: {doc_cnt: 0, info: []},
       unmatched: {doc_count: 0}
     } as ClassificationNounMod;
 

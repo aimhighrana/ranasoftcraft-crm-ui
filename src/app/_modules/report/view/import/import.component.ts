@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ImportReport, ReportCategory } from '@modules/report/_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
-import { ConfirmationDialogComponent } from 'mdo-ui-library';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'pros-import',
@@ -73,21 +73,24 @@ export class ImportComponent implements OnInit {
 
       if (!this.importData?.alreadyExits && this.importData?.acknowledge) {
         this.successful = true;
-        this.dialogRef.close();
+        this.dialogRef.close({data: res});
       }
     }, error => {
       this.importData = error.error;
+      if (!this.importData?.alreadyExits && !this.importData?.acknowledge){
+        this.isMissingModule = true;
+      }
+
+      const reportCategories = Object.values(ReportCategory);
       if (this.importData?.logs) {
         if (this.importData.logs?.some(s => s.category === ReportCategory.DUPLICATE_REPORT)) {
           this.isDuplicate = true;
           this.warningMessage = `An existing report shares the name ${this.seletedFile.name} . Duplicate or Replace`;
-        } else if (this.importData.logs.some(s => s.category === ReportCategory.MISSING_MODULE)) {
-          this.isMissingModule = true;
-        } else if (this.importData.logs.some(s => s.category === ReportCategory.MISSING_FIELDS)) {
+        } else if (this.importData.logs?.some(s => reportCategories.includes(s.category))){
           this.isMissingModule = true;
         }
       } else {
-        this.errorMsg = 'Error while importing file';
+        this.errorMsg = 'Error while importing file  (network error)';
       }
     });
   }
@@ -111,23 +114,29 @@ export class ImportComponent implements OnInit {
    */
   addReport(replaceOld: boolean = false, keepCopy: boolean = false) {
     this.widgetService.importReport(this.importData.fileSno, replaceOld, keepCopy).subscribe(res => {
-      this.dialogRef.addPanelClass('display-dialog');
-      const dialogRef = this.matDialog.open(ConfirmationDialogComponent, {
-        width: '600px',
-        disableClose:true,
-        data:   {
-          dialogTitle:'Confirmation',
-          label : 'Existing schedule will not be duplicated. Schedule will need to be reconfigued. '
-        }
-      });
 
-      dialogRef.afterClosed().subscribe(result => {
-        if(result  === 'yes'){
-          this.close();
-        } else {
-          this.dialogRef.removePanelClass('display-dialog');
-        }
-      });
+      // Commenting the confirmation popup code as scheduler is not part of current sprint Refresh 3.1
+      // this.dialogRef.addPanelClass('display-dialog');
+      // const dialogRef = this.matDialog.open(ConfirmationDialogComponent, {
+      //   width: '600px',
+      //   disableClose:true,
+      //   data:   {
+      //     dialogTitle:'Confirmation',
+      //     label : 'Existing schedule will not be duplicated. Schedule will need to be reconfigued. '
+      //   }
+      // });
+
+      // dialogRef.afterClosed().subscribe(result => {
+      //   if(result  === 'yes'){
+      //     this.close();
+      //   } else {
+      //     this.dialogRef.removePanelClass('display-dialog');
+      //   }
+      // });
+
+      this.dialogRef.close({data: res});
+    }, (err: HttpErrorResponse) =>{
+      this.errorMsg = err?.error?.errorMsg ?? 'Error while importing file  (network error)';
     });
   }
 }

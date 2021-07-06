@@ -98,7 +98,7 @@ describe('SendEmailComponent', () => {
     component.emailFormGrp.patchValue({subject:'subject', message:'message', to : ['testuser@ymail.com']});
     spyOn(reportService,'shareReport').and.returnValues(of(emailResponse),throwError('Error'));
     component.sendEmail();
-    expect(component.errorMsg).toBeDefined('');
+    expect(component.successMsg).toBeDefined('');
 
     component.sendEmail();
     expect(component.errorMsg).toBeDefined('');

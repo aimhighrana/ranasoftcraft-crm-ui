@@ -44,7 +44,6 @@ import { NounModifierAutocompleteComponent } from './_components/v2/library-mapp
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
 import { DownloadExecutionDataComponent } from './_components/v2/download-execution-data/download-execution-data.component';
-import { QualityRulesComponent } from './_components/quality-rules/quality-rules.component';
 
 @NgModule({
   declarations: [
@@ -93,8 +92,7 @@ import { QualityRulesComponent } from './_components/quality-rules/quality-rules
     NounModifierAutocompleteComponent,
     ExecutionTrendSidesheetComponent,
     SchemaProgressComponent,
-    DownloadExecutionDataComponent,
-    QualityRulesComponent
+    DownloadExecutionDataComponent
   ],
   imports: [
     CommonModule,

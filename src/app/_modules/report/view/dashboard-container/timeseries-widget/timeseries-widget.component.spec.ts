@@ -359,7 +359,7 @@ describe('TimeseriesWidgetComponent', () => {
   }));
 
   it('checkTextCode() should return a string', async(() => {
-    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    component.displayCriteriaOption = DisplayCriteria.CODE;
     const arrBucket = {code: 'admin', text: 'Administrator'};
     const arrBucket1 = { code: null, text: null};
     let res = component.checkTextCode(arrBucket);
@@ -368,14 +368,14 @@ describe('TimeseriesWidgetComponent', () => {
     expect(res).toEqual(arrBucket.code);
     expect(res1).toEqual('');
 
-    component.displayCriteriaOption.key = DisplayCriteria.TEXT;
+    component.displayCriteriaOption = DisplayCriteria.TEXT;
     res = component.checkTextCode(arrBucket);
     res1 = component.checkTextCode(arrBucket1);
 
     expect(res).toEqual(arrBucket.text);
     expect(res1).toEqual('');
 
-    component.displayCriteriaOption.key = DisplayCriteria.CODE_TEXT;
+    component.displayCriteriaOption = DisplayCriteria.CODE_TEXT;
     res = component.checkTextCode(arrBucket);
 
     expect(res).toEqual(`${arrBucket.code} -- ${arrBucket.text}`);

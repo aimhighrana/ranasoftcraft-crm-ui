@@ -82,7 +82,7 @@
       <!-- VERTICAL_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'VERTICAL_VALS'">
         <div class="f-col vertical-row">
-          <lib-chip-list class="lib-chip-list vertical" *ngFor="let option of filteredOptions | async">
+          <lib-chip-list layout="vertical" *ngFor="let option of filteredOptions | async">
             <lib-chip (click)="optionClicked($event, option)" [selectable]="true" [selected]="isSelected(option)">
               {{ option.display }}
             </lib-chip>
