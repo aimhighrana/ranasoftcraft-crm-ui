@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { GlobalCounts } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './global-count.component.html',
   styleUrls: ['./global-count.component.scss'],
 })
-export class GlobalCountComponent implements OnInit {
+export class GlobalCountComponent implements OnInit, OnDestroy {
   globalCount: GlobalCounts = {
     successCount: 0,
     errorCount: 0,
@@ -32,5 +32,11 @@ export class GlobalCountComponent implements OnInit {
         this.globalCount = res;
       })
     );
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }
