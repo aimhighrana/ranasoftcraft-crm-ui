@@ -197,17 +197,19 @@
                                     <ng-template
                                         [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                         <mat-label i18n="@@workFlowPath">Workflow path</mat-label>
-                                        <div class="mdo-field-input" prosClickStopPropagation>
+                                        <div class="mdo-field-input" >
                                             <input matInput placeholder="Type to search" #optionInput
-                                                [formControl]="workflowPath" [matAutocomplete]="auto" disabled
+                                                formControlName="workflowPath" [matAutocomplete]="auto" disabled
                                                 [value]="displayWithWorkflowDesc()" />
                                             <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
-                                                (optionSelected)="selectedWorkFlow($event.option.value)">
+>
                                                 <mat-option *ngFor="let workflow of workflowPathOb | async"
                                                     [value]="workflow" class="mdo-option">
                                                     <lib-checkbox
                                                         [label]="workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path'"
-                                                        [checked]="isCheckedWorkflow(workflow)">
+                                                        [checked]="isCheckedWorkflow(workflow)" 
+                                                        (valueChange)="selectedWorkFlow(workflow)"
+                                                        prosClickStopPropagation>
                                                     </lib-checkbox>
                                                 </mat-option>
                                             </mat-autocomplete>
@@ -641,8 +643,8 @@
                                 <div class="f-col mdo-field" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                     <mat-label i18n="@@orientation">Orientation</mat-label>
                                     <div class="mdo-field-input"
-                                        *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
-                                        <input matInput placeholder="Type to search" #optionsInput
+                                        *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value.key === 'BAR'">
+                                        <input matInput #optionsInput
                                             formControlName="orientation" [matAutocomplete]="auto" />
                                         <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
                                             [displayWith]="displayProperties">
@@ -656,7 +658,7 @@
                                 </div>
 
                                 <ng-template
-                                    [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR' || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                    [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value.key === 'BAR' || chartPropCtrlGrp.get('chartType').value.key === 'LINE'">
                                     <div class="f-col">
 
 
@@ -670,26 +672,26 @@
                                             [maxLength]="maxReportNameLength"></lib-input>
                                     </div>
 
-                                    <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
+                                    <div class="f-col  mdo-field" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                         <mat-label i18n="@@sortBy">Sort by</mat-label>
                                         <div class="mdo-field-input">
-                                            <input matInput placeholder="Type to search" #optInput
+                                            <input matInput #optInput
                                                 formControlName="orderWith" [matAutocomplete]="auto" />
                                             <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
                                                 [displayWith]="displayProperties">
                                                 <ng-container
-                                                    *ngFor="let sort of getValue(orderWith,styleCtrlGrp.get('orderWith'))">
+                                                    *ngFor="let sort of getValue(orderWith,chartPropCtrlGrp.get('orderWith'))">
                                                     <mat-option
-                                                        *ngIf="sort.key !== OrderWith.ASC || sort.key !== OrderWith.DESC"
+                                                        *ngIf="sort.key !== OrderWith.ASC && sort.key !== OrderWith.DESC"
                                                         [value]="sort">
-                                                        {{sort.value}}
+                                                        {{sort.value}} 
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-autocomplete>
                                         </div>
                                     </div>
                                     <ng-template
-                                        [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                        [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value.key === 'LINE'">
                                         <div class="f-col">
                                             <div class="f-row">
                                                 <div class="f-col">
@@ -701,7 +703,7 @@
                                                 <div class="f-col">
 
                                                     <lib-input label="Scale to" type="number" min="0"
-                                                        formControlName="Scale to"></lib-input>
+                                                        formControlName="scaleTo"></lib-input>
                                                 </div>
                                             </div>
                                         </div>
@@ -731,7 +733,7 @@
                                 </div>
                                 <div class="f-row-spacer-half"></div>
                                 <div class="f-col mdo-field"
-                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value !== 'PIE'">
+                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value.key !== 'PIE'">
                                     <mat-label i18n="@@datalabelsPosition">Datalabels position</mat-label>
                                     <div class="mdo-field-input">
                                         <input matInput placeholder="Type to search" #optionsInput
@@ -749,7 +751,7 @@
 
                                 <!-- PIE CHART PERCETAGE CONFIG -->
                                 <div class="f-col"
-                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
+                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value.key === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
 
                                     <lib-checkbox label="Show data in %" formControlName="isEnabledBarPerc">
                                     </lib-checkbox>
