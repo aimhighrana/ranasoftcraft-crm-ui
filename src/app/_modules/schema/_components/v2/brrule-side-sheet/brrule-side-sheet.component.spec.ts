@@ -9,7 +9,7 @@ import { SetupDuplicateRuleComponent } from './duplicate-rule-config/setup-dupli
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
-import { BusinessRuleType, CoreSchemaBrInfo, TransformationMappingTabResponse, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, TransformationMappingResponse, TransformationMappingTabResponse, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -89,6 +89,9 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.fieldsList.length).toEqual(2);
     expect(schemaDetailsServicespy.getMetadataFields).toHaveBeenCalledTimes(2);
     flush()
+
+    component.moduleId = undefined;
+    expect(component.getFieldsByModuleId()).toBeUndefined();
   }));
 
   it('should initGridAndHierarchyToAutocompleteDropdown', () => {
@@ -477,6 +480,8 @@ describe('BrruleSideSheetComponent', () => {
     transformationSchema[0].transformationRuleType = TransformationRuleType.REGEX;
     expect(component.getTrRuleType(transformationSchema)).toEqual(TransformationRuleType.REGEX);
 
+    transformationSchema[0].transformationRuleType = undefined;
+    expect(component.getTrRuleType(transformationSchema)).toEqual('');
   })
 
   it('should mapBlocksAndHierarchy', () => {
@@ -528,6 +533,16 @@ describe('BrruleSideSheetComponent', () => {
     const event = {option: {value: 'region', viewValue: 'region'}};
     component.selectField(event);
     expect(component.selectedFields.length).toEqual(1);
+
+    const el = document.createElement('input');
+    el.setAttribute('id', 'fieldsInput');
+    fixture.nativeElement.appendChild(el);
+    component.selectField(event);
+    expect(component.selectedFields.length).toEqual(1);
+
+    event.option.value = '';
+    expect(component.selectField(event)).toBeUndefined();
+
   });
 
   it('should close', () => {
@@ -775,11 +790,6 @@ describe('BrruleSideSheetComponent', () => {
 
     component.addTransRule({brIdStr:'775755'} as CoreSchemaBrInfo, 'error');
     expect(transientService.open).toHaveBeenCalled();
-
-
-
-
-
   }));
 
 
@@ -796,4 +806,78 @@ describe('BrruleSideSheetComponent', () => {
     outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/8867678658/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
   }));
 
+  it('openBusinessRuleSideSheet()', async(() => {
+    spyOn(router, 'navigate');
+    component.openBusinessRuleSideSheet();
+
+    expect(router.navigate).toHaveBeenCalled();
+  }));
+
+  it('getMappedTransformationRules()', async(() => {
+    const res: TransformationMappingResponse = {
+      success: [],
+      error: []
+    };
+    spyOn(schemaServiceSpy, 'getMappedTransformationRules').and.returnValue(of(res));
+
+    component.getMappedTransformationRules();
+    expect(component.attachedTransRules.success.length).toEqual(0);
+    expect(schemaServiceSpy.getMappedTransformationRules).toHaveBeenCalled();
+  }));
+
+  it('displayCategoryFn()', async(() => {
+    component.categoryList = [
+      {
+        categoryId: '123',
+        categoryDesc: 'test'
+      }
+    ];
+    const res = component.displayCategoryFn('123');
+    expect(res).toEqual('test');
+    expect(component.displayCategoryFn('')).toEqual('');
+  }));
+
+  it('displayRuleFn()', async(() => {
+    component.businessRuleTypes = [
+      {
+        ruleType: BusinessRuleType.BR_MANDATORY_FIELDS,
+        ruleId: '123',
+        ruleDesc: 'test'
+      }
+    ];
+    const res = component.displayRuleFn(BusinessRuleType.BR_MANDATORY_FIELDS);
+    expect(res).toEqual('test');
+    expect(component.displayRuleFn('')).toEqual('');
+  }));
+
+  it('displayRegexFn()', async(() => {
+    component.preDefinedRegex = [
+      {
+        FUNC_CODE: '123',
+        FUNC_NAME: 'test',
+        FUNC_TYPE: 'typeA'
+      }
+    ];
+
+    const res = component.displayRegexFn('typeA');
+    expect(res).toEqual('test');
+    expect(component.displayRegexFn('')).toEqual('');
+  }));
+
+  it('displaySourceFieldFn()', async(() => {
+    component.sourceFieldsObject = {
+      list: [
+        {
+          fieldId: '123',
+          fieldDescri: 'test'
+        }
+      ],
+      valueKey: 'fieldId',
+      labelKey: 'fieldDescri'
+    };
+
+    const res = component.displaySourceFieldFn('123');
+    expect(res).toEqual('test');
+    expect(component.displaySourceFieldFn('')).toEqual('');
+  }));
 });

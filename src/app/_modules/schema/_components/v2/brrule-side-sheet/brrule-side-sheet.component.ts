@@ -94,6 +94,14 @@ export class BrruleSideSheetComponent implements OnInit {
     return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) || x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
 
+  /**
+   * filter source field dropdown
+   */
+  get sourceFieldsFiltered() {
+    const searchStr = this.searchSourceFieldStr?.toLowerCase();
+    return this.sourceFieldsObject.list.filter(x => x[this.sourceFieldsObject.labelKey]?.toLowerCase().includes(searchStr) || x[this.sourceFieldsObject.valueKey]?.toLowerCase().includes(searchStr));
+  }
+
   get isFormLoading() {
     return Boolean(this.moduleId && !this.metataData);
   }
@@ -110,6 +118,13 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   get isRegexType() {
     return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
+  }
+
+  /**
+   * check if rule type is Manufacturer Part Number Identification
+   */
+  get isMPNI() {
+    return this.form.controls.rule_type.value === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI
   }
 
   /**
@@ -210,9 +225,19 @@ export class BrruleSideSheetComponent implements OnInit {
   filteredModules: Observable<{} | string | void> = of([]);
 
   /**
+   * obervable for autocomplete in target field multiselect dropdown
+   */
+  targetFilteredModules: Observable<{} | string | void> = of([]);
+
+  /**
    * array to save the selected fields
    */
   selectedFields = [];
+
+  /**
+   * array to save the selected target fields
+   */
+  selectedTargetFields = [];
 
   /**
    * list of event to consider as selection
@@ -273,6 +298,11 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   @ViewChild('fieldsInput') fieldsInput: ElementRef;
 
+  /**
+   * reference to target field search input
+   */
+  @ViewChild('targetFieldsInput') targetFieldsInput: ElementRef;
+
   /* To access properties of Child for validation purpose
    */
   @ViewChild(TransformationRuleComponent) transformationRuleComponent: TransformationRuleComponent;
@@ -308,6 +338,10 @@ export class BrruleSideSheetComponent implements OnInit {
    * Hold search string for business rule type ....
    */
   searchRuleTypeStr = '';
+  /**
+   * Holds search string for material source field
+   */
+  searchSourceFieldStr = '';
   /**
    * Hold search string for regex functions ....
    */
@@ -388,6 +422,7 @@ export class BrruleSideSheetComponent implements OnInit {
     this.filterRuleTypes();
     this.getCategories();
     this.filteredModules = of(this.fieldsList);
+    this.targetFilteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
 
     this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
@@ -460,7 +495,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * Removes untested rule types
    */
   filterRuleTypes() {
-    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK','BR_TRANSFORMATION', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK'];
+    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK','BR_TRANSFORMATION', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK', 'MRO_MANU_PRT_NUM_IDENTI'];
     this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
   }
 
@@ -555,6 +590,23 @@ export class BrruleSideSheetComponent implements OnInit {
           }
         }),
       )
+
+    this.targetFilteredModules = this.form.controls.target_field.valueChanges.pipe(startWith(''), map(keyword => {
+      if (keyword) {
+        keyword = keyword.toLowerCase();
+
+        return this.fieldsList.filter(item => {
+          return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1
+          ?
+          this.fieldsList.filter(item => {
+            return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+          })
+          :
+          [{ fieldDescri: 'No header data found', fieldId: null }];
+      } else {
+        return this.fieldsList;
+      }
+    }));
   }
   /**
    * return grid fields by grid key
@@ -648,7 +700,10 @@ export class BrruleSideSheetComponent implements OnInit {
         udrTreeData: new FormControl(),
         weightage: new FormControl(0, [Validators.required]),
         categoryId: new FormControl(''),
-        transformationRuleType: new FormControl('')
+        transformationRuleType: new FormControl(''),
+        source_field: new FormControl(''),
+        target_field: new FormControl(''),
+        accuracy_score: new FormControl(0)
       };
 
       this.currentControls = controls;
@@ -704,8 +759,11 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
-    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
+    }
+    if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'source_field', 'accuracy_score'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
@@ -764,14 +822,17 @@ export class BrruleSideSheetComponent implements OnInit {
       udrTreeData: '',
       weightage: br.brWeightage,
       categoryId: br.categoryId,
-      transformationRuleType: ''
+      transformationRuleType: '',
+      source_field: '',
+      target_field: '',
+      accuracy_score: 0
     };
     // set the value for transformation ...
     this.hasAppliedTransformationCtrl.setValue(br.isTransformationApplied ? br.isTransformationApplied : false);
 
     let patchList = [];
 
-    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
@@ -792,6 +853,10 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if (br.brType === BusinessRuleType.MRO_GSN_DESC_MATCH || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey'];
+    }
+
+    if(br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
 
     if (patchList && patchList.length > 0) {
@@ -1039,6 +1104,7 @@ export class BrruleSideSheetComponent implements OnInit {
           valueKey: 'fieldId',
           list: this.fieldsList
         }
+        this.targetFilteredModules = of(this.fieldsList);
         this.filteredModules = of(this.fieldsList);
         this.initGridAndHierarchyToAutocompleteDropdown(metadataModeleResponse);
         this.initiateAutocomplete();
@@ -1134,6 +1200,40 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * func to select target field
+   * @param event selected target field
+   */
+  selectTargetField(event) {
+    if (!!event.option.value) {
+      const alreadyExists = this.selectedTargetFields.find(item => item.fieldId === event.option.value);
+      if (alreadyExists) {
+        this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
+      } else {
+        this.selectedTargetFields.push({
+          fieldDescri: event.option.viewValue,
+          fieldId: event.option.value
+        });
+      }
+      this.form.get('target_field').patchValue('');
+      const txtfield = document.getElementById('targetFieldsInput') as HTMLInputElement;
+      if (txtfield) {
+        txtfield.value = '';
+      }
+      if (this.targetFieldsInput) {
+        this.targetFieldsInput.nativeElement.blur();
+      }
+    }
+  }
+
+  /**
+   * fn to remove selected target fields
+   * @param i index of the field to be removed
+   */
+  removeTargetField(i) {
+    this.selectedTargetFields.splice(i, 1);
+  }
+
+  /**
    * function to set the value in the form
    * @param value entered value
    * @param field the selected field of form
@@ -1187,6 +1287,15 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   displayRegexFn(value?: string) {
     return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
+  }
+
+  /**
+   * function to fetch field description from field field id
+   * @param value field object
+   * @returns field description
+   */
+  displaySourceFieldFn(value?: string) {
+    return value ? this.sourceFieldsObject.list.find(field => field[this.sourceFieldsObject.valueKey] === value)?.[this.sourceFieldsObject.labelKey] : '';
   }
 
   /**

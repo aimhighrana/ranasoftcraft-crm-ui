@@ -46,6 +46,20 @@
           <mat-error i18n="@@weightage_missing_msg" *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
             Please enter weightage</mat-error>
         </div>
+
+        <div class="f-col mdo-form-field" *ngIf="isMPNI">
+          <mat-label i18n="@@accuracy_score">Accuracy Score</mat-label>
+          <div class="f-row slider-row">
+            <lib-range-slider class="lib-slider" thumbLabel="true" formControlName="accuracy_score" tickInterval="1"
+              minValue="0" [formatLabelFn]="rangeSliderLabelFormat" [value]="form.controls.accuracy_score.value"
+              [maxValue]="100" color="primary"></lib-range-slider><span
+              class="f-col-spacer-half"></span>
+            <div class="percent-count">{{form.controls.accuracy_score.value}}%</div>
+          </div>
+          <mat-error i18n="@@accuracy_score_missing_msg" *ngIf="submitted && form.controls.accuracy_score.errors && form.controls.accuracy_score.errors.required">
+            Please enter accuracy score</mat-error>
+        </div>
+
         <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType">
           <!-- label -->
           <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
@@ -113,7 +127,7 @@
           [fieldsList]="fieldsList" [submitted]="submitted" (formChange)="setDuplicateFormRef($event)">
         </pros-setup-duplicate-rule>
 
-        <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType">
+        <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType && !isMPNI">
           <mat-label i18n="@@fields">Fields</mat-label>
           <mat-form-field appearance="outline">
             <mat-chip-list #chipList>
@@ -134,6 +148,47 @@
             </mat-autocomplete>
           </mat-form-field>
           <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
+            Please select the fields
+          </mat-error>
+        </div>
+
+        <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.source_field.errors?.required || !form.controls.source_field?.value)" *ngIf="isMPNI">
+          <!-- label -->
+          <mat-label class="mdo-field-label" i18n="@@source_field">Source Field</mat-label>
+          <!-- input container -->
+          <div *ngIf="categoryList?.length" class="mdo-field-input">
+            <input matInput [(ngModel)]="searchSourceFieldStr" formControlName="source_field" i18n-placeholder="@@source_field" placeholder="Source Field" [matAutocomplete]="sourceFieldAuto" />
+            <mat-autocomplete  class="mdo-autocomplete" [displayWith]="displaySourceFieldFn.bind(this)"
+              #sourceFieldAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'source_field', $event)">
+              <mat-option class="mdo-option" *ngFor="let field of sourceFieldFiltered" [value]="field[sourceFieldsObject.valueKey]">
+                {{field[sourceFieldsObject.labelKey]}}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+          <mat-error i18n="@@source_field_missing" *ngIf="submitted && (submitted && form.controls.source_field.errors && form.controls.source_field.errors.required)">Please select the source field</mat-error>
+        </div>
+
+        <div class="f-col mdo-form-field" *ngIf="isMPNI">
+          <mat-label i18n="@@target_fields">Target Fields</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-chip-list #chipList>
+              <mat-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
+                (removed)="removeTargetField(field,i)">
+                {{field.fieldDescri}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input matInput id="targetFieldsInput" #targetFieldsInput class="mat-input" [matAutocomplete]="auto"
+                formControlName="target_field" [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
+              (optionSelected)="selectTargetField($event)">
+              <mat-option *ngFor="let fieldItem of targetFieldModules | async" [value]="fieldItem.fieldId">
+                {{fieldItem.fieldDescri}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedTargetFields.length">
             Please select the fields
           </mat-error>
         </div>

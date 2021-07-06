@@ -62,6 +62,17 @@
                         <lib-text-line type="small">Please enter weightage</lib-text-line>
                     </mat-error>
                 </div>
+
+                <div class="f-col mdo-field" *ngIf="isMPNI">
+                    <lib-text-line type="xsmall" class="field-label" weight="strong" i18n="@@accuracy_score">Accuracy Score <span class="mandatory">*</span></lib-text-line>
+                  
+                    <lib-range-slider class="lib-slider" formControlName="accuracy_score"  tickInterval="1" minValue="0" [formatLabelFn]="rangeSliderLabelFormat" [value]="form.controls.accuracy_score.value" [maxValue]="100" color="primary"></lib-range-slider>
+
+                    <mat-error i18n="@@accuracy_score_missing_msg"
+                        *ngIf="submitted && form.controls.accuracy_score.errors && form.controls.accuracy_score.errors.required">
+                        <lib-text-line type="small">Please enter accuracy score</lib-text-line>
+                    </mat-error>
+                </div>
     
                 <div class="f-col mdo-field" [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)" *ngIf="!isDuplicateType && !isUDR">
                     <lib-text-line class="field-label" type="xsmall"  weight="strong" i18n="@@category">Category <span class="mandatory">*</span></lib-text-line>
@@ -113,7 +124,7 @@
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
 
-                <div class="f-col mdo-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
+                <div class="f-col mdo-field" [class.has-error]="submitted && !selectedFields.length" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule && !isMPNI">
                     <lib-text-line class="field-label"type="xsmall" weight="strong" i18n="@@fields">Fields <span class="mandatory">*</span></lib-text-line>
                     <mat-form-field appearance="outline">
                         <mat-chip-list #chipList>
@@ -152,6 +163,48 @@
                         </mat-autocomplete>
                     </mat-form-field>
                     <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedFields.length">
+                        <lib-text-line type="small">Please select the fields</lib-text-line> 
+                    </mat-error>
+                </div>
+
+                <div class="f-col mdo-field" *ngIf="isMPNI">
+                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@source_field">Source Field <span class="mandatory">*</span></lib-text-line>
+                    
+                    <div class="mdo-field-input">
+                            <input matInput [(ngModel)]="searchSourceFieldStr" [ngModelOptions]="{standalone: true}" i18n-placeholder="@@source_field" placeholder="Source Field"
+                            [matAutocomplete]="sourceFieldAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displaySourceFieldFn.bind(this)" #sourceFieldAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'source_field', $event)">
+                            <ng-container *ngFor="let field of sourceFieldsFiltered">
+                                <mat-option class="mdo-option" [value]="field[sourceFieldsObject.valueKey]">
+                                    {{field[sourceFieldsObject.labelKey]}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
+                    <mat-error *ngIf="submitted && form.controls.source_field.errors && form.controls.source_field.errors.required" i18n="@@source_field_missing">
+                        <lib-text-line type="small">Please select the source field</lib-text-line>
+                    </mat-error>
+                </div>
+
+                <div class="f-col mdo-field" [class.has-error]="submitted && !selectedTargetFields.length" *ngIf="isMPNI">
+                    <lib-text-line class="field-label"type="xsmall" weight="strong" i18n="@@target_fields">Target Fields <span class="mandatory">*</span></lib-text-line>
+                    <mat-form-field appearance="outline">
+                        <mat-chip-list #chipList>
+                            <mat-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true" (removed)="removeTargetField(field,i)">
+                                {{field.fieldDescri}}
+                                <mat-icon matChipRemove>cancel</mat-icon>
+                            </mat-chip>
+                            <input matInput id="targetFieldsInput" #targetFieldsInput class="mat-input" [matAutocomplete]="auto"
+                                formControlName="target_field" [matChipInputFor]="chipList"
+                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectTargetField($event)" [displayWith]="displayFn.bind(this)">
+                            <mat-option *ngFor="let fieldItem of targetFilteredModules | async" [disabled]="!fieldItem.fieldId" [value]="fieldItem.fieldId">
+                                {{fieldItem.fieldDescri}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && !selectedTargetFields.length">
                         <lib-text-line type="small">Please select the fields</lib-text-line> 
                     </mat-error>
                 </div>
