@@ -56,8 +56,8 @@ div.root {
 
 .lib-slider {
   height: 40px;
-  flex: 1;
-  display: inline-table;
+  display: flex;
+  flex-direction: column;
 }
 
 .data-allocation-list {
