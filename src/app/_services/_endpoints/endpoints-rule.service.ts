@@ -708,7 +708,7 @@ export class EndpointsRuleService {
    * @param schemaId selected schemaId
    * @returns will return schema global counts such as success,skipped and error
    */
-  public getSchemaGlobalCounts(schemaId: string): string {
-    return `${this.origin}/schema/get-global-count?schemaId=${schemaId}`;
+  public getSchemaGlobalCounts(): string {
+    return `${this.origin}/schema/get-global-count`;
   }
 }

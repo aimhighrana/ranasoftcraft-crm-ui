@@ -700,6 +700,6 @@ describe('EndpointsRuleService', () => {
 
   it('getSchemaGlobalCounts() get schema related global counts', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.getSchemaGlobalCounts('7944828395059')).toContain('/schema/get-global-count');
+    expect(serObj.getSchemaGlobalCounts()).toContain('/schema/get-global-count');
   }));
 });

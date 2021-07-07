@@ -873,15 +873,13 @@ describe('SchemaService', () => {
 
     const schemaId = '7944828395059';
 
-    console.log('endpointServiceSpy.getSchemaGlobalCounts', endpointServiceSpy);
-
     endpointServiceSpy.getSchemaGlobalCounts.and.returnValue(url);
 
     schemaService.getSchemaGlobalCounts(schemaId).subscribe((result) => {
       expect(result).toEqual(response);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}`);
+    const mockRequest = httpTestingController.expectOne(`${url}?schemaId=${schemaId}`);
     expect(mockRequest.request.method).toEqual('GET');
     mockRequest.flush(response);
     httpTestingController.verify();

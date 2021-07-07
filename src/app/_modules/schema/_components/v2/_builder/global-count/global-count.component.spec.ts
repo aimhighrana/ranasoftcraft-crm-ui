@@ -31,10 +31,19 @@ describe('GlobalCountComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('ngOnInit()', () => {
+  it('ngOnChanges()', () => {
+    // mock data
+    const chnages: import('@angular/core').SimpleChanges = {
+      schemaId: { currentValue: '7944828395059', previousValue: null, firstChange: null, isFirstChange: null },
+    };
+
     spyOn(component, 'getGlobalCounts');
-    component.ngOnInit();
-    expect(component.getGlobalCounts).toHaveBeenCalledTimes(1);
+
+    // call actual method
+    component.ngOnChanges(chnages);
+    expect(component.ngOnChanges).toBeTruthy();
+
+    expect(component.getGlobalCounts).toHaveBeenCalled();
   });
 
   it(`getGlobalCounts(), get schema global count `, async(() => {
@@ -60,5 +69,10 @@ describe('GlobalCountComponent', () => {
     component.getGlobalCounts();
     expect(schemaService.getSchemaGlobalCounts).toHaveBeenCalledWith(component.schemaId);
     expect(component.globalCount).toEqual(response);
+
+     // api error
+     spyOn(console, 'error');
+     component.getGlobalCounts();
+     expect(console.error).toHaveBeenCalled();
   }));
 });
