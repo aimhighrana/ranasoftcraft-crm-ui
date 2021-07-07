@@ -13,7 +13,7 @@
                 </mat-checkbox>
             </mat-cell>
         </ng-container>
-
+    
         <ng-container matColumnDef="settings">
             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
             </mat-header-cell>
@@ -21,7 +21,7 @@
                 <lib-button type="plain"  icon="ellipsis-h"></lib-button>
             </mat-cell>
         </ng-container>
-
+    
         <ng-container matColumnDef="avatar">
             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
             </mat-header-cell>
@@ -33,7 +33,7 @@
                 </mat-card-header>
             </mat-cell>
         </ng-container>
-
+    
         <ng-container matColumnDef="groupName">
             <mat-header-cell *matHeaderCellDef> Name
             </mat-header-cell>
@@ -41,7 +41,7 @@
                 {{ row.groupDesc ? row.groupDesc : row.groupId }}
             </mat-cell>
         </ng-container>
-
+    
         <ng-container matColumnDef="common_actions_header">
             <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
                 <div class="f-row">
@@ -50,10 +50,10 @@
                 </div>
             </mat-header-cell>
         </ng-container>
-
+    
         <!-- <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky: true"></mat-header-row> -->
         <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedFields | async;" [ngClass]="{'active-row': activeGroupId == row.groupId}" (click)="rowGroupClicked(row)"></mat-row>
     </mat-table>
-    <pros-null-state *ngIf="!dataSource.data.length" [button]="null"></pros-null-state>
+    <pros-null-state *ngIf="!dataSource.data.length" [button]="null"></pros-null-state>   
 </div>
