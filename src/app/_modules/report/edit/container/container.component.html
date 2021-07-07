@@ -193,19 +193,28 @@
                                     </ng-template>
                                 </div>
 
-                                <div class="f-col">
+                                <div class="f-col mdo-field">
                                     <!-- <For WorkFlow Path> -->
                                     <ng-template
                                         [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
-                                        <mat-label>Workflow path</mat-label>
-                                        <mat-form-field appearance="outline">
-                                            <mat-select formControlName="workflowPath" multiple>
+                                        <mat-label i18n="@@workFlowPath">Workflow path</mat-label>
+                                        <div class="mdo-field-input" >
+                                            <input matInput placeholder="Type to search" #optionInput
+                                                formControlName="workflowPath" [matAutocomplete]="auto" disabled
+                                                [value]="displayWithWorkflowDesc()" />
+                                            <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                               (optionSelected)="selectedWorkFlow($event.option.value)">
                                                 <mat-option *ngFor="let workflow of workflowPathOb | async"
-                                                    [value]="workflow.pathname">
-                                                    {{ workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' }}
+                                                    [value]="workflow" class="mdo-option">
+                                                    <lib-checkbox
+                                                        [label]="workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path'"
+                                                        [checked]="isCheckedWorkflow(workflow)" 
+                                                        (valueChange)="selectedWorkFlow(workflow)"
+                                                        prosClickStopPropagation>
+                                                    </lib-checkbox>
                                                 </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                                            </mat-autocomplete>
+                                        </div>
                                     </ng-template>
                                 </div>
 
@@ -233,27 +242,29 @@
                                         </pros-workflowfield-control>
                                     </ng-template>
                                 </div>
-                                <div class="f-col">
+                                <div class="f-col mdo-field">
                                     <!-- FOR Aggregration -->
                                     <ng-template
-                                        [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
-                                        <mat-label>Aggregration operator</mat-label>
-                                        <mat-form-field appearance="outline">
-                                            <mat-select formControlName="aggregrationOp">
-                                                <mat-option value="GROUPBY"
-                                                    *ngIf="(selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">
-                                                    Group by</mat-option>
-                                                <mat-option value="COUNT" *ngIf="(selStyleWid.widgetType === 'COUNT')">
-                                                    Count
-                                                </mat-option>
-                                                <!-- <mat-option value="MIN" >Min</mat-option>
-                                                <mat-option value="MAX" >Max</mat-option> -->
-                                                <mat-option value="SUM"
-                                                    *ngIf="(selStyleWid.widgetType === 'COUNT' && checkFieldDataType)">
-                                                    Sum
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                                        [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
+                                        <mat-label i18n="@@aggregrationOperator">Aggregration operator</mat-label>
+                                        <div class="mdo-field-input">
+                                            <input matInput placeholder="Type to search" #optionsInput
+                                                formControlName="aggregrationOp" [matAutocomplete]="auto1" />
+                                            <mat-autocomplete class="mdo-autocomplete" #auto1="matAutocomplete"
+                                                [displayWith]="displayProperties">
+                                                <ng-container
+                                                    *ngFor="let aggOp of getValue(aggregrationOp,styleCtrlGrp.get('aggregrationOp'))">
+                                                    <mat-option [value]="aggOp"
+                                                        *ngIf="aggOp.key === 'GROUPBY' && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')"
+                                                       >{{aggOp.value}}</mat-option>
+                                                    <mat-option [value]="aggOp"
+                                                        *ngIf="(aggOp.key === 'COUNT' && (selStyleWid.widgetType === 'COUNT'))"
+                                                       >{{aggOp.value}}</mat-option>
+                                                    <mat-option [value]="aggOp"
+                                                        *ngIf="(aggOp.key === 'SUM' && (selStyleWid.widgetType === 'COUNT' && checkFieldDataType))"> {{aggOp.value}}</mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
                                     </ng-template>
                                 </div>
                                 <div class="f-col">
@@ -304,9 +315,6 @@
                                 </div>
 
                                 <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'COUNT'">
-                                    <!-- <mat-checkbox color="primary" formControlName="isFieldDistinct">Include field as
-                                        distinct</mat-checkbox> -->
-
                                     <lib-checkbox label="Include field as distinct" formControlName="isFieldDistinct">
                                     </lib-checkbox>
                                 </div>
@@ -320,31 +328,21 @@
                                             || selStyleWid.fieldCtrl.fieldId === 'DUE_DATE' || selStyleWid.fieldCtrl.fieldId === 'DATE_STARTED' || selStyleWid.fieldCtrl.fieldId === 'FINISHDATE')"
                                             [ngIfElse]="otherCtrl">
 
-                                            <div class="f-col">
-                                                <mat-label>Select default days</mat-label>
-                                                <mat-form-field appearance="outline">
-                                                    <mat-select formControlName="dateSelectionType">
-                                                        <mat-option>
-                                                            No date
+                                            <div class="f-col mdo-field">
+                                                <mat-label i18n="@@selectDefaultDays">Select default days</mat-label>
+                                                <div class="mdo-field-input">
+                                                    <input matInput placeholder="Type to search" #optionsInput
+                                                        formControlName="dateSelectionType" [matAutocomplete]="auto1" />
+                                                    <mat-autocomplete class="mdo-autocomplete" #auto1="matAutocomplete"
+                                                        [displayWith]="displayProperties">
+                                                        <mat-option i18n="@@noDate">No date</mat-option>
+                                                        <mat-option
+                                                            *ngFor="let opt of getValue(filterType,styleCtrlGrp.get('filterType'))"
+                                                            [value]="opt">
+                                                            {{opt.value}}
                                                         </mat-option>
-                                                        <mat-option value="TODAY">
-                                                            Today
-                                                        </mat-option>
-                                                        <mat-option value="DAY_7">
-                                                            7 days
-                                                        </mat-option>
-                                                        <mat-option value="DAY_10">
-                                                            10 days
-                                                        </mat-option>
-                                                        <mat-option value="DAY_20">
-                                                            20 days
-                                                        </mat-option>
-                                                        <mat-option value="DAY_30">
-                                                            30 days
-                                                        </mat-option>
-                                                        <mat-option value="CUSTOM">Custom date</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
+                                                    </mat-autocomplete>
+                                                </div>
                                             </div>
 
 
@@ -357,38 +355,47 @@
                                                 formControlName="startDate">
                                             </lib-date-range-picker>
 
-
                                         </ng-template>
-
                                         <ng-template #otherCtrl>
-                                            <div class="f-col">
-                                                <mat-label>Filter type</mat-label>
-                                                <mat-form-field appearance="outline">
-                                                    <mat-select formControlName="filterType">
-                                                        <mat-option value="DROPDOWN_VALS">Dropdown value</mat-option>
-                                                        <mat-option value="HORIZONTAL_VALS">Horizontal value
+                                            <div class="f-col mdo-field">
+                                                <mat-label i18n="@@filterType">Filter type</mat-label>
+                                                <div class="mdo-field-input">
+                                                    <input matInput placeholder="Type to search" #optionsInput
+                                                        formControlName="filterType" [matAutocomplete]="auto1" />
+                                                    <mat-autocomplete class="mdo-autocomplete" #auto1="matAutocomplete"
+                                                        [displayWith]="displayProperties">
+                                                        <mat-option
+                                                            *ngFor="let opt of getValue(filterType,styleCtrlGrp.get('filterType'))"
+                                                            [value]="opt">
+                                                            {{opt.value}}
                                                         </mat-option>
-                                                        <mat-option value="VERTICAL_VALS">Vertical value</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
+                                                    </mat-autocomplete>
+                                                </div>
                                             </div>
 
                                             <div class="f-col">
-                                                <lib-checkbox formControlName="isMultiSelect" label="Ismultiselect">
+                                                <lib-checkbox formControlName="isMultiSelect" label="Is multiselect">
                                                 </lib-checkbox>
+
                                             </div>
-                                            <div class="f-row-spacer-half"></div>
-
-                                            <mat-label i18n="@@sortBy">Sort by</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <mat-select formControlName="orderWith">
-                                                    <mat-option [value]="OrderWith.ASC" i18n="@@ascending"> Ascending
-                                                    </mat-option>
-                                                    <mat-option [value]="OrderWith.DESC" i18n="@@descending"> Descending
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-
+                                            <div class="f-col mdo-field">
+                                                <mat-label i18n="@@sortBy">Sort by</mat-label>
+                                                <div class="mdo-field-input">
+                                                    <input matInput placeholder="Type to search" #optInput
+                                                        formControlName="orderWith" [matAutocomplete]="auto" />
+                                                    <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                                        [displayWith]="displayProperties">
+                                                        <ng-container
+                                                            *ngFor="let sort of getValue(orderWith,styleCtrlGrp.get('orderWith'))">
+                                                            <mat-option
+                                                                *ngIf="sort.key === OrderWith.ASC || sort.key === OrderWith.DESC"
+                                                                [value]="sort">
+                                                                {{sort.value}}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-autocomplete>
+                                                </div>
+                                            </div>
                                         </ng-template>
                                     </ng-template>
                                 </div>
@@ -534,24 +541,28 @@
 
                                     </ng-template>
                                 </div>
-                                <div class="f-col">
+                                <div class="f-col mdo-field">
                                     <!-- FOR TABLE LIST CHOOSE Default Page Size and Column format-->
                                     <!-- For Modules -->
                                     <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' ">
-
                                         <lib-input type="number" label="Default page Size"
                                             (input)="checkNumLength($event.target.value)"
                                             formControlName="pageDefaultSize" placeholder="Default page size">
                                         </lib-input>
 
-                                        <mat-label>Column format</mat-label>
-                                        <mat-form-field appearance="outline">
-                                            <mat-select formControlName="displayCriteria">
-                                                <mat-option value="TEXT"> Text </mat-option>
-                                                <mat-option value="CODE"> Code </mat-option>
-                                                <mat-option value="CODE_TEXT"> CODE & Text </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                                        <mat-label i18n="@@columnFormat">Column format</mat-label>
+                                        <div class="mdo-field-input">
+                                            <input matInput placeholder="Type to search" #optionsInput
+                                                formControlName="displayCriteria" [matAutocomplete]="auto1" />
+                                            <mat-autocomplete class="mdo-autocomplete" #auto1="matAutocomplete"
+                                                [displayWith]="displayProperties">
+                                                <mat-option
+                                                    *ngFor="let col of getValue(displayCriteria,styleCtrlGrp.get('displayCriteria'))"
+                                                    [value]="col">
+                                                    {{col.value}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </div>
                                     </ng-template>
                                 </div>
 
@@ -579,7 +590,8 @@
                                             </lib-input>
                                             <mat-divider [vertical]="true"></mat-divider>
                                             <lib-button type="plain" icon="times" matSuffix
-                                                (click)="removeUploadedImage()"></lib-button>
+                                                (click)="removeUploadedImage()">
+                                            </lib-button>
 
                                         </div>
                                     </ng-template>
@@ -606,39 +618,57 @@
                         *ngIf="selStyleWid  && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
                         <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                                <mat-panel-title class="panel-title">
+                                <mat-panel-title class="panel-title" i18n="@@chartProperties">
                                     Chart properties
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <div class="f-col fields-col" [formGroup]="chartPropCtrlGrp">
-                                <div class="f-col">
-                                    <mat-label>Chart type </mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="chartType"
-                                            [disabled]="selStyleWid.widgetType === 'STACKED_BAR_CHART'">
-                                            <mat-option value="BAR"> Bar </mat-option>
-                                            <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> Pie
-                                            </mat-option>
-                                            <mat-option *ngIf="selStyleWid.widgetType === 'TIMESERIES' " value="LINE">
-                                                Line
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <div class="f-col mdo-field">
+                                    <mat-label i18n="@@chartType">Chart type </mat-label>
+                                    <div class="mdo-field-input"
+                                        [disabled]="selStyleWid.widgetType === 'STACKED_BAR_CHART'">
+                                        <input matInput placeholder="Type to search" #optionsInput
+                                            formControlName="chartType" [matAutocomplete]="auto" />
+                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                            [displayWith]="displayProperties">
+                                            <ng-container
+                                                *ngFor="let chart of getValue(chartType,chartPropCtrlGrp.get('chartType'))">
+                                                <mat-option
+                                                    *ngIf="selStyleWid.widgetType === 'BAR_CHART' && chart.key === 'PIE'"
+                                                    [value]="chart">
+                                                    {{chart.value}}
+                                                </mat-option>
+                                                <mat-option
+                                                    *ngIf="selStyleWid.widgetType === 'TIMESERIES' && chart.key === 'LINE'"
+                                                    [value]="chart">
+                                                    {{chart.value}}
+                                                </mat-option>
+                                                <mat-option [value]="chart" *ngIf="chart.key === 'BAR'">
+                                                    {{chart.value}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                    </div>
                                 </div>
-
-                                <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
-                                    <mat-label>Orientation</mat-label>
-                                    <mat-form-field appearance="outline"
-                                        *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
-                                        <mat-select formControlName="orientation">
-                                            <mat-option value="VERTICAL"> Vertical </mat-option>
-                                            <mat-option value="HORIZONTAL"> Horizontal </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <div class="f-col mdo-field" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
+                                    <mat-label i18n="@@orientation">Orientation</mat-label>
+                                    <div class="mdo-field-input"
+                                        *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value?.key === 'BAR'">
+                                        <input matInput #optionsInput
+                                            formControlName="orientation" [matAutocomplete]="auto" />
+                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                            [displayWith]="displayProperties">
+                                            <mat-option
+                                                *ngFor="let orint of getValue(orientation,chartPropCtrlGrp.get('orientation'))"
+                                                [value]="orint">
+                                                {{ orint.value}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </div>
                                 </div>
 
                                 <ng-template
-                                    [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR' || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                    [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value?.key === 'BAR' || chartPropCtrlGrp.get('chartType').value?.key === 'LINE'">
                                     <div class="f-col">
 
 
@@ -652,25 +682,26 @@
                                             [maxLength]="maxReportNameLength"></lib-input>
                                     </div>
 
-                                    <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
+                                    <div class="f-col  mdo-field" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                         <mat-label i18n="@@sortBy">Sort by</mat-label>
-                                        <mat-form-field appearance="outline">
-                                            <mat-select formControlName="orderWith">
-                                                <mat-option [value]="OrderWith.ROW_ASC" i18n="@@rowAscending"> Row
-                                                    ascending
-                                                </mat-option>
-                                                <mat-option [value]="OrderWith.ROW_DESC" i18n="@@rowDescending"> Row
-                                                    descending </mat-option>
-                                                <mat-option [value]="OrderWith.COL_ASC" i18n="@@columnAscending"> Column
-                                                    Ascending </mat-option>
-                                                <mat-option [value]="OrderWith.COL_DESC" i18n="@@columnDescending">
-                                                    Column
-                                                    descending </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                                        <div class="mdo-field-input">
+                                            <input matInput #optInput
+                                                formControlName="orderWith" [matAutocomplete]="auto" />
+                                            <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                                [displayWith]="displayProperties">
+                                                <ng-container
+                                                    *ngFor="let sort of getValue(orderWith,chartPropCtrlGrp.get('orderWith'))">
+                                                    <mat-option
+                                                        *ngIf="sort.key !== OrderWith.ASC && sort.key !== OrderWith.DESC"
+                                                        [value]="sort">
+                                                        {{sort.value}} 
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
                                     </div>
                                     <ng-template
-                                        [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                        [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value?.key === 'LINE'">
                                         <div class="f-col">
                                             <div class="f-row">
                                                 <div class="f-col">
@@ -711,21 +742,26 @@
                                     </lib-checkbox>
                                 </div>
                                 <div class="f-row-spacer-half"></div>
-                                <div class="f-col"
-                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value !== 'PIE'">
-                                    <mat-label>Datalabels position</mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="datalabelsPosition">
-                                            <mat-option value="center">Center </mat-option>
-                                            <mat-option value="start">Start </mat-option>
-                                            <mat-option value="end">End </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <div class="f-col mdo-field"
+                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value?.key !== 'PIE'">
+                                    <mat-label i18n="@@datalabelsPosition">Datalabels position</mat-label>
+                                    <div class="mdo-field-input">
+                                        <input matInput placeholder="Type to search" #optionsInput
+                                            formControlName="datalabelsPosition" [matAutocomplete]="auto" />
+                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                            [displayWith]="displayProperties">
+                                            <mat-option
+                                                *ngFor="let data of getValue(datalabelsPosition,chartPropCtrlGrp.get('datalabelsPosition'))"
+                                                [value]="data">
+                                                {{ data.value}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </div>
                                 </div>
 
                                 <!-- PIE CHART PERCETAGE CONFIG -->
                                 <div class="f-col"
-                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
+                                    *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value?.key === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
 
                                     <lib-checkbox label="Show data in %" formControlName="isEnabledBarPerc">
                                     </lib-checkbox>
@@ -734,69 +770,85 @@
 
                                 <div class="f-col">
 
-                                    <lib-checkbox label="Show legend" formControlName="isEnableLegend"></lib-checkbox>
+                                    <lib-checkbox label="Show legend" formControlName="isEnableLegend">
+                                    </lib-checkbox>
                                 </div>
                                 <div class="f-row-spacer-half"></div>
-                                <div class="f-col"
+                                <div class="f-col mdo-field"
                                     *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableLegend').value">
-                                    <mat-label>Legend position</mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="legendPosition">
-                                            <mat-option value="top"> Top </mat-option>
-                                            <mat-option value="left"> Left </mat-option>
-                                            <mat-option value="bottom"> Bottom </mat-option>
-                                            <mat-option value="right"> Right </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                    <mat-label i18n="@@legendPosition">Legend position</mat-label>
+                                    <div class="mdo-field-input">
+                                        <input matInput placeholder="Type to search" #optionsInput
+                                            formControlName="legendPosition" [matAutocomplete]="auto1" />
+                                        <mat-autocomplete class="mdo-autocomplete" #auto1="matAutocomplete"
+                                            [displayWith]="displayProperties">
+                                            <mat-option
+                                                *ngFor="let legend of getValue(legendPosition,chartPropCtrlGrp.get('legendPosition'))"
+                                                [value]="legend">
+                                                {{ legend.value}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </div>
                                 </div>
-
                                 <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
-
                                     <lib-input label="Default value alias" formControlName="blankValueAlias">
                                     </lib-input>
                                 </div>
 
                                 <div class="f-col" *ngIf="selStyleWid.widgetType === 'TIMESERIES' && !selStyleWid.chartProperties?.hasCustomSLA">
                                     <!-- SERIES WITH -->
-                                    <mat-label>Series with</mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="seriesWith" [disabled]="isSerieswithDisabled"
-                                            [(value)]="selectedOption">
-                                            <mat-option value="day" *ngIf="isSriesWithVisibile"> Day </mat-option>
-                                            <mat-option value="week" *ngIf="isSriesWithVisibile"> Week </mat-option>
-                                            <mat-option value="month" *ngIf="isSriesWithVisibile"> Month </mat-option>
-                                            <mat-option value="quarter" *ngIf="isSriesWithVisibile"> Quarter
-                                            </mat-option>
-                                            <mat-option value="year"> Year </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                    <div class="f-col mdo-field">
+                                        <mat-label class="mdo-field-label" i18n="@@serieswith">Series with</mat-label>
+                                        <div class="mdo-field-input">
+                                            <input matInput #optionsInput formControlName="seriesWith"
+                                                [matAutocomplete]="auto" />
+                                            <!-- autocomplete -->
+                                            <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                                [displayWith]="displayProperties">
+                                                <ng-container
+                                                    *ngFor="let opt of getValue(seriesWith,chartPropCtrlGrp.get('seriesWith'))">
+                                                    <mat-option
+                                                        *ngIf="(opt.key === 'year') || (opt.key !== 'year' && isSriesWithVisibile)"
+                                                        [value]="opt" class="mdo-option">
+                                                        {{opt.value}}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="f-col" *ngIf="selStyleWid.widgetType === 'TIMESERIES'">
                                     <!-- SERIES FORMAT -->
-                                    <mat-label>Series format</mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="seriesFormat">
-                                            <mat-option value="MMM-dd-yy">MMM-dd-yy</mat-option>
-                                            <mat-option value="dd-MMM-yy">dd-MMM-yy</mat-option>
-                                            <mat-option value="dd MMM, yy">dd MMM, yy</mat-option>
-                                            <mat-option value="MMM d, yy">MMM d, yy</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                    <div class="f-col mdo-field">
+                                        <mat-label i18n="@@seriesFormat">Series format</mat-label>
+                                        <div class="mdo-field-input">
+                                            <input matInput placeholder="Type to search" #optionsInput
+                                                formControlName="seriesFormat" [matAutocomplete]="auto" />
+                                            <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete">
+                                                <mat-option [value]="series"
+                                                    *ngFor="let series of getSeriesValue(seriesFormat,chartPropCtrlGrp.get('seriesFormat'))">
+                                                    {{series}} </mat-option>
+                                            </mat-autocomplete>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="f-col" *ngIf="selStyleWid.widgetType === 'TIMESERIES'">
                                     <!-- DATE RANGE FOR TIME SERIES -->
-                                    <mat-label>Select interval</mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="timeseriesStartDate">
-                                            <mat-option value="millisecond"> Today </mat-option>
-                                            <mat-option value="7"> 7 </mat-option>
-                                            <mat-option value="10"> 10 </mat-option>
-                                            <mat-option value="20"> 20 </mat-option>
-                                            <mat-option value="30"> 30 </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                    <div class="f-col mdo-field">
+                                        <mat-label i18n="@@selectInterval">Select interval</mat-label>
+                                        <div class="mdo-field-input">
+                                            <input matInput placeholder="Type to search" #optionsInput
+                                                formControlName="timeseriesStartDate" [matAutocomplete]="auto" />
+                                            <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                                [displayWith]="displayProperties">
+                                                <mat-option [value]="interval"
+                                                    *ngFor="let interval of getValue(timeInterval,chartPropCtrlGrp.get('timeseriesStartDate'))">
+                                                    {{interval.value}} </mat-option>
+                                            </mat-autocomplete>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="f-col mdo-field"
@@ -834,7 +886,7 @@
                                             <mat-autocomplete class="mdo-autocomplete" #autoSLA="matAutocomplete"
                                                 [displayWith]="displayProperties">
                                                 <mat-option class="mdo-option"
-                                                    *ngFor="let type of getValue(SLAMenu,chartPropCtrlGrp.get('slaType'))"
+                                                    *ngFor="let type of getValue(slaMenu,chartPropCtrlGrp.get('slaType'))"
                                                     [value]="type">
                                                     {{ type.value }}
                                                 </mat-option>

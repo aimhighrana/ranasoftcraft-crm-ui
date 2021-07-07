@@ -632,18 +632,19 @@ export enum ReportCategory {
     MISSING_WRKFLOW = 'MISSING_WORKFLOW'
 }
 
-export interface Buckets {
-    doc_count: string,
-    key: string,
-}
-
-export enum SLAVALUE {
-    MINUTES = 'Minutes',
-    DAYS ='Days',
-    HOURS = 'Hours'
+export enum FilterWith {
+    DROPDOWN_VALS = 'DROPDOWN_VALS',
+    HORIZONTAL_VALS = 'HORIZONTAL_VALS',
+    VERTICAL_VALS = 'VERTICAL_VALS'
 }
 
 export enum BucketFilter {
     WITHIN_1_DAY = 'within_1_day',
     MORE_THEN_1_DAY = 'more_then_1_day'
 }
+
+export interface Buckets {
+    doc_count: string,
+    key: string,
+}
+
