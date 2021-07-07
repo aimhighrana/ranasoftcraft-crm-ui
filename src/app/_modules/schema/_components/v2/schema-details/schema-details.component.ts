@@ -332,9 +332,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
 
     const moduleSub = this.getModuleInfo(this.moduleId);
-    const sub = this.getDataScope();
-    forkJoin({getDataScope: sub, getModuleInfo: moduleSub}).subscribe((res) => {
-      if (res) {
+    forkJoin({...!this.isInRunning && {getDataScope: this.getDataScope()}, getModuleInfo: moduleSub}).subscribe((res) => {
+      if (res && !this.isInRunning) {
         this.getSchemaDetails();
       }
     });
@@ -822,7 +821,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
-    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId && (this.activeTab === 'outdated' || this.activeTab === 'skipped')) {
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId || this.activeTab === 'outdated' || this.activeTab === 'skipped') {
       return;
     }
 
