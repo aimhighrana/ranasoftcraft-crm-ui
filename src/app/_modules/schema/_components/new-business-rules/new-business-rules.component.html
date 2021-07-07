@@ -156,7 +156,7 @@
           <!-- label -->
           <mat-label class="mdo-field-label" i18n="@@source_field">Source Field</mat-label>
           <!-- input container -->
-          <div *ngIf="categoryList?.length" class="mdo-field-input">
+          <div class="mdo-field-input">
             <input matInput [(ngModel)]="searchSourceFieldStr" formControlName="source_field" i18n-placeholder="@@source_field" placeholder="Source Field" [matAutocomplete]="sourceFieldAuto" />
             <mat-autocomplete  class="mdo-autocomplete" [displayWith]="displaySourceFieldFn.bind(this)"
               #sourceFieldAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'source_field', $event)">

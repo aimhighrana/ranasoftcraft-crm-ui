@@ -17,6 +17,7 @@ import { BlockType } from '@modules/report/_models/widget';
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 import { ValidationError } from '@models/schema/schema';
+import { TransientService } from 'mdo-ui-library';
 
 class ConditionalOperator {
     desc: string;
@@ -244,7 +245,8 @@ export class NewBusinessRulesComponent implements OnInit {
         private dialogRef: MatDialogRef<Component>,
         @Inject(MAT_DIALOG_DATA) public data,
         private schemaDetailsService: SchemaDetailsService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private toastService: TransientService
     ) { }
 
     /**
@@ -738,7 +740,7 @@ export class NewBusinessRulesComponent implements OnInit {
     selectTargetField(event) {
         const alreadyExists = this.selectedTargetFields.find(item => item.fieldId === event.option.value);
         if (alreadyExists) {
-            this.snackBar.open('This field is already selected', 'Okay', { duration: 5000 });
+            this.toastService.open(`This field is already selected`, `Close`, { duration: 2000 });
         } else {
             this.selectedTargetFields.push({
                 fieldDescri: event.option.viewValue,

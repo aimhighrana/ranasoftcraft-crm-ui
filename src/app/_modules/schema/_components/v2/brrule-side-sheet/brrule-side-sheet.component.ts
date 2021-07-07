@@ -1207,7 +1207,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (!!event.option.value) {
       const alreadyExists = this.selectedTargetFields.find(item => item.fieldId === event.option.value);
       if (alreadyExists) {
-        this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
+        this.transientService.open(`This field is already selected`, `Close`, { duration: 2000 });
       } else {
         this.selectedTargetFields.push({
           fieldDescri: event.option.viewValue,
