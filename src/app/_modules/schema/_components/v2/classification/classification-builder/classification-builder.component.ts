@@ -437,7 +437,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   /**
-   * Get data scopes .. or variats ...
+   * Get data scopes .. or variats
    */
   getDataScope(activeVariantId?: string) {
     const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
