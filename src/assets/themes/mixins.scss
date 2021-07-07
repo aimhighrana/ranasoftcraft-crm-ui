@@ -69,17 +69,9 @@
           border-right-color: $color-app-border;
         }
 
-        .mat-slide-toggle {
-          width: 100%;
-
-          .mat-slide-toggle-label {
-            justify-content: space-between;
-            font-weight: bold;
-          }
-        }
-        
         .builder-container {
           border-color: $color-app-border;
+
           .property-col {
             border-left-color: $color-app-border;
           }
