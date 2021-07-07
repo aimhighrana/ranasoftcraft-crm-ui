@@ -724,6 +724,10 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
     }
 
+    if(this.form?.get('rule_type').value === BusinessRuleType.BR_CUSTOM_SCRIPT && requiredKeys.indexOf('categoryId') > -1) {
+      requiredKeys.splice(requiredKeys.indexOf('categoryId'), 1);
+    }
+
     controlKeys.map((key) => {
       const index = requiredKeys.findIndex(reqKey => reqKey === key);
       if (index === -1) {
