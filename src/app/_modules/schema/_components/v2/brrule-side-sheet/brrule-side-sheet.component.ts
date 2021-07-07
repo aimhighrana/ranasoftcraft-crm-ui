@@ -53,7 +53,7 @@ export class BrruleSideSheetComponent implements OnInit {
     private formBuilder: FormBuilder,
     private globalService: GlobaldialogService,
     private transientService: TransientService
-  ) {}
+  ) { }
 
   /**
    * getter for transformation types
