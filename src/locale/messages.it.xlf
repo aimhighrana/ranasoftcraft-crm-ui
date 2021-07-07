@@ -1439,7 +1439,11 @@
         <target>Ordina per</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
-          <context context-type="linenumber">370</context>
+          <context context-type="linenumber">379</context>
+        </context-group>
+         <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">673</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ascending" datatype="html">
@@ -2835,6 +2839,264 @@
           <context context-type="linenumber">172</context>
         </context-group>
       </trans-unit>
+
+      <trans-unit id="workFlowPath" datatype="html">
+        <source>Workflow path</source>
+        <target>Percorso del flusso di lavoro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">200</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aggregrationOperator" datatype="html">
+        <source>Aggregration operator</source>
+        <target>Operatore di aggregazione</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">247</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="groupBy" datatype="html">
+        <source>Group by</source>
+        <target>Raggruppa per</target>
+      </trans-unit>
+      <trans-unit id="count" datatype="html">
+        <source>Count</source>
+        <target>Contare</target>
+      </trans-unit>
+      <trans-unit id="sum" datatype="html">
+        <source>Sum</source>
+        <target>Somma</target>
+      </trans-unit>
+      <trans-unit id="includeField" datatype="html">
+        <source>Include field as distinct</source>
+        <target>Includi campo come distinto</target>
+      </trans-unit>
+      <trans-unit id="selectDefaultDays" datatype="html">
+        <source>Select default days</source>
+        <target>Seleziona i giorni predefiniti</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">331</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noDate" datatype="html">
+        <source>No date</source>
+        <target>Nessuna data</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">337</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7Days" datatype="html">
+        <source>7 days</source>
+        <target>7 giorni</target>
+      </trans-unit>
+      <trans-unit id="10Days" datatype="html">
+        <source>10 days</source>
+        <target>10 giorni</target>
+      </trans-unit>
+      <trans-unit id="20Days" datatype="html">
+        <source>20 days</source>
+        <target>20 giorni</target>
+      </trans-unit>
+      <trans-unit id="30Days" datatype="html">
+        <source>30 days</source>
+        <target>30 giorni</target>
+      </trans-unit>
+      <trans-unit id="customDate" datatype="html">
+        <source>Custom date</source>
+        <target>Data personalizzata</target>
+      </trans-unit>
+      <trans-unit id="filterType" datatype="html">
+        <source>Filter type</source>
+        <target>Tipo di filtro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">359</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dropdownValue" datatype="html">
+        <source>Dropdown value</source>
+        <target>Valore a discesa</target>
+      </trans-unit>
+      <trans-unit id="horizontalValue" datatype="html">
+        <source>Horizontal value</source>
+        <target>Valore orizzontale</target>
+      </trans-unit>
+      <trans-unit id="verticalValue" datatype="html">
+        <source>Vertical value</source>
+        <target>Valore verticale</target>
+      </trans-unit>
+      <trans-unit id="isMultiselect" datatype="html">
+        <source>Is multiselect</source>
+        <target>È multiselezione?</target>
+      </trans-unit>
+      <trans-unit id="columnFormat" datatype="html">
+        <source>Column format</source>
+        <target>Formato colonna</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">541</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="globalFiltersNA" datatype="html">
+        <source>Global Filters not applicable</source>
+        <target>Filtri globali non applicabili</target>
+      </trans-unit>
+      <trans-unit id="chartProperties" datatype="html">
+        <source>Chart properties</source>
+        <target>Proprietà del grafico</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">610</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartType" datatype="html">
+        <source>Chart type</source>
+        <target>Tipo di grafico</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">615</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pie" datatype="html">
+        <source>Pie</source>
+        <target>Torta</target>
+      </trans-unit>
+      <trans-unit id="bar" datatype="html">
+        <source>Bar</source>
+        <target>Bar</target>
+      </trans-unit>
+      <trans-unit id="line" datatype="html">
+        <source>Line</source>
+        <target>Linea</target>
+      </trans-unit>
+      <trans-unit id="orientation" datatype="html">
+        <source>Orientation</source>
+        <target>Orientamento</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">642</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="vertical" datatype="html">
+        <source>Vertical</source>
+        <target>Verticale</target>
+      </trans-unit>
+      <trans-unit id="horizontal" datatype="html">
+        <source>Horizontal</source>
+        <target>Orizzontale</target>
+      </trans-unit>
+      <trans-unit id="enableDatalabels" datatype="html">
+        <source>Enable datalabels</source>
+        <target>Abilita etichette dati</target>
+      </trans-unit>
+      <trans-unit id="datalabelsPosition" datatype="html">
+        <source>Datalabels position</source>
+        <target>Posizione etichette dati</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">735</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="center" datatype="html">
+        <source>Center</source>
+        <target>Centro</target>
+      </trans-unit>
+      <trans-unit id="ShowDataIn" datatype="html">
+        <source>Show data in %</source>
+        <target>Mostra dati in %</target>
+      </trans-unit>
+      <trans-unit id="showLegend" datatype="html">
+        <source>Show legend</source>
+        <target>Mostra legenda</target>
+      </trans-unit>
+      <trans-unit id="legendPosition" datatype="html">
+        <source>Legend position</source>
+        <target>Posizione della legenda</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">767</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="top" datatype="html">
+        <source>Top</source>
+        <target>Superiore</target>
+      </trans-unit>
+      <trans-unit id="left" datatype="html">
+        <source>Left</source>
+        <target>Sinistra</target>
+      </trans-unit>
+      <trans-unit id="bottom" datatype="html">
+        <source>Bottom</source>
+        <target>Parte inferiore</target>
+      </trans-unit>
+      <trans-unit id="right" datatype="html">
+        <source>Right</source>
+        <target>Destro</target>
+      </trans-unit>
+      <trans-unit id="serieswith" datatype="html">
+        <source>Series with</source>
+        <target>Serie con</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">789</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="day" datatype="html">
+        <source>Day</source>
+        <target>Giorno</target>
+      </trans-unit>
+      <trans-unit id="week" datatype="html">
+        <source>Week</source>
+        <target>Settimana</target>
+      </trans-unit>
+      <trans-unit id="month" datatype="html">
+        <source>Month</source>
+        <target>Mese</target>
+      </trans-unit>
+      <trans-unit id="quarter" datatype="html">
+        <source>Quarter</source>
+        <target>Trimestre</target>
+      </trans-unit>
+      <trans-unit id="year" datatype="html">
+        <source>Year</source>
+        <target>Anno</target>
+      </trans-unit>
+      <trans-unit id="seriesFormat" datatype="html">
+        <source>Series format</source>
+        <target>Formato della serie</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">812</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectInterval" datatype="html">
+        <source>Select interval</source>
+        <target>Seleziona intervallo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">828</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bucketFilter" datatype="html">
+        <source>Bucket filter</source>
+        <target>Filtro a secchiello</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">845</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="SLAWithinADay" datatype="html">
+        <source>SLA Within a day</source>
+        <target>SLA Entro un giorno</target>
+      </trans-unit>
+      <trans-unit id="SLAWithinMore" datatype="html">
+        <source>SLA Within More than a day</source>
+        <target>SLA Entro più di un giorno</target>
+      </trans-unit>
+
     </body>
   </file>
 </xliff>

@@ -8,83 +8,70 @@ div.root {
     margin: 0 2px;
   }
 
-  .btn-txt {
-    margin-left: 5px;
-  }
-
   .breadcrum-toolbar {
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 0;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 40px;
-      align-items: center;
-    }
+    padding-top: 8px;
   }
 
-  .data-container {
+  .mat-divider {
+    height: 100%;
+  }
+
+  .mdo-filter-matchip {
+    margin: 0 4px;
+  }
+
+  .dataset-grid {
     height: 100%;
     overflow: hidden;
+    align-items: flex-start;
 
-    .dataset-grid {
+    .dataset-grid-navigation {
       height: 100%;
-      overflow: hidden;
+      width: 340px;
+      padding-right: 12px;
 
-      .dataset-grid-navigation {
-        height: 100%;
-        width: 340px;
-        padding-right: 12px;
-
-        pros-group-data-table {
-          height: calc(100% - 50px - 24px - 32px);
-          overflow-y: auto;
-          overflow-x: hidden;
-        }
+      pros-group-data-table {
+        height: calc(100% - 252px);
+        overflow-y: auto;
+        overflow-x: hidden;
       }
+    }
 
-      .dataset-grid-listing {
-        padding-left: 12px;
-        height: 100%;
-        width: calc(100% - 340px - 13px);
+    .dataset-grid-listing {
+      padding-left: 12px;
+      height: 100%;
+      width: calc(100% - 340px - 13px);
 
-        pros-search-input {
-          min-width: 213px;
-        }
+      .data {
+        overflow: auto;
+        height: calc(100% - 126px);
 
-        .data {
-          overflow: auto;
-          height: calc(100% - 156px);
+        mat-table.mat-table {
+          overflow-x: auto;
+          width: 100%;
+          max-width: 100%;
+          display: table;
+          border-collapse: collapse;
 
-          mat-table.mat-table {
-            overflow-x: auto;
-            width: 100%;
-            max-width: 100%;
-            display: table;
-            border-collapse: collapse;
-
-            .text-correction {
-              text-decoration: line-through;
-            }
-
-            .row-deletable {
-              .mat-cell:not(.no-text-decoration) {
-                text-decoration: line-through;
-              }
-            }
-
-            .action-iconbtns {
-              flex-wrap: wrap;
-            }
+          .text-correction {
+            text-decoration: line-through;
           }
 
-          pros-null-state {
-            position: fixed;
-            margin: 0 16%;
+          .mat-header-cell,
+          .mat-cell {
+            min-width: 160px;
+          }
+
+          .mat-column-action {
+            min-width: 260px;
+          }
+
+          .mat-column-select {
+            min-width: 38px;
+          }
+
+          .action-iconbtns {
+            flex-wrap: wrap;
           }
         }
       }
