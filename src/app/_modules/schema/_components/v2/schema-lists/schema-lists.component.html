@@ -11,7 +11,7 @@
         <ng-container matColumnDef="schema">
             <th mat-header-cell *matHeaderCellDef> Schema </th>
             <td mat-cell *matCellDef="let element">
-                <lib-text-line (click)="openSchemaInfo(element.schemaId)" type="base" textColor="link" enableWrap="true">
+                <lib-text-line (click)="openSchemaInfo(element.schemaId)" type="base" textColor="link" enableWrap="true" class="cursor">
                     {{element.schemaDescription? element.schemaDescription:
                     'Untitled'}}</lib-text-line>
             </td>
