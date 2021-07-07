@@ -3,12 +3,29 @@ div.root {
   user-select: none;
 
   .breadcrum-toolbar {
-    align-items: center;
     padding-top: 8px;
-    margin-bottom: 8px;
     position: sticky;
     top: 0;
     z-index: 2;
-    min-height: 40px;
+  }
+
+  table.table-vertical {
+    .mat-row {
+      &.mat-row:nth-child(odd) {
+        background: transparent;
+      }
+    }
+
+    .mat-header-cell,
+    .mat-cell {
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-right: none;
+
+      &.align-end {
+        text-align: right;
+        width: 300px;
+      }
+    }
   }
 }

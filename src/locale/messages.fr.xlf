@@ -1441,7 +1441,7 @@
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">379</context>
         </context-group>
-        <context-group purpose="location">
+         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">673</context>
         </context-group>
@@ -2989,7 +2989,7 @@
       <trans-unit id="SLAWithinMore" datatype="html">
         <source>SLA Within More than a day</source>
         <target>SLA dans plus d'une journée</target>
-      </trans-unit>
+      </trans-unit>  
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>
         <target>Ce schéma est en cours d'exécution Cliquez ici pour suivre la progression ou voir le résultat</target>
@@ -3033,6 +3033,30 @@
       <trans-unit id="minute" datatype="html">
         <source>Minute</source>
         <target>Minute</target>
+      </trans-unit>
+      <trans-unit id="errors" datatype="html">
+        <source>errors</source>
+        <target>les erreurs</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="success" datatype="html">
+        <source>success</source>
+        <target>Succès</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="skipped" datatype="html">
+        <source>skipped</source>
+        <target>sauté</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
       </trans-unit>
     </body>
   </file>

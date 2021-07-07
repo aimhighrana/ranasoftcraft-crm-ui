@@ -1441,7 +1441,7 @@
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">379</context>
         </context-group>
-        <context-group purpose="location">
+         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">673</context>
         </context-group>
@@ -2771,6 +2771,30 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="errors" datatype="html">
+        <source>errors</source>
+        <target>errori</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="success" datatype="html">
+        <source>success</source>
+        <target>successo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="skipped" datatype="html">
+        <source>skipped</source>
+        <target>saltata</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
 
       <trans-unit id="workFlowPath" datatype="html">
         <source>Workflow path</source>
@@ -3036,6 +3060,7 @@
         <source>Minute</source>
         <target>Minuto</target>
       </trans-unit>
+
     </body>
   </file>
 </xliff>
