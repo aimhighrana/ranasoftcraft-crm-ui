@@ -1439,7 +1439,11 @@
         <target>並び替え</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
-          <context context-type="linenumber">370</context>
+          <context context-type="linenumber">379</context>
+        </context-group>
+         <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">673</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ascending" datatype="html">
@@ -2731,6 +2735,263 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
+       <trans-unit id="workFlowPath" datatype="html">
+        <source>Workflow path</source>
+        <target>ワークフローパス</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">200</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aggregrationOperator" datatype="html">
+        <source>Aggregration operator</source>
+        <target>集計演算子</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">247</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="groupBy" datatype="html">
+        <source>Group by</source>
+        <target>グループ化</target>=
+      </trans-unit>
+      <trans-unit id="count" datatype="html">
+        <source>Count</source>
+        <target>カウント</target>
+      </trans-unit>
+      <trans-unit id="sum" datatype="html">
+        <source>Sum</source>
+        <target>和</target>
+      </trans-unit>
+      <trans-unit id="includeField" datatype="html">
+        <source>Include field as distinct</source>
+        <target>フィールドを個別に含める</target>
+      </trans-unit>
+      <trans-unit id="selectDefaultDays" datatype="html">
+        <source>Select default days</source>
+        <target>デフォルトの日を選択</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">331</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noDate" datatype="html">
+        <source>No date</source>
+        <target>日付なし</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">337</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7Days" datatype="html">
+        <source>7 days</source>
+        <target>7日</target>
+      </trans-unit>
+      <trans-unit id="10Days" datatype="html">
+        <source>10 days</source>
+        <target>10日間</target>
+      </trans-unit>
+      <trans-unit id="20Days" datatype="html">
+        <source>20 days</source>
+        <target>20日間</target>
+      </trans-unit>
+      <trans-unit id="30Days" datatype="html">
+        <source>30 days</source>
+        <target>30日</target>
+      </trans-unit>
+      <trans-unit id="customDate" datatype="html">
+        <source>Custom date</source>
+        <target>カスタム日付</target>
+      </trans-unit>
+      <trans-unit id="filterType" datatype="html">
+        <source>Filter type</source>
+        <target>フィルタータイプ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">359</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dropdownValue" datatype="html">
+        <source>Dropdown value</source>
+        <target>ドロップダウン値</target>
+      </trans-unit>
+      <trans-unit id="horizontalValue" datatype="html">
+        <source>Horizontal value</source>
+        <target>水平値</target>
+      </trans-unit>
+      <trans-unit id="verticalValue" datatype="html">
+        <source>Vertical value</source>
+        <target>垂直値</target>
+      </trans-unit>
+      <trans-unit id="isMultiselect" datatype="html">
+        <source>Is multiselect</source>
+        <target>マルチセレクトです</target>
+      </trans-unit>
+      <trans-unit id="columnFormat" datatype="html">
+        <source>Column format</source>
+        <target>列の形式</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">541</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="globalFiltersNA" datatype="html">
+        <source>Global Filters not applicable</source>
+        <target>グローバルフィルターは適用されません</target>
+      </trans-unit>
+      <trans-unit id="chartProperties" datatype="html">
+        <source>Chart properties</source>
+        <target>チャートのプロパティ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">610</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartType" datatype="html">
+        <source>Chart type</source>
+        <target>チャートタイプ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">615</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pie" datatype="html">
+        <source>Pie</source>
+        <target>パイ</target>
+      </trans-unit>
+      <trans-unit id="bar" datatype="html">
+        <source>Bar</source>
+        <target>バー</target>
+      </trans-unit>
+      <trans-unit id="line" datatype="html">
+        <source>Line</source>
+        <target>ライン</target>
+      </trans-unit>
+      <trans-unit id="orientation" datatype="html">
+        <source>Orientation</source>
+        <target>オリエンテーション</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">642</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="vertical" datatype="html">
+        <source>Vertical</source>
+        <target>垂直</target>
+      </trans-unit>
+      <trans-unit id="horizontal" datatype="html">
+        <source>Horizontal</source>
+        <target>水平</target>
+      </trans-unit>
+      <trans-unit id="enableDatalabels" datatype="html">
+        <source>Enable datalabels</source>
+        <target>データラベルを有効にする</target>
+      </trans-unit>
+      <trans-unit id="datalabelsPosition" datatype="html">
+        <source>Datalabels position</source>
+        <target>データラベルの位置</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">735</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="center" datatype="html">
+        <source>Center</source>
+        <target>センター</target>
+      </trans-unit>
+      <trans-unit id="ShowDataIn" datatype="html">
+        <source>Show data in %</source>
+        <target>データを％で表示</target>
+      </trans-unit>
+      <trans-unit id="showLegend" datatype="html">
+        <source>Show legend</source>
+        <target>凡例を表示</target>
+      </trans-unit>
+      <trans-unit id="legendPosition" datatype="html">
+        <source>Legend position</source>
+        <target>凡例の位置</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">767</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="top" datatype="html">
+        <source>Top</source>
+        <target>上</target>
+      </trans-unit>
+      <trans-unit id="left" datatype="html">
+        <source>Left</source>
+        <target>左</target>
+      </trans-unit>
+      <trans-unit id="bottom" datatype="html">
+        <source>Bottom</source>
+        <target>下</target>
+      </trans-unit>
+      <trans-unit id="right" datatype="html">
+        <source>Right</source>
+        <target>正しい</target>
+      </trans-unit>
+      <trans-unit id="serieswith" datatype="html">
+        <source>Series with</source>
+        <target>とのシリーズ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">789</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="day" datatype="html">
+        <source>Day</source>
+        <target>日</target>
+      </trans-unit>
+      <trans-unit id="week" datatype="html">
+        <source>Week</source>
+        <target>週間</target>
+      </trans-unit>
+      <trans-unit id="month" datatype="html">
+        <source>Month</source>
+        <target>月</target>
+      </trans-unit>
+      <trans-unit id="quarter" datatype="html">
+        <source>Quarter</source>
+        <target>四半期</target>
+      </trans-unit>
+      <trans-unit id="year" datatype="html">
+        <source>Year</source>
+        <target>年</target>
+      </trans-unit>
+      <trans-unit id="seriesFormat" datatype="html">
+        <source>Series format</source>
+        <target>シリーズフォーマット</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">812</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectInterval" datatype="html">
+        <source>Select interval</source>
+        <target>間隔を選択</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">828</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bucketFilter" datatype="html">
+        <source>Bucket filter</source>
+        <target>バケットフィルター</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">845</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="SLAWithinADay" datatype="html">
+        <source>SLA Within a day</source>
+        <target>1日以内のSLA</target>
+      </trans-unit>
+      <trans-unit id="SLAWithinMore" datatype="html">
+        <source>SLA Within More than a day</source>
+        <target>1日以上以内のSLA</target>
+      </trans-unit>
+
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>
         <target>このスキーマは実行中です進行状況を追跡するか結果を確認するには、ここをクリックしてください</target>
