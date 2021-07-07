@@ -39,7 +39,8 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
 
   notificationPagination = {
     from: 0,
-    to: 10
+    to: Math.round(window.innerHeight / 50 * 1.5),
+    offset: Math.round(window.innerHeight / 50 * 1.5)
   }
 
   /**
@@ -90,7 +91,11 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
   /**
    * Function to get Notifications
    */
-  getNotifications() {
+  getNotifications(reload = true) {
+    if (reload) {
+      this.notificationPagination.from = 0;
+      this.notificationPagination.to = this.notificationPagination.offset;
+    }
     this.notificationSubscription = this.homeService
       .getNotifications(
         this.userDetails.userName,
@@ -101,7 +106,11 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
         notifications.forEach((notification) => {
           notification.showMore = false;
         })
-        this.notifications = [...notifications];
+        if (reload) {
+          this.notifications = [...notifications];
+        } else {
+          this.notifications.push(...notifications);
+        }
       });
   }
 
@@ -136,7 +145,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    */
   deleteNotification(notificationid) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
-      if(response && response === 'yes') {
+      if (response && response === 'yes') {
         const subscriber = this.homeService.deleteNotification([notificationid]).subscribe(() => {
           subscriber.unsubscribe();
           setTimeout(() => {
@@ -151,9 +160,9 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    * Function to paginate notifications
    */
   paginateNotification() {
-    this.notificationPagination.from += 10
-    this.notificationPagination.to += 10
-    this.getNotifications()
+    this.notificationPagination.from += this.notificationPagination.offset;
+    this.notificationPagination.to += this.notificationPagination.offset;
+    this.getNotifications(false)
   }
 
   close() {
