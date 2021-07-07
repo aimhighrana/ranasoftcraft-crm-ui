@@ -638,7 +638,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
                 const attrDesc = att.ATTR_DESC;
                 const attrVal = att.ATTRIBUTES_VALUES ? att.ATTRIBUTES_VALUES : [];
                 let attrValue = '';
-                if (attrVal[0] && brType!== 'MRO_CLS_MASTER_CHECK') {
+                if (attrVal[0]) {
                   attrValue = attrVal[0].SHORT_VALUE;
                 }
 
