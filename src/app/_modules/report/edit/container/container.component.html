@@ -853,26 +853,29 @@
 
                                 <div class="f-col mdo-field"
                                     *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'">
-                                    <mat-label class="mdo-field-label">Bucket filter</mat-label>
+                                    <mat-label class="mdo-field-label" i18n="@@SLAFilter">SLA filter</mat-label>
                                     <div class="mdo-field-input">
-                                        <input matInput #optionsInput
-                                            formControlName="bucketFilter" [matAutocomplete]="auto" [value]="displaySelectedBucketFilter()"/>
-                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete" (optionSelected)="getSelectedBucketFilter($event.option.value)">
-                                            <mat-option
-                                                *ngFor="let bucket of getValue(bucketFilter,chartPropCtrlGrp.get('bucketFilter'))"
-                                                [value]="bucket" class="mdo-option" >
-                                                <lib-checkbox [label]="bucket.value"
-                                                    [checked]="isCheckedBucketFilter(bucket)"
-                                                    (valueChange)="getSelectedBucketFilter(bucket)" prosClickStopPropagation>
-                                                </lib-checkbox>
+                                        <input matInput placeholder="Type to search" #optionsInput
+                                        formControlName="bucketFilter"
+                                        [matAutocomplete]="auto"/>
+                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete" [displayWith]="displayProperties">
+                                            <mat-option class="mdo-option" *ngFor="let bucket of getValue(bucketFilter,chartPropCtrlGrp.get('bucketFilter'))" [value]="bucket">
+                                                {{ bucket.value }}
                                             </mat-option>
                                         </mat-autocomplete>
                                     </div>
                                 </div>
+
+                                <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'  && !selStyleWid.chartProperties?.hasCustomSLA">
+                                    <lib-input i18n="@@defaultSLA" label="Default SLA" placeholder="24 hours"
+                                      [disabled]="true">
+                                    </lib-input>
+                                </div>
+
                                 <div class="f-col"
                                     *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'">
                                     <lib-slide-toggle theme="primary" labelPosition="before"
-                                        formControlName="hasCustomSLA" label="Use custom SLA value"></lib-slide-toggle>
+                                        formControlName="hasCustomSLA" i18n="@@useCustomSLAValue" label="Use custom SLA value"></lib-slide-toggle>
                                 </div>
                                 <div class="f-row" *ngIf="selStyleWid && selStyleWid.chartProperties?.hasCustomSLA">
                                     <div class="f-col">

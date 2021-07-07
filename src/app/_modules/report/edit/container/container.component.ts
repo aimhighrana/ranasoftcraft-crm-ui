@@ -285,10 +285,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       blankValueAlias: [''],
       timeseriesStartDate: [{ ...this.timeInterval[1] }],
       isEnabledBarPerc: [false],
-      bucketFilter: [null],
+      bucketFilter: [{...this.bucketFilter[0]}],
       hasCustomSLA: [false],
       slaValue: [],
-      slaType: []
+      slaType: [{...this.slaMenu[0]}]
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -366,20 +366,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       if (latestProp) {
         this.selStyleWid.chartProperties = latestProp;
         if (latestProp.hasCustomSLA) {
-          this.selStyleWid.chartProperties.seriesWith = latestProp.slaType && typeof (latestProp.slaType) === 'object' ? latestProp.slaType.key : null;
-          this.selectedBucketFilter = [];
-          if (latestProp.bucketFilter) {
-            this.chartPropCtrlGrp.patchValue({ bucketFilter: '' })
-          }
-          this.selStyleWid.chartProperties.bucketFilter = 'custom';
-        } else {
-          const selectedFilter = this.selectedBucketFilter.map(item => item.key);
-          this.selStyleWid.chartProperties.bucketFilter = selectedFilter.length ? selectedFilter.join(',') : null;
-          this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : null;
+          this.selStyleWid.chartProperties.seriesWith = latestProp.slaType && typeof (latestProp.slaType) === 'object' ? latestProp.slaType.key : this.slaMenu[0].key;
         }
-        this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : null;
-        this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : null;
-        this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : null;
+       else {
+        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
+       }
+       if(latestProp.bucketFilter?.key === 'none'){
+          this.selStyleWid.chartProperties.bucketFilter = BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
+        }
+        else{
+            this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter?.key : BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
+        }
+        this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : this.timeInterval[1].key;
+        this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : this.chartType[0].key;
+        this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : this.datalabelsPosition[0].key;
         this.selStyleWid.chartProperties.legendPosition = latestProp.legendPosition?.key ? latestProp.legendPosition.key : this.legendPosition[0].key;
         this.selStyleWid.chartProperties.orderWith = latestProp.orderWith?.key ? latestProp.orderWith.key : this.orderWith[3].key;
         this.selStyleWid.chartProperties.orientation = latestProp.orientation?.key ? latestProp.orientation.key : this.orientation[0].key;
@@ -636,14 +636,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         // set value to properties frm ctrl
         if (data.chartProperties) {
           console.log(data)
-          this.selectedBucketFilter = [];
-          if (data.chartProperties.bucketFilter) {
-            data.chartProperties.bucketFilter.split(',').forEach(value => {
-              const filterData = this.bucketFilter.find(item => item.key === value);
-              if (filterData)
-                this.selectedBucketFilter.push(filterData);
-            })
-          }
           const selectedTimeInterval = this.timeInterval.find(item => item.key === data.chartProperties.timeseriesStartDate);
           const selectedSeries = this.seriesWith.find(item => item.key === data.chartProperties.seriesWith);
           const selectedChartType = this.chartType.find(type => type.key === data.chartProperties.chartType);
@@ -651,9 +643,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           const selectedDataLabelPosition = this.datalabelsPosition.find(data1 => data1.key === data.chartProperties.datalabelsPosition);
           const selectedLegendPosition = this.legendPosition.find(legend => legend.key === data.chartProperties.legendPosition);
           const selectedOrderWithValues = this.orderWith.find(order => order.key === data.chartProperties.orderWith);
+          const selectedBucketFilter = this.bucketFilter.find(bucket=> bucket.key === data.chartProperties.bucketFilter);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
           this.chartPropCtrlGrp.patchValue({
-            bucketFilter: this.selectedBucketFilter.length ? this.selectedBucketFilter.map(item => item.value).join(',') : null,
+            bucketFilter: selectedBucketFilter ? selectedBucketFilter : this.bucketFilter[0],
             timeseriesStartDate: selectedTimeInterval ? selectedTimeInterval : null,
             seriesWith: selectedSeries ? selectedSeries : null,
             chartType: selectedChartType ? selectedChartType : null,
@@ -1306,29 +1299,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return searchText ? value.filter(item => item.value.toLowerCase().includes(searchText.toLowerCase())) : value;
   }
 
-  getSelectedBucketFilter(value) {
-    const index = this.selectedBucketFilter.findIndex(item => item.key === value.key);
-    if (index > -1) {
-      this.selectedBucketFilter.splice(index, 1);
-    } else {
-      this.selectedBucketFilter.push(value);
-    }
-    const selectedFilter = this.selectedBucketFilter.map(item => item.key);
-    this.selStyleWid.chartProperties.bucketFilter = selectedFilter ? selectedFilter.join(',') : null;
-  }
-
-  isCheckedBucketFilter(value) {
-    const index = this.selectedBucketFilter.findIndex(item => item.key === value.key);
-    if (index > -1) {
-      return true;
-    }
-  }
-
-  displaySelectedBucketFilter() {
-    const selectedFilter = this.selectedBucketFilter.map(item => item.value);
-    return selectedFilter ? selectedFilter.join(',') : null;
-  }
-  // }
   getSeriesValue(value, control) {
     const searchText = control.value;
     return searchText ? value.filter(item => item.toLowerCase().includes(searchText.toLowerCase())) : value;
@@ -1364,8 +1334,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get possibleBucketFilter() {
     const bucketFilter = [
-      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@SLAWithinADay:SLA Within a day` },
-      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@SLAWithinMore:SLA Within a more day` }
+      { key:'none', value: $localize`:@@none:None` },
+      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within SLA` },
+      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds SLA` }
     ];
     return bucketFilter
   }
@@ -1480,7 +1451,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get possibleSLAMenu() {
     const possibleSlaMenu = [
-      { key: SeriesWith.minute, value: $localize`:@@minute:Minute` },
       { key: SeriesWith.hour, value: $localize`:@@hour:Hour` },
       { key: SeriesWith.day, value: $localize`:@@day:Day` }
     ]
