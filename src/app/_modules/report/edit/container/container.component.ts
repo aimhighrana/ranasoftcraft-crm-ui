@@ -165,7 +165,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   ] as MetadataModel[];
 
   bucketFilter = this.possibleBucketFilter;
-  selectedBucketFilter = []
 
   slaMenu = this.possibleSLAMenu;
   timeInterval = this.possibleTimeIntervalFilter
