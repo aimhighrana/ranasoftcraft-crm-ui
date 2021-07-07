@@ -74,6 +74,15 @@
 
           .property-col {
             border-left-color: $color-app-border;
+
+            lib-slide-toggle .mat-slide-toggle {
+              width: 100%;
+
+              .mat-slide-toggle-label {
+                justify-content: space-between;
+                font-weight: bold;
+              }
+            }
           }
         }
       }

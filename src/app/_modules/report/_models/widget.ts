@@ -418,6 +418,9 @@ export class ChartProperties {
     timeseriesStartDate : TimeseriesStartDate;
     isEnabledBarPerc : boolean;
     bucketFilter: string;
+    hasCustomSLA: boolean;
+    slaValue?: string;
+    slaType?: object;
 }
 
 export class ButtonArr {
@@ -632,4 +635,15 @@ export enum ReportCategory {
 export interface Buckets {
     doc_count: string,
     key: string,
+}
+
+export enum SLAVALUE {
+    MINUTES = 'Minutes',
+    DAYS ='Days',
+    HOURS = 'Hours'
+}
+
+export enum BucketFilter {
+    WITHIN_1_DAY = 'within_1_day',
+    MORE_THEN_1_DAY = 'more_then_1_day'
 }

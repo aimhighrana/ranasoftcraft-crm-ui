@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria, SLAVALUE, AggregationOperator, BucketFilter } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -162,6 +162,15 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   ] as MetadataModel[];
 
+  bucketFilter = this.possibleBucketFilter;
+  selectedBucketFilter = []
+
+  SLAMenu = [
+    { key: 'minute', value: SLAVALUE.MINUTES },
+    { key: 'hour', value: SLAVALUE.HOURS },
+    { key: 'day', value: SLAVALUE.DAYS }
+  ];
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -256,7 +265,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       blankValueAlias: [''],
       timeseriesStartDate: [TimeseriesStartDate.D7],
       isEnabledBarPerc: [false],
-      bucketFilter: [null]
+      bucketFilter: [null],
+      hasCustomSLA: [false],
+      slaValue: [],
+      slaType: []
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -334,10 +346,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartPropCtrlGrp.valueChanges.subscribe(latestProp => {
       if (latestProp) {
         this.selStyleWid.chartProperties = latestProp;
+        if (latestProp.hasCustomSLA) {
+          this.selStyleWid.chartProperties.seriesWith = latestProp.slaType && typeof (latestProp.slaType) === 'object' ? latestProp.slaType.key : null;
+          this.selectedBucketFilter = [];
+          this.selStyleWid.chartProperties.bucketFilter = 'custom';
+        } else {
+          const selectedFilter = this.selectedBucketFilter.map(item => item.key);
+          this.selStyleWid.chartProperties.bucketFilter = selectedFilter.length ? selectedFilter.join(',') : null;
+        }
         this.preapreNewWidgetPosition(this.selStyleWid);
       }
     });
-
     // detect value change on default filters
     this.defaultFilterCtrlGrp.valueChanges.subscribe(latestProp => {
       if (latestProp && latestProp.hasOwnProperty('filters')) {
@@ -527,6 +546,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.widgetList.push(dropableWidget);
     }
     // update variable for dom control
+    if (dropableWidget.chartProperties?.hasCustomSLA) {
+      delete dropableWidget.chartProperties.slaType;
+    }
     this.selStyleWid = dropableWidget;
   }
 
@@ -593,7 +615,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         // set value to properties frm ctrl
         if (data.chartProperties) {
           console.log(data)
+          this.selectedBucketFilter = [];
+          data.chartProperties.bucketFilter && data.chartProperties.bucketFilter.split(',').forEach(value => {
+            const filterData = this.bucketFilter.find(item => item.key === value);
+            if (filterData)
+              this.selectedBucketFilter.push(filterData);
+          })
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
+          this.chartPropCtrlGrp.patchValue({bucketFilter : this.selectedBucketFilter.map(item=>item.value).join(',')})
+          if (data.chartProperties.hasCustomSLA) {
+            const slaType = this.SLAMenu.find(item => item.key === data.chartProperties.seriesWith);
+            this.chartPropCtrlGrp.patchValue({
+              slaType: slaType,
+            })
+          }
         } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
           this.chartPropCtrlGrp.setValue({
             chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
@@ -1138,7 +1173,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top,
           xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.ROW_DESC, scaleFrom: null, scaleTo: null, stepSize: null,
           dataSetSize: null, seriesWith: SeriesWith.day, seriesFormat: null, blankValueAlias: null, timeseriesStartDate: TimeseriesStartDate.D7, isEnabledBarPerc: false,
-          bucketFilter: null
+          bucketFilter: null, hasCustomSLA: false
         };
       }
       this.isSerieswithDisabled = false;
@@ -1213,5 +1248,45 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.chartPropCtrlGrp.get('chartType').value === 'PIE') {
       this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
     }
+  }
+
+  displayProperties(opt) {
+    return opt ? opt.value : null;
+  }
+
+  getValue(value, control) {
+    const searchText = control.value ? (typeof control.value === 'string' ? control.value : control.value.value) : '';
+    return searchText ? value.filter(item => item.value.toLowerCase().includes(searchText.toLowerCase())) : value;
+  }
+
+  get possibleBucketFilter() {
+    const bucketFilter = [
+      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@SLAWithinADay:SLA Within a day` },
+      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@SLAWithinMore:SLA Within a more day` }
+    ];
+    return bucketFilter;
+  }
+
+  getSelectedBucketFilter(value) {
+    const index = this.selectedBucketFilter.findIndex(item => item.key === value.key);
+    if (index > -1) {
+      this.selectedBucketFilter.splice(index, 1);
+    } else {
+      this.selectedBucketFilter.push(value);
+    }
+    const selectedFilter = this.selectedBucketFilter.map(item=>item.key);
+    this.selStyleWid.chartProperties.bucketFilter = selectedFilter ? selectedFilter.join(',') : null;
+  }
+
+  isCheckedBucketFilter(value) {
+    const index = this.selectedBucketFilter.findIndex(item => item.key === value.key);
+    if (index > -1) {
+      return true;
+    }
+  }
+
+  displaySelectedBucketFilter() {
+    let selectedFilter = this.selectedBucketFilter.map(item => item.value);
+    return selectedFilter ? selectedFilter.join(',') : null;
   }
 }
