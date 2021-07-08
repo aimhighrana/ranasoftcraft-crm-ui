@@ -67,7 +67,7 @@ describe('BrruleSideSheetComponent', () => {
     component.form.controls.rule_type.setValue('BR_CUSTOM_SCRIPT');
     component.form.controls.transformationRuleType.setValue('REGEX');
 
-    expect(component.applyValidatorsByRuleType).toHaveBeenCalledTimes(2);
+    expect(component.applyValidatorsByRuleType).toHaveBeenCalledTimes(1);
 
   });
 
