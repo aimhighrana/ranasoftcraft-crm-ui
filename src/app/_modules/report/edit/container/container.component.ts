@@ -131,7 +131,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   CustomfieldsObs: Observable<MetadataModel[]> = of([]);
 
   /** store workflow path for workflow dataset */
-  workflowPath: WorkflowPath[];
+  workflowPath: WorkflowPath[] = [];
   workflowPathOb: Observable<WorkflowPath[]> = of([]);
   selectedWorkflowPath: WorkflowPath[] = [];
 
@@ -298,7 +298,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.aggregrationOp = latestVal.aggregrationOp?.key ? latestVal.aggregrationOp.key : null;
         changedWidget.filterType = latestVal.filterType?.key ? latestVal.filterType.key : null;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
-        changedWidget.orderWith = latestVal.orderWith?.key ? latestVal.orderWith.key : this.orderWith[1];
+        changedWidget.orderWith = latestVal.orderWith?.key ? latestVal.orderWith.key : this.orderWith[1].key;
         changedWidget.groupById = latestVal.groupById;
         changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
@@ -306,7 +306,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.imagesno = latestVal.imagesno;
         changedWidget.imageName = latestVal.imageName;
         changedWidget.isWorkflowdataSet = latestVal.isWorkflowdataSet;
-        changedWidget.workflowPath = this.selectedWorkflowPath.map((item: any) => item.pathname);
         changedWidget.distictWith = typeof latestVal.distictWith === 'string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
         changedWidget.isCustomdataSet = latestVal.isCustomdataSet;
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
@@ -364,8 +363,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : null;
         this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : null;
         this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : null;
-        this.selStyleWid.chartProperties.legendPosition = latestProp.legendPosition?.key ? latestProp.legendPosition.key : this.legendPosition[0];
-        this.selStyleWid.chartProperties.orderWith = latestProp.orderWith?.key ? latestProp.orderWith.key : this.orderWith[3];
+        this.selStyleWid.chartProperties.legendPosition = latestProp.legendPosition?.key ? latestProp.legendPosition.key : this.legendPosition[0].key;
+        this.selStyleWid.chartProperties.orderWith = latestProp.orderWith?.key ? latestProp.orderWith.key : this.orderWith[3].key;
+        this.selStyleWid.chartProperties.orientation = latestProp.orientation?.key ? latestProp.orientation.key : this.orientation[0].key;
         this.preapreNewWidgetPosition(this.selStyleWid);
       }
     });
@@ -602,11 +602,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (data.dateFilterCtrl?.dateSelectedFor) {
           selectedDateSelectionType = this.dateSelectionType.find(item => item.key === data.dateFilterCtrl?.dateSelectedFor)
         }
-        if (data.workflowPath) {
+        if (data.workflowPath && this.workflowPath) {
           this.selectedWorkflowPath = [];
           data.workflowPath.forEach(value => {
             const filteredValue = this.workflowPath.find((item: any) => item.pathname === value);
-            this.selectedWorkflowPath.push(filteredValue);
+            if (filteredValue)
+              this.selectedWorkflowPath.push(filteredValue);
           })
         }
 
@@ -649,28 +650,18 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           const selectedOrientation = this.orientation.find(orint => orint.key === data.chartProperties.orientation);
           const selectedDataLabelPosition = this.datalabelsPosition.find(data1 => data1.key === data.chartProperties.datalabelsPosition);
           const selectedLegendPosition = this.legendPosition.find(legend => legend.key === data.chartProperties.legendPosition);
+          const selectedOrderWithValues = this.orderWith.find(order => order.key === data.chartProperties.orderWith);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
-          if (selectedBucketFilter) {
-            this.chartPropCtrlGrp.controls.bucketFilter.patchValue(selectedBucketFilter);
-          }
-          if (selectedTimeInterval) {
-            this.chartPropCtrlGrp.controls.timeseriesStartDate.patchValue(selectedTimeInterval);
-          }
-          if (selectedSeries) {
-            this.chartPropCtrlGrp.controls.seriesWith.patchValue(selectedSeries);
-          }
-          if (selectedChartType) {
-            this.chartPropCtrlGrp.controls.chartType.patchValue(selectedChartType);
-          }
-          if (selectedOrientation) {
-            this.chartPropCtrlGrp.controls.orientation.patchValue(selectedOrientation);
-          }
-          if (selectedDataLabelPosition) {
-            this.chartPropCtrlGrp.controls.datalabelsPosition.patchValue(selectedDataLabelPosition);
-          }
-          if(selectedLegendPosition){
-            this.chartPropCtrlGrp.controls.legendPosition.patchValue(selectedLegendPosition)
-          } ;
+          this.chartPropCtrlGrp.patchValue({
+            bucketFilter: selectedBucketFilter ? selectedBucketFilter : null,
+            timeseriesStartDate: selectedTimeInterval ? selectedTimeInterval : null,
+            seriesWith: selectedSeries ? selectedSeries : null,
+            chartType: selectedChartType ? selectedChartType : null,
+            orientation: selectedOrientation ? selectedOrientation : null,
+            datalabelsPosition: selectedDataLabelPosition ? selectedDataLabelPosition : null,
+            legendPosition: selectedLegendPosition ? selectedLegendPosition : null,
+            orderWith: selectedOrderWithValues ? selectedOrderWithValues : null
+          })
         } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
           this.chartPropCtrlGrp.setValue({
             chartType: this.chartType[0], orientation: this.orientation[0], isEnableDatalabels: false,
@@ -898,6 +889,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const workflowPath = this.schemaService.getWorkFlowPath(objectType).subscribe(res => {
       this.workflowPath = res;
       this.workflowPathOb = of(res);
+      this.selectedWorkflowPath = [];
+      this.selStyleWid.workflowPath.forEach(value => {
+        const filteredValue = this.workflowPath.find((item: any) => item.pathname === value);
+        if (filteredValue)
+          this.selectedWorkflowPath.push(filteredValue);
+      })
     }, error => console.error(`Error: ${error}`));
     this.subscriptions.push(workflowPath);
   }
@@ -1315,8 +1312,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const index = this.selectedWorkflowPath.findIndex((item: any) => item.pathname === value.pathname)
     if (index > -1) {
       this.selectedWorkflowPath.splice(index, 1);
+      this.selStyleWid.workflowPath.splice(value.pathname)
     } else {
       this.selectedWorkflowPath.push(value);
+      this.selStyleWid.workflowPath.push(value.pathname)
     }
   }
 
