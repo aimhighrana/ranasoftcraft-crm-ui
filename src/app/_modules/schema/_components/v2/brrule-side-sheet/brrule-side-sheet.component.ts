@@ -763,7 +763,7 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
     if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'source_field', 'accuracy_score'];
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'source_field', 'accuracy_score', 'apiKey'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];

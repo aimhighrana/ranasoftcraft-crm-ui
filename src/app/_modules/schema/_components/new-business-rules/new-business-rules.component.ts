@@ -639,7 +639,7 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'accuracy_score', 'source_field'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'accuracy_score', 'source_field', 'apiKey'];
         }
 
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {

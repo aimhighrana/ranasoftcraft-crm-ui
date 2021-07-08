@@ -95,7 +95,7 @@
                     </lib-input>
                 </div>
 
-                <div class="f-col" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
+                <div class="f-col" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_IDENTI'">
                     <pros-form-input  [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
                         i18n-label="@@enter_access_token" [label]="'Enter access token'" [isHelpIcon]="true" i18n-toolTipInfo="@@access_token_tooltip" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
                     </pros-form-input>
