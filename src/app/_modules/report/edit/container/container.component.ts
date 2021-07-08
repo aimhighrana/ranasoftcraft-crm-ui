@@ -1333,7 +1333,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@SLAWithinADay:SLA Within a day` },
       { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@SLAWithinMore:SLA Within a more day` }
     ];
-    return bucketFilter
+    return bucketFilter;
   }
   get possibleTimeIntervalFilter() {
     const timeInterval = [
