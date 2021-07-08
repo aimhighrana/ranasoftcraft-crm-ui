@@ -25,6 +25,9 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
   @ViewChild('tree') tree: MatTree<any>;
 
   count = 0;
+  /**
+   * count of total childs for parent Node
+   */
   totalChild = 0;
   nestedTreeControl: NestedTreeControl<TreeModel>;
   nestedDataSource: MatTreeNestedDataSource<TreeModel>;
@@ -158,6 +161,7 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
     this.count = 0; // resetting count
     this.totalChild = 0;
     this.loopData(data.child);
+     /** compare the count of selected child node and total child node of particulart parent node */
     if (this.count > 0 && this.count !== this.totalChild) {
       if(data.checked){
         data.checked = false;
@@ -169,6 +173,7 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
       }
       return true;
     } else if (this.count > 0) {
+      /** executes when parent node is not selected but it all child node is selected */
       if(!data.checked){
         data.checked = true;
         if(!this.selectedNode.includes(data.nodeId)){
