@@ -3,16 +3,36 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse, SchemaTableViewDto } from 'src/app/_models/schema/schema';
-import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel, TransformationMappingResponse } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+import {
+  GetAllSchemabymoduleidsReq,
+  ObjectTypeResponse,
+  GetAllSchemabymoduleidsRes,
+  WorkflowResponse,
+  WorkflowPath,
+  ExcelValues,
+  DataSource,
+  SchemaVariantReq,
+  CheckDataResponse,
+  SchemaTableViewDto,
+} from 'src/app/_models/schema/schema';
+import {
+  DropDownValue,
+  UDRBlocksModel,
+  UdrModel,
+  CoreSchemaBrInfo,
+  Category,
+  DuplicateRuleModel,
+  TransformationMappingResponse,
+} from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
 import { SchemaExecutionNodeType, SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { GlobalCounts } from '@models/schema/schemadetailstable';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SchemaService {
   private excelValues: BehaviorSubject<ExcelValues> = new BehaviorSubject(null);
@@ -22,8 +42,8 @@ export class SchemaService {
     private http: HttpClient,
     private endpointService: EndpointsRuleService,
     private endpointClassic: EndpointsClassicService,
-    private any2tsService: Any2tsService,
-  ) { }
+    private any2tsService: Any2tsService
+  ) {}
 
   /**
    * Setter for available weightage value
@@ -45,13 +65,13 @@ export class SchemaService {
    */
   public generateColumnByFieldId(fieldId: string) {
     const excelData: ExcelValues = this.getExcelValues();
-    if(fieldId && excelData) {
+    if (fieldId && excelData) {
       const column = excelData.headerData.find((header) => header.mdoFldId === fieldId);
       const index = column.columnIndex;
       const columnData: string[] = [];
       excelData.uploadedData.map((row: any[], i) => {
         const columnValue = row[index];
-        if(columnValue && i>0) {
+        if (columnValue && i > 0) {
           columnData.push(columnValue);
         }
       });
@@ -65,7 +85,7 @@ export class SchemaService {
   }
 
   public getStaticFieldValues(fieldId: string): string[] {
-    if(fieldId && fieldId.trim()){
+    if (fieldId && fieldId.trim()) {
       this.generateColumnByFieldId(fieldId);
     }
     return this.staticFieldValues.getValue();
@@ -79,26 +99,25 @@ export class SchemaService {
     return this.excelValues.getValue();
   }
 
-
-
   public getAllSchemabymoduleids(getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq): Observable<GetAllSchemabymoduleidsRes[]> {
-    return this.http.post<any>(this.endpointService.getAllSchemabymoduleids(), getAllSchemabymoduleidsReq).pipe(map(data => {
-      return this.any2tsService.any2GetAllSchemabymoduleidsResponse(data);
-    }));
+    return this.http.post<any>(this.endpointService.getAllSchemabymoduleids(), getAllSchemabymoduleidsReq).pipe(
+      map((data) => {
+        return this.any2tsService.any2GetAllSchemabymoduleidsResponse(data);
+      })
+    );
   }
 
   public getAllObjectType(): Observable<ObjectTypeResponse[]> {
-    return this.http.get<any>(this.endpointClassic.getAllObjecttypeUrl()).pipe(map(data => {
-      return this.any2tsService.any2ObjectType(data);
-    }));
+    return this.http.get<any>(this.endpointClassic.getAllObjecttypeUrl()).pipe(
+      map((data) => {
+        return this.any2tsService.any2ObjectType(data);
+      })
+    );
   }
-
-
 
   public scheduleSchemaCount(schemaId: string): Observable<number> {
     return this.http.get<any>(this.endpointClassic.scheduleSchemaCount(schemaId));
   }
-
 
   public uploadUpdateFileData(file: File, fileSno: string): Observable<string> {
     const formData = new FormData();
@@ -125,8 +144,15 @@ export class SchemaService {
    * @param brType type of business rule
    * @param fetchCount fetchCount..
    */
-  public getBusinessRulesByModuleId(moduleId: string, searchString: string, brType: string, fetchCount: string): Observable<CoreSchemaBrInfo[]> {
-    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfoByModuleIdUrl(), {params: {moduleId, searchString, brType, fetchCount}});
+  public getBusinessRulesByModuleId(
+    moduleId: string,
+    searchString: string,
+    brType: string,
+    fetchCount: string
+  ): Observable<CoreSchemaBrInfo[]> {
+    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfoByModuleIdUrl(), {
+      params: { moduleId, searchString, brType, fetchCount },
+    });
   }
 
   public getAllBusinessRules(): Observable<CoreSchemaBrInfo[]> {
@@ -156,7 +182,6 @@ export class SchemaService {
   public getBrConditionalOperator(): Observable<string[]> {
     return this.http.get<string[]>(this.endpointService.getBrConditionalOperatorUrl());
   }
-
 
   public dropDownValues(fieldId: string, queryString: string): Observable<DropDownValue[]> {
     return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString } });
@@ -200,11 +225,18 @@ export class SchemaService {
    * @param schemaId schema id
    * @param variantId variant id is an option params ..
    */
-  public getSchemaThresholdStatics(schemaId: string, variantId: string, selectedRules?:string[]): Observable<SchemaStaticThresholdRes> {
+  public getSchemaThresholdStatics(schemaId: string, variantId: string, selectedRules?: string[]): Observable<SchemaStaticThresholdRes> {
     selectedRules = selectedRules ? selectedRules : [];
-    return this.http.post<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId),selectedRules);
+    return this.http.post<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId), selectedRules);
   }
-  public uploadCorrectionData(data: DataSource[], objectType: string, schemaId: string, runId: string, plantCode: string, fileSno: string): Observable<string> {
+  public uploadCorrectionData(
+    data: DataSource[],
+    objectType: string,
+    schemaId: string,
+    runId: string,
+    plantCode: string,
+    fileSno: string
+  ): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno), data);
   }
 
@@ -220,7 +252,7 @@ export class SchemaService {
    * Get schema list info by moduleId
    * @param moduleId get data based on this id
    */
-   public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
+  public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
     return this.http.get<SchemaListModuleList>(this.endpointService.getSchemaInfoByModuleIdUrl(moduleId));
   }
 
@@ -240,20 +272,20 @@ export class SchemaService {
    */
   public getSchemaWithVariants(moduleId?: string): Observable<SchemaListDetails[]> {
     return this.http.get<SchemaListDetails[]>(
-      moduleId ? `${this.endpointService.getSchemaWithVariantsUrl()}?moduleId=${moduleId}`: this.endpointService.getSchemaWithVariantsUrl());
+      moduleId ? `${this.endpointService.getSchemaWithVariantsUrl()}?moduleId=${moduleId}` : this.endpointService.getSchemaWithVariantsUrl()
+    );
   }
 
   public updateBrMap(req: CoreSchemaBrMap): Observable<boolean> {
     return this.http.post<boolean>(this.endpointService.updateBrMap(), req);
   }
 
-  public getWorkflowData(): Observable<WorkflowResponse[]>{
+  public getWorkflowData(): Observable<WorkflowResponse[]> {
     return this.http.get<any>(this.endpointClassic.getWorkflowDataURL());
   }
 
-
   public getWorkFlowPath(ObjectType: string[]): Observable<WorkflowPath[]> {
-    return this.http.post<WorkflowPath[]>(this.endpointClassic.getWorkFlowPathUrl(),ObjectType);
+    return this.http.post<WorkflowPath[]>(this.endpointClassic.getWorkFlowPathUrl(), ObjectType);
   }
 
   /**
@@ -261,37 +293,36 @@ export class SchemaService {
    * @param schemaId Id of schema
    * @param schedulerObject request payload contains scheduler information..
    */
-  public createUpdateSchedule(schemaId: string, schedulerObject: SchemaScheduler): Observable<number>{
-    return this.http.post<number>(this.endpointService.createUpdateScheduleUrl(schemaId), schedulerObject)
+  public createUpdateSchedule(schemaId: string, schedulerObject: SchemaScheduler): Observable<number> {
+    return this.http.post<number>(this.endpointService.createUpdateScheduleUrl(schemaId), schedulerObject);
   }
 
   /**
    * function to GET Api call for schedule of a schema
    * @param schemaId: schema Id for which scheduler information will be fetched
    */
-  public getSchedule(schemaId: string): Observable<SchemaScheduler>{
-    return this.http.get<SchemaScheduler>(this.endpointService.getScheduleUrl(schemaId))
+  public getSchedule(schemaId: string): Observable<SchemaScheduler> {
+    return this.http.get<SchemaScheduler>(this.endpointService.getScheduleUrl(schemaId));
   }
 
   public saveUpdateDuplicateRule(duplicateReq: DuplicateRuleModel, params): Observable<string> {
-    return this.http.post<string>(this.endpointService.saveUpdateDuplicateRule(), duplicateReq, {params});
+    return this.http.post<string>(this.endpointService.saveUpdateDuplicateRule(), duplicateReq, { params });
   }
 
   /**
    * Function to POST Api call for copy duplicate rule data scope
    * @param params coreSchemaBrInfo req object
    */
-  public copyDuplicateRule(params : CoreSchemaBrInfo): Observable<CoreSchemaBrInfo> {
+  public copyDuplicateRule(params: CoreSchemaBrInfo): Observable<CoreSchemaBrInfo> {
     return this.http.post<CoreSchemaBrInfo>(this.endpointService.copyDuplicate(), params);
   }
-
 
   /**
    * Function to POST Api call for save/update schema data scope
    * @param dataScopeReq datascope details req object
    */
-  public saveUpdateDataScope(dataScopeReq: SchemaVariantReq): Observable<any>{
-    return this.http.post<any>(this.endpointService.saveUpdateDataScopeUrl(), dataScopeReq)
+  public saveUpdateDataScope(dataScopeReq: SchemaVariantReq): Observable<any> {
+    return this.http.post<any>(this.endpointService.saveUpdateDataScopeUrl(), dataScopeReq);
   }
 
   public getDataScopeCount(moduleId: string, filterCriteria): Observable<any> {
@@ -303,7 +334,7 @@ export class SchemaService {
    * @param checkDataObject: Object having check data details
    */
   public createUpdateCheckData(checkDataObject): Observable<string> {
-    return this.http.post<string>(this.endpointService.createUpdateCheckDataUrl(), checkDataObject)
+    return this.http.post<string>(this.endpointService.createUpdateCheckDataUrl(), checkDataObject);
   }
 
   /**
@@ -330,8 +361,19 @@ export class SchemaService {
     return this.http.get<SchemaExecutionProgressResponse>(this.endpointService.schemaExecutionProgressDetailUrl(schemaId));
   }
 
-  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string, selectedRules: string[]) {
-    return this.http.post<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus), selectedRules);
+  public getSchemaExecutionTree(
+    moduleId: string,
+    schemaId: string,
+    variantId: string,
+    plantCode: string,
+    userId: string,
+    requestStatus: string,
+    selectedRules: string[]
+  ) {
+    return this.http.post<SchemaExecutionTree>(
+      this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus),
+      selectedRules
+    );
   }
 
   public downloadExecutionDetailsByNodes(schemaId: string, status: string, nodes: string[], variantId: string): Observable<any> {
@@ -342,10 +384,9 @@ export class SchemaService {
    * Call http to get the datasets list
    * @returns return the all available datasets list
    */
-  public getAllDataSets() : Observable<ModuleInfo[]> {
+  public getAllDataSets(): Observable<ModuleInfo[]> {
     return this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
   }
-
 
   /**
    * Get all datasets and schemas ...
@@ -354,20 +395,28 @@ export class SchemaService {
   public getDatasetsAlongWithSchemas(): Observable<any> {
     const datasetsHttp = this.http.get<ModuleInfo[]>(this.endpointService.getAllDataSets());
     const schemaHttp = this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
-    return forkJoin({ datasetsHttp, schemaHttp});
+    return forkJoin({ datasetsHttp, schemaHttp });
   }
 
   /**
    * call http and get all selected or unselected fields based on the parameters
    * @returns the Observable of SchemaTableViewDto
    */
-  public getallFieldsbynodeId(nodeType: SchemaExecutionNodeType, nodeIds: string, schemaId: string, variantId: string,
-    fetchCount: any, searchString: string, selected: any): Observable<SchemaTableViewDto> {
-
-    fetchCount = fetchCount? fetchCount : 0;
-    searchString = searchString? searchString : '';
-    selected = selected? selected : false;
-    return this.http.get<SchemaTableViewDto>(this.endpointService.getallFieldsbynodeId(), { params: { nodeType, nodeIds, schemaId , variantId, fetchCount,searchString, selected   } });
+  public getallFieldsbynodeId(
+    nodeType: SchemaExecutionNodeType,
+    nodeIds: string,
+    schemaId: string,
+    variantId: string,
+    fetchCount: any,
+    searchString: string,
+    selected: any
+  ): Observable<SchemaTableViewDto> {
+    fetchCount = fetchCount ? fetchCount : 0;
+    searchString = searchString ? searchString : '';
+    selected = selected ? selected : false;
+    return this.http.get<SchemaTableViewDto>(this.endpointService.getallFieldsbynodeId(), {
+      params: { nodeType, nodeIds, schemaId, variantId, fetchCount, searchString, selected },
+    });
   }
 
   /**
@@ -376,7 +425,11 @@ export class SchemaService {
    * @returns the list of CoreSchemaBrInfo
    */
   public getBuisnessRulesBasedOnRun(schemaId: string, searchString: string): Observable<CoreSchemaBrInfo[]> {
-    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.getBuisnessRulesBasedOnRunUrl(), {searchString,from:0,size:10 } , {params:{schemaId}});
+    return this.http.post<CoreSchemaBrInfo[]>(
+      this.endpointService.getBuisnessRulesBasedOnRunUrl(),
+      { searchString, from: 0, size: 10 },
+      { params: { schemaId } }
+    );
   }
 
   /**
@@ -385,7 +438,7 @@ export class SchemaService {
    * @returns the obserable as a response
    */
   public cancleSchema(schemaId: string): Observable<any> {
-    return this.http.get(this.endpointService.cancleSchemaUri(), {params:{schemaId}});
+    return this.http.get(this.endpointService.cancleSchemaUri(), { params: { schemaId } });
   }
 
   /**
@@ -398,7 +451,11 @@ export class SchemaService {
    */
   public transformationRules(moduleId: string, from: any, size: any, searchString: string): Observable<CoreSchemaBrInfo[]> {
     searchString = searchString ? searchString : '';
-    return this.http.post<CoreSchemaBrInfo[]>(this.endpointService.transformationRules(), {from, size, searchString}, {params:{moduleId}});
+    return this.http.post<CoreSchemaBrInfo[]>(
+      this.endpointService.transformationRules(),
+      { from, size, searchString },
+      { params: { moduleId } }
+    );
   }
 
   /**
@@ -408,8 +465,27 @@ export class SchemaService {
    * @param searchString search the rule based on this key
    * @returns all the transformation rule inside the main rule
    */
-  public getMappedTransformationRules(ruleId: string , schemaId: string ,from: any, size: any, searchString: string): Observable<TransformationMappingResponse>{
+  public getMappedTransformationRules(
+    ruleId: string,
+    schemaId: string,
+    from: any,
+    size: any,
+    searchString: string
+  ): Observable<TransformationMappingResponse> {
     searchString = searchString ? searchString : '';
-    return this.http.post<TransformationMappingResponse>(this.endpointService.getMappedTransformationRulesUrl(), {from,size,searchString},{params:{ruleId, schemaId}});
+    return this.http.post<TransformationMappingResponse>(
+      this.endpointService.getMappedTransformationRulesUrl(),
+      { from, size, searchString },
+      { params: { ruleId, schemaId } }
+    );
+  }
+
+  /**
+   * Get global counts such as success, error and skipped for schema
+   * @param schemaId Selected schemaId
+   * @returns global counts for particular schema
+   */
+  public getSchemaGlobalCounts(schemaId: string): Observable<GlobalCounts> {
+    return this.http.get<GlobalCounts>(this.endpointService.getSchemaGlobalCounts(), { params: { schemaId: schemaId || '' } });
   }
 }

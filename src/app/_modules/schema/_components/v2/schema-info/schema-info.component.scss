@@ -1,22 +1,30 @@
 div.root {
-  user-select: none;
   padding: 0 16px;
-  overflow: hidden;
-  overflow-y: auto;
-  height: calc(100% - 16px);
+  user-select: none;
+
+  .breadcrum-toolbar {
+    padding-top: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .schema-list {
+    width: 68%;
+    margin: 0 auto;
+  }
 
   .field-label {
     margin-bottom: 6px;
 
     mat-icon.mat-icon {
       width: 12px;
-      font-size: 12px;
-      height: 14px;
+      font-size: 10px;
     }
   }
 
-  .colunm-listing {
-    overflow: hidden;
+  .cursor {
+    cursor: pointer;
   }
 }
 
@@ -29,8 +37,12 @@ div.root {
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 6px;
+    margin: 0 2px;
     flex-wrap: wrap;
+
+    &.col-x2 {
+      flex: 2;
+    }
 
     &.col-x4 {
       flex: 4;
@@ -51,13 +63,25 @@ div.root {
     &.mat-item-end {
       justify-content: flex-end;
     }
+
+    &.action {
+      width: 72px;
+      flex: initial;
+    }
   }
 }
 
-.lib-slider {
-  height: 40px;
-  display: flex;
-  flex-direction: column;
+.slider-row {
+  flex: 1;
+
+  .lib-slider {
+    height: 48px;
+    width: 100%;
+  }
+
+  .percentage {
+    width: 36px;
+  }
 }
 
 .data-allocation-list {
@@ -65,5 +89,13 @@ div.root {
 
   .selected-text {
     overflow: hidden;
+  }
+}
+
+@media (max-width: 1024px) {
+  div.root {
+    .schema-list {
+      width: 100%;
+    }
   }
 }

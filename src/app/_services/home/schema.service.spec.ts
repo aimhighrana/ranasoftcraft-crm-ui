@@ -5,7 +5,15 @@ import { ObjectTypeResponse, ExcelValues, GetAllSchemabymoduleidsReq, GetAllSche
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
 import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
-import { Category, CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, TransformationMappingResponse, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import {
+  Category,
+  CoreSchemaBrInfo,
+  CreateUpdateSchema,
+  DropDownValue,
+  TransformationMappingResponse,
+  UDRBlocksModel,
+  UdrModel,
+} from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { HttpResponse } from '@angular/common/http';
 import { SchemaListModuleList, SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
@@ -18,15 +26,63 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsRuleService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl',
-    'deleteConditionBlock', 'deleteSchema', 'schemaExecutionProgressDetailUrl', 'getSchemaGroupCountUrl', 'getAllSchemabymoduleids', 'groupDetailswithAssignedschemaUrl',
-    'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
-    'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
-    'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
-    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree', 'getModuleInfoByModuleIdUrl', 'getBuisnessRulesBasedOnRunUrl', 'cancleSchemaUri','transformationRules','getMappedTransformationRulesUrl']);
-    const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
-    'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
-    const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount', 'downloadExecutionDetailsByNodesUrl']);
+    const epsSpy = jasmine.createSpyObj('EndpointsRuleService', [
+      'getSchemaGroupsUrl',
+      'getSchemaGroupDetailsByGrpIdUrl',
+      'getCreateSchemaGroupUrl',
+      'getAllObjecttypeUrl',
+      'deleteConditionBlock',
+      'deleteSchema',
+      'schemaExecutionProgressDetailUrl',
+      'getSchemaGroupCountUrl',
+      'getAllSchemabymoduleids',
+      'groupDetailswithAssignedschemaUrl',
+      'scheduleSchemaCount',
+      'deleteSchemaGroupUrl',
+      'uploadDataUrl',
+      'uploadFileDataUrl',
+      'getBusinessRulesInfoBySchemaIdUrl',
+      'getBusinessRulesInfoByModuleIdUrl',
+      'getAllBusinessRulesUrl',
+      'getFillDataInfo',
+      'createSchema',
+      'createBr',
+      'getCategoriesInfo',
+      'saveUpdateUDRUrl',
+      'saveUpdateUdrBlockUrl',
+      'getBusinessRuleInfoUrl',
+      'conditionListsUrl',
+      'dropDownValuesUrl',
+      'getBrConditionalOperatorUrl',
+      'deleteBr',
+      'getUdrBusinessRuleInfoUrl',
+      'deleteConditionBlock',
+      'getSchemaThresholdStatics',
+      'uploadCorrectionDataUrl',
+      'getSchemaInfoByModuleIdUrl',
+      'deleteSchema',
+      'copyDuplicate',
+      'getSchemaExecutionTree',
+      'getModuleInfoByModuleIdUrl',
+      'getBuisnessRulesBasedOnRunUrl',
+      'cancleSchemaUri',
+      'transformationRules',
+      'getMappedTransformationRulesUrl',
+      'getSchemaGlobalCounts',
+    ]);
+    const any2Spy = jasmine.createSpyObj('Any2tsService', [
+      'any2SchemaGroupResponse',
+      'any2SchemaDetails',
+      'any2ObjectType',
+      'any2SchemaGroupCountResposne',
+      'any2GetAllSchemabymoduleidsResponse',
+      'any2SchemaGroupWithAssignSchemasResponse',
+    ]);
+    const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', [
+      'getAllObjecttypeUrl',
+      'scheduleSchemaCount',
+      'downloadExecutionDetailsByNodesUrl',
+    ]);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -34,7 +90,7 @@ describe('SchemaService', () => {
         { provide: EndpointsRuleService, useValue: epsSpy },
         { provide: Any2tsService, useValue: any2Spy },
         { provide: EndpointsClassicService, useValue: epsClassicSpy },
-      ]
+      ],
     }).compileComponents();
     schemaService = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
     endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
@@ -47,8 +103,6 @@ describe('SchemaService', () => {
     const service: SchemaService = TestBed.inject(SchemaService);
     expect(service).toBeTruthy();
   });
-
-
 
   it('getAllObjectType() : will return list of object type ', async(() => {
     // mock data
@@ -63,7 +117,7 @@ describe('SchemaService', () => {
     any2tsSpy.any2ObjectType.withArgs(httpMockData).and.returnValue(objectTypeList);
 
     // call actual service method
-    schemaService.getAllObjectType().subscribe(data => {
+    schemaService.getAllObjectType().subscribe((data) => {
       expect(data).toEqual(objectTypeList);
     });
 
@@ -85,7 +139,7 @@ describe('SchemaService', () => {
     endpointServiceSpy.deleteConditionBlock.withArgs(blockId).and.returnValue(url);
 
     // call actual service method
-    schemaService.deleteConditionBlock(blockId).subscribe(data => {
+    schemaService.deleteConditionBlock(blockId).subscribe((data) => {
       expect(data).toEqual({} as boolean);
     });
 
@@ -107,7 +161,7 @@ describe('SchemaService', () => {
     endpointServiceSpy.deleteSchema.withArgs(schemaId).and.returnValue(url);
 
     // call actual service method
-    schemaService.deleteSChema(schemaId).subscribe(data => {
+    schemaService.deleteSChema(schemaId).subscribe((data) => {
       expect(data).toEqual({} as boolean);
     });
 
@@ -127,7 +181,7 @@ describe('SchemaService', () => {
 
     endpointServiceSpy.schemaExecutionProgressDetailUrl.withArgs(schemaId).and.returnValue(url);
 
-    schemaService.getSchemaExecutionProgressDetails(schemaId).subscribe(data => {
+    schemaService.getSchemaExecutionProgressDetails(schemaId).subscribe((data) => {
       expect(data).toEqual({} as SchemaExecutionProgressResponse);
     });
 
@@ -139,7 +193,6 @@ describe('SchemaService', () => {
   }));
 
   it('should setStaticFieldValues', () => {
-
     /* schemaService.setStaticFieldValues(['Asia']);
     expect(schemaService.getStaticFieldValues('')).toEqual(['Asia']); */
 
@@ -149,17 +202,15 @@ describe('SchemaService', () => {
     const excelData = {
       uploadedData: [
         ['', 'blue'],
-        ['', 'red']
+        ['', 'red'],
       ],
-      headerData: [{mdoFldId: 'color', columnIndex: 1}]
+      headerData: [{ mdoFldId: 'color', columnIndex: 1 }],
     } as ExcelValues;
 
     schemaService.setExcelValues(excelData);
 
     expect(schemaService.getStaticFieldValues('color')).toEqual(['red']);
-
-
-  })
+  });
 
   it('should set/get currentweightage', () => {
     schemaService.currentweightage = 100;
@@ -199,7 +250,7 @@ describe('SchemaService', () => {
     // mock any2ts
     any2tsSpy.any2GetAllSchemabymoduleidsResponse.withArgs(mockhttpData).and.returnValue(mockTS);
     // actual service call
-    schemaService.getAllSchemabymoduleids(request).subscribe(actualData => {
+    schemaService.getAllSchemabymoduleids(request).subscribe((actualData) => {
       expect(actualData).toEqual(mockTS);
     });
     // mocking http
@@ -210,17 +261,16 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-
   it('should scheduleSchemaCount()', async(() => {
     const url = 'test scheduleSchemaCount url';
-    const schemaId = '826462836823234'
+    const schemaId = '826462836823234';
     // mock url
     endpointClassicServiceSpy.scheduleSchemaCount.and.returnValue(url);
     // making mock data
     const mockTS = 1;
 
     // actual service call
-    schemaService.scheduleSchemaCount(schemaId).subscribe(actualData => {
+    schemaService.scheduleSchemaCount(schemaId).subscribe((actualData) => {
       expect(actualData).toEqual(mockTS);
     });
     // mocking http
@@ -231,7 +281,6 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-
   it('should uploadUpdateFileData()', async(() => {
     const url = 'test uploadFileDataUrl';
     // mock url
@@ -240,7 +289,7 @@ describe('SchemaService', () => {
     const response = 'success';
 
     // actual service call
-    schemaService.uploadUpdateFileData(new File([], 'testfile'), '826462836823234').subscribe(actualData => {
+    schemaService.uploadUpdateFileData(new File([], 'testfile'), '826462836823234').subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -259,7 +308,7 @@ describe('SchemaService', () => {
     const response = 'success';
 
     // actual service call
-    schemaService.uploadData([], '1005', '826462836823234').subscribe(actualData => {
+    schemaService.uploadData([], '1005', '826462836823234').subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -279,7 +328,7 @@ describe('SchemaService', () => {
     const response: CoreSchemaBrInfo[] = [];
 
     // actual service call
-    schemaService.getBusinessRulesBySchemaId(schemaId).subscribe(actualData => {
+    schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -299,7 +348,7 @@ describe('SchemaService', () => {
     const response: CoreSchemaBrInfo[] = [];
 
     // actual service call
-    schemaService.getBusinessRulesByModuleId('1005','dup','DUPLICATE','10').subscribe(actualData => {
+    schemaService.getBusinessRulesByModuleId('1005', 'dup', 'DUPLICATE', '10').subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -319,7 +368,7 @@ describe('SchemaService', () => {
     const response: CoreSchemaBrInfo[] = [];
 
     // actual service call
-    schemaService.getAllBusinessRules().subscribe(actualData => {
+    schemaService.getAllBusinessRules().subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -339,7 +388,7 @@ describe('SchemaService', () => {
     const response: Category[] = [];
 
     // actual service call
-    schemaService.getAllCategoriesList().subscribe(actualData => {
+    schemaService.getAllCategoriesList().subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -352,14 +401,14 @@ describe('SchemaService', () => {
 
   it('should getFillDataDropdownData()', async(() => {
     const url = 'test getFillDataInfo url';
-    const id = '1701'
+    const id = '1701';
     // mock url
     endpointServiceSpy.getFillDataInfo.and.returnValue(url);
     // making mock data
     const response = [];
 
     // actual service call
-    schemaService.getFillDataDropdownData(id).subscribe(actualData => {
+    schemaService.getFillDataDropdownData(id).subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -379,7 +428,7 @@ describe('SchemaService', () => {
     const response = 'success';
 
     // actual service call
-    schemaService.createUpdateSchema(request).subscribe(actualData => {
+    schemaService.createUpdateSchema(request).subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -392,14 +441,14 @@ describe('SchemaService', () => {
 
   it('should createBusinessRule()', async(() => {
     const url = 'test createBr url';
-    const request =  new CoreSchemaBrInfo();
+    const request = new CoreSchemaBrInfo();
     // mock url
     endpointServiceSpy.createBr.and.returnValue(url);
     // making mock data
     const response = new CoreSchemaBrInfo();
 
     // actual service call
-    schemaService.createBusinessRule(request).subscribe(actualData => {
+    schemaService.createBusinessRule(request).subscribe((actualData) => {
       expect(actualData).toEqual(response);
     });
     // mocking http
@@ -412,20 +461,20 @@ describe('SchemaService', () => {
 
   it('should deleteBr()', async(() => {
     const url = 'test deleteBr url';
-    const brId = '826462836823234'
+    const brId = '826462836823234';
     // mock url
     endpointServiceSpy.deleteBr.and.returnValue(url);
     // making mock data
     const mockResponse = true;
 
     // actual service call
-    schemaService.deleteBr(brId).subscribe(actualData => {
+    schemaService.deleteBr(brId).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
     const httpReq = httpTestingController.expectOne(url);
     expect(httpReq.request.method).toEqual('DELETE');
-    httpReq.event(new HttpResponse<boolean>({body: true}));
+    httpReq.event(new HttpResponse<boolean>({ body: true }));
     // verify http
     httpTestingController.verify();
   }));
@@ -438,7 +487,7 @@ describe('SchemaService', () => {
     const mockResponse = ['AND'];
 
     // actual service call
-    schemaService.getBrConditionalOperator().subscribe(actualData => {
+    schemaService.getBrConditionalOperator().subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -454,10 +503,10 @@ describe('SchemaService', () => {
     // mock url
     endpointServiceSpy.dropDownValuesUrl.and.returnValue(url);
     // making mock data
-    const mockResponse : DropDownValue[] = [];
+    const mockResponse: DropDownValue[] = [];
 
     // actual service call
-    schemaService.dropDownValues('mtl_grp', 'search').subscribe(actualData => {
+    schemaService.dropDownValues('mtl_grp', 'search').subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -474,10 +523,10 @@ describe('SchemaService', () => {
     // mock url
     endpointServiceSpy.conditionListsUrl.and.returnValue(url);
     // making mock data
-    const mockResponse : UDRBlocksModel[] = [];
+    const mockResponse: UDRBlocksModel[] = [];
 
     // actual service call
-    schemaService.getConditionList(objectType).subscribe(actualData => {
+    schemaService.getConditionList(objectType).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -494,10 +543,10 @@ describe('SchemaService', () => {
     // mock url
     endpointServiceSpy.getBusinessRuleInfoUrl.and.returnValue(url);
     // making mock data
-    const mockResponse = {brId}  as CoreSchemaBrInfo;
+    const mockResponse = { brId } as CoreSchemaBrInfo;
 
     // actual service call
-    schemaService.getBusinessRuleInfo(brId).subscribe(actualData => {
+    schemaService.getBusinessRuleInfo(brId).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -508,7 +557,6 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-
   it('should saveUpdateUdrBlock()', async(() => {
     const url = 'test saveUpdateUdrBlockUrl';
     const blocks = [new UDRBlocksModel()];
@@ -518,7 +566,7 @@ describe('SchemaService', () => {
     const mockResponse = ['id1'];
 
     // actual service call
-    schemaService.saveUpdateUdrBlock(blocks).subscribe(actualData => {
+    schemaService.saveUpdateUdrBlock(blocks).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -538,7 +586,7 @@ describe('SchemaService', () => {
     const mockResponse = 'id1';
 
     // actual service call
-    schemaService.saveUpdateUDR(udr).subscribe(actualData => {
+    schemaService.saveUpdateUDR(udr).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -551,14 +599,14 @@ describe('SchemaService', () => {
 
   it('should getUdrBusinessRuleInfo()', async(() => {
     const url = 'test getUdrBusinessRuleInfoUrl';
-    const ruleId = '1701'
+    const ruleId = '1701';
     // mock url
     endpointServiceSpy.getUdrBusinessRuleInfoUrl.and.returnValue(url);
     // making mock data
     const mockResponse = new UdrModel();
 
     // actual service call
-    schemaService.getUdrBusinessRuleInfo(ruleId).subscribe(actualData => {
+    schemaService.getUdrBusinessRuleInfo(ruleId).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -571,34 +619,34 @@ describe('SchemaService', () => {
 
   it('should deleteConditionBlock()', async(() => {
     const url = 'test deleteConditionBlock url';
-    const ruleId = '1701'
+    const ruleId = '1701';
     // mock url
     endpointServiceSpy.deleteConditionBlock.and.returnValue(url);
     // making mock data
     const mockResponse = true;
 
     // actual service call
-    schemaService.deleteConditionBlock(ruleId).subscribe(actualData => {
+    schemaService.deleteConditionBlock(ruleId).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
     const httpReq = httpTestingController.expectOne(`${url}`);
     expect(httpReq.request.method).toEqual('DELETE');
-    httpReq.event(new HttpResponse<boolean>({body: mockResponse}));
+    httpReq.event(new HttpResponse<boolean>({ body: mockResponse }));
     // verify http
     httpTestingController.verify();
   }));
 
   it('should getSchemaThresholdStatics()', async(() => {
     const url = 'test getSchemaThresholdStatics url';
-    const schemaId = '1701'
+    const schemaId = '1701';
     // mock url
     endpointServiceSpy.getSchemaThresholdStatics.and.returnValue(url);
     // making mock data
     const mockResponse = new SchemaStaticThresholdRes();
 
     // actual service call
-    schemaService.getSchemaThresholdStatics(schemaId,'556757',['2342675']).subscribe(actualData => {
+    schemaService.getSchemaThresholdStatics(schemaId, '556757', ['2342675']).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -617,7 +665,7 @@ describe('SchemaService', () => {
     const mockResponse = 'success';
 
     // actual service call
-    schemaService.uploadCorrectionData([], '1005', '1701', '170170', '0', '1801').subscribe(actualData => {
+    schemaService.uploadCorrectionData([], '1005', '1701', '170170', '0', '1801').subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -630,14 +678,14 @@ describe('SchemaService', () => {
 
   it('should getSchemaInfoByModuleId()', async(() => {
     const url = 'test getSchemaInfoByModuleIdUrl';
-    const moduleId = '1701'
+    const moduleId = '1701';
     // mock url
     endpointServiceSpy.getSchemaInfoByModuleIdUrl.and.returnValue(url);
     // making mock data
     const mockResponse = new SchemaListModuleList();
 
     // actual service call
-    schemaService.getSchemaInfoByModuleId(moduleId).subscribe(actualData => {
+    schemaService.getSchemaInfoByModuleId(moduleId).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
@@ -650,20 +698,20 @@ describe('SchemaService', () => {
 
   it('should deleteSChema()', async(() => {
     const url = 'test deleteSchema';
-    const schemaId = '1701'
+    const schemaId = '1701';
     // mock url
     endpointServiceSpy.deleteSchema.and.returnValue(url);
     // making mock data
     const mockResponse = true;
 
     // actual service call
-    schemaService.deleteSChema(schemaId).subscribe(actualData => {
+    schemaService.deleteSChema(schemaId).subscribe((actualData) => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
     const httpReq = httpTestingController.expectOne(`${url}`);
     expect(httpReq.request.method).toEqual('DELETE');
-    httpReq.event(new HttpResponse<boolean>({body: mockResponse}));
+    httpReq.event(new HttpResponse<boolean>({ body: mockResponse }));
     // verify http
     httpTestingController.verify();
   }));
@@ -677,7 +725,7 @@ describe('SchemaService', () => {
     const mockResponse = {};
 
     // actual service call
-    schemaService.copyDuplicateRule(params).subscribe(actualData => {
+    schemaService.copyDuplicateRule(params).subscribe((actualData) => {
       expect(actualData).toEqual({} as CoreSchemaBrInfo);
     });
     // mocking http
@@ -700,9 +748,11 @@ describe('SchemaService', () => {
     endpointServiceSpy.getSchemaExecutionTree.and.returnValue(url);
 
     const httpMockData = new SchemaExecutionTree();
-    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus,['87687687785']).subscribe(data => {
-      expect(data).toEqual(httpMockData);
-    });
+    schemaService
+      .getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus, ['87687687785'])
+      .subscribe((data) => {
+        expect(data).toEqual(httpMockData);
+      });
 
     const httpReq = httpTestingController.expectOne(url);
     expect(httpReq.request.method).toEqual('POST');
@@ -718,7 +768,7 @@ describe('SchemaService', () => {
     endpointServiceSpy.getModuleInfoByModuleIdUrl.and.returnValue(url);
 
     const httpMockData = [];
-    schemaService.getModuleInfoByModuleId(moduleId).subscribe(data => {
+    schemaService.getModuleInfoByModuleId(moduleId).subscribe((data) => {
       expect(data).toEqual(httpMockData);
     });
 
@@ -730,14 +780,13 @@ describe('SchemaService', () => {
   }));
 
   it('downloadExecutionDetailsByNodes()', async(() => {
-
     const url = 'test downloadExecutionDetailsByNodesUrl';
     endpointClassicServiceSpy.downloadExecutionDetailsByNodesUrl.and.returnValue(url);
 
     const httpMockData = {
-      message: 'success'
+      message: 'success',
     };
-    schemaService.downloadExecutionDetailsByNodes('1701', 'error', ['header'], '0').subscribe(data => {
+    schemaService.downloadExecutionDetailsByNodes('1701', 'error', ['header'], '0').subscribe((data) => {
       expect(data).toEqual(httpMockData);
     });
 
@@ -749,15 +798,16 @@ describe('SchemaService', () => {
   }));
 
   it('getBuisnessRulesBasedOnRun() get the rules based on last run', async(() => {
-
     const url = 'test getBuisnessRulesBasedOnRun';
     endpointServiceSpy.getBuisnessRulesBasedOnRunUrl.and.returnValue(url);
 
-    const httpMockData = [{
-      brIdStr:'767575758',
-      brInfo:'Rule 1'
-    }as CoreSchemaBrInfo];
-    schemaService.getBuisnessRulesBasedOnRun('7575757', '').subscribe(data => {
+    const httpMockData = [
+      {
+        brIdStr: '767575758',
+        brInfo: 'Rule 1',
+      } as CoreSchemaBrInfo,
+    ];
+    schemaService.getBuisnessRulesBasedOnRun('7575757', '').subscribe((data) => {
       expect(data).toEqual(httpMockData);
     });
 
@@ -769,11 +819,10 @@ describe('SchemaService', () => {
   }));
 
   it('cancleSchema() cancle schema ', async(() => {
-
     const url = 'test cancle schema ';
     endpointServiceSpy.cancleSchemaUri.and.returnValue(url);
-    const httpMockData = {acknowledge: true};
-    schemaService.cancleSchema('7575757').subscribe(data => {
+    const httpMockData = { acknowledge: true };
+    schemaService.cancleSchema('7575757').subscribe((data) => {
       expect(data).toEqual(httpMockData);
     });
 
@@ -785,11 +834,10 @@ describe('SchemaService', () => {
   }));
 
   it('transformationRules(), get the transformation rules lib.. ', async(() => {
-
     const url = 'test transformation rule lib ';
     endpointServiceSpy.transformationRules.and.returnValue(url);
-    const httpMockData:CoreSchemaBrInfo[] = [{} as CoreSchemaBrInfo];
-    schemaService.transformationRules('1005',0, 10,'').subscribe(data => {
+    const httpMockData: CoreSchemaBrInfo[] = [{} as CoreSchemaBrInfo];
+    schemaService.transformationRules('1005', 0, 10, '').subscribe((data) => {
       expect(data).toEqual(httpMockData);
     });
 
@@ -801,11 +849,10 @@ describe('SchemaService', () => {
   }));
 
   it('getMappedTransformationRules(), get the trans.. attached in the main rule  ', async(() => {
-
     const url = 'test transformation rule attached ';
     endpointServiceSpy.getMappedTransformationRulesUrl.and.returnValue(url);
-    const httpMockData:TransformationMappingResponse = {} as TransformationMappingResponse;
-    schemaService.getMappedTransformationRules('7677867','98767677',0, 10,'').subscribe(data => {
+    const httpMockData: TransformationMappingResponse = {} as TransformationMappingResponse;
+    schemaService.getMappedTransformationRules('7677867', '98767677', 0, 10, '').subscribe((data) => {
       expect(data).toEqual(httpMockData);
     });
 
@@ -816,4 +863,25 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
+  it('should getSchemaGlobalCounts', () => {
+    const url = 'getSchemaGlobalCounts';
+    const response = {
+      successCount: 32,
+      errorCount: 0,
+      skippedCount: 0,
+    };
+
+    const schemaId = '7944828395059';
+
+    endpointServiceSpy.getSchemaGlobalCounts.and.returnValue(url);
+
+    schemaService.getSchemaGlobalCounts(schemaId).subscribe((result) => {
+      expect(result).toEqual(response);
+    });
+
+    const mockRequest = httpTestingController.expectOne(`${url}?schemaId=${schemaId}`);
+    expect(mockRequest.request.method).toEqual('GET');
+    mockRequest.flush(response);
+    httpTestingController.verify();
+  });
 });
