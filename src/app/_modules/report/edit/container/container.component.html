@@ -334,7 +334,7 @@
                                                         [displayWith]="displayProperties">
                                                         <mat-option i18n="@@noDate">No date</mat-option>
                                                         <mat-option
-                                                            *ngFor="let opt of getValue(filterType,styleCtrlGrp.get('filterType'))"
+                                                            *ngFor="let opt of getValue(dateSelectionType,styleCtrlGrp.get('dateSelectionType'))"
                                                             [value]="opt">
                                                             {{opt.value}}
                                                         </mat-option>
