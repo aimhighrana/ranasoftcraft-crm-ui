@@ -345,7 +345,7 @@
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
         <target>กฎทางธุรกิจ</target>
-       <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">61</context>
         </context-group>
@@ -1441,7 +1441,7 @@
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">379</context>
         </context-group>
-         <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
           <context context-type="linenumber">673</context>
         </context-group>
@@ -2466,7 +2466,7 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="import_report" datatype="html">
+      <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>รายงานการนำเข้า</target>
         <context-group purpose="location">
@@ -2483,12 +2483,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
+        <source>Upload a .mdopage report file</source>
         <target>อัปโหลดไฟล์รายงาน. mdopage</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2523,16 +2523,16 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
+        <source>Description</source>
         <target>รายละเอียด</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
-	      <target>วันที่นำเข้า</target>
+        <target>วันที่นำเข้า</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">23</context>
@@ -2540,7 +2540,7 @@
       </trans-unit>
       <trans-unit id="category" datatype="html">
         <source>Category</source>
-	      <target>หมวดหมู่</target>
+        <target>หมวดหมู่</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">35</context>
@@ -2734,7 +2734,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="workFlowPath" datatype="html">
+      <trans-unit id="workFlowPath" datatype="html">
         <source>Workflow path</source>
         <target>เส้นทางเวิร์กโฟลว์</target>
         <context-group purpose="location">
@@ -2974,21 +2974,42 @@
           <context context-type="linenumber">828</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="bucketFilter" datatype="html">
-        <source>Bucket filter</source>
-        <target>ถังกรอง</target>
+      <trans-unit id="SLAFilter" datatype="html">
+        <source>SLA filter</source>
+        <target>ตัวกรอง SLA</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
-          <context context-type="linenumber">845</context>
+          <context context-type="linenumber">856</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="SLAWithinADay" datatype="html">
-        <source>SLA Within a day</source>
-        <target>SLA ภายในหนึ่งวัน</target>
+
+      <trans-unit id="dafaultSLA" datatype="html">
+        <source>Default SLA</source>
+        <target>SLA . เริ่มต้น</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">870</context>
+        </context-group>
       </trans-unit>
-      <trans-unit id="SLAWithinMore" datatype="html">
-        <source>SLA Within More than a day</source>
-        <target>SLA ภายในมากกว่าหนึ่งวัน</target>
+      <trans-unit id="useCustomSLAValue" datatype="html">
+        <source>Use custom SLA value</source>
+        <target>ใช้ค่า SLA ที่กำหนดเอง</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">878</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="none" datatype="html">
+        <source>None</source>
+        <target>ไม่มี</target>
+      </trans-unit>
+      <trans-unit id="withinSLA" datatype="html">
+        <source>Within SLA</source>
+        <target>ภายใน SLA</target>
+      </trans-unit>
+      <trans-unit id="exceedsSLA" datatype="html">
+        <source>Exceeds SLA</source>
+        <target>เกิน SLA</target>
       </trans-unit>
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>
@@ -3092,6 +3113,34 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
           <context context-type="linenumber">172</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="hour" datatype="html">
+        <source>Hour</source>
+        <target>ชั่วโมง</target>
+      </trans-unit>
+      <trans-unit id="errors" datatype="html">
+        <source>errors</source>
+        <target>ข้อผิดพลาด</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="success" datatype="html">
+        <source>success</source>
+        <target>ความสำเร็จ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="skipped" datatype="html">
+        <source>skipped</source>
+        <target>ข้าม</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
     </body>

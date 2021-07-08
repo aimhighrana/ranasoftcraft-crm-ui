@@ -165,6 +165,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   ] as MetadataModel[];
 
   bucketFilter = this.possibleBucketFilter;
+
+  slaMenu = this.possibleSLAMenu;
   timeInterval = this.possibleTimeIntervalFilter
 
   filterType = this.possibleFilterType;
@@ -282,7 +284,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       blankValueAlias: [''],
       timeseriesStartDate: [{ ...this.timeInterval[1] }],
       isEnabledBarPerc: [false],
-      bucketFilter: [null]
+      bucketFilter: [{...this.bucketFilter[0]}],
+      hasCustomSLA: [false],
+      slaValue: [],
+      slaType: [{...this.slaMenu[0]}]
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -359,18 +364,27 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartPropCtrlGrp.valueChanges.subscribe(latestProp => {
       if (latestProp) {
         this.selStyleWid.chartProperties = latestProp;
-        this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter.key : null;
-        this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : null;
-        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : null;
-        this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : null;
-        this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : null;
+        if (latestProp.hasCustomSLA) {
+          this.selStyleWid.chartProperties.seriesWith = latestProp.slaType && typeof (latestProp.slaType) === 'object' ? latestProp.slaType.key : this.slaMenu[0].key;
+        }
+       else {
+        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
+       }
+       if(latestProp.bucketFilter?.key === 'none'){
+          this.selStyleWid.chartProperties.bucketFilter = BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
+        }
+        else{
+            this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter?.key : BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
+        }
+        this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : this.timeInterval[1].key;
+        this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : this.chartType[0].key;
+        this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : this.datalabelsPosition[0].key;
         this.selStyleWid.chartProperties.legendPosition = latestProp.legendPosition?.key ? latestProp.legendPosition.key : this.legendPosition[0].key;
         this.selStyleWid.chartProperties.orderWith = latestProp.orderWith?.key ? latestProp.orderWith.key : this.orderWith[3].key;
         this.selStyleWid.chartProperties.orientation = latestProp.orientation?.key ? latestProp.orientation.key : this.orientation[0].key;
         this.preapreNewWidgetPosition(this.selStyleWid);
       }
     });
-
     // detect value change on default filters
     this.defaultFilterCtrlGrp.valueChanges.subscribe(latestProp => {
       if (latestProp && latestProp.hasOwnProperty('filters')) {
@@ -533,6 +547,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.widgetList.push(dropableWidget);
     }
     // update variable for dom control
+    if (dropableWidget.chartProperties?.hasCustomSLA) {
+      delete dropableWidget.chartProperties.slaType;
+    }
     this.selStyleWid = dropableWidget;
   }
 
@@ -618,7 +635,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         // set value to properties frm ctrl
         if (data.chartProperties) {
           console.log(data)
-          const selectedBucketFilter = this.bucketFilter.find(item => item.key === data.chartProperties.bucketFilter);
           const selectedTimeInterval = this.timeInterval.find(item => item.key === data.chartProperties.timeseriesStartDate);
           const selectedSeries = this.seriesWith.find(item => item.key === data.chartProperties.seriesWith);
           const selectedChartType = this.chartType.find(type => type.key === data.chartProperties.chartType);
@@ -626,9 +642,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           const selectedDataLabelPosition = this.datalabelsPosition.find(data1 => data1.key === data.chartProperties.datalabelsPosition);
           const selectedLegendPosition = this.legendPosition.find(legend => legend.key === data.chartProperties.legendPosition);
           const selectedOrderWithValues = this.orderWith.find(order => order.key === data.chartProperties.orderWith);
+          const selectedBucketFilter = this.bucketFilter.find(bucket=> bucket.key === data.chartProperties.bucketFilter);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
           this.chartPropCtrlGrp.patchValue({
-            bucketFilter: selectedBucketFilter ? selectedBucketFilter : null,
+            bucketFilter: selectedBucketFilter ? selectedBucketFilter : this.bucketFilter[0],
             timeseriesStartDate: selectedTimeInterval ? selectedTimeInterval : null,
             seriesWith: selectedSeries ? selectedSeries : null,
             chartType: selectedChartType ? selectedChartType : null,
@@ -637,6 +654,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
             legendPosition: selectedLegendPosition ? selectedLegendPosition : null,
             orderWith: selectedOrderWithValues ? selectedOrderWithValues : null
           })
+          if (data.chartProperties.hasCustomSLA) {
+            const slaType = this.slaMenu.find(item => item.key === data.chartProperties.seriesWith);
+            this.chartPropCtrlGrp.patchValue({
+              slaType,
+            })
+          }
         } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
           this.chartPropCtrlGrp.setValue({
             chartType: this.chartType[0], orientation: this.orientation[0], isEnableDatalabels: false,
@@ -865,11 +888,13 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.workflowPath = res;
       this.workflowPathOb = of(res);
       this.selectedWorkflowPath = [];
-      this.selStyleWid.workflowPath.forEach(value => {
-        const filteredValue = this.workflowPath.find((item: any) => item.pathname === value);
-        if (filteredValue)
-          this.selectedWorkflowPath.push(filteredValue);
-      })
+      if (this.selStyleWid.workflowPath) {
+        this.selStyleWid.workflowPath.forEach(value => {
+          const filteredValue = this.workflowPath.find((item: any) => item.pathname === value);
+          if (filteredValue)
+            this.selectedWorkflowPath.push(filteredValue);
+        })
+      }
     }, error => console.error(`Error: ${error}`));
     this.subscriptions.push(workflowPath);
   }
@@ -1187,7 +1212,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top,
           xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.ROW_DESC, scaleFrom: null, scaleTo: null, stepSize: null,
           dataSetSize: null, seriesWith: SeriesWith.day, seriesFormat: null, blankValueAlias: null, timeseriesStartDate: TimeseriesStartDate.D7, isEnabledBarPerc: false,
-          bucketFilter: null
+          bucketFilter: null, hasCustomSLA: false
         };
       }
       this.isSerieswithDisabled = false;
@@ -1290,6 +1315,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selStyleWid.workflowPath.splice(value.pathname)
     } else {
       this.selectedWorkflowPath.push(value);
+      if (!this.selStyleWid.workflowPath) {
+        this.selStyleWid.workflowPath = [];
+      }
       this.selStyleWid.workflowPath.push(value.pathname)
     }
   }
@@ -1305,8 +1333,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get possibleBucketFilter() {
     const bucketFilter = [
-      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@SLAWithinADay:SLA Within a day` },
-      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@SLAWithinMore:SLA Within a more day` }
+      { key:'none', value: $localize`:@@none:None` },
+      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within SLA` },
+      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds SLA` }
     ];
     return bucketFilter
   }
@@ -1418,4 +1447,13 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     ]
     return dateSelectionType;
   }
+
+  get possibleSLAMenu() {
+    const possibleSlaMenu = [
+      { key: SeriesWith.hour, value: $localize`:@@hour:Hour` },
+      { key: SeriesWith.day, value: $localize`:@@day:Day` }
+    ]
+    return possibleSlaMenu;
+  }
+
 }
