@@ -497,6 +497,7 @@ export class SchemaMROCorrectionReq {
   reviewedBy: string;
   isSubmitted: string;
   masterLibrary: boolean;
+  isFromUnmatched?: boolean;
 }
 
 export interface AttributeCoorectionReq {
