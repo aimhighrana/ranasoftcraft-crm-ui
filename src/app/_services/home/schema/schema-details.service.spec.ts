@@ -629,7 +629,7 @@ describe('SchemaDetailsService', () => {
       expect(actualResponse).toEqual(response);
     });
     // mock http call
-    let mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&fieldId=${fieldId}`);
+    let mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&fieldId=${fieldId}&fromUnmatch=false`);
     expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
@@ -641,7 +641,7 @@ describe('SchemaDetailsService', () => {
       expect(actualResponse).toEqual(response);
     });
     // mock http call
-    mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&fieldId=`);
+    mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&fieldId=&fromUnmatch=false`);
     mockRequst.flush(response);
     // verify http
     httpTestingController.verify();
