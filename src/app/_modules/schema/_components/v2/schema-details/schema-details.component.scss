@@ -1,15 +1,3 @@
-.b-root {
-  padding: 8px;
-  height: 100%;
-
-  mat-nav-list {
-    padding-top: 0;
-    margin: 8px -8px;
-    overflow: auto;
-    height: calc(100% - 36px - 8px * 4 - 36px);
-    max-height: 139px;
-  }
-}
 
 div.root {
   user-select: none;
@@ -17,22 +5,10 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
-  .filter-btn,
-  .menu-link-btn {
-    margin: 0 4px;
-  }
-
-  .btn-txt {
-    margin-left: 5px;
-  }
-
-  .selected {
-    background-color: #f2f5f8;
-  }
-
   .filter-container {
     flex-wrap: wrap;
     margin: 8px 0;
+    align-items: flex-start;
 
     .lib-search {
       width: 213px;
@@ -40,24 +16,15 @@ div.root {
     }
 
     .mdo-filter-matchip {
-      margin: 0 4px;
+      margin: 0 4px 8px 0;
     }
   }
 
   .empty-state {
-    position: absolute;
-    background: white;
-    z-index: 1000;
-    width: 98%;
-    height: calc(100% - 45px);
-
-    .lib-empty-state {
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      top: 15%;
-    }
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
   }
 
   .listing-container {
@@ -91,7 +58,6 @@ div.root {
                   text-overflow: ellipsis;
                   overflow: hidden;
                   white-space: nowrap;
-                  font-size: 0.9rem;
                 }
               }
             }
@@ -107,12 +73,6 @@ div.root {
               }
             }
           }
-        }
-
-        .default-badge {
-          margin: 0 8px;
-          min-width: 24px;
-          text-align: right;
         }
       }
 
@@ -225,5 +185,18 @@ div.root {
         }
       }
     }
+  }
+}
+
+.lib-chip-dropdown {
+  padding: 8px;
+  height: 100%;
+
+  mat-nav-list.mat-nav-list {
+    padding-top: 0;
+    margin: 8px -8px;
+    overflow: auto;
+    height: calc(100% - 36px - 8px * 4 - 36px);
+    max-height: 139px;
   }
 }
