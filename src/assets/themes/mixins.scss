@@ -803,27 +803,14 @@
       }
 
       &.navigation-menu {
+        .menu-search-row {
+          padding: 8px;
+        }
+
         .menu-customdropdown {
           max-height: 360px;
           min-height: auto;
           overflow: auto;
-
-          &.search-module-dropdown {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            overflow-y: auto;
-
-            .lib-button {
-              width: 100%;
-
-              button {
-                width: 100%;
-                text-align: left;
-                margin-left: 5px;
-              }
-            }
-          }
         }
 
         mat-divider.mat-divider {
@@ -1454,10 +1441,6 @@
     }
   }
 
-  .mat-nav-list .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
-    top: 5px;
-  }
-
   pros-settings {
     .mat-list-item.selected {
       background-color: $color-app-hover;
@@ -1470,13 +1453,7 @@
         box-shadow: $inset-box-shadow;
 
         .nav-tree {
-          .badge {
-            color: $color-text-secondary;
-          }
-
           .mat-list-item {
-            font-size: 14px;
-
             &.selected {
               background-color: $color-app-hover;
             }
@@ -1937,8 +1914,12 @@
         .nav-tree {
           mat-nav-list.mat-nav-list.tree-nav-list {
             .understep-two {
+              &.mat-list-item:hover {
+                background: $color-app-hover;
+              }
+
               .mat-list-item-content {
-                padding: 0 0 0 64px;
+                padding: 0 8px 0 64px;
               }
             }
           }
@@ -1949,6 +1930,12 @@
           background-color: mat-color($background-palette, card);
         }
       }
+    }
+  }
+
+  pros-global-count {
+    .sum-collection::after {
+      background-color: $color-text-secondary;
     }
   }
 

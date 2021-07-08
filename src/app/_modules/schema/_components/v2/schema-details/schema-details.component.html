@@ -259,9 +259,12 @@
                             </ng-container>
                             <ng-container matColumnDef="_score_weightage" sticky>
                                 <th mat-header-cell *matHeaderCellDef> 
-                                    <lib-text-line type="base" weight="strong" i18n="@@score">Score</lib-text-line>
-                                    <mat-icon fontSet="mdo-icons-light">
-                                    question-circle</mat-icon>
+                                    <div class="f-row">
+                                        <lib-text-line type="base" weight="strong" i18n="@@score">Score</lib-text-line>
+                                        &nbsp;
+                                        <mat-icon fontSet="mdo-icons-light" class="mat-icon-header">
+                                        question-circle</mat-icon>
+                                    </div> 
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row progress-cell">
