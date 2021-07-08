@@ -792,7 +792,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             this.schemaInfo.correctionValue = res.count ? res.count : this.schemaInfo.correctionValue;
 
             // update the api call for mapped data
-            if(this.activeTab === '' && this.dataFrm === 'unmatched') {
+            if(this.activeTab !== 'correction' && this.dataFrm === 'unmatched') {
               // refresh the tree
               this.getClassificationNounMod('',true);
               // refresh the table
