@@ -355,6 +355,15 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
      * Get the module information
      */
     this.getModuleInfo(this.moduleId);
+
+    /**
+     * After saved mappings reload the left panel ...
+     */
+     this.sharedServices.getAfterMappingSaved().subscribe(res=>{
+       if(res) {
+        this.getClassificationNounMod();
+       }
+     },err=> console.error(`Error : ${err.message}`));
   }
 
   ngAfterViewInit(){
@@ -772,7 +781,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
         // for unmatched send flag to swap
         if(this.dataFrm === 'unmatched') {
-          correctionReq.isFromUnmatched = true;
+          correctionReq.fromUnmatch = true;
         }
 
         this.schemaDetailService.doCorrectionForClassification(this.schemaId, fldid, correctionReq).subscribe(res=>{
