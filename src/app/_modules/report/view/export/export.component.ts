@@ -25,7 +25,7 @@ export class ExportComponent implements OnInit {
   onConfirm() {
 
 
-    this.widgetService.exportReport(this.data.reportId).subscribe(res => {
+    this.widgetService.exportReport(this.data.reportId, this.data.reportName).subscribe(res => {
       if (res?.errorMsg) {
         this.errorMsg = `Unable to complete export: (${res.errorMsg})`;
       } else {
