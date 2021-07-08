@@ -860,7 +860,7 @@ get selectedRunningSchedule () {
         duplicacyField,
         duplicacyMaster,
         source_field,
-        accuracy_score,
+        accuracyScore,
         target_field } = rule;
 
         // Handle duplicacy rule data
@@ -886,7 +886,7 @@ get selectedRunningSchedule () {
           categoryId,
           transFormationSchema,
           duplicacyRuleData,
-          accuracy_score,
+          accuracyScore,
           source_field,
           target_field
         }
@@ -961,7 +961,7 @@ get selectedRunningSchedule () {
       duplicacyMaster: object.duplicacyRuleData.duplicacyMaster || [],
       source_field: object.source_field ? object.source_field : '',
       target_field: object.target_field ? object.target_field : '',
-      accuracy_score: object.accuracy_score ? object.accuracy_score : 0
+      accuracyScore: object.accuracyScore ? object.accuracyScore : 0
     } as CoreSchemaBrInfo;
   }
 

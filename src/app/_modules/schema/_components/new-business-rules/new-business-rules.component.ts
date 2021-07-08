@@ -298,7 +298,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 categoryId,
                 transFormationSchema,
                 duplicacyRuleData,
-                accuracy_score,
+                accuracyScore,
                 source_field,
                 target_field } = this.data.createRuleFormValues;
 
@@ -320,7 +320,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 weightage,
                 categoryId,
                 transformationRuleType: this.getTrRuleType(transFormationSchema),
-                accuracy_score,
+                accuracyScore,
                 source_field,
                 target_field
             });
@@ -480,7 +480,7 @@ export class NewBusinessRulesComponent implements OnInit {
             weightage: new FormControl(0, [Validators.required]),
             categoryId: new FormControl(''),
             transformationRuleType: new FormControl(''),
-            accuracy_score: new FormControl(0),
+            accuracyScore: new FormControl(0),
             source_field: new FormControl(''),
             target_field: new FormControl('')
         };
@@ -639,7 +639,7 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'accuracy_score', 'source_field', 'apiKey'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'accuracyScore', 'source_field', 'apiKey'];
         }
 
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
@@ -662,7 +662,7 @@ export class NewBusinessRulesComponent implements OnInit {
             if (index === -1) {
                 this.form.get(key).setValidators(null);
                 this.form.get(key).clearValidators();
-                if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracy_score' && !this.data?.createRuleFormValues) {
+                if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && !this.data?.createRuleFormValues) {
                     this.form.get(key).setValue('');
                 }
             } else {

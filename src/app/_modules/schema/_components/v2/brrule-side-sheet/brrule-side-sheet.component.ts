@@ -703,7 +703,7 @@ export class BrruleSideSheetComponent implements OnInit {
         transformationRuleType: new FormControl(''),
         source_field: new FormControl(''),
         target_field: new FormControl(''),
-        accuracy_score: new FormControl(0)
+        accuracyScore: new FormControl(0)
       };
 
       this.currentControls = controls;
@@ -763,7 +763,7 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
     if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'source_field', 'accuracy_score', 'apiKey'];
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'source_field', 'accuracyScore', 'apiKey', 'target_field'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
@@ -791,7 +791,7 @@ export class BrruleSideSheetComponent implements OnInit {
       if (index === -1) {
         this.form.get(key).setValidators(null);
         this.form.get(key).clearValidators();
-        if (key !== 'rule_type' && key !== 'weightage' && key !== 'transformationRuleType') {
+        if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && key !== 'transformationRuleType') {
           this.form.get(key).setValue('');
         }
       } else {
@@ -827,9 +827,9 @@ export class BrruleSideSheetComponent implements OnInit {
       weightage: br.brWeightage,
       categoryId: br.categoryId,
       transformationRuleType: '',
-      source_field: '',
-      target_field: '',
-      accuracy_score: 0
+      source_field: br.source_field || '',
+      target_field: br.target_field || '',
+      accuracyScore: br.accuracyScore || 0
     };
     // set the value for transformation ...
     this.hasAppliedTransformationCtrl.setValue(br.isTransformationApplied ? br.isTransformationApplied : false);
@@ -860,13 +860,13 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     if(br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey', 'accuracyScore', 'source_field'];
     }
 
     if (patchList && patchList.length > 0) {
       patchList.map((key) => {
         if (dataToPatch[key]) {
-          if (key === 'categoryId') {
+          if (key === 'categoryId' || key === 'source_field') {
             this.form.controls[key].setValue(`${dataToPatch[key]}`);
           } else {
             this.form.controls[key].setValue(dataToPatch[key]);
@@ -1115,7 +1115,9 @@ export class BrruleSideSheetComponent implements OnInit {
         if (this.brId && this.coreSchemaBrInfo) {
           try {
             const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
+            const targetFlds = this.coreSchemaBrInfo.target_field ? this.coreSchemaBrInfo.target_field.split(',') : [];
             this.selectedFields = [];
+            this.selectedTargetFields = [];
             fldIds.forEach(fld => {
               const fldCtrl = this.fieldsList.find(fil => fil.fieldId === fld);
               if (fldCtrl) {
@@ -1130,6 +1132,19 @@ export class BrruleSideSheetComponent implements OnInit {
                 }
               }
             });
+            targetFlds.forEach(fld => {
+              const fldCtrl = this.fieldsList.find(fil => fil.fieldId === fld);
+              if (fldCtrl) {
+                this.selectedTargetFields.push({ fieldDescri: fldCtrl.fieldDescri, fieldId: fld });
+              }
+            });
+
+            if (this.coreSchemaBrInfo.source_field) {
+              const fld = this.fieldsList.find(fil => fil.fieldId === this.coreSchemaBrInfo.source_field);
+              if (fld) {
+                this.searchSourceFieldStr = fld.fieldDescri;
+              }
+            }
           } catch (ex) { console.error(ex) }
         }
       });
@@ -1308,6 +1323,7 @@ export class BrruleSideSheetComponent implements OnInit {
   save() {
     this.submitted = true;
     this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
+    this.form.controls.target_field.setValue(this.selectedTargetFields.map(item => item.fieldId).join(','));
     (Object).values(this.form.controls).forEach(control => {
       if (control.invalid)
         control.markAsTouched();
@@ -1474,6 +1490,9 @@ export class BrruleSideSheetComponent implements OnInit {
       request.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
       request.order = this.coreSchemaBrInfo.order || 0;
       request.status = this.coreSchemaBrInfo.status || '1';
+      request.source_field = this.form.value.source_field || '';
+      request.target_field = this.form.value.target_field || '';
+      request.accuracyScore= this.form.value.accuracyScore || 0;
 
       // attach the transformation for this rule
       request.isTransformationApplied = this.hasAppliedTransformationCtrl?.value ? this.hasAppliedTransformationCtrl.value : false;

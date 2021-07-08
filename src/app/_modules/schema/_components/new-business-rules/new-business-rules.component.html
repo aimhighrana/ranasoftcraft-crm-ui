@@ -50,13 +50,13 @@
         <div class="f-col mdo-form-field" *ngIf="isMPNI">
           <mat-label i18n="@@accuracy_score">Accuracy Score</mat-label>
           <div class="f-row slider-row">
-            <lib-range-slider class="lib-slider" thumbLabel="true" formControlName="accuracy_score" tickInterval="1"
-              minValue="0" [formatLabelFn]="rangeSliderLabelFormat" [value]="form.controls.accuracy_score.value"
+            <lib-range-slider class="lib-slider" thumbLabel="true" formControlName="accuracyScore" tickInterval="1"
+              minValue="0" [formatLabelFn]="rangeSliderLabelFormat" [value]="form.controls.accuracyScore.value"
               [maxValue]="100" color="primary"></lib-range-slider><span
               class="f-col-spacer-half"></span>
-            <div class="percent-count">{{form.controls.accuracy_score.value}}%</div>
+            <div class="percent-count">{{form.controls.accuracyScore.value}}%</div>
           </div>
-          <mat-error i18n="@@accuracy_score_missing_msg" *ngIf="submitted && form.controls.accuracy_score.errors && form.controls.accuracy_score.errors.required">
+          <mat-error i18n="@@accuracy_score_missing_msg" *ngIf="submitted && form.controls.accuracyScore.errors && form.controls.accuracyScore.errors.required">
             Please enter accuracy score</mat-error>
         </div>
 

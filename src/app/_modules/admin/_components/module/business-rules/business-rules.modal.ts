@@ -59,7 +59,7 @@ export class CoreSchemaBrInfo {
     transformationMappingDTO?: TransformationRuleMapped[];
     source_field? : string;
     target_field? : string;
-    accuracy_score? : number;
+    accuracyScore? : number;
 }
 
 export enum BusinessRuleType {
