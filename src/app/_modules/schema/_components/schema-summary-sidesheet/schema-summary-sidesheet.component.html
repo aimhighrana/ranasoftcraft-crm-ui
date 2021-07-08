@@ -25,7 +25,7 @@
         <div class="f-col mdo-justify">
             <div class="f-col">
                 
-                <div class="f-col mdo-field">
+                <!-- <div class="f-col mdo-field">
                     <lib-text-line class="field-label" type="xsmall" weight="strong" i18n-label="@@schema_name">
                         Schema name
                     </lib-text-line>
@@ -34,7 +34,7 @@
                     <mat-error i18n="@@schema_name_required" *ngIf="submitted && schemaName.invalid">
                         Schema name is required
                     </mat-error>
-                </div>
+                </div> -->
 
                 <div class="f-col mdo-field">
                     <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@data_scope">
@@ -93,6 +93,9 @@
                             <div class="col col-x8">
                                 <lib-text-line weight="strong" type="small" i18n="@@business_rule">Business rule</lib-text-line>
                             </div>
+                            <div class="col col-x8">
+                                <lib-text-line type="small" weight="strong" i18n="@@type">Type</lib-text-line>
+                            </div>
                             <div class="col col-x8 mat-item-center">
                                 <lib-text-line weight="strong" type="small" i18n="@@weightage">Weightage                         
                                     <mat-icon i18n-libTooltip="@@br_weightage_tooltip_msg"
@@ -113,7 +116,11 @@
                                         <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
                                     </div>
                                     <div class="col col-x8">
-                                        <lib-text-line type="base" enableWrap="true" textColor="link">{{businessRule.brInfo}}</lib-text-line>
+                                        <lib-text-line type="base" enableWrap="true" textColor="link" (click)="editBuisnessRule(businessRule);">{{businessRule.brInfo}}</lib-text-line>
+                                    </div>
+
+                                    <div class="col col-x8">
+                                        <lib-text-line type="base" enableWrap="true">{{ getRuleTypeDesc(businessRule.brType) }}</lib-text-line>
                                     </div>
                 
                                     <div class="col col-x8 mat-item-center">
@@ -128,13 +135,17 @@
                                     </div>
                 
                                     <div class="col col-x4 mat-item-end">
-                                        <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '
-                                            iconFontType="light" icon="link"></lib-button>
-                
+                                        <!-- This will not required for top node -->
+                                        <ng-template [ngIf]="i===0" [ngIfElse]="enableDepDrop">
+                                            <lib-button type="plain" [disabled]='i===0' iconFontType="light" icon="link"></lib-button>    
+                                        </ng-template>
+                                        <ng-template #enableDepDrop>
+                                            <lib-button type="plain" iconFontType="light" [matMenuTriggerFor]="mapTheDepRule" icon="link"></lib-button>
+                                        </ng-template>
+                                        
                                         <!-- Mapping Dropdown Menu -->
-                                        <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before"
+                                        <mat-menu #mapTheDepRule="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before"
                                             class="mat-elevation-z0 tooltip-fields-menu">
-                                            <!-- <div class="top-tiparrow"></div> -->
                                             <div class="f-col">
                                                 <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
                                                 <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
@@ -156,6 +167,10 @@
                                             </div>
                                             <div class="col col-x8">
                                                 <lib-text-line type="base" enableWrap="true" textColor="link">{{deps.brInfo}}</lib-text-line>
+                                            </div>
+
+                                            <div class="col col-x8">
+                                                <lib-text-line type="base" enableWrap="true">{{ getRuleTypeDesc(businessRule.brType) }}</lib-text-line>
                                             </div>
                 
                                             <div class="col col-x8 mat-item-center">

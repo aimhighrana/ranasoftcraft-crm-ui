@@ -186,7 +186,7 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith(['home','schema','schema-info',`${component.moduleId}`,`${component.schemaId}`])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }], {queryParamsHandling: 'preserve'})
   })
 
   it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
