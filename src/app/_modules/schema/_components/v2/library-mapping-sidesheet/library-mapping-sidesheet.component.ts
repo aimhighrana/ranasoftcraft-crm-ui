@@ -25,6 +25,11 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   moduleId: string;
 
+  /**
+   * Hold current schema id
+   */
+  schemaId: string;
+
   libraryNounCode: string;
 
   libraryModifierCode: string;
@@ -81,6 +86,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.moduleId = params.moduleId;
       this.libraryNounCode = params.nounCode;
       this.libraryModifierCode = params.modCode;
+      this.schemaId = params.schemaId;
 
       this.buildMappingForm();
 
@@ -238,7 +244,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
     console.log(attrMapRequest);
 
-    this.nounModifierService.saveAttributesMapping(attrMapRequest)
+    this.nounModifierService.saveAttributesMapping(attrMapRequest, this.schemaId)
       .subscribe(resp => {
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });
         this.close();
