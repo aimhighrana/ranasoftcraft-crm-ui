@@ -3,24 +3,22 @@
         <lib-text-line type="leading">
             {{ moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
         </lib-text-line>
-
         <span class="f-spacer"></span>
         <lib-button type="plain" (click)="openUploadSideSheet()" iconPosition="before" icon="arrow-from-bottom"> Upload
             data </lib-button>
     </div>
-    <div class="row-spacer"></div>
     <table mat-table [dataSource]="moduleData.schemaLists" class="table-vertical">
         <ng-container matColumnDef="schema">
             <th mat-header-cell *matHeaderCellDef> Schema </th>
             <td mat-cell *matCellDef="let element">
-                <lib-text-line (click)="openSchemaInfo(element.schemaId)" type="base" textColor="link">
+                <lib-text-line (click)="openSchemaInfo(element.schemaId)" type="base" textColor="link" enableWrap="true" class="cursor">
                     {{element.schemaDescription? element.schemaDescription:
                     'Untitled'}}</lib-text-line>
             </td>
         </ng-container>
         <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Last run </th>
-            <td mat-cell *matCellDef="let element">
+            <th mat-header-cell *matHeaderCellDef class="align-end"> Last run </th>
+            <td mat-cell *matCellDef="let element" class="align-end">
                 <lib-text-line type="base">{{ element.executionEndTime ?
                     (element.executionEndTime | date:'MMM d, y, h:mm:ss a'): 'N/A'
                     }}</lib-text-line>
@@ -31,8 +29,10 @@
             <td mat-cell *matCellDef="let element" class="align-end">
                 <lib-button icon="ellipsis-h" [matMenuTriggerFor]="menu"></lib-button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item i18n="@@schedule" (click)="openScheduleSideSheet(element.schemaId)">Schedule</button>
-                    <button mat-menu-item i18n="@@statistics" (click)="openExecutionTrendSidesheet(element)">Statistics</button>
+                    <button mat-menu-item i18n="@@schedule"
+                        (click)="openScheduleSideSheet(element.schemaId)">Schedule</button>
+                    <button mat-menu-item i18n="@@statistics"
+                        (click)="openExecutionTrendSidesheet(element)">Statistics</button>
                     <button mat-menu-item i18n="@@delete" (click)="deleteSchema(element.schemaId)">Delete</button>
                 </mat-menu>
             </td>

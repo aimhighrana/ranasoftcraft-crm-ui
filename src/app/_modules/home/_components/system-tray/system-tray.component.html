@@ -12,7 +12,7 @@
     <div class="f-col sidesheetcontent-listing">
         <lib-tab-group disableRipple="true" #matTabgroup class="lib-tab">
             <lib-tab i18n-label="@@notifications" label="Notifications">
-                <mat-nav-list>
+                <mat-nav-list class="notification-list" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="paginateNotification()">
                     <mat-list-item *ngFor="let notification of notifications;">
                         <div class="f-row notification-listing">
                             <div class="f-col notify-row">
