@@ -420,6 +420,9 @@ export class ChartProperties {
     timeseriesStartDate : TimeseriesStartDate;
     isEnabledBarPerc : boolean;
     bucketFilter: string;
+    hasCustomSLA: boolean;
+    slaValue?: string;
+    slaType?: object;
 }
 
 export class ButtonArr {
@@ -646,3 +649,4 @@ export interface Buckets {
     doc_count: string,
     key: string,
 }
+
