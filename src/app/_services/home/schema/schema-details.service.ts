@@ -183,7 +183,9 @@ export class SchemaDetailsService {
    */
   public doCorrectionForClassification(schemaId: string ,fieldId: string,  request: SchemaMROCorrectionReq): Observable<any>{
     fieldId = fieldId ? fieldId : '';
-    return this.http.post<any>(this.endpointService.doClassificationCorrectionUri(), request , {params:{schemaId, fieldId}});
+    const fromUnmatch:any = request.fromUnmatch ? request.fromUnmatch : false;
+    delete request.fromUnmatch;
+    return this.http.post<any>(this.endpointService.doClassificationCorrectionUri(), request , {params:{schemaId, fieldId, fromUnmatch}});
   }
 
   /**

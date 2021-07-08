@@ -53,15 +53,15 @@
             <div class="f-row filter-container">
                 <lib-search class="lib-search" placeholder="Search..."></lib-search>
 
-                <lib-chip label="All" class="mdo-filter-matchip" disableRipple="true" [selectable]="true"
+                <lib-chip label="All" class="mdo-filter-matchip" disableRipple="true" [selectable]="true" [selected]="!activeTab  || activeTab !== 'correction'"
                     (click)="viewOf.next('')">
-                    <lib-text-line [textColor]="(activeTab && activeTab === 'secondary') ? 'plain' : 'secondary'">{{
+                    <lib-text-line [textColor]="(!activeTab  || activeTab !== 'correction') ? 'plain' : 'secondary'">{{
                         schemaInfo ? schemaInfo.totalCount : 0 }}</lib-text-line>
                 </lib-chip>
 
-                <lib-chip label="Corrections" class="mdo-filter-matchip" disableRipple="true" [selectable]="true"
+                <lib-chip label="Corrections" class="mdo-filter-matchip" disableRipple="true" [selectable]="true" [selected]="activeTab && activeTab === 'correction'"
                     (click)="viewOf.next('correction')">
-                    <lib-text-line [textColor]="(activeTab && activeTab === 'info') ? 'plain' : 'info'">{{ schemaInfo ?
+                    <lib-text-line [textColor]="(activeTab && activeTab === 'correction') ? 'plain' : 'info'">{{ schemaInfo ?
                         schemaInfo.correctionValue : 0 }}</lib-text-line>
                 </lib-chip>
             </div>
@@ -69,8 +69,8 @@
             <div class="f-row-spacer-half"></div>
 
             <div class="f-row listing-container" #listingContainer>
-                <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav"
-                    (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
+                <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav">
+                    <!-- (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll -->
                     <!-- <pros-search-input (value)="getClassificationNounMod($event)" placeholder="Search nouns and modifiers"></pros-search-input> -->
                     <div class="nav-tree">
                         <mat-accordion>
@@ -119,7 +119,7 @@
 
                             </mat-expansion-panel>
                         </mat-accordion>
-                        <mat-accordion>
+                        <mat-accordion *ngIf="activeTab !== 'correction'">
                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                                     <mat-panel-title>
@@ -167,7 +167,7 @@
                                 </ng-template>
                             </mat-expansion-panel>
                         </mat-accordion>
-                        <mat-accordion>
+                        <mat-accordion *ngIf="activeTab !== 'correction'">
                             <mat-expansion-panel hideToggle class="mat-elevation-z0">
                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                                     <mat-panel-title
@@ -182,9 +182,9 @@
                         </mat-accordion>
                     </div>
 
-                    <div class="split-panel-mark" (click)="toggleSideBar()">
+                    <!-- <div class="split-panel-mark" (click)="toggleSideBar()">
                         <mat-icon fontSet="mdo-icons">{{arrowIcon}}</mat-icon>
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">

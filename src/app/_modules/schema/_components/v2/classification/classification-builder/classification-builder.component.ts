@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -113,7 +113,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   variantId: string;
 
   @Input()
-  activeTab: string;
+  activeTab = '';
 
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
@@ -168,7 +168,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
     arrowIcon = 'chevron-left';
 
-    widthOfSchemaNav = 292;
+    widthOfSchemaNav = 236;
     boxPosition: { left: number, top: number };
     public mousePosition: { x: number, y: number };
     public status: SchemaNavGrab = SchemaNavGrab.OFF;
@@ -324,6 +324,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
     this.viewOf.subscribe(res=>{
       if(res !== null) {
+        this.activeTab = res;
         const columns = this.displayedColumns.getValue();
         if(res === 'correction' && columns.indexOf('row_action') === -1) {
           columns.splice(2,0,'row_action');
@@ -354,10 +355,19 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
      * Get the module information
      */
     this.getModuleInfo(this.moduleId);
+
+    /**
+     * After saved mappings reload the left panel ...
+     */
+     this.sharedServices.getAfterMappingSaved().subscribe(res=>{
+       if(res) {
+        this.getClassificationNounMod();
+       }
+     },err=> console.error(`Error : ${err.message}`));
   }
 
   ngAfterViewInit(){
-    this.enableResize();
+    // this.enableResize();
   }
   /**
    * Get all fld metada based on module of schema
@@ -410,10 +420,14 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   /**
    * Get classification nouns and modifiers .
    */
-  getClassificationNounMod(searchStrng?: string) {
+  getClassificationNounMod(searchStrng?: string, skippedFstActive?: boolean) {
     const viewFor: string = this.viewOf.getValue();
     const sub = this.schemaDetailService.getClassificationNounMod(this.schemaId, this.schemaInfo.runId,viewFor, this.variantId, searchStrng).subscribe(res => {
       this.rulesNounMods = res;
+      // skipe the next logic
+      if(skippedFstActive) {
+        return false;
+      }
       if (this.rulesNounMods.MRO_CLS_MASTER_CHECK && this.rulesNounMods.MRO_CLS_MASTER_CHECK.info) {
         const fisrtNoun = this.rulesNounMods.MRO_CLS_MASTER_CHECK.info[0];
         this.innerBreadcurmbtxt = `Master library`;
@@ -688,6 +702,10 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * @param row entire row should be here
    */
   editCurrentCell(fldid: string, row: any, rIndex: number,containerRef: ContainerRefDirective) {
+    if(this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP') {
+      console.log(`Sorry can't edit the Connekthub lib. records ... `);
+      return false;
+    }
     const objNr = row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '';
 
     const selcFldCtrl = row[fldid] ? row[fldid].isEditable : null;
@@ -761,12 +779,26 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           } as AttributeCoorectionReq];
         }
 
+        // for unmatched send flag to swap
+        if(this.dataFrm === 'unmatched') {
+          correctionReq.fromUnmatch = true;
+        }
+
         this.schemaDetailService.doCorrectionForClassification(this.schemaId, fldid, correctionReq).subscribe(res=>{
 
           viewCtrl.innerText = value;
           row[fldid].fieldValue = value;
           if(res.acknowledge) {
             this.schemaInfo.correctionValue = res.count ? res.count : this.schemaInfo.correctionValue;
+
+            // update the api call for mapped data
+            if(this.activeTab !== 'correction' && this.dataFrm === 'unmatched') {
+              // refresh the tree
+              this.getClassificationNounMod('',true);
+              // refresh the table
+              this.applyFilter('', '', 'unmatched');
+            }
+
           }
         }, error=>{
           viewCtrl.innerText = oldVal;
@@ -1019,7 +1051,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * open attribute mapping side sheet
    */
   openAttributeMapping(nounCode: string, modCode: string) {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${nounCode}/${modCode}` } }])
+    this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${nounCode}/${modCode}` } }])
   }
 
   /**
@@ -1117,7 +1149,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     }
   }
 
-  @HostListener('window:mousemove', ['$event'])
+  // @HostListener('window:mousemove', ['$event'])
   onMouseMove(event: MouseEvent){
     this.mousePosition = { x: event.clientX, y: event.clientY };
     if (this.status === SchemaNavGrab.RESIZE) {
