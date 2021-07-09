@@ -30,14 +30,11 @@
                 </div>
 
                 <div class="f-col mdo-field" *ngIf="updateschema">
-                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n-label="@@schema_name">
-                        Schema name
-                    </lib-text-line>
-                    <lib-input label="" [type]="'text'"  placeholder="Schema name" [formControl]="schemaName">
-                    </lib-input>
-                    <mat-error i18n="@@schema_name_required" *ngIf="submitted && schemaName.invalid">
-                        Schema name is required
-                    </mat-error>
+                    <lib-input label="Schema name" [type]="'text'" [isRequired]="true" placeholder="Schema name" 
+                    [formControl]="schemaName"
+                    [hint]="submitted && schemaName.errors && schemaName.errors.required ? 'Schema name is required' : ''" 
+                    [hasError]="submitted && schemaName.errors && schemaName.errors.required">
+                    </lib-input>                    
                 </div>
 
                 <div class="f-col mdo-field">

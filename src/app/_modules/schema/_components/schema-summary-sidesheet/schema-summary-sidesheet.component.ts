@@ -892,6 +892,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   saveCheckData() {
     this.submitted = true;
+    if(!this.schemaName.valid) {
+      return false;
+    }
     // save the schema infor
     const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
     schemaReq.moduleId = this.moduleId;
