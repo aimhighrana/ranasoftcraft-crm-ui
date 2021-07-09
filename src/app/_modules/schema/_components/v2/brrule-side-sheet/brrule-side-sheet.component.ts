@@ -437,6 +437,15 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
     /**
+     * After add the transformation from side sheet should add on the rules...
+     */
+     this.sharedService.getAfterBrSave().subscribe((res: CoreSchemaBrInfo[])=>{
+      if(res) {
+        this.addTransRules(res);
+      }
+    });
+
+    /**
      * Call api to get the transformation ....
      */
     this.hasAppliedTransformationCtrl.valueChanges.subscribe(r=>{
@@ -1301,6 +1310,21 @@ export class BrruleSideSheetComponent implements OnInit {
       udrDto.objectType = this.moduleId;
       udrDto.udrHierarchies = blockHierarchy;
 
+      // attach the transformation for this rule
+      udrDto.brInfo.isTransformationApplied = this.hasAppliedTransformationCtrl?.value ? this.hasAppliedTransformationCtrl.value : false;
+      const sendMappings:TransformationRuleMapped[] = [];
+      if(this.attachedTransRules) {
+        // add for success
+        this.attachedTransRules.success.forEach(s=>{
+          sendMappings.push({order: sendMappings.length, isEnabled: s.isEnabled ? s.isEnabled : false, isConfigured: s.isConfigured, status:'SUCCESS', transformationRule: s.ruleInfo?.brIdStr});
+        });
+        // add for error
+        this.attachedTransRules.error.forEach(s=>{
+          sendMappings.push({order: sendMappings.length, isEnabled: s.isEnabled ? s.isEnabled : false, isConfigured: s.isConfigured, status:'ERROR', transformationRule: s.ruleInfo?.brIdStr});
+        });
+      }
+      udrDto.brInfo.transformationMappingDTO = sendMappings;
+
       this.schemaService.saveUpdateUDR(udrDto).subscribe(res => {
         this.snackBar.open(`Successfully saved !`, 'Close', { duration: 3000 });
         this.sharedService.setAfterBrSave(res);
@@ -1859,6 +1883,37 @@ export class BrruleSideSheetComponent implements OnInit {
   editTransRule(br: TransformationMappingTabResponse, tab: string) {
     this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
     outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+  }
+
+  /**
+   * Add the trans rules from library ...
+   * @param res from side sheet
+   */
+  addTransRules(res: CoreSchemaBrInfo[]) {
+    res = Array.isArray(res) ? res : [];
+    if(this.transTabIndex === 0) {
+      res.forEach(r=>{
+        const isExits = this.attachedTransRules.success.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
+        if(!isExits) {
+          this.attachedTransRules.success.push({
+            isConfigured:false,
+            isEnabled: false,
+            ruleInfo: r
+          });
+        }
+      })
+    } else {
+      res.forEach(r=>{
+        const isExits = this.attachedTransRules.error.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
+        if(!isExits) {
+          this.attachedTransRules.error.push({
+            isConfigured:false,
+            isEnabled: false,
+            ruleInfo: r
+          });
+        }
+      })
+    }
   }
 
 }
