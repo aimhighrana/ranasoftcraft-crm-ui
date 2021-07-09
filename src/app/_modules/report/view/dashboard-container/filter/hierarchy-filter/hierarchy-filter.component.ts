@@ -186,7 +186,7 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
       if (index > -1) {
         this.selectedNode.splice(index, 1);
         data.checked = false;
-        this.selectionChange.emit(this.selectedNode)
+        this.selectionChange.emit(this.selectedNode);
       }
     }
   }
