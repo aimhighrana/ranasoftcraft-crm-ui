@@ -163,28 +163,33 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
     this.loopData(data.child);
      /** compare the count of selected child node and total child node of particulart parent node */
     if (this.count > 0 && this.count !== this.totalChild) {
-      if(data.checked){
-        data.checked = false;
+        if (data.checked) {
+          data.checked = false;
+        }
+          const index = this.selectedNode.findIndex(item => item === data.nodeId);
+          if (index > -1) {
+            this.selectedNode.splice(index, 1);
+            this.selectionChange.emit(this.selectedNode);
+          }
+        return true;
+      } else if (this.count > 0) {
+        /** executes when parent node is not selected but it all child node is selected */
+        if (!data.checked) {
+          data.checked = true;
+          if (!this.selectedNode.includes(data.nodeId)) {
+            this.selectedNode.push(data.nodeId);
+            this.selectionChange.emit(this.selectedNode);
+          }
+        }
+        return false;
+     } else {
         const index = this.selectedNode.findIndex(item => item === data.nodeId);
-        if(index > -1){
-         this.selectedNode.splice(index, 1);
-       }
-       this.selectionChange.emit(this.selectedNode);
-      }
-      return true;
-    } else if (this.count > 0) {
-      /** executes when parent node is not selected but it all child node is selected */
-      if(!data.checked){
-        data.checked = true;
-        if(!this.selectedNode.includes(data.nodeId)){
-          this.selectedNode.push(data.nodeId);
+        if (index > -1) {
+          this.selectedNode.splice(index, 1);
+          data.checked = false
           this.selectionChange.emit(this.selectedNode);
-       }
+        }
       }
-      return false;
-    } else {
-      data.checked = false;
-    }
   }
 
   /**
