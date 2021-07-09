@@ -22,7 +22,14 @@
     <div class="f-col summary-sidesheet sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
-                <!-- <div class="f-col mdo-field">
+                
+                <div class="f-col">
+                    <lib-banner status="info"
+                        text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
+                    </lib-banner>
+                </div>
+
+                <div class="f-col mdo-field" *ngIf="updateschema">
                     <lib-text-line class="field-label" type="xsmall" weight="strong" i18n-label="@@schema_name">
                         Schema name
                     </lib-text-line>
@@ -31,12 +38,6 @@
                     <mat-error i18n="@@schema_name_required" *ngIf="submitted && schemaName.invalid">
                         Schema name is required
                     </mat-error>
-                </div> -->
-
-                <div class="f-col">
-                    <lib-banner status="info"
-                        text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
-                    </lib-banner>
                 </div>
 
                 <div class="f-col mdo-field">

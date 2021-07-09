@@ -16,12 +16,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HomeService } from '@services/home/home.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { SchemaService } from '@services/home/schema.service';
 
 describe('PrimaryNavigationComponent', () => {
   let component: PrimaryNavigationComponent;
   let fixture: ComponentFixture<PrimaryNavigationComponent>;
   let userSvc: jasmine.SpyObj<UserService>;
   let router: Router;
+  let schemaService: SchemaService;
+
   const mockDialogRef = {
     open: jasmine.createSpy('open'),
     afterClosed: jasmine.createSpy('close')
@@ -83,6 +86,7 @@ describe('PrimaryNavigationComponent', () => {
     fixture = TestBed.createComponent(PrimaryNavigationComponent);
     component = fixture.componentInstance;
     component.udSub = new Subscription();
+    schemaService = fixture.debugElement.injector.get(SchemaService);
   });
 
   it('should create', () => {
@@ -118,8 +122,9 @@ describe('PrimaryNavigationComponent', () => {
       spyOn(router, 'navigate')
       component.createSchema({moduleId: '123', schemaId: '456', moduleDesc: 'Material'});
       expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/123/456`}}], {queryParams: {name: 'Material'}});
+      spyOn(schemaService,'createUpdateSchema').and.callFake(()=>of('767557'));
       component.createSchema({moduleId: '1002', schemaId: null, moduleDesc: 'Material'});
-      expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/1002/new`}}], {queryParams: {name: 'Material'}});
+      expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/1002/767557`}}], {queryParams: {name: 'Material',updateschema:true}});
   }));
 
   it('checkNavOnReload(), should check primary navigation on page reload', async()=>{

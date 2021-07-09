@@ -268,6 +268,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
         businessRule.isCopied = true;
         businessRule.schemaId = null;
         businessRule.copiedFrom = null;
+        businessRule.dontMapped = this.isOnlyTransformation ? true : false;
       })
       this.sharedService.setAfterBrSave(this.selectedBusinessRule);
     }
