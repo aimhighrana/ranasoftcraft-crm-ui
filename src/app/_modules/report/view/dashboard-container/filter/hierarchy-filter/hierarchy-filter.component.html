@@ -19,7 +19,7 @@
 
                 <!-- <span *ngIf="getCheckedAmount(data) > 0">
                     +{{getCheckedAmount(data)}} childs checked</span> -->
-                <lib-checkbox [checked]="data.checked" [indeterminate]="!data.checked && getCheckedAmount(data) > 0"
+                <lib-checkbox [checked]="data.checked" [indeterminate]="getCheckedAmount(data)"
                     (valueChange)="clickedActive(data)" [label]="data.nodeDesc">
                 </lib-checkbox>
             </div>
