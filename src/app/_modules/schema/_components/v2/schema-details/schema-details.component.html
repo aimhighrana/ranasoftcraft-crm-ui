@@ -24,13 +24,13 @@
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <pros-global-count [schemaId]="schemaId"></pros-global-count>
-        
+        <span class="col-spacer"></span>
         <lib-button-group>
-            <lib-button class="lib-button navbar-action" type="minor" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
-                <span class="btn-txt">Refine</span>
+            <lib-button class="lib-button" type="plain" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
+                Refine
             </lib-button>
-            <lib-button *ngIf="false" type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
-            <lib-button class="lib-button navbar-action" type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
+            <lib-button *ngIf="false" type="plain" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
+            <lib-button class="lib-button" type="plain" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
         </lib-button-group>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
             <button mat-menu-item i18n="@@export_to_csv" (click)="downloadExecutionDetails()">Export to CSV</button>
@@ -47,7 +47,7 @@
     </ng-template>
     <ng-template #schemaInfoTemplate>
         <div class="empty-state" *ngIf="!statics || (statics && !statics.totalCnt)">
-            <lib-empty-state class="lib-empty-state" primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
+            <lib-empty-state primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
                 <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Refine </lib-button>
             </lib-empty-state>
         </div>
@@ -64,6 +64,7 @@
             <lib-chip class="mdo-filter-matchip" i18n-label="@@corrections" label="Corrections" disableRipple="true" (click)="changeTabStatus('review')" [selected]="activeTab && activeTab === 'review'" [selectable]="true">
                 <lib-text-line [textColor]="(activeTab && activeTab === 'review') ? 'plain' : 'info'">{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}</lib-text-line>
             </lib-chip>
+
             <!-- Outdated -->
             <lib-chip class="mdo-filter-matchip" label="Outdated" disableRipple="true" (click)="changeTabStatus('outdated')" [selected]="activeTab && activeTab === 'outdated'" [selectable]="true">
                 <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outdatedCnt) ? statics.outdatedCnt : 0 }}</lib-text-line>
@@ -81,15 +82,15 @@
                 </lib-text-line>
             </lib-chip>
             <mat-menu #buisnessRuleDrop="matMenu">
-                <div class="f-col b-root">
-                    <lib-search prosClickStopPropagation (valueChange)="searchBusinessRules($event)"></lib-search>
+                <div class="f-col lib-chip-dropdown">
+                    <lib-search prosClickStopPropagation (valueChange)="searchBusinessRules($event)" placeholder="Search..."></lib-search>
                     <mat-nav-list prosClickStopPropagation>
                         <mat-list-item *ngFor="let ckbox of filterableRulesOb | async;">
                             <lib-checkbox (valueChange)="addFilterFromBrRule(ckbox, $event)" [checked]="isBrAppliedChecked(ckbox)" [label]="ckbox.brInfo ? ckbox.brInfo : ''">
                             </lib-checkbox>
                         </mat-list-item>
                     </mat-nav-list>
-                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()" class="lib-button">Apply</lib-button>
+                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()" class="f-col">Apply</lib-button>
                 </div>
             </mat-menu>
             <!-- End Chip for business rule dropdown-->
@@ -126,7 +127,7 @@
             </mat-chip-list>
             
             <!-- Add filter control -->
-            <lib-button class="filter-btn" type="plain" icon="filter" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize" rounded="true"></lib-button>
+            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize" icon="filter"></lib-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
                 <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
@@ -135,7 +136,7 @@
             </mat-menu>
 
             <!-- More control -->
-            <lib-button class="menu-link-btn" type="plain" icon="ellipsis-h" [matMenuTriggerFor]="moreFilterMenu" rounded="true"></lib-button>
+            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu" icon="ellipsis-h"></lib-chip>
             <!-- More control MatMenu -->
             <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
                 <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->
@@ -155,9 +156,10 @@
                             (click)="loadNodeData(executionTreeHierarchy)"> 
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [class.selected]="activeNode && activeNode.nodeDesc === executionTreeHierarchy.nodeDesc">
                                 <mat-panel-title>
-                                    <div class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</div>
+                                    <lib-text-line type="base" class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</lib-text-line>
                                     <span class="f-spacer"></span>
-                                    <div class="default-badge">{{ executionTreeHierarchy.docCount }}</div>
+                                    <lib-text-line type="base" textColor="secondary">{{ executionTreeHierarchy.docCount }}</lib-text-line>
+                                    <span class="f-col-spacer-half"></span>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <div *ngIf="executionTreeHierarchy.childs && executionTreeHierarchy.childs.length">
@@ -168,14 +170,16 @@
                                     [hideToggle]="(child.childs && child.childs.length) ? false : true">
                                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel" [class.selected]="activeNode && activeNode.nodeDesc === child.nodeDesc">
                                             <mat-panel-title>
-                                                <div class="expand-title">{{ child.nodeDesc }}</div>
+                                                <lib-text-line type="base" class="expand-title">{{ child.nodeDesc }}</lib-text-line>
                                                 <span class="f-spacer"></span>
-                                                <div class="default-badge">{{ child.docCount }}</div>
+                                                <lib-text-line type="base" textColor="secondary">{{ child.docCount }}</lib-text-line>
+                                                <span class="f-col-spacer-half"></span>
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
                                         <mat-nav-list role="navigation" class="tree-nav-list" *ngIf="child.childs && child.childs.length">
                                             <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs" prosClickStopPropagation 
                                                 (click)="loadNodeData(subChild)">
+                                                
                                                 <div mat-line> {{ subChild.nodeDesc }} </div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ subChild.docCount }}</div>
@@ -244,20 +248,23 @@
                                     </lib-button>
                                 </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <mat-card-header>
-                                        <div mat-card-avatar>
-                                            {{ userDetails ? (userDetails.firstName ?
+                                    <lib-avatar>
+                                        {{ userDetails ? (userDetails.firstName ?
                                             userDetails.firstName.substring(0,1).toUpperCase() : '') : '' }}{{
                                             userDetails ? (
                                             userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() :
                                             '') : '' }}
-                                        </div>
-                                    </mat-card-header>
+                                    </lib-avatar>
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="_score_weightage" sticky>
-                                <th mat-header-cell *matHeaderCellDef> <span i18n="@@score">Score</span> &nbsp;<mat-icon fontSet="mdo-icons-light">
-                                    question-circle</mat-icon>
+                                <th mat-header-cell *matHeaderCellDef> 
+                                    <div class="f-row">
+                                        <lib-text-line type="base" weight="strong" i18n="@@score">Score</lib-text-line>
+                                        &nbsp;
+                                        <mat-icon fontSet="mdo-icons-light" class="mat-icon-header">
+                                        question-circle</mat-icon>
+                                    </div> 
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row progress-cell">

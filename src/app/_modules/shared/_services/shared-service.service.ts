@@ -73,6 +73,11 @@ export class SharedServiceService {
    */
   private transSavedBehaviourSub:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  /**
+   * Flag after save mappings ...
+   */
+  private afterMappingSaved:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor() {}
 
   public setChooseColumnData(data: any) {
@@ -268,6 +273,14 @@ export class SharedServiceService {
 
   public gettransSavedBehaviourSub(): Observable<boolean> {
     return this.transSavedBehaviourSub.asObservable();
+  }
+
+  public setAfterMappingSaved(flag: boolean) {
+    this.afterMappingSaved.next(flag);
+  }
+
+  public getAfterMappingSaved(): Observable<boolean> {
+    return this.afterMappingSaved.asObservable();
   }
 
 }

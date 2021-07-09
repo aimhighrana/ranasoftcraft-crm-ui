@@ -1,3 +1,16 @@
-.dot {
-  vertical-align: text-bottom;
+.sum-collection {
+  margin-left: 3px;
+}
+
+.sum-collection::after {
+  display: inline-block;
+  content: '';
+  border-radius: 50%;
+  height: 3px;
+  width: 3px;
+  margin-left: 3px;
+}
+
+.sum-collection:last-child::after {
+  display: none;
 }

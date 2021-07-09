@@ -1,41 +1,6 @@
-.root {
+div.root {
   display: flex;
   height: 100%;
-
-  .task-badge {
-    height: 0;
-  }
-
-  .header {
-    height: 36px;
-  }
-
-  .header-row-spacer {
-    height: 7px;
-  }
-
-  .tasks-list-drag-el {
-    .expand-title {
-      width: calc(100% - 50px);
-    }
-
-    .task-badge {
-      position: absolute;
-      right: 0;
-    }
-  }
-
-  .task-search-list-drag-el {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    outline: none;
-
-    .task-badge {
-      position: relative !important;
-    }
-  }
 
   mat-card.secondary-card {
     border-radius: 0;
@@ -50,7 +15,7 @@
     }
 
     .nav-tree {
-      height: calc(100% - 40px - 36px - 40px);
+      height: calc(100% - 36px * 2 - 40px);
       overflow-y: auto;
       overflow-x: hidden;
       padding: 0 16px;
@@ -62,38 +27,35 @@
 
             mat-panel-title {
               width: 100%;
-              margin-right: 0;
+              margin-right: 8px;
+              align-items: center;
 
               .expand-title {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
-                font-size: 0.9rem;
-                outline: none;
-              }
-
-              .badge {
-                margin: 0 8px;
-                font-size: 0.8rem;
-              }
-            }
-          }
-
-          mat-nav-list {
-            mat-list-item {
-              div.mat-line {
-                padding-left: 48px;
-                font-size: 0.9rem;
               }
             }
           }
         }
+      }
 
-        .heading-title {
-          font-size: 0.9rem;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+      .sublist-item {
+        padding-left: 36px;
+      }
+
+      .nav-heading {
+        margin-bottom: 3px;
+        display: block;
+      }
+
+      .schema-update {
+        width: 24px;
+
+        .lib-spinner {
+          position: absolute;
+          right: 4px;
+          top: 12px;
         }
       }
     }
@@ -121,13 +83,31 @@
       }
     }
   }
-}
 
-.menu-customdropdown > .lib-button {
-  width: 100%;
-}
+  // .task-badge {
+  //   height: 0;
+  // }
 
-.running-schema-list .schema-name {
-  margin-bottom: 5px;
-  font-size: 12.6px;
+  // .tasks-list-drag-el {
+  //   .expand-title {
+  //     width: calc(100% - 50px);
+  //   }
+
+  //   .task-badge {
+  //     position: absolute;
+  //     right: 0;
+  //   }
+  // }
+
+  // .task-search-list-drag-el {
+  //   display: flex;
+  //   width: 100%;
+  //   height: 100%;
+  //   align-items: center;
+  //   outline: none;
+
+  //   .task-badge {
+  //     position: relative !important;
+  //   }
+  // }
 }
