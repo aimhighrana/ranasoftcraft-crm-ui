@@ -6,7 +6,6 @@
         <span class="f-spacer"></span>
         <lib-button-group>
             <lib-button type="minor" i18n="@@check_data" (click)="runSchema()">Check data</lib-button>
-
             <lib-button *ngIf="scheduleInfo" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="minor"
                 class="badge" icon="clock" matBadge libStatusBadge badgeText="1"
                 [statusBadgePosition]="{ top: -8, right: -4 }" backgroundColor="transparent" boxShadow="none" badgeIconFont="default" badgeType=""></lib-button>
@@ -332,16 +331,14 @@
                         </div>
 
                         <div class="col col-x8" [matMenuTriggerFor]="subscriberRole">
-                            <lib-chip *ngIf="subscriber.isAdmin" i18n="@@admin" iconFontType="solid" icon="caret-down"
-                                iconPosition="after">
-                                Admin</lib-chip>
-                            <lib-chip *ngIf="subscriber.isReviewer" i18n="@@viewer" iconFontType="solid"
-                                iconPosition="after" icon="caret-down">Reviewer</lib-chip>
-                            <lib-chip *ngIf="subscriber.isEditer" i18n="@@editor" iconFontType="solid"
-                                iconPosition="after" icon="caret-down">Editor</lib-chip>
+                            <lib-label *ngIf="subscriber.isAdmin" i18n="@@admin" text="Admin" suffixIcon="caret-down"></lib-label>
+
+                            <lib-label *ngIf="subscriber.isReviewer" i18n="@@viewer" text="Reviewer" suffixIcon="caret-down"></lib-label>
+
+                            <lib-label *ngIf="subscriber.isEditer" i18n="@@editor" text="Editor" suffixIcon="caret-down"></lib-label>
+
                             <ng-template [ngIf]="!subscriber.isAdmin && !subscriber.isReviewer && !subscriber.isEditer">
-                                <lib-chip i18n="@@viewer" iconFontType="solid" icon="caret-down" iconPosition="after"
-                                    *ngIf="subscriber.isViewer">Viewer</lib-chip>
+                                <lib-label  *ngIf="subscriber.isViewer" i18n="@@viewer" text="Viewer" suffixIcon="caret-down"></lib-label>
                             </ng-template>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
