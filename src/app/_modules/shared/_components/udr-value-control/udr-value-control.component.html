@@ -44,7 +44,7 @@
 <mat-form-field *ngIf="displayControl==='dropdown' || displayControl==='radio'" appearance="outline">
     <input matInput [value]="dropdownValue" (input)="dropdownChanged($event.target.value)"
         [matAutocomplete]="fieldsCtrl" [placeholder]="placeholder">
-    <mat-autocomplete [displayFn]="displayFn" class="mdo-autocomplete" #fieldsCtrl="matAutocomplete"
+    <mat-autocomplete [displayWith]="displayFn.bind(this)" class="mdo-autocomplete" #fieldsCtrl="matAutocomplete"
         (optionSelected)="selected($event)">
         <ng-container *ngFor="let fld of fieldList">
             <mat-option class="mdo-option" [value]="fld.CODE" [matTooltip]="fld.TEXT" matTooltipPosition="right">

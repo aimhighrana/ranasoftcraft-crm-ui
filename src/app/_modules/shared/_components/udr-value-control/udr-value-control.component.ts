@@ -86,7 +86,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   searchSub: Subject<string> = new Subject();
   dateValue: Date;
   dateRangeValue: { start: Date; end: Date } = { start: null, end: null };
-  dropdownValue: any = '';
+  dropdownValue = '';
   constructor(
     private schemaDetailsService: SchemaDetailsService
   ) { }
@@ -104,7 +104,11 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       || changes.rangeValue && changes.rangeValue.previousValue !== changes.rangeValue.currentValue
     ) {
       this.singleInput = this.value || '';
-      this.searchSub.next(this.singleInput);
+      if (changes.value?.firstChange) {
+        this.loadUDRValueControl();
+      } else {
+        this.searchSub.next(this.singleInput);
+      }
     }
     this.dateValue = this.value ? new Date(this.value) : null;
     this.dateRangeValue = {
@@ -168,8 +172,9 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     return this.fieldList.find(field => field.CODE === value)?.TEXT || '';
   }
 
+
   displayFn(value: string) {
-    return this.dropdownTextByCode(value) || value;
+    return this.fieldList.find(field => [field.TEXT, field.CODE].includes(value))?.TEXT || '';
   }
   dropdownCodeByText(value: string) {
     return this.fieldList.find(field => [field.TEXT, field.CODE].includes(value))?.CODE || value;
