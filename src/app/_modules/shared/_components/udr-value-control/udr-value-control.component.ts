@@ -86,6 +86,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
   searchSub: Subject<string> = new Subject();
   dateValue: Date;
   dateRangeValue: { start: Date; end: Date } = { start: null, end: null };
+  dropdownValue: any = '';
   constructor(
     private schemaDetailsService: SchemaDetailsService
   ) { }
@@ -103,7 +104,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
       || changes.rangeValue && changes.rangeValue.previousValue !== changes.rangeValue.currentValue
     ) {
       this.singleInput = this.value || '';
-      this.loadUDRValueControl();
+      this.searchSub.next(this.singleInput);
     }
     this.dateValue = this.value ? new Date(this.value) : null;
     this.dateRangeValue = {
@@ -155,6 +156,25 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     this.emit();
   }
 
+  dropdownChanged(searchStr: string) {
+    if (this.displayControl === 'dropdown') {
+      this.singleInput = this.dropdownCodeByText(searchStr);
+      this.emit();
+    }
+    this.searchSub.next(searchStr);
+  }
+
+  dropdownTextByCode(value: string) {
+    return this.fieldList.find(field => field.CODE === value)?.TEXT || '';
+  }
+
+  displayFn(value: string) {
+    return this.dropdownTextByCode(value) || value;
+  }
+  dropdownCodeByText(value: string) {
+    return this.fieldList.find(field => [field.TEXT, field.CODE].includes(value))?.CODE || value;
+  }
+
   dateChanged(date: any) {
     if (this.range) {
       this.inputChanged(date.start?.toString() || null, 'start');
@@ -177,9 +197,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
    */
   selected($event) {
     const searchStr = $event.option.viewValue;
-    this.singleInput = searchStr;
-    this.searchSub.next(searchStr);
-    this.emit();
+    this.dropdownChanged(searchStr);
   }
 
   checkboxChanged($event) {
@@ -229,6 +247,7 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.schemaDetailsService.getUDRDropdownValues(this.fieldId, searchString).subscribe((list: Array<UDRDropdownValue>) => {
       this.fieldList = list;
+      this.dropdownValue = this.dropdownTextByCode(this.value) || this.value;
     }, (error) => {
       this.fieldList = [];
       console.error('Error while loading dropdown values', error);
