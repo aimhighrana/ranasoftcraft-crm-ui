@@ -12,6 +12,10 @@ export class SharedServiceService {
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  private afterEditDatascopeSideSheetClose: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private editDatascopeTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
+
   private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -275,6 +279,21 @@ export class SharedServiceService {
     return this.transSavedBehaviourSub.asObservable();
   }
 
+  public setAfterEditDatascopeSideSheetClose(data: any) {
+    this.afterEditDatascopeSideSheetClose.next(data);
+  }
+
+  public getAfterEditDatascopeSideSheetClose() {
+    return this.afterEditDatascopeSideSheetClose.asObservable();
+  }
+
+  public triggerEditDatascope(data: any) {
+    this.editDatascopeTrigger.next(data);
+  }
+
+  public getEditDatascopeTriggerObservable() {
+    return this.editDatascopeTrigger.asObservable();
+  }
   public setAfterMappingSaved(flag: boolean) {
     this.afterMappingSaved.next(flag);
   }

@@ -192,6 +192,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.getCollaborators('', 0); // To get all the subscribers
 
     this.getAllBusinessRulesList(this.moduleId, '', ''); // To get all business rules list
+
+    this.sharedService.getEditDatascopeTriggerObservable().subscribe((res) => {
+      if (res) {
+        this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${res}/outer` } }], {queryParamsHandling: 'preserve'});
+        this.sharedService.triggerEditDatascope(null);
+      }
+    });
   }
 
   /**
@@ -1394,5 +1401,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   openExecutionTrendSidesheet() {
     const schema = this.schemaDetails;
     this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+  }
+
+  openDatascopeListSidesheet() {
+    this.router.navigate([ { outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb` } }], {queryParamsHandling: 'preserve'});
   }
 }
