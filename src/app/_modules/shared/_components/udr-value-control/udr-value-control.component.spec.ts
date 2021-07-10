@@ -7,6 +7,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of, throwError } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
+import { UDRDropdownValue } from '@models/schema/schemadetailstable';
 
 describe('UDRValueControlComponent', () => {
   let component: UDRValueControlComponent;
@@ -206,5 +207,23 @@ describe('UDRValueControlComponent', () => {
     component.range = false;
     component.emit();
     expect(component.emit).toBeTruthy();
+  }));
+
+  it('dropdownTextByCode() should get text from code', async(() => {
+    component.fieldList = [{
+      TEXT: 'test1',
+      CODE: 't1'
+    }] as Array<UDRDropdownValue>;
+    expect(component.dropdownTextByCode('t1')).toEqual('test1');
+    expect(component.dropdownTextByCode('t2')).toEqual('');
+  }));
+
+  it('dropdownCodeByText() should get text from code', async(() => {
+    component.fieldList = [{
+      TEXT: 'test1',
+      CODE: 't1'
+    }] as Array<UDRDropdownValue>;
+    expect(component.dropdownCodeByText('test1')).toEqual('t1');
+    expect(component.dropdownCodeByText('t2')).toEqual('t2');
   }));
 });
