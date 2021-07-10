@@ -82,6 +82,7 @@ export class SchemaListDetails {
     successValue: number;
     variants: SchemaVariantsModel[];
     schemaCategory: string;
+    description?: string;
 }
 
 export class SchemaRunningDetails {

@@ -125,11 +125,12 @@ describe('WidgetService', () => {
   it('exportReport() : should call exportReport', async(() => {
     const testurl = 'dummy url to test';
     const reportId = '724752745672';
+    const reportName = 'Test Report';
 
     endpointServiceSpy.exportReport.and.returnValue(testurl);
 
     const mockhttpData = {};
-    service.exportReport(reportId).subscribe((response) => {
+    service.exportReport(reportId,reportName).subscribe((response) => {
       expect(response).not.toBe(null)
     });
 

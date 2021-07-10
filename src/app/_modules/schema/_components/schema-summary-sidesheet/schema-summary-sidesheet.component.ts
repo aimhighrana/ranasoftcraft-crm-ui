@@ -3,11 +3,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
-import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
+import { AddFilterOutput } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
-import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, RULE_TYPES } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaService } from '@services/home/schema.service';
@@ -148,6 +148,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   dataScopeName: FormControl = new FormControl('Entire data scope');
 
   /**
+   * Falg for whether schema name enable or not
+   */
+  updateschema = false;
+
+  /**
    * function to format slider thumbs label.
    * @param percent percent
    */
@@ -186,15 +191,52 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
         console.log(res);
-        this.businessRuleData = this.businessRuleData.concat(res);
-        console.log(this.businessRuleData);
+        const fj = {};
+        if(!Array.isArray(res)) {
+          fj[res.brIdStr] = res;
+          this.businessRuleData = this.businessRuleData.concat([res]);
+        } else {
+          res.forEach((r,idx) => {
+            r.brIdStr = '';
+            r.brId = '';
+            r.brWeightage = '0';
+            r.isCopied = true;
+            r.schemaId = this.schemaId;
+            r.moduleId = this.moduleId;
+            r.copiedFrom = r.brIdStr;
+            r.dependantStatus=RuleDependentOn.ALL;
+            fj[idx] = this.schemaService.createBusinessRule(r);
+          });
+
+          forkJoin({...fj}).subscribe(fres=>{
+            const keyArr: any = Object.values(fres);
+            // keyArr = keyArr.slice(0, keyArr.length - 1);
+            console.log(keyArr);
+            this.businessRuleData = this.businessRuleData.concat(keyArr);
+            console.log(this.businessRuleData);
+            this.sharedService.setAfterBrSave(null);
+          }, err=> console.log(`Error : ${err.message}`));
+
+        }
+
+
       }
     });
     this.subscriptions.push(brSave);
 
     this.sharedService.getAfterSubscriberSave().subscribe(res => {
       if (res) {
-        this.subscriberData.push(...res);
+        const subs: SchemaDashboardPermission[] = [];
+        res.forEach((sb, idx)=>{
+          sb.sno = sb.sno ? sb.sno : Math.floor(Math.random() * Math.pow(100000, 2));
+          sb.schemaId = this.schemaId;
+          subs.push(sb);
+        });
+        const subd = this.schemaDetailsService.createUpdateUserDetails(subs).subscribe(afterS=>{
+          this.subscriberData.push(...subs);
+          this.sharedService.setAfterSubscriberSave(null);
+        }, err=> console.error(`Error : ${err.message}`));
+        this.subscriptions.push(subd);
       }
     });
 
@@ -234,6 +276,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       console.log(params);
       this.isFromCheckData = Boolean(params.isCheckData === 'true');
       this.moduleDesc = params.name;
+      this.updateschema = params.updateschema ? params.updateschema : false;
     })
 
 
@@ -459,9 +502,24 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     label='After delete the dependent rules will removed';
     this.globalDialogService.confirm({ label }, (response) => {
       if (response && response === 'yes') {
-        const brToBeDelete = this.businessRuleData.filter((businessRule) => businessRule.brId === br.brId)[0];
-        const innerindex = this.businessRuleData.indexOf(brToBeDelete);
-        this.businessRuleData.splice(innerindex, 1);
+        const forkObj = {};
+        let counter = 0;
+        if (br.brIdStr) {
+          forkObj[counter] = this.schemaService.deleteBr(br.brIdStr);
+          counter++;
+          if (br.dep_rules)
+            br.dep_rules.forEach(element => {
+              forkObj[counter] = this.schemaService.deleteBr(element.brIdStr);;
+              counter++;
+            });
+          const deleteSubscriber = forkJoin(forkObj).subscribe(res => {
+            if (res) {
+              const innerindex = this.businessRuleData.findIndex((businessRule) => businessRule.brIdStr === br.brIdStr);
+              this.businessRuleData.splice(innerindex, 1);
+            }
+          }, err=> console.error(`Error : ${err.message}`));
+          this.subscriptions.push(deleteSubscriber);
+        }
       }
     })
   }
@@ -473,11 +531,15 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   deleteBrChild(br: CoreSchemaBrInfo,parentbr: CoreSchemaBrInfo) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
-        const idx=this.businessRuleData.findIndex(element=>element.brId===parentbr.brId);
-        const childIdx=this.businessRuleData[idx].dep_rules;
-        const brToBeDelete = childIdx.filter((businessRule) => businessRule.brId === br.brId)[0];
+        const idx = this.businessRuleData.findIndex(element=>element.brIdStr===parentbr.brIdStr);
+        const childIdx = this.businessRuleData[idx].dep_rules;
+        const brToBeDelete = childIdx.find((businessRule) => businessRule.brIdStr === br.brIdStr);
         const index = this.businessRuleData.indexOf(brToBeDelete);
-       this.businessRuleData[idx].dep_rules.splice(index,1);
+        this.schemaService.deleteBr(brToBeDelete.brIdStr).subscribe(res=>{
+          this.businessRuleData[idx].dep_rules.splice(index,1);
+        }, err=> console.error(`Error : ${err.message}`));
+
+
       }
     })
   }
@@ -597,9 +659,17 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   public deleteSubscriber(sNo: number) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
-        const subscriberToBeDel = this.subscriberData.filter((subscriber => subscriber.sno === sNo))[0];
-        const index = this.subscriberData.indexOf(subscriberToBeDel);
-        this.subscriberData.splice(index, 1);
+        const deleteSubscriber = this.schemaDetailsService.deleteCollaborator([sNo]).subscribe(res => {
+          this.toasterService.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
+          const subscriberToBeDel = this.subscriberData.filter((subscriber => subscriber.sno === sNo))[0];
+          const index = this.subscriberData.indexOf(subscriberToBeDel);
+          this.subscriberData.splice(index, 1);
+        }, error => {
+          console.log('Error while deleting subscriber', error.message)
+        });
+
+        this.subscriptions.push(deleteSubscriber);
+
       }
     })
   }
@@ -670,14 +740,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to open business rule library side sheet
    */
   openBrLibrarySideSheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}` } }])
+    this.router.navigate(['', { outlets: {sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}` } }])
   }
 
   /**
    * Function to open subscriber side sheet
    */
   openSubscriberSideSheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/subscriber/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }])
+    this.router.navigate(['', { outlets: {sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/subscriber/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }])
   }
 
   /**
@@ -715,7 +785,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to add business rule from autocomplete
    * @param brInfo: object contains business rule info
    */
-  addBusinessRule(brInfo) {
+  addBusinessRule(brInfo: CoreSchemaBrInfo) {
     if(this.businessRuleData.length > 0) {
       const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
       console.log(checkExistence,this.businessRuleData)
@@ -726,12 +796,35 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         return;
       }
     }
-    brInfo.brWeightage = 0;
-    brInfo.isCopied = false;
-    brInfo.schemaId = null;
+    brInfo.brId = '';
+    brInfo.brIdStr = '';
+    brInfo.brWeightage = '0';
+    brInfo.isCopied = true;
+    brInfo.schemaId = this.schemaId;
     brInfo.copiedFrom = brInfo.brIdStr;
     brInfo.dependantStatus=RuleDependentOn.ALL;
-    this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
+    console.log(brInfo);
+    if (brInfo.brType === 'BR_DUPLICATE_CHECK') {
+      const subscription = this.schemaService.copyDuplicateRule(brInfo).subscribe((response) => {
+        console.log(response);
+        brInfo.brIdStr = response.brIdStr;
+        this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
+      }, (error) => {
+        console.log('Error while adding business rule', error.message);
+      })
+      this.subscriptions.push(subscription);
+    }
+    else {
+      const subscription = this.schemaService.createBusinessRule(brInfo).subscribe((response) => {
+        console.log(response);
+        brInfo.brIdStr = response.brIdStr;
+        this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
+      }, (error) => {
+        console.log('Error while adding business rule', error.message);
+      })
+      this.subscriptions.push(subscription);
+    }
+
   }
 
   /**
@@ -765,7 +858,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       isCopied: false
     } as SchemaDashboardPermission;
 
-    this.subscriberData.push(subscriber); // Push it into current Subscribers listing array..
+    this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response) => {
+      if (response) {
+        this.subscriberData.push(subscriber); // Push it into current Subscribers listing array..
+      }
+    }, (error) => {
+      console.error('Something went wrong while adding subscriber', error.message);
+    });
   }
 
   /**
@@ -794,28 +893,23 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   saveCheckData() {
     this.submitted = true;
     if(!this.schemaName.valid) {
-      return;
+      return false;
     }
-    this.updatedSchemaName=this.schemaName.value;
-    if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
-        this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
-        this.schemaId === 'new'){
-        const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-        schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
-      schemaReq.moduleId = this.moduleId;
-      schemaReq.discription = this.updatedSchemaName ? this.updatedSchemaName : this.schemaDetails.schemaDescription;
-      schemaReq.schemaThreshold = this.schemaThresholdControl.value;
-
-      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-        console.log('Schema updated successfully.');
-        this.prepareData(response);
-      },(error) => {
-        console.error('Something went wrong while updating schema.', error.message);
-      })
-    }
-    else {
-      this.prepareData(this.schemaId);
-    }
+    // save the schema infor
+    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+    schemaReq.moduleId = this.moduleId;
+    schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
+    schemaReq.discription = this.schemaName.value ? this.schemaName.value : this.schemaDetails.schemaDescription;
+    schemaReq.schemaThreshold = this.schemaThresholdControl.value;
+    schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
+    const updateSc = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+          this.schemaId = response;
+          console.log('Schema updated successfully.');
+          this.prepareData(this.schemaId);
+    },(error) => {
+          console.error('Something went wrong while updating schema.', error.message);
+    });
+    this.subscriptions.push(updateSc);
   }
 
 
@@ -824,92 +918,75 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param schemaId Schema Id
    */
   prepareData(schemaId) {
-    const checkDataSubscriber = [];
-    const checkDataBrs = [];
+
+    // update the business rule..
+    const forkObj = {};
+    let counter=0;
+    this.businessRuleData.forEach((br)=>{
+      const coreSchemaBrMap: CoreSchemaBrMap = {brId: br.brIdStr,
+        dependantStatus: br.dependantStatus ? br.dependantStatus : RuleDependentOn.ALL,
+        order: counter,
+        schemaId: this.schemaId,
+        status: br.status,
+        brWeightage: Number(br.brWeightage)
+        } as CoreSchemaBrMap;
+
+        forkObj[counter] = this.schemaService.updateBrMap(coreSchemaBrMap);
+        counter++;
+        // add dependent rules as well
+        br.dep_rules?.forEach(dep_r=>{
+          const coreSchemaBrMapD: CoreSchemaBrMap = {brId: dep_r.brIdStr,
+            dependantStatus: dep_r.dependantStatus ? dep_r.dependantStatus : RuleDependentOn.ALL,
+            order: counter,
+            schemaId: this.schemaId,
+            status: dep_r.status,
+            brWeightage: Number(dep_r.brWeightage)
+            } as CoreSchemaBrMap;
+
+            forkObj[counter] = this.schemaService.updateBrMap(coreSchemaBrMapD);
+            counter++;
+        });
+
+    });
+
+    // const checkDataSubscriber = [];
+    // const checkDataBrs = [];
 
     this.subscriberData.forEach((subscriber) => {
       subscriber.sno = subscriber.sno ? subscriber.sno : Math.floor(Math.random() * Math.pow(100000, 2));
-      subscriber.isCopied = this.isFromCheckData ? true : false;
       subscriber.schemaId = schemaId;
-
-      const subscriberObj = {} as CheckDataSubscriber;
-
-
-      subscriberObj.collaboratorId = Number(subscriber.sno);
-      checkDataSubscriber.push(subscriberObj);
     });
-
-    const forkObj = {};
-    let counter=0;
-    this.businessRuleData.forEach((businessRule) => {
-      businessRule.isCopied = true;
-      businessRule.brId = businessRule.brIdStr ? businessRule.brIdStr : null;
-      businessRule.brIdStr = businessRule.brIdStr ? businessRule.brIdStr : null;
-      businessRule.moduleId = this.moduleId;
-      businessRule.schemaId = schemaId;
-      businessRule.order = counter;
-      businessRule.dependantStatus = RuleDependentOn.ALL;
-      forkObj[counter] = this.isFromCheckData ?
-            this.schemaService.createCheckDataBusinessRule(businessRule) :
-            this.schemaService.createBusinessRule(businessRule);
-      counter++;
-      if (businessRule.dep_rules)
-        businessRule.dep_rules.forEach(element => {
-            element.order = counter;
-            forkObj[counter] = this.isFromCheckData ?
-                this.schemaService.createCheckDataBusinessRule(element) :
-                this.schemaService.createBusinessRule(element);
-            counter++
-        });
-
-    })
-
     const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
 
-    forkJoin({ ...forkObj, subscriberSnos }).subscribe(res => {
-      console.log(res);
-      if (res) {
-        let keyArr: any = Object.values(res);
-        keyArr = keyArr.slice(0, keyArr.length - 1);
-        console.log(keyArr);
-        keyArr.forEach(key => {
-          const businessRuleObj = {} as CheckDataBrs;
-          businessRuleObj.brId = key.brIdStr,
-            businessRuleObj.brExecutionOrder = key.order
+    forkJoin({ ...forkObj,subscriberSnos}).subscribe(res => {
+      console.log(`Created successful ${res}`);
+      this.runSchema();
+      this.close();
+      this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
+        duration: 2000
+      })
 
-          checkDataBrs.push(businessRuleObj);
-        })
+    }, err=>{
+      console.log(`Exception while creating rule map ${err.message}`);
+    });
 
-        const checkDataObj: CheckDataRequest = {
-          schemaId,
-          runId:  null,
-          brs: checkDataBrs,
-          collaborators: checkDataSubscriber
-        }
-        console.log(checkDataObj)
 
-        this.schemaService.createUpdateCheckData(checkDataObj).subscribe((result) => {
-          console.log(result);
-          this.runSchema();
-          this.close();
-          this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
-            duration: 2000
-          })
-        }, (error) => {
-          console.log('Something went wrong while checking data', error.message);
-        });
-      }
-      else {
-        this.close();
-      }
-    })
+
+
+    // forkJoin({subscriberSnos}).subscribe(res => {
+    //   console.log(`Subscribers created successfuly ${res}`);
+    // }, err=>{
+    //   console.log(`Exception while creating subscribers map ${err.message}`);
+    // });
+
+
   }
 
   /**
    * Function to open sidesheet to Upload data
    */
   public openUploadSideSheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/upload-data/${this.moduleId}/${this.outlet}` } }]);
+    this.router.navigate(['', { outlets: {sb:`sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/upload-data/${this.moduleId}/${this.outlet}` } }]);
   }
 
   /**
@@ -987,12 +1064,28 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([ { outlets: { outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }], {queryParamsHandling: 'preserve'});
+    this.router.navigate([ { outlets: {sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }], {queryParamsHandling: 'preserve'});
   }
   /**
    * Function to open new br sidesheet
    */
   openBusinessRuleSideSheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer`} }]);
+    this.router.navigate(['', { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` , outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer`} }]);
+  }
+
+  /**
+   * to convert rule type into rule description
+   * @param ruleType ruleType of a business rule object
+   */
+   public getRuleTypeDesc(ruleType: string) {
+    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
+  }
+
+  /**
+   * Edit the business rule ...
+   * @param br edit this business rule
+   */
+  public editBuisnessRule(br: CoreSchemaBrInfo) {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` , outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}/outer`} }]);
   }
 }
