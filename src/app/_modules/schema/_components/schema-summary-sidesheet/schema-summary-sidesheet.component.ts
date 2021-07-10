@@ -198,7 +198,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.sharedService.getDataScope().subscribe(res => {
+  this.sharedService.getDataScope().subscribe(res => {
       if(res) {
         this.dataScopeControl.setValue(res);
         this.setDataScopeName(this.dataScopeControl.value);
@@ -208,6 +208,18 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
     this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To fetch all BRs details (will use to show in auto complete)
+
+    this.sharedService.getEditDatascopeTriggerObservable().subscribe((res) => {
+      if (res) {
+        this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${res}/outer` } }], {queryParamsHandling: 'preserve'});
+      }
+    });
+
+    this.sharedService.getAfterEditDatascopeSideSheetClose().subscribe((res) => {
+      if (res !== null) {
+        this.router.navigate([ { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/list/${this.moduleId}/${this.schemaId}/outer` } }], {queryParamsHandling: 'preserve'});
+      }
+    });
   }
 
   setDataScopeName(variantId) {
@@ -994,5 +1006,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   openBusinessRuleSideSheet() {
     this.router.navigate(['', { outlets: { outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer`} }]);
+  }
+
+  openDatascopeListSidesheet() {
+    this.router.navigate([ { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/list/${this.moduleId}/${this.schemaId}/outer` } }], {queryParamsHandling: 'preserve'});
   }
 }

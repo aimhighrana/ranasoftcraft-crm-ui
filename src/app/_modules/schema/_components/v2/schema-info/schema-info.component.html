@@ -11,6 +11,7 @@
                 [statusBadgePosition]="{ top: -10, right: -5 }" badgeIconFont="default" badgeType=""></lib-button>
             <lib-button *ngIf="!scheduleInfo" class="badge" icon="clock" (click)="openScheduleSideSheet()" type="minor">
             </lib-button>
+            <lib-button type="minor" icon="layer-group" (click)="openDatascopeListSidesheet()"></lib-button>
             <lib-button type="minor" icon="chart-line" (click)="openExecutionTrendSidesheet()">
             </lib-button>
             <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="menu"></lib-button>

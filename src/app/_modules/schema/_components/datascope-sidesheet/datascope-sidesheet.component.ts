@@ -130,8 +130,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   /**
    * function to close dataScope side sheet
    */
-  close(){
+  close(isSave = false){
     this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }], {queryParamsHandling: 'preserve'});
+    this.sharedService.setAfterEditDatascopeSideSheetClose(isSave);
   }
 
   /**
@@ -241,7 +242,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     this.variantInfo.schemaId = this.schemaId;
     this.variantInfo.variantType = 'RUNFOR';
     const saveVariant = this.schemaService.saveUpdateDataScope(this.variantInfo).subscribe((res) => {
-      this.close();
+      this.close(true);
       this.sharedService.setDataScope(res);
       this.toasterService.open('This action has been performed.', 'Okay', {
         duration: 2000
