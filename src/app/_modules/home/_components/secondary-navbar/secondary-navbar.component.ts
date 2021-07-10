@@ -278,7 +278,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     .subscribe((res: boolean) => {
       if(res) {  this.getSchemaList(); }
     });
-    
+
     this.getInboxNodesCount();
 
     const subscription = this.schemaSearchSub.pipe(
