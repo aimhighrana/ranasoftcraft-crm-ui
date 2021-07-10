@@ -172,10 +172,6 @@ export class UDRValueControlComponent implements OnInit, OnChanges, OnDestroy {
     return this.fieldList.find(field => field.CODE === value)?.TEXT || '';
   }
 
-
-  displayFn(value: string) {
-    return this.fieldList.find(field => [field.TEXT, field.CODE].includes(value))?.TEXT || '';
-  }
   dropdownCodeByText(value: string) {
     return this.fieldList.find(field => [field.TEXT, field.CODE].includes(value))?.CODE || value;
   }
