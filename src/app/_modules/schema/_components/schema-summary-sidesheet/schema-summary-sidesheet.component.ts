@@ -895,6 +895,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     if(!this.schemaName.valid) {
       return false;
     }
+
     // save the schema infor
     const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
     schemaReq.moduleId = this.moduleId;
@@ -962,6 +963,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       console.log(`Created successful ${res}`);
       this.runSchema();
       this.close();
+      // Trigger to refresh the list of schemas on the left sidenav so the latest appears on top
+      this.sharedService.refresSchemaListTrigger.next(true);
       this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
         duration: 2000
       })

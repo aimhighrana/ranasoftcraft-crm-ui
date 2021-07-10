@@ -273,7 +273,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         }
       }
     });
+
+    this.sharedService.refresSchemaListTrigger
+    .subscribe((res: boolean) => {
+      if(res) {  this.getSchemaList(); }
+    });
+    
     this.getInboxNodesCount();
+
     const subscription = this.schemaSearchSub.pipe(
       debounceTime(300),
       distinctUntilChanged()
