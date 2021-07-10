@@ -2,4 +2,20 @@ form.root {
   .field-label {
     margin-bottom: 6px;
   }
+
+  .field-chip-list {
+    flex-wrap: wrap;
+
+    .lib-chip {
+      display: flex;
+      flex-direction: row;
+      width: auto;
+      padding: 2px;
+    }
+
+    .mat-input {
+      width: auto;
+      flex: 1;
+    }
+  }
 }
