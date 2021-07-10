@@ -50,7 +50,7 @@
         <div class="f-col mdo-form-field" *ngIf="isMPNI">
           <mat-label i18n="@@accuracy_score">Accuracy Score</mat-label>
           <div class="f-row slider-row">
-            <lib-range-slider class="lib-slider" thumbLabel="true" formControlName="accuracyScore" tickInterval="1"
+            <lib-range-slider class="lib-slider" formControlName="accuracyScore" tickInterval="1"
               minValue="0" [formatLabelFn]="rangeSliderLabelFormat" [value]="form.controls.accuracyScore.value"
               [maxValue]="100" color="primary"></lib-range-slider><span
               class="f-col-spacer-half"></span>

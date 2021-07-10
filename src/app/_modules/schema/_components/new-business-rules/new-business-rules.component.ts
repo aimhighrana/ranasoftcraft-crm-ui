@@ -744,7 +744,7 @@ export class NewBusinessRulesComponent implements OnInit {
         } else {
             this.selectedTargetFields.push({
                 fieldDescri: event.option.viewValue,
-                fieldId: this.data.moduleId ? event.option.value : event.option.value.replace(' ', '_')
+                fieldId: event.option.value
             });
         }
         this.form.controls.target_field.setValue('');
