@@ -1,7 +1,7 @@
 <!-- transformation rule start -->
 <form [formGroup]="form" class="root">
-        <div class="mdo-form-field">
-            <mat-label>Source field</mat-label>
+        <div class="f-col mdo-field">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Source field</lib-text-line>
             <mat-form-field appearance="outline">
                 <mat-chip-list #sourceChips>
                     <mat-chip *ngIf="selectedSourceField" [removable]="true"
@@ -27,8 +27,8 @@
             </mat-error>
         </div>
 
-        <div class="mdo-form-field">
-            <mat-label>Target fields</mat-label>
+        <div class="f-col mdo-field">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Target fields</lib-text-line>
             <mat-form-field appearance="outline">
                 <mat-chip-list #targetChips>
                     <mat-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
@@ -54,10 +54,10 @@
             </mat-error>
         </div>
 
-        <div class="mdo-form-field">
+        <div class="f-col">
             <lib-input label="Exclude script (Regex)" formControlName="excludeScript" [value]="form.value.excludeScript"></lib-input>
         </div>
-        <div class="mdo-form-field">
+        <div class="f-col">
             <lib-input label="Include script (Regex)" formControlName="includeScript" [value]="form.value.includeScript"></lib-input>
         </div>
 </form>

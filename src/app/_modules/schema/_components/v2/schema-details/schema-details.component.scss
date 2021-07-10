@@ -22,9 +22,11 @@ div.root {
 
   .empty-state {
     display: flex;
-    height: 100%;
     align-items: center;
     justify-content: center;
+    z-index: 1;
+    width: 100%;
+    height: calc(100% - 44px);
   }
 
   .listing-container {
@@ -113,9 +115,10 @@ div.root {
             border: none;
           }
 
-          .editable-cell {
-            background-color: #fff;
-          }
+          // .editable-cell {
+          //   background-color: #fff;
+          padding: 0;
+          // }
 
           .mat-header-cell,
           .mat-cell {
