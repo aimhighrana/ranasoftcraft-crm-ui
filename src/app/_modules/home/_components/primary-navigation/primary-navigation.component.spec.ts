@@ -23,7 +23,8 @@ describe('PrimaryNavigationComponent', () => {
   let fixture: ComponentFixture<PrimaryNavigationComponent>;
   let userSvc: jasmine.SpyObj<UserService>;
   let router: Router;
-  let schemaServiceSpy: SchemaService;
+  let schemaService: SchemaService;
+
   const mockDialogRef = {
     open: jasmine.createSpy('open'),
     afterClosed: jasmine.createSpy('close')
@@ -85,7 +86,7 @@ describe('PrimaryNavigationComponent', () => {
     fixture = TestBed.createComponent(PrimaryNavigationComponent);
     component = fixture.componentInstance;
     component.udSub = new Subscription();
-    schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
+    schemaService = fixture.debugElement.injector.get(SchemaService);
   });
 
   it('should create', () => {
@@ -121,11 +122,9 @@ describe('PrimaryNavigationComponent', () => {
       spyOn(router, 'navigate')
       component.createSchema({moduleId: '123', schemaId: '456', moduleDesc: 'Material'});
       expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/123/456`}}], {queryParams: {name: 'Material'}});
-
-      spyOn(schemaServiceSpy, 'createUpdateSchema').and.returnValue(of('456'));
+      spyOn(schemaService,'createUpdateSchema').and.callFake(()=>of('767557'));
       component.createSchema({moduleId: '1002', schemaId: null, moduleDesc: 'Material'});
-      expect(router.navigate).toHaveBeenCalledWith([`/home/schema/schema-info/1002/456`], { queryParams: {isCheckData: false} });
-      expect(schemaServiceSpy.createUpdateSchema).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/1002/767557`}}], {queryParams: {name: 'Material',updateschema:true}});
   }));
 
   it('checkNavOnReload(), should check primary navigation on page reload', async()=>{

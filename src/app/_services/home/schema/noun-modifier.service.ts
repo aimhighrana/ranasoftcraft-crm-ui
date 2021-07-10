@@ -176,8 +176,8 @@ export class NounModifierService {
     return this.http.post(this.endpointClassic.getCreateAttributeUrl(nounSno), request)
   }
 
-  public saveAttributesMapping(request: AttributesMapping): Observable<any> {
-    return this.http.post<any>(this.endpointClassic.getSaveAttributesMappingUrl(), request);
+  public saveAttributesMapping(request: AttributesMapping, schemaId: string): Observable<any> {
+    return this.http.post<any>(this.endpointClassic.getSaveAttributesMappingUrl(), request, {params:{schemaId}});
   }
 
   public getAttributesMapping(libnounSno, libmodSno): Observable<AttributesMapping> {

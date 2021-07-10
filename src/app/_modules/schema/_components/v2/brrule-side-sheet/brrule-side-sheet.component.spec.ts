@@ -719,6 +719,12 @@ describe('BrruleSideSheetComponent', () => {
     component.currentSelectedRule = BusinessRuleType.BR_TRANSFORMATION;
     component.save();
 
+    // save for udr rule
+    component.initUDRForm();
+    component.currentSelectedRule = BusinessRuleType.BR_CUSTOM_SCRIPT;
+    component.form.controls.rule_type.setValue(BusinessRuleType.BR_CUSTOM_SCRIPT);
+    component.save();
+
 
     expect(schemaServiceSpy.createBusinessRule).toHaveBeenCalledTimes(2);
 
@@ -880,4 +886,29 @@ describe('BrruleSideSheetComponent', () => {
     expect(res).toEqual('test');
     expect(component.displaySourceFieldFn('')).toEqual('');
   }));
+
+  it(`addTransRules(), add the transformation rule into schema list ()`, async(()=>{
+    // mock data
+    const mockData: CoreSchemaBrInfo[] = [{brIdStr:'677575757',brInfo:'Test br  1'} as CoreSchemaBrInfo, {brIdStr:'878575767',brInfo:'Test br  2'} as CoreSchemaBrInfo];
+    component.transTabIndex = 0;
+    component.attachedTransRules = {success:[], error:[]};
+
+    component.addTransRules(mockData);
+    expect(component.attachedTransRules.success.length).toEqual(2);
+
+    mockData[0].brIdStr = '86876875757';
+    component.addTransRules(mockData);
+    expect(component.attachedTransRules.success.length).toEqual(2);
+
+
+    component.transTabIndex = 1;
+    component.addTransRules(mockData);
+    expect(component.attachedTransRules.error.length).toEqual(2);
+
+    mockData[0].brIdStr = '86876875757';
+    component.addTransRules(mockData);
+    expect(component.attachedTransRules.error.length).toEqual(2);
+
+  }));
+
 });

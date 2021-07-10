@@ -142,7 +142,8 @@ describe('EndpointsAnalyticsService', () => {
   it('exportReport(), should get API string', async(() => {
     const serviceobj = new EndpointsAnalyticsService();
     const reportId = '6547898676578';
-    expect(serviceobj.exportReport(reportId)).toContain(`/report/export-config?reportId=${reportId}`);
+    const reportName = 'Test report';
+    expect(serviceobj.exportReport(reportId,reportName)).toContain(`/report/export-config?reportId=${reportId}&reportName=${reportName}`);
   }));
 
   it('importUploadReport(), should get API string', async(() => {

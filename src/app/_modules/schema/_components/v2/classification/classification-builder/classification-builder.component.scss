@@ -4,28 +4,14 @@ div.root {
   height: 100%;
   overflow: hidden;
 
-  .breadcrum-toolbar {
-    .counts::after {
-      content: "\a";
-      width: 2px;
-      height: 2px;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 8px;
-      vertical-align: middle;
-    }
-
-    .counts:last-of-type::after {
-      display: none;
-    }
-  }
-
   .mat-tab-container {
     height: 100%;
+    overflow: hidden;
 
     .filter-container {
       flex-wrap: wrap;
       margin: 8px 0;
+      align-items: flex-start;
 
       .lib-search {
         width: 213px;
@@ -33,12 +19,12 @@ div.root {
       }
 
       .mdo-filter-matchip {
-        margin: 0 4px;
+        margin: 0 4px 4px 0;
       }
     }
 
     .listing-container {
-      height: calc(100% - 56px - 50px - 8px * 2);
+      height: calc(100% - 48px - 40px - 20px);
       overflow: hidden;
       align-items: flex-start;
 
@@ -52,18 +38,21 @@ div.root {
         position: relative;
 
         .nav-tree {
-          height: calc(100% - 107px);
+          height: 100%;
           overflow-y: auto;
           overflow-x: hidden;
 
           mat-accordion.mat-accordion {
             mat-expansion-panel {
+              border-radius: 0;
+
               .mat-expansion-panel-header {
                 padding: 0 8px;
 
                 mat-panel-title {
                   width: 100%;
                   margin-right: 0;
+                  align-items: center;
 
                   .expand-title {
                     text-overflow: ellipsis;
@@ -74,7 +63,7 @@ div.root {
               }
 
               .undertree-expansion-panel {
-                padding-left: 42px;
+                padding-left: 36px;
               }
             }
           }

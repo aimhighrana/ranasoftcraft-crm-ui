@@ -8,7 +8,6 @@ div.root {
     padding: 8px 16px;
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
       margin-right: 0;
 
@@ -24,29 +23,21 @@ div.root {
     .lib-tab {
       height: 100%;
 
+      .notification-list {
+        overflow: auto;
+        height: 100%;
+      }
+
       mat-list-item.mat-list-item {
         height: auto;
 
-        .job-line {
-          padding-left: 8px;
-          flex: 12;
-        }
-
-        .job-date {
-          margin-bottom: 0;
-        }
-
-        .time-icon {
-          font-size: 12px;
-        }
-
         .notification-listing {
           width: 100%;
-          padding: 8px;
+          padding: 8px 0;
 
           .notify-row {
-            width: calc(100% - 106px);
-            padding: 0 8px;
+            padding: 0 12px;
+            width: calc(100% - 104px);
 
             .mat-expand-icon {
               font-size: 8px;
@@ -54,6 +45,11 @@ div.root {
               width: 8px;
               cursor: pointer;
             }
+          }
+
+          .job-row {
+            width: calc(100% - 300px);
+            padding: 0 12px;
           }
 
           .notify-content {

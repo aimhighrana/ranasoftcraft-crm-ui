@@ -1294,7 +1294,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getValue(value, control) {
-    const searchText = control.value ? (typeof control.value === 'string' ? control.value : control.value.value) : '';
+    const searchText = control && control.value ? (typeof control.value === 'string' ? control.value : control.value.value) : '';
     return searchText ? value.filter(item => item.value.toLowerCase().includes(searchText.toLowerCase())) : value;
   }
 
@@ -1337,7 +1337,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within SLA` },
       { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds SLA` }
     ];
-    return bucketFilter
+    return bucketFilter;
   }
   get possibleTimeIntervalFilter() {
     const timeInterval = [
