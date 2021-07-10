@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FieldConfiguration, LookupData, LookupFormData, LookupFields } from '@models/schema/schemadetailstable';
 import { Observable, of } from 'rxjs';
 import { isEqual } from 'lodash';
@@ -141,6 +141,11 @@ export class LookupRuleComponent implements OnInit, OnChanges {
     })
   }
 
+  /**
+   * Remove selected fields after confirm
+   * @param res pass the confirmation
+   * @param index pass the index
+   */
   removeFieldAfterConfirm(res: string, index: number) {
     if (res === 'yes') {
       this.selectedFields.splice(index, 1);
@@ -252,7 +257,7 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index pass the field index
    * @param manual boolean value to check if it's a manual input
    */
-  setLookupTargetField(value, index: number, manual: boolean = false) {
+  setLookupTargetField(value, index: number, manual: boolean = false) {    
     const field = { ...this.selectedFieldsCopy[index] };
     // if (value === 'New Field') {
     //   field.enableUserField = true;
@@ -330,12 +335,12 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index field index
    * @param key field key
    */
-  getValue(index: number, key: string) {
+  getValue(index: number, key: string = null) {
     const obj: LookupFields = this.selectedFieldsCopy[index];
     if (key) {
       return obj[key] ? obj[key] : '';
     } else {
-      return obj
+      return obj;
     }
   }
 
