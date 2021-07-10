@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
@@ -51,7 +51,7 @@ describe('OptionFilterComponent', () => {
   });
 
   it('availableOptions, should set value for allOptions', () => {
-     expect(component.allOptions.length).toEqual(2);   
+     expect(component.allOptions.length).toEqual(2);
   });
 
   it('initializeAutocomplete(), should initialize search filter', () => {

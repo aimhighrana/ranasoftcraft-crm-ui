@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FieldConfiguration, LookupData, LookupFormData, LookupFields } from '@models/schema/schemadetailstable';
 import { Observable, of } from 'rxjs';
 import { isEqual } from 'lodash';
@@ -257,7 +257,7 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index pass the field index
    * @param manual boolean value to check if it's a manual input
    */
-  setLookupTargetField(value, index: number, manual: boolean = false) {    
+  setLookupTargetField(value, index: number, manual: boolean = false) {
     const field = { ...this.selectedFieldsCopy[index] };
     // if (value === 'New Field') {
     //   field.enableUserField = true;

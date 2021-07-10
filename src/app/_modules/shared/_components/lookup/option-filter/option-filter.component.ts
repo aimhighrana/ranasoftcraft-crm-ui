@@ -2,7 +2,7 @@ import { OnInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild }
 import { FormControl } from '@angular/forms';
 import { LookupFields } from '@models/schema/schemadetailstable';
 import { Observable } from 'rxjs';
-import { debounceTime, map, startWith, tap } from 'rxjs/operators';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-option-filter',
@@ -88,9 +88,9 @@ export class OptionFilterComponent implements OnInit {
    * @returns the field label
    */
    formatValue(value: any): string {
-    if(value) {      
+    if(value) {
       return value.fieldDescri? value.fieldDescri: value.fieldId;
-    } 
+    }
 
     return '';
   }
