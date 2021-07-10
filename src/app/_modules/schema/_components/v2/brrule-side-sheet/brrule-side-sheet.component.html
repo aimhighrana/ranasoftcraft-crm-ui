@@ -171,8 +171,7 @@
                     <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@source_field">Source Field <span class="mandatory">*</span></lib-text-line>
                     
                     <div class="mdo-field-input">
-                            <input matInput [(ngModel)]="searchSourceFieldStr" [ngModelOptions]="{standalone: true}" i18n-placeholder="@@source_field" placeholder="Source Field"
-                            [matAutocomplete]="sourceFieldAuto"/>
+                            <input matInput [formControl]="formField('sourceFieldSearchStr')" i18n-placeholder="@@source_field" placeholder="Source Field" [matAutocomplete]="sourceFieldAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displaySourceFieldFn.bind(this)" #sourceFieldAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'source_field', $event)">
                             <ng-container *ngFor="let field of sourceFieldsFiltered">
                                 <mat-option class="mdo-option" [value]="field[sourceFieldsObject.valueKey]">

@@ -98,7 +98,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * filter source field dropdown
    */
   get sourceFieldsFiltered() {
-    const searchStr = this.searchSourceFieldStr?.toLowerCase();
+    const searchStr = this.form.value.sourceFieldSearchStr?.toLowerCase();
     return this.sourceFieldsObject.list.filter(x => x[this.sourceFieldsObject.labelKey]?.toLowerCase().includes(searchStr) || x[this.sourceFieldsObject.valueKey]?.toLowerCase().includes(searchStr));
   }
 
@@ -338,10 +338,6 @@ export class BrruleSideSheetComponent implements OnInit {
    * Hold search string for business rule type ....
    */
   searchRuleTypeStr = '';
-  /**
-   * Holds search string for material source field
-   */
-  searchSourceFieldStr = '';
   /**
    * Hold search string for regex functions ....
    */
@@ -712,7 +708,8 @@ export class BrruleSideSheetComponent implements OnInit {
         transformationRuleType: new FormControl(''),
         source_field: new FormControl(''),
         target_field: new FormControl(''),
-        accuracyScore: new FormControl(0)
+        accuracyScore: new FormControl(0),
+        sourceFieldSearchStr: new FormControl('')
       };
 
       this.currentControls = controls;
@@ -727,7 +724,9 @@ export class BrruleSideSheetComponent implements OnInit {
       this.form.controls.transformationRuleType.valueChanges
         .pipe(distinctUntilChanged())
         .subscribe((type) => {
-          this.applyValidatorsByRuleType(BusinessRuleType.BR_TRANSFORMATION);
+          if (this.form.value.rule_type !== BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+            this.applyValidatorsByRuleType(BusinessRuleType.BR_TRANSFORMATION);
+          }
         });
 
       resolve(null);
@@ -875,7 +874,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (patchList && patchList.length > 0) {
       patchList.map((key) => {
         if (dataToPatch[key]) {
-          if (key === 'categoryId' || key === 'source_field') {
+          if (key === 'categoryId') {
             this.form.controls[key].setValue(`${dataToPatch[key]}`);
           } else {
             this.form.controls[key].setValue(dataToPatch[key]);
@@ -1149,9 +1148,9 @@ export class BrruleSideSheetComponent implements OnInit {
             });
 
             if (this.coreSchemaBrInfo.source_field) {
-              const fld = this.fieldsList.find(fil => fil.fieldId === this.coreSchemaBrInfo.source_field);
+              const fld = this.sourceFieldsObject.list.find(fil => fil.fieldId === this.coreSchemaBrInfo.source_field);
               if (fld) {
-                this.searchSourceFieldStr = fld.fieldDescri;
+                this.form.controls.sourceFieldSearchStr.setValue(fld.fieldId);
               }
             }
           } catch (ex) { console.error(ex) }
