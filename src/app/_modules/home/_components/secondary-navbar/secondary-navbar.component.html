@@ -14,7 +14,7 @@
       </ng-container>
       <ng-template #singleButton>
         <lib-button type="plain" iconFontType="light" icon="plus"
-          *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema"
+          *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list' && activatedPrimaryNav !== 'welcome'); else isSchema"
           (click)="globalCreate()"></lib-button>
       </ng-template>
       <ng-template #isSchema>

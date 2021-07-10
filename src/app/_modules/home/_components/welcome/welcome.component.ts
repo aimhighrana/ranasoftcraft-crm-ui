@@ -164,7 +164,7 @@ export class WelcomeComponent implements OnInit , OnDestroy {
          this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
            const receivedSchemaId = response;
            this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${receivedSchemaId}` } }],{
-            queryParams: {isCheckData: false}
+            queryParams: {isCheckData: false, updateschema: true}
           })
          }, (error) => {
            console.log('Something went wrong while creating schema', error.message);

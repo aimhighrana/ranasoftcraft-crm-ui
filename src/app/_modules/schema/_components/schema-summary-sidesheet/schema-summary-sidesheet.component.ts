@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -101,7 +101,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * formcontrol for schema Name to be passed to child component
    */
-  schemaName: FormControl = new FormControl('');
+  schemaName: FormControl = new FormControl('', Validators.required);
 
   /**
    * formcontrol for data scope
@@ -146,6 +146,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   currentVariantCnt = 0;
 
   dataScopeName: FormControl = new FormControl('Entire data scope');
+
+  /**
+   * Falg for whether schema name enable or not
+   */
+  updateschema = false;
 
   /**
    * function to format slider thumbs label.
@@ -271,6 +276,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       console.log(params);
       this.isFromCheckData = Boolean(params.isCheckData === 'true');
       this.moduleDesc = params.name;
+      this.updateschema = params.updateschema ? params.updateschema : false;
     })
 
 
@@ -886,29 +892,24 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   saveCheckData() {
     this.submitted = true;
-    // if(!this.schemaName.valid) {
-    //   return;
-    // }
-    // this.updatedSchemaName=this.schemaName.value;
-    // if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
-    //     this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
-    //     this.schemaId === 'new'){
-    //     const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-    //     schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
-    //   schemaReq.moduleId = this.moduleId;
-    //   schemaReq.discription = this.updatedSchemaName ? this.updatedSchemaName : this.schemaDetails.schemaDescription;
-    //   schemaReq.schemaThreshold = this.schemaThresholdControl.value;
-
-    //   this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-    //     console.log('Schema updated successfully.');
-    //     this.prepareData(response);
-    //   },(error) => {
-    //     console.error('Something went wrong while updating schema.', error.message);
-    //   })
-    // }
-    // else {
-      this.prepareData(this.schemaId);
-    // }
+    if(!this.schemaName.valid) {
+      return false;
+    }
+    // save the schema infor
+    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+    schemaReq.moduleId = this.moduleId;
+    schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
+    schemaReq.discription = this.schemaName.value ? this.schemaName.value : this.schemaDetails.schemaDescription;
+    schemaReq.schemaThreshold = this.schemaThresholdControl.value;
+    schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
+    const updateSc = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+          this.schemaId = response;
+          console.log('Schema updated successfully.');
+          this.prepareData(this.schemaId);
+    },(error) => {
+          console.error('Something went wrong while updating schema.', error.message);
+    });
+    this.subscriptions.push(updateSc);
   }
 
 
@@ -917,20 +918,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param schemaId Schema Id
    */
   prepareData(schemaId) {
-
-    // save the schema infor
-    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-    schemaReq.moduleId = this.moduleId;
-    schemaReq.schemaId = this.schemaId;
-    schemaReq.discription = this.schemaDetails.schemaDescription ? this.schemaDetails.schemaDescription : '';
-    schemaReq.schemaThreshold = this.schemaThresholdControl.value;
-    schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
-    const updateSc = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-          console.log('Schema updated successfully.');
-    },(error) => {
-          console.error('Something went wrong while updating schema.', error.message);
-    });
-    this.subscriptions.push(updateSc);
 
     // update the business rule..
     const forkObj = {};
