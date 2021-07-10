@@ -1,6 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button type="plain" (click)="close()" icon="times"></lib-button>
+        <lib-button type="plain" (click)="close()" icon="times" iconFontType="light" ></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -17,7 +17,7 @@
                 <lib-tab label="Ignore words">
                     <div class="f-col">
                         <mat-form-field appearance="outline">
-                            <textarea matInput [formControl]="exclusionControl" class="mdo-textarea"></textarea>
+                            <textarea matInput [formControl]="exclusionControl" class="mdo-textarea" cdkTextareaAutosize cdkAutosizeMinRows="1"></textarea>
                         </mat-form-field>
                         <mat-hint>Type one word per line</mat-hint>
                     </div>
@@ -27,7 +27,7 @@
                         <lib-search placeholder="Search word" (valueChange)="searchWords($event)"></lib-search>
 
                         <div class="mdo-field">
-                            <lib-text-line type="base" (click)="enableGroupCreation()" textColor="link">
+                            <lib-text-line type="base" (click)="enableGroupCreation()" textColor="link" class="cursor">
                                 <mat-icon fontSet="mdo-icons">plus</mat-icon> Add synonyms group
                             </lib-text-line>
                         </div>
@@ -35,7 +35,7 @@
                         <div *ngIf="newGroupActive" class="f-col mdo-field">
                             <mat-form-field appearance="outline">
                                 <textarea matInput class="mdo-textarea" #input [(ngModel)]="editText"
-                                    (blur)="addSynonymGroup(input.value)"></textarea>
+                                    (blur)="addSynonymGroup(input.value)"  cdkTextareaAutosize cdkAutosizeMinRows="1"></textarea>
                             </mat-form-field>
                             <mat-hint>Type one word per line.Click outside the box when done-your changes are saved
                                 automatically</mat-hint>
@@ -51,7 +51,7 @@
                                             <mat-form-field appearance="outline">
                                                 <textarea matInput class="mdo-textarea" #editInput="matInput"
                                                     [value]="splitStringLines(synonym.value.text)"
-                                                    (blur)="saveSynonymGroup(index, editInput.value)"></textarea>
+                                                    (blur)="saveSynonymGroup(index, editInput.value)" cdkTextareaAutosize cdkAutosizeMinRows="1"></textarea>
                                             </mat-form-field>
                                             <mat-hint>Type one word per line. Click outside the box when done-your changes
                                                 are saved automatically</mat-hint>
@@ -65,7 +65,7 @@
                                                 <input matInput formControlName="text" (focus)="editSynonymGroup(index)" />
                                                 <div class="f-row input-actions">
                                                     <button mat-button matSuffix>
-                                                        <mat-icon fontSet="mdo-icons" (click)="removeSynonymGroup(index)">recycle-bin</mat-icon>
+                                                        <mat-icon fontSet="mdo-icons" (click)="removeSynonymGroup(index)">trash-alt</mat-icon>
                                                     </button>
                                                 </div>
                                             </mat-form-field>

@@ -206,7 +206,7 @@
                 </div>
 
                 <div class="f-col mdo-field" [class.has-error]="submitted && !selectedTargetFields.length" *ngIf="isMPNI">
-                    <lib-text-line class="field-label"type="xsmall" weight="strong" i18n="@@target_fields">Target fields <span class="mandatory">*</span></lib-text-line>
+                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@target_fields">Target fields <span class="mandatory">*</span></lib-text-line>
                     <mat-form-field appearance="outline">
                         <div class="f-row field-chip-list" #chipList>
                             <lib-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true" (removed)="removeTargetField(field,i)" class="lib-chip">
@@ -227,7 +227,7 @@
                 </div>
 
                 <div class="f-col mdo-field" *ngIf="isRegexType">
-                    <lib-text-line type="xsmall" weight="strong" i18n="@@standard_function">Standard function <span
+                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@standard_function">Standard function <span
                             class="mandatory">*</span></lib-text-line>
 
                     <div class="mdo-field-input">
@@ -352,7 +352,7 @@
                                 </div>
                                 <!-- three dots -->
                                 <div class="col" *ngIf="i !== 0">
-                                    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-v"></lib-button>
+                                    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
                                 </div>
                                 <mat-menu #menu="matMenu" class="navigation-menu">
                                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
@@ -424,7 +424,7 @@
                                                 </div>
                                                 <div class="col">
                                                     <lib-button [matMenuTriggerFor]="nestedMenu" type="plain"
-                                                        icon="ellipsis-v"></lib-button>
+                                                        icon="ellipsis-h"></lib-button>
                                                     <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                                                         <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                                                         <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
@@ -476,7 +476,6 @@
                     <mat-icon fontSet="mdo-icons" class="mat-head-icon">question-circle</mat-icon>
                 </div>
                 <ng-template [ngIf]="hasAppliedTransformationCtrl.value">
-                    <div class="row-spacer"></div>
                     <lib-tab-group class="schema-info-tabs" disableRipple="true" animationDuration="0ms"
                         (selectedIndexChange)="transTabIndex = $event" [selectedIndex]="transTabIndex">
                         <lib-tab label="On success"

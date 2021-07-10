@@ -1507,7 +1507,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.schemaId = this.schemaId;
       request.moduleId = this.moduleId;
       request.brWeightage = this.form.value.weightage;
-      request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
+      request.categoryId =  this.form.value.categoryId || this.coreSchemaBrInfo.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
       request.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
@@ -1756,6 +1756,9 @@ export class BrruleSideSheetComponent implements OnInit {
     this.schemaDetailsService.getAllCategoryInfo().subscribe((response: CategoryInfo[]) => {
       if (response && response.length > 0) {
         this.categoryList = response;
+        if(this.form) {
+          this.form.controls.categoryId.setValue(this.form.value.categoryId);
+        }
       }
     })
   }

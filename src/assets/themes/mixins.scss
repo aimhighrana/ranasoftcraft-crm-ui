@@ -866,15 +866,13 @@
           top: -1px;
         }
 
-        .mdo-field-tooltip {
-          margin-bottom: 8px;
-          display: flex;
-          flex-direction: column;
+        .field-label {
+          margin-bottom: 6px;
+        }
 
-          mat-label {
-            font-weight: 500;
-            font-size: 0.8rem;
-          }
+        .field-button {
+          width: 100%;
+          display: flex;
         }
       }
     }
@@ -1063,11 +1061,6 @@
         }
       }
     }
-  }
-
-  .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
-  .udr-select-col.has-error {
-    border: 1px solid  $color-status-error;
   }
 
   //MDO-Table
@@ -1672,43 +1665,6 @@
     }
   }
 
-  pros-brrule-side-sheet,
-  pros-duplicate-datacheck-sidesheet {
-    div.root {
-      .user-defined-set {
-        &::before {
-          background: $color-accent;
-        }
-
-        .defined-row {
-          border-color: $color-app-border;
-
-          div.col {
-            &.select-col {
-              background: $color-accent;
-
-              .cdk-overlay-pane {
-                button.mdo-button:hover {
-                  background: transparent;
-
-                  .mat-button-focus-overlay {
-                    opacity: 0;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-
-      .colunm-box {
-        &.rule-border-row {
-          border-bottom: 1px solid $color-app-border;
-        }
-      }
-    }
-  }
-
   pros-report-list {
     mat-card.root {
       mat-list.mat-list {
@@ -1755,6 +1711,97 @@
           .mat-form-field-underline {
             display: none;
           }
+        }
+      }
+    }
+  }
+
+  pros-library-mapping-sidesheet {
+    div.root {
+      .rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+
+        .col {
+          &.error-cell {
+            border-bottom: 1px solid mat-color($primary-palette);
+            background-color: mat-color($background-palette, app-bar);
+          }
+
+          mat-form-field.customfield-dropdown {
+            width: 100%;
+            background: transparent;
+
+            .mat-form-field-wrapper {
+              .mat-form-field-flex {
+                padding-top: 0;
+                background: transparent;
+              }
+
+              .mat-form-field-infix {
+                mat-select.mat-select {
+                  .mat-select-value-text {
+                    color: mat-color($primary-palette);
+                  }
+                }
+              }
+
+              .mat-form-field-underline {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-brrule-side-sheet {
+    div.root {
+      .user-defined-set {
+        &::before {
+          background: $color-accent;
+        }
+
+        .defined-row {
+          border-color: $color-app-border;
+
+          div.col {
+            &.select-col {
+              background: $color-accent;
+            }
+
+            .mat-select {
+              &.udr-form-select {
+                box-sizing: border-box;
+              }
+
+              // &.ng-touched.ng-invalid {
+              //   border: 1px solid $color-status-error;
+              //   color: $color-status-error;
+              // }
+            }
+
+            .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
+            .udr-select-col.has-error {
+              border: 1px solid  $color-status-error;
+            }
+
+            .udr-option:hover {
+              button.mdo-button:hover {
+                background: transparent;
+
+                .mat-button-focus-overlay {
+                  opacity: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .colunm-box {
+        &.rule-border-row {
+          border-bottom: 1px solid $color-app-border;
         }
       }
     }
@@ -1819,47 +1866,6 @@
 
             .mat-list-item-content {
               padding: 0;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  pros-configure-sidesheet,
-  pros-library-mapping-sidesheet,
-  pros-lookup-rule {
-    div.root {
-      .rule-border-row {
-        border-bottom: 1px solid $color-app-border;
-
-        .col {
-          &.error-cell {
-            border-bottom: 1px solid mat-color($primary-palette);
-            background-color: mat-color($background-palette, app-bar);
-          }
-
-          mat-form-field.customfield-dropdown {
-            width: 100%;
-            background: transparent;
-
-            .mat-form-field-wrapper {
-              .mat-form-field-flex {
-                padding-top: 0;
-                background: transparent;
-              }
-
-              .mat-form-field-infix {
-                mat-select.mat-select {
-                  .mat-select-value-text {
-                    color: mat-color($primary-palette);
-                  }
-                }
-              }
-
-              .mat-form-field-underline {
-                display: none;
-              }
             }
           }
         }
@@ -2041,17 +2047,6 @@
           }
         }
       }
-    }
-  }
-
-  .mat-select.udr-form-select {
-    padding: 7px;
-    box-sizing: border-box;
-    border-radius: 5px;
-
-    &.ng-touched.ng-invalid {
-      border: 1px solid $color-status-error;
-      color: $color-status-error;
     }
   }
 
