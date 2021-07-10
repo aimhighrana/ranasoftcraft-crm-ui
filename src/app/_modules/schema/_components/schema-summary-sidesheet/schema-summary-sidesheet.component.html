@@ -343,32 +343,29 @@
                             </mat-menu>
 
                             <div class="col col-x16">
-                                <mat-chip-list>
+                                <mat-chip-list class="data-allocation-list">
                                     <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
-
                                         <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                             [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
-                                            <label>
-                                                {{ ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown' }}
-                                                :
-                                            </label>
-
-                                            <span class="info">
-                                                {{ prepareTextToShow(ctrl) }}
-                                            </span>
-
+                                            <lib-text-line class="selected-text">
+                                                <label>
+                                                    {{ ctrl.fldCtrl?.fieldDescri || ctrl.fldCtrl?.fieldDesc || 'Unknown' }}
+                                                    :
+                                                </label>
+                                                <span class="info">
+                                                    {{ prepareTextToShow(ctrl) }}
+                                                </span>
+                                            </lib-text-line>
                                             <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">
                                                 clear
                                             </mat-icon>
                                         </mat-chip>
                                     </ng-template>
-
                                     <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                         [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"
                                         *ngIf="subscriber.isInvited!==true">
                                         <mat-icon fontSet="mdo-icons">filter</mat-icon>
                                     </mat-chip>
-
                                 </mat-chip-list>
 
                                 <mat-menu #appliedfiltermenu="matMenu">
