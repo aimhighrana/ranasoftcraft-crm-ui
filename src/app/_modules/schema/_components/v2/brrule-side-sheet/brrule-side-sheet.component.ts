@@ -1507,7 +1507,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.schemaId = this.schemaId;
       request.moduleId = this.moduleId;
       request.brWeightage = this.form.value.weightage;
-      request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
+      request.categoryId =  this.form.value.categoryId || this.coreSchemaBrInfo.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
       request.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
