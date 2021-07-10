@@ -145,8 +145,8 @@ export class EndpointsAnalyticsService {
   /**
    * endpoint to export report
    */
-  public exportReport(reportId: string): string {
-    return `${this.apiUrl}/report/export-config?reportId=${reportId}`;
+  public exportReport(reportId: string, reportName: string): string {
+    return `${this.apiUrl}/report/export-config?reportId=${reportId}&reportName=${reportName}`;
   }
 
   /**
@@ -163,7 +163,7 @@ export class EndpointsAnalyticsService {
     return `${this.apiUrl}/report/import?fileSno=${fileSno}&replaceOld=${replaceOld}&keepCopy=${keepCopy}`;
   }
 
-  public shareReport(reportId: string) : string {
+  public shareReport(reportId: string): string {
     return `${this.apiUrl}/report/share?reportId=${reportId}`;
   }
 }

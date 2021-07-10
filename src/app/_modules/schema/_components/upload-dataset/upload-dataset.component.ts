@@ -858,7 +858,10 @@ get selectedRunningSchedule () {
         apiKey,
         transFormationSchema,
         duplicacyField,
-        duplicacyMaster } = rule;
+        duplicacyMaster,
+        source_field,
+        accuracyScore,
+        target_field } = rule;
 
         // Handle duplicacy rule data
         const duplicacyRuleData = {duplicacyField, duplicacyMaster};
@@ -882,7 +885,10 @@ get selectedRunningSchedule () {
           weightage: brWeightage,
           categoryId,
           transFormationSchema,
-          duplicacyRuleData
+          duplicacyRuleData,
+          accuracyScore,
+          source_field,
+          target_field
         }
       });
     });
@@ -952,7 +958,10 @@ get selectedRunningSchedule () {
       transFormationSchema: object.transFormationSchema,
       isCopied: object.isCopied ? object.isCopied : false,
       duplicacyField: object.duplicacyRuleData.duplicacyField || [],
-      duplicacyMaster: object.duplicacyRuleData.duplicacyMaster || []
+      duplicacyMaster: object.duplicacyRuleData.duplicacyMaster || [],
+      source_field: object.source_field ? object.source_field : '',
+      target_field: object.target_field ? object.target_field : '',
+      accuracyScore: object.accuracyScore ? object.accuracyScore : 0
     } as CoreSchemaBrInfo;
   }
 

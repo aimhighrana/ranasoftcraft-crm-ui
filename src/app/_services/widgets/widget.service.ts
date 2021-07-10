@@ -167,9 +167,9 @@ export class WidgetService {
   /**
    * Call http to export a report
    */
-   public exportReport(reportId: string) : Observable<any> {
+   public exportReport(reportId: string, reportName:string) : Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
-    return this.http.get(this.endpointAnalyticService.exportReport(reportId),{headers, responseType: 'text'});
+    return this.http.get(this.endpointAnalyticService.exportReport(reportId,reportName),{headers, responseType: 'text'});
   }
 
   /**

@@ -41,7 +41,7 @@ const routes: Routes = [
   { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
-  { path: 'attribute-mapping/:moduleId/:nounCode/:modCode', component: LibraryMappingSidesheetComponent },
+  { path: 'attribute-mapping/:moduleId/:schemaId/:nounCode/:modCode', component: LibraryMappingSidesheetComponent },
   { path: 'attribute/:nounSno', component: AttributeComponent },
   { path: 'noun/:moduleId/:matlGroup', component: NounComponent },
   { path: 'modifier/:moduleId/:matlGroup/:nounCode', component: ModifierComponent },

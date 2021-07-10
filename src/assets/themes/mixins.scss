@@ -555,84 +555,88 @@
   mat-chip-list {
     outline: none;
 
-    mat-chip.mat-chip {
-      font-weight: normal;
-      min-height: 24px;
-      border-radius: 30px;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      overflow: hidden;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      padding: 3px 12px;
-      font-size: 0.8rem;
+    .mat-chip-list-wrapper {
+      margin: 0;
 
-      .mat-info-icon {
-        font-size: 12px;
-      }
+      mat-chip.mat-chip {
+        font-weight: normal;
+        min-height: 24px;
+        border-radius: 30px;
+        text-overflow: ellipsis;
+        white-space: pre-line;
+        overflow: hidden;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        padding: 3px 12px;
+        font-size: 0.8rem;
 
-      &.none-stats-chip {
-        border: 1px solid $color-app-border;
-        background-color: mat-color($background-palette, card);
-        white-space: nowrap;
-      }
+        .mat-info-icon {
+          font-size: 12px;
+        }
 
-      &.mdo-filter-matchip {
-        display: flex;
-        height: 35px;
-        width: auto;
-        cursor: pointer;
-        padding: 5px 10px;
-        line-height: 0.9em;
-        border: 1px solid $color-app-border;
-        background-color: mat-color($background-palette, card);
-        margin: 0 4px;
+        &.none-stats-chip {
+          border: 1px solid $color-app-border;
+          background-color: mat-color($background-palette, card);
+          white-space: nowrap;
+        }
 
-        label {
+        &.mdo-filter-matchip {
+          display: flex;
+          height: 35px;
+          width: auto;
+          cursor: pointer;
+          padding: 5px 10px;
+          line-height: 0.9em;
+          border: 1px solid $color-app-border;
+          background-color: mat-color($background-palette, card);
           margin: 0 4px;
+
+          label {
+            margin: 0 4px;
+          }
+
+          .info {
+            color: $color-text-link;
+            margin-right: 3px;
+          }
         }
 
-        .info {
-          color: $color-text-link;
-          margin-right: 3px;
+        &.info-status {
+          background: $color-status-info-accent;
+          color: $color-status-info;
+        }
+
+        &.error-status {
+          background: $color-status-error-accent;
+          color: $color-status-error;
+        }
+
+        &.success-status {
+          background: $color-status-success-accent;
+          color: $color-status-success;
+        }
+
+        &.warning-status {
+          background: $color-status-warning-accent;
+          color: $color-status-warning;
+        }
+
+        &.selected {
+          background: $color-app-selected;
+          border-color: $color-app-selected;
+          color: $color-text-canvas;
+        }
+
+        &.unselected {
+          background: mat-color($background-palette, card);
+          border: 1px solid $color-app-border;
+          color: $color-text-primary;
         }
       }
 
-      &.info-status {
-        background: $color-status-info-accent;
-        color: $color-status-info;
+      mat-chip.mat-chip.mat-standard-chip::after {
+        background: transparent;
       }
-
-      &.error-status {
-        background: $color-status-error-accent;
-        color: $color-status-error;
-      }
-
-      &.success-status {
-        background: $color-status-success-accent;
-        color: $color-status-success;
-      }
-
-      &.warning-status {
-        background: $color-status-warning-accent;
-        color: $color-status-warning;
-      }
-
-      &.selected {
-        background: $color-app-selected;
-        border-color: $color-app-selected;
-        color: $color-text-canvas;
-      }
-
-      &.unselected {
-        background: mat-color($background-palette, card);
-        border: 1px solid $color-app-border;
-        color: $color-text-primary;
-      }
-    }
-
-    mat-chip.mat-chip.mat-standard-chip::after {
-      background: transparent;
     }
   }
 
@@ -766,14 +770,6 @@
     }
   }
 
-  .filter-btn button,
-  .menu-link-btn button {
-    border-color: $color-app-border;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 50%;
-  }
-
   //Mat-Menu
   .cdk-overlay-pane {
     &.display-dialog {
@@ -807,27 +803,14 @@
       }
 
       &.navigation-menu {
+        .menu-search-row {
+          padding: 8px;
+        }
+
         .menu-customdropdown {
           max-height: 360px;
           min-height: auto;
           overflow: auto;
-
-          &.search-module-dropdown {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            overflow-y: auto;
-
-            .lib-button {
-              width: 100%;
-
-              button {
-                width: 100%;
-                text-align: left;
-                margin-left: 5px;
-              }
-            }
-          }
         }
 
         mat-divider.mat-divider {
@@ -1394,10 +1377,6 @@
     }
   }
 
-  .lib-button.navbar-action .mdo-button.mdo-minor {
-    background: $color-text-canvas;
-  }
-
   pros-primary-navigation {
     mat-sidenav-content.body-sidecontent {
       height: calc(100% - 60px);
@@ -1462,10 +1441,6 @@
     }
   }
 
-  .mat-nav-list .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
-    top: 5px;
-  }
-
   pros-settings {
     .mat-list-item.selected {
       background-color: $color-app-hover;
@@ -1478,13 +1453,7 @@
         box-shadow: $inset-box-shadow;
 
         .nav-tree {
-          .badge {
-            color: $color-text-secondary;
-          }
-
           .mat-list-item {
-            font-size: 14px;
-
             &.selected {
               background-color: $color-app-hover;
             }
@@ -1717,11 +1686,16 @@
           div.col {
             &.select-col {
               background: $color-accent;
-            }
 
-            button.f-selected-col,
-            .range-slider {
-              background-color: mat-color($background-palette, card);
+              .cdk-overlay-pane {
+                button.mdo-button:hover {
+                  background: transparent;
+
+                  .mat-button-focus-overlay {
+                    opacity: 0;
+                  }
+                }
+              }
             }
           }
         }
@@ -1910,6 +1884,10 @@
           mat-list-item.mat-list-item {
             border-bottom: 1px solid $color-app-border;
 
+            &.mat-list-item:hover {
+              background-color: $color-app-hover;
+            }
+
             .mat-list-item-content {
               min-height: 48px;
               padding: 0;
@@ -1918,25 +1896,18 @@
               .mat-expand-icon {
                 color: $color-text-secondary;
               }
-
-              .mdo-chip-list {
-                .mdo-label {
-                  display: flex;
-                  align-items: center;
-                }
-              }
-
-              mat-card-header.mat-card-header {
-                .mat-card-header-text {
-                  margin: 0;
-                }
-              }
             }
           }
         }
       }
     }
   }
+
+  // pros-table-cell-input {
+  //   mat-form-field.edit-cell {
+  //     background: #;
+  //   }
+  // }
 
   pros-classification-builder {
     div.root {
@@ -1946,8 +1917,12 @@
         .nav-tree {
           mat-nav-list.mat-nav-list.tree-nav-list {
             .understep-two {
+              &.mat-list-item:hover {
+                background: $color-app-hover;
+              }
+
               .mat-list-item-content {
-                padding: 0 0 0 64px;
+                padding: 0 16px 0 64px;
               }
             }
           }
@@ -1958,6 +1933,12 @@
           background-color: mat-color($background-palette, card);
         }
       }
+    }
+  }
+
+  pros-global-count {
+    .sum-collection::after {
+      background-color: $color-text-secondary;
     }
   }
 
@@ -2043,12 +2024,6 @@
 
     .mdo-field-input {
       border: 1px solid $color-status-error;
-    }
-  }
-
-  div.root .summary-sidesheet.sidesheetcontent-listing {
-    .lib-input .mdo-field .mdo-field-label {
-      font-size: 14px;
     }
   }
 
@@ -2261,14 +2236,6 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
   margin-bottom: 17px;
 }
 
-// primary menu btns
-.menu-btn {
-  button {
-    width: 100%;
-    text-align: start;
-  }
-}
-
 .date-picker-option .dropdown-option {
   padding: initial;
 }
@@ -2291,7 +2258,3 @@ mat-tooltip-component {
 //     height: calc(100% - 75px);
 //   }
 // }
-
-.br-sidesheet-btn button {
-  width: 60px;
-}

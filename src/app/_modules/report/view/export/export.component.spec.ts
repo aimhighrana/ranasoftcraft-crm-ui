@@ -52,15 +52,15 @@ describe('ExportComponent', () => {
     expect(mockDialogRef.close).toHaveBeenCalled();
   }));
 
-  it('onConfirm(),shouldCOnfirm',async(()=>{
-    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValue(of({errorMsg:'Network error'}));
-    component.data = { reportId:'1234'};
+  it('onConfirm(),should Confirm',async(()=>{
+    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234','Test report').and.returnValue(of({errorMsg:'Network error'}));
+    component.data = { reportId:'1234', reportName:'Test report'};
     component.onConfirm();
     expect(component.errorMsg).toContain('Unable to complete export:');
   }))
 
   it('onConfirm(),should close when no error',async(()=>{
-    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValue(of({errorMsg:''}));
+    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234','test report').and.returnValue(of({errorMsg:''}));
     component.data = { reportId:'1234', reportName:'test report'};
     component.onConfirm();
     expect(component.errorMsg).toBeUndefined();
@@ -68,9 +68,9 @@ describe('ExportComponent', () => {
   }))
 
   it('onConfirm(),should close when error thrown',async(()=>{
-    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234').and.returnValues(throwError('error'),throwError({error: {errorMsg :'error'}}),
+    spyOn(WidgetServiceSpy,'exportReport').withArgs('1234','test report').and.returnValues(throwError('error'),throwError({error: {errorMsg :'error'}}),
     throwError({error: {error :'error thown'}}));
-    component.data = { reportId:'1234'};
+    component.data = { reportId:'1234', reportName: 'test report'};
     component.onConfirm();
     expect(component.errorMsg).toContain('Unable to complete export:');
 

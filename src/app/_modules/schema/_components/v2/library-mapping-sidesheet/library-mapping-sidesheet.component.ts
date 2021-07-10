@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributeMapData, AttributesMapping } from '@models/schema/classification';
 import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
@@ -8,6 +7,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserService } from '@services/user/userservice.service';
+import { TransientService } from 'mdo-ui-library';
 import { debounceTime } from 'rxjs/operators';
 
 interface Status {
@@ -24,6 +24,11 @@ interface Status {
 export class LibraryMappingSidesheetComponent implements OnInit {
 
   moduleId: string;
+
+  /**
+   * Hold current schema id
+   */
+  schemaId: string;
 
   libraryNounCode: string;
 
@@ -71,7 +76,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     private formBuilder: FormBuilder,
     private schemaDetailsService: SchemaDetailsService,
     private nounModifierService: NounModifierService,
-    private snackBar: MatSnackBar,
+    private snackBar: TransientService,
     private sharedServices: SharedServiceService,
     private userDetails: UserService
     ) { }
@@ -81,6 +86,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.moduleId = params.moduleId;
       this.libraryNounCode = params.nounCode;
       this.libraryModifierCode = params.modCode;
+      this.schemaId = params.schemaId;
 
       this.buildMappingForm();
 
@@ -238,9 +244,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
     console.log(attrMapRequest);
 
-    this.nounModifierService.saveAttributesMapping(attrMapRequest)
+    this.nounModifierService.saveAttributesMapping(attrMapRequest, this.schemaId)
       .subscribe(resp => {
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });
+        this.sharedServices.setAfterMappingSaved(true);
         this.close();
       },
         error => {

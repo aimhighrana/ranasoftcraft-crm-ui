@@ -17,6 +17,7 @@ import { BlockType } from '@modules/report/_models/widget';
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 import { ValidationError } from '@models/schema/schema';
+import { TransientService } from 'mdo-ui-library';
 
 class ConditionalOperator {
     desc: string;
@@ -71,9 +72,19 @@ export class NewBusinessRulesComponent implements OnInit {
     filteredModules: Observable<{} | string | void> = of([]);
 
     /**
+     * observable to autocomplete target fields
+     */
+    targetFieldModules: Observable<{} | string | void> = of([]);
+
+    /**
      * array to save the selected fields
      */
     selectedFields = [];
+
+    /**
+     * array to store the selected target fields
+     */
+    selectedTargetFields = [];
 
     /**
      * target fields for transformation rule
@@ -191,6 +202,11 @@ export class NewBusinessRulesComponent implements OnInit {
     @ViewChild('fieldsInput') fieldsInput: ElementRef;
 
     /**
+     * reference to target field search input
+     */
+    @ViewChild('targetFieldsInput') targetFieldsInput: ElementRef;
+
+    /**
      * Hold the duplicacy rule data here
      */
     duplicacyRuleData: CoreSchemaBrInfo = new CoreSchemaBrInfo();
@@ -209,6 +225,11 @@ export class NewBusinessRulesComponent implements OnInit {
     searchRuleTypeStr = '';
 
     /**
+     * Holds search string for source field dropdown
+     */
+    searchSourceFieldStr = '';
+
+    /**
      * Hold search string for regex functions ....
      */
     searchRegexFunctionStr = '';
@@ -224,7 +245,8 @@ export class NewBusinessRulesComponent implements OnInit {
         private dialogRef: MatDialogRef<Component>,
         @Inject(MAT_DIALOG_DATA) public data,
         private schemaDetailsService: SchemaDetailsService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private toastService: TransientService
     ) { }
 
     /**
@@ -275,7 +297,10 @@ export class NewBusinessRulesComponent implements OnInit {
                 weightage,
                 categoryId,
                 transFormationSchema,
-                duplicacyRuleData } = this.data.createRuleFormValues;
+                duplicacyRuleData,
+                accuracyScore,
+                source_field,
+                target_field } = this.data.createRuleFormValues;
 
             // handle existing transformation data separately
             this.patchTransformationFormData(transFormationSchema);
@@ -295,7 +320,15 @@ export class NewBusinessRulesComponent implements OnInit {
                 weightage,
                 categoryId,
                 transformationRuleType: this.getTrRuleType(transFormationSchema),
+                accuracyScore,
+                source_field,
+                target_field
             });
+
+            // setting value for rule type single select dropdown
+            this.searchRuleTypeStr = rule_type;
+            // setting value for source field single select dropdown
+            this.searchSourceFieldStr = source_field;
 
             // Disable the rule type field on patch
             this.form.controls.rule_type.disable();
@@ -332,6 +365,10 @@ export class NewBusinessRulesComponent implements OnInit {
                 this.allUDRBlocks = [...temp];
                 this.allhierarchies = [...udrTreeData.udrHierarchies];
             }
+        } else {
+            // setting missing rule as default rule
+            this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
+            this.searchRuleTypeStr = this.form.controls.rule_type.value;
         }
 
         if (this.data && this.data.moduleId) {
@@ -343,15 +380,13 @@ export class NewBusinessRulesComponent implements OnInit {
 
         // Initializing autocomplete
         this.initiateAutocomplete();
-
-        this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
     }
 
     /**
      * Removes untested rule types
      */
     filterRuleTypes() {
-        const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK'];
+        const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK', 'MRO_MANU_PRT_NUM_IDENTI'];
         this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
     }
 
@@ -445,7 +480,9 @@ export class NewBusinessRulesComponent implements OnInit {
             weightage: new FormControl(0, [Validators.required]),
             categoryId: new FormControl(''),
             transformationRuleType: new FormControl(''),
-
+            accuracyScore: new FormControl(0),
+            source_field: new FormControl(''),
+            target_field: new FormControl('')
         };
 
         this.currentControls = controls;
@@ -505,7 +542,31 @@ export class NewBusinessRulesComponent implements OnInit {
             if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
                 this.patchFieldvalues(this.data.createRuleFormValues.fields);
             }
+            if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.target_field) {
+                this.patchTargetFieldValues(this.data.createRuleFormValues.target_field);
+            }
         });
+    }
+
+    /**
+     * patch selected target field values, common function to be used with
+     * excel and mudule fields
+     * @param fields pass the comma separated fields
+     */
+    patchTargetFieldValues(fields) {
+        const arr = fields.split(',');
+        if (arr && arr.length > 0) {
+            arr.map((selected) => {
+                const fieldObj = this.fieldsList.filter((field) => field.fieldId === selected);
+                if (fieldObj && fieldObj.length > 0) {
+                    const tempObj = fieldObj[0];
+                    this.selectedTargetFields.push({
+                        fieldDescri: tempObj.fieldDescri,
+                        fieldId: tempObj.fieldId
+                    });
+                }
+            });
+        }
     }
 
     /**
@@ -543,6 +604,16 @@ export class NewBusinessRulesComponent implements OnInit {
                         }) : this.fieldsList
                 }),
             )
+
+        this.targetFieldModules = this.form.controls.target_field.valueChanges.pipe(startWith(''), map(keyword => {
+            return keyword
+                ?
+                this.fieldsList.filter(item => {
+                    return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+                })
+                :
+                this.fieldsList
+        }));
     }
 
     /**
@@ -563,9 +634,14 @@ export class NewBusinessRulesComponent implements OnInit {
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
         }
-        if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+        if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields'];
         }
+
+        if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'accuracyScore', 'source_field', 'apiKey'];
+        }
+
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
             requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
             if (this.selectedTransformationType === this.transformationType.REGEX) {
@@ -586,7 +662,7 @@ export class NewBusinessRulesComponent implements OnInit {
             if (index === -1) {
                 this.form.get(key).setValidators(null);
                 this.form.get(key).clearValidators();
-                if (key !== 'rule_type' && key !== 'weightage' && !this.data?.createRuleFormValues) {
+                if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && !this.data?.createRuleFormValues) {
                     this.form.get(key).setValue('');
                 }
             } else {
@@ -658,6 +734,36 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     /**
+     * func to select target field
+     * @param event value
+     */
+    selectTargetField(event) {
+        const alreadyExists = this.selectedTargetFields.find(item => item.fieldId === event.option.value);
+        if (alreadyExists) {
+            this.toastService.open(`This field is already selected`, `Close`, { duration: 2000 });
+        } else {
+            this.selectedTargetFields.push({
+                fieldDescri: event.option.viewValue,
+                fieldId: event.option.value
+            });
+        }
+        this.form.controls.target_field.setValue('');
+        const txtfield = document.getElementById('targetFieldsInput') as HTMLInputElement;
+        txtfield.value = '';
+        if (this.targetFieldsInput) {
+            this.targetFieldsInput.nativeElement.blur();
+        }
+    }
+
+    /**
+     * func to remove the value
+     * @param i index of removable field
+     */
+    removeTargetField(i) {
+        this.selectedTargetFields.splice(i, 1);
+    }
+
+    /**
      * getter to show field on the basis of rule type
      */
     get isRegexType() {
@@ -696,6 +802,7 @@ export class NewBusinessRulesComponent implements OnInit {
                     control.markAsTouched();
             });
         this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
+        this.form.controls.target_field.setValue(this.selectedTargetFields.map(item => item.fieldId).join(','));
         if (!this.form.valid) {
             this.showValidationError('Please fill the required fields.');
             return;
@@ -819,6 +926,11 @@ export class NewBusinessRulesComponent implements OnInit {
     get businessRuleTypesFiltered() {
         const searchStr = this.searchRuleTypeStr?.toLowerCase();
         return this.businessRuleTypes.filter(x => x.ruleDesc?.toLowerCase().includes(searchStr) ||  x.ruleType?.toLowerCase().includes(searchStr));
+    }
+
+    get sourceFieldFiltered() {
+        const searchStr = this.searchSourceFieldStr?.toLowerCase();
+        return this.sourceFieldsObject.list.filter(x => x[this.sourceFieldsObject.labelKey]?.toLowerCase().includes(searchStr) || x[this.sourceFieldsObject.valueKey]?.toLowerCase().includes(searchStr));
     }
 
     get preDefinedRegexFiltered() {
@@ -1061,6 +1173,13 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     /**
+     * check if rule type is Manufacturer Part Number Identification
+     */
+    get isMPNI() {
+        return this.form.controls.rule_type.value === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI;
+    }
+
+    /**
      * Setting the duplicate form reference
      * @param formRef pass the form referene
      */
@@ -1109,6 +1228,16 @@ export class NewBusinessRulesComponent implements OnInit {
    displayCategoryFn(value?: string) {
     return value ? this.categoryList.find(category => category.categoryId === value)?.categoryDesc : '';
   }
+
+  /**
+   * function to return field name from code
+   * @param value field code
+   * @returns field display label name
+   */
+  displaySourceFieldFn(value?: string) {
+    return value ? this.sourceFieldsObject.list.find(field => field[this.sourceFieldsObject.valueKey] === value)?.[this.sourceFieldsObject.labelKey] : '';
+  }
+
   /**
    * function to UPDATE Transformation rule type when lib radio is clicked
    */

@@ -16,8 +16,6 @@ export class SharedServiceService {
 
   private editDatascopeTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  private closeEditDatascopeSidesheetTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
-
   private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -78,6 +76,11 @@ export class SharedServiceService {
    * Subject for after saved  trans and reload in br map ...
    */
   private transSavedBehaviourSub:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * Flag after save mappings ...
+   */
+  private afterMappingSaved:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor() {}
 
@@ -291,4 +294,12 @@ export class SharedServiceService {
   public getEditDatascopeTriggerObservable() {
     return this.editDatascopeTrigger.asObservable();
   }
+  public setAfterMappingSaved(flag: boolean) {
+    this.afterMappingSaved.next(flag);
+  }
+
+  public getAfterMappingSaved(): Observable<boolean> {
+    return this.afterMappingSaved.asObservable();
+  }
+
 }
