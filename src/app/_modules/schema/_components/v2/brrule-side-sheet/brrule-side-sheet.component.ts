@@ -56,7 +56,7 @@ export class BrruleSideSheetComponent implements OnInit {
   ) { }
 
   /**
-   * getter for transformation types
+   * getter for transformation types...
    */
   get transformationType() {
     return TransformationRuleType;
