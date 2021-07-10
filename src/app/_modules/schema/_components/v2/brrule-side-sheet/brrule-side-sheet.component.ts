@@ -1756,6 +1756,9 @@ export class BrruleSideSheetComponent implements OnInit {
     this.schemaDetailsService.getAllCategoryInfo().subscribe((response: CategoryInfo[]) => {
       if (response && response.length > 0) {
         this.categoryList = response;
+        if(this.form) {
+          this.form.controls.categoryId.setValue(this.form.value.categoryId);
+        }
       }
     })
   }
