@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DataScopeSidesheet } from '@models/schema/schema';
 import { VariantDetails } from '@models/schema/schemalist';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -38,6 +39,8 @@ export class DatascopeListSidesheetComponent implements OnInit, OnDestroy {
    */
   pageNo = 0;
 
+  datascopeSheetState: DataScopeSidesheet;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -58,10 +61,12 @@ export class DatascopeListSidesheetComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.sharedService.getAfterEditDatascopeSideSheetClose().subscribe((res) => {
-      if (res && this.schemaId) {
-        this.getSchemaVariants(this.schemaId, 'RUNFOR', 0);
-        this.sharedService.setAfterEditDatascopeSideSheetClose(null);
+    this.sharedService.getdatascopeSheetState().subscribe((res) => {
+      if (res) {
+        this.datascopeSheetState = res;
+        if (this.datascopeSheetState.openedFrom === 'schemaInfo' && !this.datascopeSheetState.editSheet && this.datascopeSheetState.isSave && this.schemaId) {
+          this.getSchemaVariants(this.schemaId, 'RUNFOR', 0);
+        }
       }
     });
   }
@@ -116,7 +121,9 @@ export class DatascopeListSidesheetComponent implements OnInit, OnDestroy {
    * @param variantId variant id
    */
   editDataScope(variantId: string) {
-    this.sharedService.triggerEditDatascope(variantId);
+    this.datascopeSheetState.variantId = variantId;
+    this.datascopeSheetState.editSheet = true;
+    this.sharedService.setdatascopeSheetState(this.datascopeSheetState);
   }
 
   /**
@@ -153,5 +160,11 @@ export class DatascopeListSidesheetComponent implements OnInit, OnDestroy {
    */
   close(){
     this.router.navigate([{ outlets: { [this.outlet]: null } }], {queryParamsHandling: 'preserve'});
+    const state = {
+      openedFrom: this.datascopeSheetState.openedFrom,
+      editSheet: false,
+      listSheet: false
+    };
+    this.sharedService.setdatascopeSheetState(state);
   }
 }

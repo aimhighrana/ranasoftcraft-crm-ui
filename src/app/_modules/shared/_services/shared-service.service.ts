@@ -3,6 +3,7 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ListPageViewDetails } from '@models/list-page/listpage';
+import { DataScopeSidesheet } from '@models/schema/schema';
 
 @Injectable({
   providedIn: 'root',
@@ -81,6 +82,8 @@ export class SharedServiceService {
    * Flag after save mappings ...
    */
   private afterMappingSaved:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  private datascopeSheetState: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() {}
 
@@ -279,27 +282,20 @@ export class SharedServiceService {
     return this.transSavedBehaviourSub.asObservable();
   }
 
-  public setAfterEditDatascopeSideSheetClose(data: any) {
-    this.afterEditDatascopeSideSheetClose.next(data);
-  }
-
-  public getAfterEditDatascopeSideSheetClose() {
-    return this.afterEditDatascopeSideSheetClose.asObservable();
-  }
-
-  public triggerEditDatascope(data: any) {
-    this.editDatascopeTrigger.next(data);
-  }
-
-  public getEditDatascopeTriggerObservable() {
-    return this.editDatascopeTrigger.asObservable();
-  }
   public setAfterMappingSaved(flag: boolean) {
     this.afterMappingSaved.next(flag);
   }
 
   public getAfterMappingSaved(): Observable<boolean> {
     return this.afterMappingSaved.asObservable();
+  }
+
+  public setdatascopeSheetState(data: DataScopeSidesheet) {
+    this.datascopeSheetState.next(data);
+  }
+
+  public getdatascopeSheetState() {
+    return this.datascopeSheetState.asObservable();
   }
 
 }

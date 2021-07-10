@@ -194,3 +194,11 @@ export interface SchemaTableViewDto {
      selectedFields: SchemaTableViewFldMap[];
      unselectedFields: MetadataModel[];
 }
+
+export interface DataScopeSidesheet {
+     openedFrom: string;
+     editSheet: boolean;
+     listSheet: boolean;
+     variantId?: string;
+     isSave?: boolean;
+}
