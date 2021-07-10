@@ -1685,11 +1685,16 @@
           div.col {
             &.select-col {
               background: $color-accent;
-            }
 
-            button.f-selected-col,
-            .range-slider {
-              background-color: mat-color($background-palette, card);
+              .cdk-overlay-pane {
+                button.mdo-button:hover {
+                  background: transparent;
+
+                  .mat-button-focus-overlay {
+                    opacity: 0;
+                  }
+                }
+              }
             }
           }
         }
@@ -1897,6 +1902,12 @@
     }
   }
 
+  // pros-table-cell-input {
+  //   mat-form-field.edit-cell {
+  //     background: #;
+  //   }
+  // }
+
   pros-classification-builder {
     div.root {
       .listset-navigation {
@@ -1910,7 +1921,7 @@
               }
 
               .mat-list-item-content {
-                padding: 0 8px 0 64px;
+                padding: 0 16px 0 64px;
               }
             }
           }
@@ -2012,12 +2023,6 @@
 
     .mdo-field-input {
       border: 1px solid $color-status-error;
-    }
-  }
-
-  div.root .summary-sidesheet.sidesheetcontent-listing {
-    .lib-input .mdo-field .mdo-field-label {
-      font-size: 14px;
     }
   }
 
@@ -2230,14 +2235,6 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
   margin-bottom: 17px;
 }
 
-// primary menu btns
-.menu-btn {
-  button {
-    width: 100%;
-    text-align: start;
-  }
-}
-
 .date-picker-option .dropdown-option {
   padding: initial;
 }
@@ -2260,7 +2257,3 @@ mat-tooltip-component {
 //     height: calc(100% - 75px);
 //   }
 // }
-
-.br-sidesheet-btn button {
-  width: 60px;
-}

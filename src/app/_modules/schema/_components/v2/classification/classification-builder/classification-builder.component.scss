@@ -31,7 +31,6 @@ div.root {
       .listset-navigation {
         height: 100%;
         width: 292px;
-        padding-right: 12px;
         margin-right: 12px;
         border-right-width: 1px;
         border-right-style: solid;
@@ -47,7 +46,7 @@ div.root {
               border-radius: 0;
 
               .mat-expansion-panel-header {
-                padding: 0 8px;
+                padding: 0 16px 0 8px;
 
                 mat-panel-title {
                   width: 100%;

@@ -30,13 +30,17 @@ div.root {
         margin-bottom: 6px;
       }
 
-      .lib-slider {
-        height: 36px;
-      }
+      .slider-row {
+        flex: 1;
 
-      .lib-divider {
-        margin-bottom: 12px;
-        display: block;
+        .lib-slider {
+          height: 48px;
+          width: 100%;
+        }
+
+        .percentage {
+          width: 36px;
+        }
       }
 
       .mat-error {
@@ -108,6 +112,27 @@ div.root {
         .sub-defined {
           padding-left: 100px;
           margin-top: -17px;
+        }
+      }
+
+      pros-udr-value-control {
+        display: flex;
+        flex: 1;
+      }
+
+      .field-chip-list {
+        flex-wrap: wrap;
+
+        .lib-chip {
+          display: flex;
+          flex-direction: row;
+          width: auto;
+          padding: 2px;
+        }
+
+        .mat-input {
+          width: auto;
+          flex: 1;
         }
       }
     }

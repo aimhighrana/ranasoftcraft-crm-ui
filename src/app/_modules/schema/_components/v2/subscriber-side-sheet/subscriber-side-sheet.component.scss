@@ -13,18 +13,10 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
 
-      pros-search-input {
+      .lib-search {
         min-width: 213px;
       }
     }
@@ -47,13 +39,9 @@ div.root {
 
             .lib-button {
               display: flex;
-              width: 48px;
+              width: 64px;
             }
           }
-        }
-
-        mat-list mat-card-header.avatar-header {
-          flex-direction: row-reverse;
         }
       }
     }
