@@ -72,6 +72,11 @@ describe('DatascopeListSidesheetComponent', () => {
   }));
 
   it('editDataScope()', async(() => {
+    component.datascopeSheetState = {
+      openedFrom: 'schemaInfo',
+      listSheet: true,
+      editSheet: false
+    };
     expect(component.editDataScope('123')).toBeUndefined();
   }));
 
@@ -88,6 +93,11 @@ describe('DatascopeListSidesheetComponent', () => {
 
   it('close()', async(() => {
     spyOn(router, 'navigate');
+    component.datascopeSheetState = {
+      openedFrom: 'schemaInfo',
+      listSheet: true,
+      editSheet: false
+    };
     component.close();
 
     expect(router.navigate).toHaveBeenCalled();
