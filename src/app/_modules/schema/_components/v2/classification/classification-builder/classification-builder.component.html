@@ -102,10 +102,10 @@
                                             </mat-expansion-panel-header>
 
                                             <mat-nav-list role="navigation" class="tree-nav-list">
-                                                <mat-list-item class="f-row understep-two"
+                                                <mat-list-item class="f-row understep-two" [class.selected]="noun.nounCode === activeNounCode && modifier.modCode === activeModeCode"
                                                     *ngFor="let modifier of noun.modifier"
-                                                    (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_CLS_MASTER_CHECK'); 
-                                                    innerBreadcurmbtxt = 'Master library' + ' / ' + noun?.nounDesc + ' / ' + modifier?.modDesc">
+                                                    (click)="getColumnWithMetadata('MRO_CLS_MASTER_CHECK',noun.nounCode, modifier.modCode);
+                                                    innerBreadcurmbtxt = 'Master library' + ' / ' + noun?.nounDesc + ' / ' + (modifier?.modDesc ? modifier?.modDesc : 'Unknown' )">
                                                     <lib-text-line type="base" class="expand-title">{{ modifier.modDesc ? modifier.modDesc :
                                                         'Unknown' }}</lib-text-line>
                                                     <span class="f-spacer"></span>
@@ -146,10 +146,10 @@
                                             </mat-expansion-panel-header>
 
                                             <mat-nav-list role="navigation" class="tree-nav-list">
-                                                <mat-list-item class="f-row understep-two"
+                                                <mat-list-item class="f-row understep-two" [class.selected]="noun.nounCode === activeNounCode && modifier.modCode === activeModeCode"
                                                     *ngFor="let modifier of noun.modifier"
                                                     (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP');
-                                                    innerBreadcurmbtxt = 'Connekthub library' + ' / ' + noun?.nounDesc + ' / ' + modifier?.modDesc">
+                                                    innerBreadcurmbtxt = 'Connekthub library' + ' / ' + noun?.nounDesc + ' / ' + (modifier?.modDesc ? modifier?.modDesc : 'Unknown' )">
                                                     <lib-button type="plain" icon="link"
                                                         (click)="openAttributeMapping(noun.nounCode,modifier.modCode)">
                                                     </lib-button>
@@ -199,8 +199,8 @@
                         <div class="f-row action-iconbtns"
                             *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
                             <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                                <lib-button type="minor" (click)="generateDesc('',0,'all')">Generate description
-                                </lib-button>
+                                <!-- <lib-button type="minor" (click)="generateDesc('',0,'all')">Generate description
+                                </lib-button> -->
                                 <lib-button type="minor" (click)="approveRec('',0,'all')">Approve</lib-button>
                                 <lib-button type="minor" (click)="rejectRec('',0,'all')">Reject</lib-button>
                             </ng-template>
@@ -285,9 +285,9 @@
                                 <ng-template #other>
                                     <ng-container [matColumnDef]="dynCols">
                                         <mat-header-cell *matHeaderCellDef>
-                                            {{ columnName(dynCols) }}
+                                            {{ columnName(dynCols) }} <span class="mandatory" *ngIf="isMandatory(dynCols)">*</span>
                                         </mat-header-cell>
-                                        <mat-cell *matCellDef="let element; let rIndex = index;"
+                                        <mat-cell *matCellDef="let element; let rIndex = index;" [class.error-cell]="element[dynCols] && element[dynCols].err_msg ? true : false"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                             <div class="f-col grid-cell-editable">
                                                 <div class="mdo-form-input f-col" style="display: none;"
@@ -299,6 +299,10 @@
                                                 <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                     {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
                                                 </span>
+
+                                                <span class="error-message">
+                                                    {{ element[dynCols] ? element[dynCols].err_msg : '' }}
+                                                </span>   
                                             </div>
                                         </mat-cell>
                                     </ng-container>

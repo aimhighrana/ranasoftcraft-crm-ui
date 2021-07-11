@@ -3,7 +3,7 @@ import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ClassificationNounMod, MetadataModeleResponse, SchemaTableAction } from '@models/schema/schemadetailstable';
+import { ClassificationHeader, ClassificationNounMod, MetadataModeleResponse, SchemaTableAction } from '@models/schema/schemadetailstable';
 import { SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
@@ -14,6 +14,7 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { GlobalCountComponent } from '../../_builder/global-count/global-count.component';
 
 import { ClassificationBuilderComponent } from './classification-builder.component';
 
@@ -30,7 +31,7 @@ describe('ClassificationBuilderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClassificationBuilderComponent, SearchInputComponent ],
+      declarations: [ ClassificationBuilderComponent, SearchInputComponent, GlobalCountComponent ],
       imports:[
         HttpClientTestingModule,
         RouterTestingModule,
@@ -452,11 +453,12 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     } as ClassificationNounMod;
 
     spyOn(component, 'applyFilter');
+    spyOn(component, 'getColumnWithMetadata');
     spyOn(schemaDetailService, 'getClassificationNounMod')
       .and.returnValues(of(response), of(response), of(response), of({} as ClassificationNounMod), throwError({status:500}));
 
     component.getClassificationNounMod();
-    expect(component.applyFilter).toHaveBeenCalledWith('Bearing', 'Ball', 'MRO_CLS_MASTER_CHECK');
+    expect(component.getColumnWithMetadata).toHaveBeenCalledWith('MRO_CLS_MASTER_CHECK','Bearing', 'Ball');
 
     // no modifier code
     response.MRO_CLS_MASTER_CHECK.info[0].modifier[0].modCode = '';
@@ -560,8 +562,15 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
   });
 
   it('should columnName', () => {
+    component.dataFrm = 'MRO_MANU_PRT_NUM_LOOKUP';
     expect(component.columnName('OBJECTNUMBER')).toEqual('Material number');
     expect(component.columnName('unknown')).toEqual('unknown');
+
+    component.dataFrm = 'MRO_CLS_MASTER_CHECK';
+    component.colsAndMetadata = [{colId:'ATT1',desc:'Attribute  1'} as ClassificationHeader,{colId:'ATT2'} as ClassificationHeader];
+    expect(component.columnName('ATT1')).toEqual('Attribute  1');
+    expect(component.columnName('ATT2')).toEqual('ATT2');
+
   })
   // it('toggleSideBar(), toggle sidebar', () => {
   //   spyOn(component,'ngOnChanges');
@@ -621,5 +630,64 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     spyOn(schemaService,'getModuleInfoByModuleId').and.returnValues(of([]), throwError({message: 'api error'}));
     component.getModuleInfo('1005');
     expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalledWith('1005');
+  }));
+
+  it('getColumnWithMetadata(), get the columns ... ', async(()=>{
+    // mock data
+    component.schemaId = '3242424';
+    const array: ClassificationHeader[] = [{
+      colId:'ATT1'
+    } as ClassificationHeader];
+
+    spyOn(schemaDetailService, 'getClassificationDatatableColumns').withArgs(component.schemaId,'MRO_CLS_MASTER_CHECK','BEARING','BALL').and.returnValue(of(array));
+
+    spyOn(component, 'applyFilter');
+
+    component.getColumnWithMetadata('MRO_CLS_MASTER_CHECK','BEARING','BALL');
+
+    expect(component.applyFilter).toHaveBeenCalled();
+    expect(schemaDetailService.getClassificationDatatableColumns).toHaveBeenCalledWith(component.schemaId,'MRO_CLS_MASTER_CHECK','BEARING','BALL');
+
+    expect(component.displayedColumns.getValue()).toContain('ATT1');
+
+
+
+  }));
+
+  it('isMandatory(), isMandatory check ', async(()=>{
+    const array: ClassificationHeader[] = [{
+      colId:'ATT1',
+      mandatory:true
+    } as ClassificationHeader, {
+      colId:'ATT2',
+      mandatory:false
+    } as ClassificationHeader];
+
+    component.colsAndMetadata = array;
+    expect(component.isMandatory('ATT1')).toBeTrue();
+    expect(component.isMandatory('ATT2')).toBeFalse();
+
+  }));
+
+  it('_valid(), validate the attribute before send for desc generate ', async(()=>{
+
+    const array: ClassificationHeader[] = [{
+      colId:'ATT1',
+      mandatory:true
+    } as ClassificationHeader, {
+      colId:'ATT2',
+      fieldType: 'NUMERIC'
+    } as ClassificationHeader];
+
+    component.colsAndMetadata = array;
+
+    const row = {1001:[
+      {ATT1:{fieldValue:''}},
+      {ATT2:{fieldValue:'weeeuuu2222'}}
+    ]};
+
+    const msgs = component._valid(row);
+    expect(msgs).toBeNull();
+
   }));
 });
