@@ -1143,10 +1143,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaReq.discription = schemaDescription;
       schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
       schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
-      this.schemaLoader = {
-        loading: true,
-        error: false
-      };
+
+      // Show schema loader only when changing the schema name
+      if(this.schemaDetails?.schemaDescription !== schemaReq.discription) {
+        this.schemaLoader = {
+          loading: true,
+          error: false
+        };
+      }
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.schemaLoader = {
           loading: false,
@@ -1160,10 +1164,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         }
         this.getSchemaDetails(this.schemaId);
       }, (error) => {
-        this.schemaLoader = {
-          loading: false,
-          error: true
-        };
+        if(this.schemaDetails?.schemaDescription !== schemaReq.discription) {
+          this.schemaLoader = {
+            loading: false,
+            error: true
+          };
+        }
         this.toasterService.open('Something went wrong', 'ok', {
           duration: 2000
         });
@@ -1193,7 +1199,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param $event: updated schema description.
    */
   onChangeSchemaDescription($event) {
-    console.log($event);
     if (this.schemaValueChanged.observers.length === 0) {
       this.schemaValueChanged
         .pipe(distinctUntilChanged())

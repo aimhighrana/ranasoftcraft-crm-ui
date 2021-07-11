@@ -39,7 +39,12 @@
                 </div>
             </ng-container>
 
-            <div class="f-col">
+            <div class="f-col" matBadge
+                            prosStatusBadge
+                            [badgeIcon]="getStatusIcon('schemaName', schemaLoader).icon"
+                            [statusBadgePosition]="{ top: 10, right: -11 }"
+                            [badgeIconFont]="getStatusIcon('schemaName', schemaLoader).font"
+                            [badgeType]="getStatusIcon('schemaName', schemaLoader).type">
                 <lib-input (click)="schemaSummaryForm.controls.schemaName.markAsTouched()" formControlName="schemaName"
                     [isRequired]="true"
                     [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
