@@ -3,7 +3,7 @@
         <lib-button (click)="close()" type="plain" icon="times" iconFontType="light"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">
+            <lib-text-line type="leading">
                 <ng-template [ngIf]="schemaInfo" [ngIfElse]="loading">
                     {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
                     {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / Statistics
@@ -11,7 +11,7 @@
                 <ng-template #loading>
                     Statistics
                 </ng-template>
-            </div>
+            </lib-text-line>
         </div>
     </div>
     <div class="f-col sidesheetcontent-listing">

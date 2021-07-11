@@ -1,17 +1,6 @@
 div.root {
   user-select: none;
 
-  .breadcrum-toolbar {
-    align-items: center;
-
-    .display-heading-large {
-      font-size: 1rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
-
   .excution-chart {
     height: 400px;
   }

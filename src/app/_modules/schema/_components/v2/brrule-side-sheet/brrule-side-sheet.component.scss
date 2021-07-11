@@ -13,7 +13,6 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
       }
     }
@@ -158,7 +157,6 @@ div.root {
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 6px;
     flex-wrap: wrap;
 
     &.col-x4 {
@@ -171,6 +169,10 @@ div.root {
 
     &.mat-item-end {
       justify-content: flex-end;
+    }
+
+    .cursor {
+      cursor: pointer;
     }
   }
 }
