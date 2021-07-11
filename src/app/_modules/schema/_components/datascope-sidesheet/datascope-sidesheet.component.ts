@@ -146,7 +146,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to prepare data on filter selection
+   * Function to prepare data on filter selection 
    * @param event: object emitted on filter selection.
    */
   makeFilterCtrl(event: AddFilterOutput) {
