@@ -57,6 +57,9 @@ export class CoreSchemaBrInfo {
     isTransformationApplied?:boolean;
     dontMapped?: boolean;
     transformationMappingDTO?: TransformationRuleMapped[];
+    source_field? : string;
+    target_field? : string;
+    accuracyScore? : number;
 }
 
 export enum BusinessRuleType {

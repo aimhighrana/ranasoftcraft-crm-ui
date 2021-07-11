@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
-import { AddFilterOutput } from '@models/schema/schema';
+import { AddFilterOutput, DataScopeSidesheet } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
@@ -240,7 +240,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.sharedService.getDataScope().subscribe(res => {
+  this.sharedService.getDataScope().subscribe(res => {
       if(res) {
         this.dataScopeControl.setValue(res);
         this.setDataScopeName(this.dataScopeControl.value);
@@ -250,6 +250,16 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
     this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To fetch all BRs details (will use to show in auto complete)
+
+    this.sharedService.getdatascopeSheetState().subscribe((res: DataScopeSidesheet) => {
+      if (res && res.openedFrom === 'schemaSummary') {
+        if (res.editSheet && res.variantId) {
+          this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${res.variantId}/outer` } }], {queryParamsHandling: 'preserve'});
+        } else if (!res.editSheet && res.listSheet) {
+          this.router.navigate([ { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/list/${this.moduleId}/${this.schemaId}/outer` } }], {queryParamsHandling: 'preserve'});
+        }
+      }
+    });
   }
 
   setDataScopeName(variantId) {
@@ -895,6 +905,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     if(!this.schemaName.valid) {
       return false;
     }
+
     // save the schema infor
     const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
     schemaReq.moduleId = this.moduleId;
@@ -962,6 +973,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       console.log(`Created successful ${res}`);
       this.runSchema();
       this.close();
+      // Trigger to refresh the list of schemas on the left sidenav so the latest appears on top
+      this.sharedService.refresSchemaListTrigger.next(true);
       this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
         duration: 2000
       })
@@ -1087,5 +1100,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public editBuisnessRule(br: CoreSchemaBrInfo) {
     this.router.navigate(['', { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` , outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}/outer`} }]);
+  }
+
+  openDatascopeListSidesheet() {
+    const state: DataScopeSidesheet = {
+      openedFrom: 'schemaSummary',
+      editSheet: false,
+      listSheet: true
+    };
+    this.sharedService.setdatascopeSheetState(state);
   }
 }

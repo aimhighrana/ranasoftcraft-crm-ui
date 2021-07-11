@@ -12,8 +12,17 @@ div.root {
       width: 100%;
       margin-right: 0;
 
-      .lib-search {
-        min-width: 213px;
+      .business-filters {
+        flex-wrap: wrap;
+
+        .lib-search {
+          width: 213px;
+          margin-bottom: 4px;
+        }
+
+        .mdo-chip-list {
+          align-items: flex-start;
+        }
       }
     }
   }
@@ -38,9 +47,9 @@ div.root {
             flex: 1;
           }
 
-          .transformation-button {
+          .lib-button {
             display: flex;
-            width: 48px;
+            width: 64px;
           }
         }
       }

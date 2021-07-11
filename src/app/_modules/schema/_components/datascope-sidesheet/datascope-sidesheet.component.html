@@ -4,7 +4,7 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div i18n="@@data_scope" class="display-heading-large">Data scope</div>
+                <div i18n="@@data_scope" class="display-heading-large">{{ variantName.value || 'New Data scope' }}</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button [disabled]="!variantName.value.trim() || !variantInfo.filterCriteria || !variantInfo.filterCriteria.length" i18n="@@save" type="major" (afterClick)="saveVarient()">Save</lib-button>
