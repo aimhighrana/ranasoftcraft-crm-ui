@@ -1064,6 +1064,16 @@
     }
   }
 
+  .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
+  .udr-select-col.has-error {
+    border: 1px solid  $color-status-error;
+  }
+
+  .sidesheetcontent-listing .mandatory {
+    margin: initial 5px;
+    color: $color-status-error;
+  }
+
   //MDO-Table
   .mat-table {
     .mat-row,
@@ -1124,6 +1134,10 @@
 
       .mat-sort-header {
         display: inline-block;
+      }
+
+      .mandatory {
+        color: $color-status-error;
       }
     }
 
@@ -1924,6 +1938,7 @@
         .nav-tree {
           mat-nav-list.mat-nav-list.tree-nav-list {
             .understep-two {
+              &.selected,
               &.mat-list-item:hover {
                 background: $color-app-hover;
               }
@@ -2034,9 +2049,10 @@
     }
   }
 
-  .sidesheetcontent-listing .mandatory {
-    margin: initial 5px;
-    color: $color-status-error;
+  div.root .summary-sidesheet.sidesheetcontent-listing {
+    .lib-input .mdo-field .mdo-field-label {
+      font-size: 14px;
+    }
   }
 
   pros-schema-lists {

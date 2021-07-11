@@ -477,6 +477,7 @@ export interface Noun {
   doc_cnt?: number;
   nounCode: string;
   nounId: string;
+  nounDesc?: string;
   nounSortDesc: string;
   modifier: Modifier[];
 }
@@ -484,6 +485,7 @@ export interface Modifier {
   doc_cnt?: number;
   modCode: string;
   modText: string;
+  modDesc?: string;
 }
 
 export class SchemaMROCorrectionReq {
@@ -572,4 +574,26 @@ export interface GlobalCounts {
   successCount: number;
   errorCount: number;
   skippedCount: number;
+}
+
+export class ClassificationHeader {
+  colId: string;
+  desc: string;
+  mandatory: boolean;
+  dropdown: boolean;
+  fieldType: 'NUMERIC' | 'ALPHA_NUMERIC' | 'TEXT';
+  descActive: boolean;
+  length: number;
+  order: number;
+  colSno: string;
+}
+
+export class AttributeValue {
+  shortValue: string;
+  numValue: string;
+  longValue: string;
+  refSno: string;
+  price: string;
+  imageSno: string;
+  formulaeSno: string;
 }

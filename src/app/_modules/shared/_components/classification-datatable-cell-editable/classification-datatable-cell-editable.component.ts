@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ClassificationHeader } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserService } from '@services/user/userservice.service';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -56,6 +58,12 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   @Input()
   controlType: string;
 
+  /**
+   * Properties for the editable atribute
+   */
+  @Input()
+  attrControl: ClassificationHeader;
+
   @Output()
   inputBlur = new EventEmitter<any>();
 
@@ -70,7 +78,8 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   constructor(
     private schemaService: SchemaService,
     private nounModifierService: NounModifierService,
-    private userService: UserService
+    private userService: UserService,
+    private schemaDetailsService: SchemaDetailsService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -82,11 +91,13 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   ngOnInit(): void {
 
     console.log(this.controlType);
-    if(this.brType && this.brType === 'unmatched') {
+    if(this.brType && (this.brType === 'unmatched' || this.brType === 'MRO_CLS_MASTER_CHECK')) {
       if(this.fieldId === 'NOUN_CODE') {
         this.getLocalNouns();
       } else if(this.fieldId === 'MODE_CODE') {
         this.getLocalModifiers();
+      } else {
+        this.getAttributeValues();
       }
     } else {
       if(this.fieldId === 'NOUN_CODE') {
@@ -95,6 +106,23 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
         this.getSuggestedModifiers();
       }
     }
+
+    // apply validators ...
+    const validatorsArrays = [];
+    if(this.attrControl?.mandatory) {
+      validatorsArrays.push(Validators.required);
+    }
+    if(this.attrControl?.length) {
+      validatorsArrays.push(Validators.max(this.attrControl.length))
+    }
+    if(this.attrControl?.fieldType === 'NUMERIC') {
+      validatorsArrays.push(Validators.pattern('^[0-9]*$'))
+    }
+    if(validatorsArrays.length >0) {
+      this.searchControl.setValidators(validatorsArrays);
+      this.searchControl.updateValueAndValidity({emitEvent:true,onlySelf:true});
+    }
+
   }
 
   ngAfterViewInit() {
@@ -110,6 +138,15 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   }
 
   emitInputBlur(value) {
+    console.log(this.searchControl);
+    // let err_msg = '';
+    // if(this.searchControl.errors) {
+    //   if(Object.keys(this.searchControl.errors)[0] === 'max') {
+    //     err_msg = `Please enter less then ${this.attrControl.length} char's.`;
+    //   } else if(Object.keys(this.searchControl.errors)[0] === 'pattern') {
+    //     err_msg = `Invalid type , Only numeric allowed`;
+    //   }
+    // }
     this.inputBlur.emit(value);
   }
 
@@ -196,6 +233,27 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
           });
         }
       });
+  }
+
+  /**
+   * Get the attribute value and serach it ...
+   * @param searchString search the attribute based on this string ...
+   */
+  getAttributeValues(searchString?: string) {
+    this.schemaDetailsService.getClassificationAttributeValue(this.attrControl.colSno,searchString).subscribe(res=>{
+      res = res && Array.isArray(res) ? res : [];
+      this.selectFieldOptions = [];
+      res.forEach(r=>{
+        const drop: DropDownValue = {CODE: r.shortValue,FIELDNAME:this.attrControl.colSno,TEXT:r.shortValue ? r.shortValue : ''} as DropDownValue;
+        this.selectFieldOptions.push(drop);
+      });
+      this.filterdOptionsObs = of(this.selectFieldOptions);
+      if(!searchString) {
+        this.searchControl.valueChanges.pipe(distinctUntilChanged(), debounceTime(1000)).subscribe(val=>{
+          this.getAttributeValues(val.trim());
+        });
+      }
+    });
   }
 
 }
