@@ -510,7 +510,7 @@
                                             <lib-button cdkDragHandle icon="grip-lines"></lib-button>
                                         </div>
                                         <div class="col col-x4">
-                                            <lib-text-line type="base" textColor="link"
+                                            <lib-text-line type="base" textColor="link" class="cursor"
                                                 (click)="editTransRule(scsRule,'success')">{{ scsRule.ruleInfo &&
                                                 scsRule.ruleInfo.brInfo ? scsRule.ruleInfo.brInfo : 'Unknown'}}
                                             </lib-text-line>
@@ -565,7 +565,7 @@
                                             <lib-button cdkDragHandle icon="grip-lines"></lib-button>
                                         </div>
                                         <div class="col col-x4">
-                                            <lib-text-line type="base" textColor="link"
+                                            <lib-text-line type="base" textColor="link" class="cursor"
                                                 (click)="editTransRule(errRule,'error')">{{ errRule && errRule.ruleInfo
                                                 && errRule.ruleInfo.brInfo ? errRule.ruleInfo.brInfo : 'Unknown'}}
                                             </lib-text-line>
