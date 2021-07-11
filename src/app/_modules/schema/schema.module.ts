@@ -45,6 +45,7 @@ import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/ex
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
 import { DownloadExecutionDataComponent } from './_components/v2/download-execution-data/download-execution-data.component';
 import { GlobalCountComponent } from './_components/v2/_builder/global-count/global-count.component';
+import { DatascopeListSidesheetComponent } from './_components/datascope-list-sidesheet/datascope-list-sidesheet.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import { GlobalCountComponent } from './_components/v2/_builder/global-count/glo
     ExecutionTrendSidesheetComponent,
     SchemaProgressComponent,
     DownloadExecutionDataComponent,
-    GlobalCountComponent
+    GlobalCountComponent,
+    DatascopeListSidesheetComponent
   ],
   imports: [
     CommonModule,

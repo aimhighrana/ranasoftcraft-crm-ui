@@ -11,7 +11,7 @@ import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable'
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddFilterOutput} from '@models/schema/schema';
+import { AddFilterOutput, DataScopeSidesheet} from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -192,6 +192,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.getCollaborators('', 0); // To get all the subscribers
 
     this.getAllBusinessRulesList(this.moduleId, '', ''); // To get all business rules list
+
+    this.sharedService.getdatascopeSheetState().subscribe((response: DataScopeSidesheet) => {
+      if (response && response.openedFrom === 'schemaInfo' && response.editSheet && response.variantId) {
+        this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${response.variantId}/outer` } }], {queryParamsHandling: 'preserve'});
+      }
+    });
   }
 
   /**
@@ -1399,5 +1405,15 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   openExecutionTrendSidesheet() {
     const schema = this.schemaDetails;
     this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+  }
+
+  openDatascopeListSidesheet() {
+    const state: DataScopeSidesheet = {
+      openedFrom: 'schemaInfo',
+      editSheet: false,
+      listSheet: true
+    };
+    this.sharedService.setdatascopeSheetState(state);
+    this.router.navigate([ { outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb` } }], {queryParamsHandling: 'preserve'});
   }
 }

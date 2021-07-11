@@ -3,6 +3,7 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ListPageViewDetails } from '@models/list-page/listpage';
+import { DataScopeSidesheet } from '@models/schema/schema';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,10 @@ export class SharedServiceService {
   private chooseColumnSub: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private afterEditDatascopeSideSheetClose: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private editDatascopeTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
 
@@ -83,7 +88,9 @@ export class SharedServiceService {
    */
   private afterMappingSaved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor() { }
+  private datascopeSheetState: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  constructor() {}
 
   public setChooseColumnData(data: any) {
     this.chooseColumnSub.next(data);
@@ -286,6 +293,14 @@ export class SharedServiceService {
 
   public getAfterMappingSaved(): Observable<boolean> {
     return this.afterMappingSaved.asObservable();
+  }
+
+  public setdatascopeSheetState(data: DataScopeSidesheet) {
+    this.datascopeSheetState.next(data);
+  }
+
+  public getdatascopeSheetState() {
+    return this.datascopeSheetState.asObservable();
   }
 
 }
