@@ -41,6 +41,11 @@ export class SharedServiceService {
   public reportDataTableSetting: BehaviorSubject<any> = new BehaviorSubject(null);
 
   /**
+   * Trigger to refresh schema list so the latest running schema appears on top
+   */
+  public refresSchemaListTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  /**
    * Identify whether loged in from msteam .. or web
    */
   private isFromMsTeamLogedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -71,17 +76,17 @@ export class SharedServiceService {
 
   private schemaRunSub: Subject<boolean> = new Subject();
 
-  private isSecondaySideNavBarOpen : Subject<boolean> = new Subject();
+  private isSecondaySideNavBarOpen: Subject<boolean> = new Subject();
 
   /**
    * Subject for after saved  trans and reload in br map ...
    */
-  private transSavedBehaviourSub:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private transSavedBehaviourSub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * Flag after save mappings ...
    */
-  private afterMappingSaved:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private afterMappingSaved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private datascopeSheetState: BehaviorSubject<any> = new BehaviorSubject(null);
 
@@ -266,11 +271,11 @@ export class SharedServiceService {
     this.loader.next(false);
   }
 
-  public setSecondarySideNavBarState(data:boolean) {
+  public setSecondarySideNavBarState(data: boolean) {
     this.isSecondaySideNavBarOpen.next(data);
   }
 
-  public getSecondarySideNavBarState():Observable<any> {
+  public getSecondarySideNavBarState(): Observable<any> {
     return this.isSecondaySideNavBarOpen.asObservable();
   }
 
