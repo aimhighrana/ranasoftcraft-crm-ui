@@ -68,15 +68,10 @@
                 </div>
 
                 <div class="col col-x16">
-                    <mat-form-field appearance="outline" class="divided-matfield">
-                        <mat-select [value]="getValue(i, 'lookupTargetField')"
-                            (selectionChange)="setLookupTargetField($event.value, i)">
-                            <mat-option [value]="data.fieldId" *ngFor="let data of fieldsObject.list">
-                                {{data[fieldsObject.labelKey]}}
-                            </mat-option>
-                            <!-- <mat-option [value]="'New Field'">New Field</mat-option> -->
-                        </mat-select>
-                    </mat-form-field>
+                    <pros-option-filter (selectionChange)="setLookupTargetField($event, i)" 
+                        [availableOptions]="fieldsObject.list" 
+                        [value]="getValue(i, 'lookupTargetField')">
+                    </pros-option-filter>
 
                     <span class="col-spacer"></span>
 
