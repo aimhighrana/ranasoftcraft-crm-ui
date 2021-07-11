@@ -140,9 +140,11 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    */
   close(isSave = false){
     this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }], {queryParamsHandling: 'preserve'});
-    this.datascopeSheetState.editSheet = false;
-    this.datascopeSheetState.isSave = isSave;
-    this.sharedService.setdatascopeSheetState(this.datascopeSheetState);
+    if(this.datascopeSheetState) {
+      this.datascopeSheetState.editSheet = false;
+      this.datascopeSheetState.isSave = isSave;
+      this.sharedService.setdatascopeSheetState(this.datascopeSheetState);
+    }
   }
 
   /**
