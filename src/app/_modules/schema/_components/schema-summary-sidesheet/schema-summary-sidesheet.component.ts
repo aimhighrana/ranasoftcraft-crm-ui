@@ -152,6 +152,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   updateschema = false;
 
+  schemaRunFailureMsg = '';
+
   /**
    * function to format slider thumbs label.
    * @param percent percent
@@ -568,14 +570,33 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   runSchema() {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
-    schemaExecutionReq.schemaId = this.schemaId;
+    schemaExecutionReq.schemaId = `${this.schemaId}`;
     schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, false).subscribe(data => {
       this.schemaDetails.isInRunning = true;
       this.sharedService.setSchemaRunNotif(true);
+
+      this.close();
+      // Trigger to refresh the list of schemas on the left sidenav so the latest appears on top
+      this.sharedService.refresSchemaListTrigger.next(true);
+      this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
+        duration: 2000
+      });
     }, (error) => {
       console.log('Something went wrong while running schema', error.message);
+      this.setSchemaFailureMsg(error.error.message);
     });
+  }
+
+  /**
+   * sets error message in banner
+   * @param msg error message
+   */
+  setSchemaFailureMsg(msg) {
+    this.schemaRunFailureMsg = msg || 'Something went wrong';
+    setTimeout(() => {
+      this.schemaRunFailureMsg = '';
+    }, 5000);
   }
 
 
@@ -909,16 +930,17 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     // save the schema infor
     const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
     schemaReq.moduleId = this.moduleId;
-    schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
+    schemaReq.schemaId = this.schemaId === 'new' ? '' : `${this.schemaId}`;
     schemaReq.discription = this.schemaName.value ? this.schemaName.value : this.schemaDetails.schemaDescription;
     schemaReq.schemaThreshold = this.schemaThresholdControl.value;
     schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
     const updateSc = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-          this.schemaId = response;
+          this.schemaId = `${response}`;
           console.log('Schema updated successfully.');
           this.prepareData(this.schemaId);
     },(error) => {
-          console.error('Something went wrong while updating schema.', error.message);
+      console.error('Something went wrong while updating schema.', error.message);
+      this.setSchemaFailureMsg(error.error.message);
     });
     this.subscriptions.push(updateSc);
   }
@@ -937,7 +959,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       const coreSchemaBrMap: CoreSchemaBrMap = {brId: br.brIdStr,
         dependantStatus: br.dependantStatus ? br.dependantStatus : RuleDependentOn.ALL,
         order: counter,
-        schemaId: this.schemaId,
+        schemaId: `${this.schemaId}`,
         status: br.status,
         brWeightage: Number(br.brWeightage)
         } as CoreSchemaBrMap;
@@ -949,7 +971,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           const coreSchemaBrMapD: CoreSchemaBrMap = {brId: dep_r.brIdStr,
             dependantStatus: dep_r.dependantStatus ? dep_r.dependantStatus : RuleDependentOn.ALL,
             order: counter,
-            schemaId: this.schemaId,
+            schemaId: `${this.schemaId}`,
             status: dep_r.status,
             brWeightage: Number(dep_r.brWeightage)
             } as CoreSchemaBrMap;
@@ -965,20 +987,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.subscriberData.forEach((subscriber) => {
       subscriber.sno = subscriber.sno ? subscriber.sno : Math.floor(Math.random() * Math.pow(100000, 2));
-      subscriber.schemaId = schemaId;
+      subscriber.schemaId = `${schemaId}`;
     });
     const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
 
     forkJoin({ ...forkObj,subscriberSnos}).subscribe(res => {
       console.log(`Created successful ${res}`);
       this.runSchema();
-      this.close();
-      // Trigger to refresh the list of schemas on the left sidenav so the latest appears on top
-      this.sharedService.refresSchemaListTrigger.next(true);
-      this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
-        duration: 2000
-      })
-
     }, err=>{
       console.log(`Exception while creating rule map ${err.message}`);
     });
