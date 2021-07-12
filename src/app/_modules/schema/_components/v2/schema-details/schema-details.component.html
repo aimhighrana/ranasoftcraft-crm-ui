@@ -255,7 +255,6 @@
                                             userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() :
                                             '') : '' }}
                                     </lib-avatar>
-                                    
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="_score_weightage" sticky>
@@ -282,7 +281,7 @@
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row action-iconbtns" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                         <!-- Secondary actions -->
-                                        <!-- <lib-button  type="minor" icon="more" *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu"></lib-button>
+                                        <lib-button  type="minor" icon="more" *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu"></lib-button>
                                         <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                             <ng-container *ngFor="let sAction of secondaryActions">
                                                 <button mat-menu-item
@@ -299,9 +298,9 @@
                                                     </ng-template>
                                                 </button>
                                             </ng-container>
-                                        </mat-menu> -->
+                                        </mat-menu>
                                         <!-- Primary actions -->
-                                        <!-- <ng-container *ngFor="let pAction of primaryActions">
+                                        <ng-container *ngFor="let pAction of primaryActions">
                                             <button
                                                 *ngIf="(activeTab === 'review' || pAction.isCustomAction) && hasActionPermission(pAction)"
                                                 mat-flat-button color="accent" (click)="doAction(pAction, element)">
@@ -315,13 +314,7 @@
                                                     {{ pAction.actionText }}
                                                 </ng-template>
                                             </button>
-                                        </ng-container> -->
-                                        <lib-button type="minor" iconPosition="before" icon="check">
-                                            Approve
-                                         </lib-button>
-                                         <lib-button type="minor" iconPosition="before" icon="check">
-                                             Reject
-                                          </lib-button>
+                                        </ng-container>
                                     </div>
                                 </td>
                             </ng-container>
