@@ -5,7 +5,6 @@
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <lib-text-line type="leading">Master Library mapping</lib-text-line>
-                <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button type="major" (click)="save()">Save</lib-button>
             </div>
@@ -14,12 +13,14 @@
                 <lib-search class="lib-search" placeholder="Search..." (valueChange)="searchAttributeVal($event)"></lib-search>
 
                 <div class="f-col-spacer-half"></div>
+
                 <ng-template ngFor let-chip [ngForOf]="statas">
                     <ng-template [ngIf]="chip.code === 'matched'">
                         <lib-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)"
                             [class.selected]="chip.isSeleted">
                             <lib-text-line type="base">{{ chip.text }}</lib-text-line>
                         </lib-chip>
+                        <span class="f-col-spacer-half"></span>
                     </ng-template>
 
                     <ng-template [ngIf]="chip.code === 'suggest'">
@@ -27,6 +28,7 @@
                             [class.selected]="chip.isSeleted">
                             <lib-text-line type="base">{{ chip.text }}</lib-text-line>
                         </lib-chip>
+                        <span class="f-col-spacer-half"></span>
                     </ng-template>
 
                     <ng-template [ngIf]="chip.code === 'unmapped'">
@@ -34,6 +36,7 @@
                             [class.selected]="chip.isSeleted">
                             <lib-text-line type="base">{{ chip.text }}</lib-text-line>
                         </lib-chip>
+                        <span class="f-col-spacer-half"></span>
                     </ng-template>
                 </ng-template>
             </div>

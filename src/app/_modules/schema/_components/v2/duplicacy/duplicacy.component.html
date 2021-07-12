@@ -27,10 +27,10 @@
         <div class="f-col-spacer-half"></div>
         <div class="f-spacer"></div>
         <lib-button-group>
-            <lib-button type="plain" icon="chart-line" iconPosition="before" (click)="openExecutionTrendSideSheet()">
-                &nbsp; Stats</lib-button>
             <lib-button type="plain" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">&nbsp;
                 Refine</lib-button>
+            <lib-button type="plain" icon="chart-line" iconPosition="before" (click)="openExecutionTrendSideSheet()">
+                &nbsp; Stats</lib-button>
             <lib-button type="plain" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
         </lib-button-group>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -77,14 +77,13 @@
             <mat-divider [vertical]="true" class="mat-divider"></mat-divider>
             <div class="f-col dataset-grid-listing">
                 <div class="f-row">
-                    <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);">
+                    <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" class="lib-search">
                     </lib-search>
                     <div class="f-col-spacer-half"></div>
                     <mat-chip-list>
                         <!-- Applied filters -->
                         <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                             <ng-template [ngIf]="ctrl.type !== 'INLINE'">
-                                <div class="f-col-spacer-half"></div>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                     <label>
