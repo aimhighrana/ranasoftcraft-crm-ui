@@ -32,7 +32,7 @@ describe('LibraryMappingSidesheetComponent', () => {
       imports: [ AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule ],
       providers: [{
         provide: ActivatedRoute,
-        useValue: {params: of(routeParams)}
+        useValue: {params: of(routeParams), queryParams: of({isMapped:'false'})}
       }]
     })
     .compileComponents();
@@ -185,7 +185,7 @@ describe('LibraryMappingSidesheetComponent', () => {
 
     component.buildMappingForm();
     component.getAttributesFromGsn('Bearing', 'Ball');
-    expect(component.attributeMapData.length).toEqual(1);
+    expect(component.gsnAttributes.length).toEqual(1);
 
   });
 
@@ -237,32 +237,15 @@ describe('LibraryMappingSidesheetComponent', () => {
   });
 
   it('should filterAsStatus', () => {
-    spyOn(component, 'filterAttribute');
+    const matchedStatus = {code:'matched', count: 0, text:'Matched', isSeleted: false};
+    component.filterAsStatus(matchedStatus);
+    expect(matchedStatus.isSeleted).toBeTrue();
 
-    component.filterAsStatus('matched');
-    expect(component.statas[0].isSeleted).toBeTrue();
-
-    component.filterAsStatus('matched');
-    expect(component.statas[0].isSeleted).toBeFalse();
-
-  });
-
-  it('should filterAttribute', () => {
-    component.buildMappingForm();
-
-    const attr = {ATTR_CODE:'length', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
-    component.gsnAttributes.push(attr);
-
-    component.filterAttribute();
-    expect(component.attributeMapData.controls.length).toEqual(1);
-
-    component.filterAttribute('length');
-    expect(component.attributeMapData.controls.length).toEqual(1);
-
-    component.filterAttribute('length', ['unmapped']);
-    expect(component.attributeMapData.controls.length).toEqual(1);
+    component.filterAsStatus(matchedStatus);
+    expect(matchedStatus.isSeleted).toBeFalse();
 
   });
+
 
   it('should nounSuggestion', () => {
     component.localNounsList = [{NOUN_ID: 'Bearing'} as NounModifier];
@@ -293,6 +276,82 @@ describe('LibraryMappingSidesheetComponent', () => {
     expect(component.openModifierSidesheet).toHaveBeenCalledTimes(1);
     expect(component.openAttributeSidesheet).toHaveBeenCalledTimes(1);
   })
+
+  it('should search the attribute', () => {
+    component.classificationCategory = {
+      noun: {
+        source: '',
+        targetCtrl: {
+          MANDATORY: '',
+          ATTRIBUTE_ID: '',
+          ATTR_DESC: '',
+          ATTR_CODE: '',
+          TEXT_FIELD: '',
+          DROPDOWN_FIELD:'',
+          ATTRIBUTES_VALUES:'',
+          LENGTH: '',
+          DESC_ACTIVE:'',
+          FIELD_TYPE: '',
+        },
+        status: 'matched'
+      },
+      modifier: {
+        source: '',
+        targetCtrl: {
+          MANDATORY: '',
+          ATTRIBUTE_ID: '',
+          ATTR_DESC: '',
+          ATTR_CODE: '',
+          TEXT_FIELD: '',
+          DROPDOWN_FIELD:'',
+          ATTRIBUTES_VALUES:'',
+          LENGTH: '',
+          DESC_ACTIVE:'',
+          FIELD_TYPE: '',
+        },
+        status: 'suggested'
+      },
+      attrLists:[{
+          source: '',
+          targetCtrl: {
+            MANDATORY: '',
+            ATTRIBUTE_ID: '',
+            ATTR_DESC: '',
+            ATTR_CODE: 'test',
+            TEXT_FIELD: '',
+            DROPDOWN_FIELD:'',
+            ATTRIBUTES_VALUES:'',
+            LENGTH: '',
+            DESC_ACTIVE:'',
+            FIELD_TYPE: '',
+          },
+          status: 'matched'
+      }]
+    };
+    let value = {
+      libraryAttributeText: '',
+      libraryAttributeCode: ''
+    };
+    component.searchString = '';
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    value = {
+      libraryAttributeText: 'test',
+      libraryAttributeCode: ''
+    };
+    component.searchString = 'test';
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    value = {
+      libraryAttributeText: '',
+      libraryAttributeCode: 'test'
+    };
+    component.searchString = 'test';
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    component.statas[0].isSeleted = true;
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    component.statas[0].isSeleted = false;
+    component.statas[1].isSeleted = true;
+    expect(component.canDisplayAttribute(value)).toBeFalse();
+  });
 
 
 

@@ -413,7 +413,11 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
 
     spyOn(router, 'navigate');
     component.openAttributeMapping('Bearing', 'Ball');
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/Bearing/Ball` } }])
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/Bearing/Ball` } }], {
+      queryParams: {
+        isMapped: false
+      }
+    });
 
   });
 

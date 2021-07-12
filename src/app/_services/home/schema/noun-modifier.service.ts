@@ -3,7 +3,7 @@ import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analyt
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
 import { Observable } from 'rxjs';
 
-import {AttributesDoc, NounModifier} from '@models/schema/noun-modifier';
+import {AttributesDoc, ClassificationMappingRequest, ClassificationMappingResponse, NounModifier} from '@models/schema/noun-modifier';
 import { HttpClient } from '@angular/common/http';
 import { Modifier } from '@models/schema/schemadetailstable';
 import { Attribute, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
@@ -110,7 +110,9 @@ export class NounModifierService {
     return this.http.get<NounModifier>(this.endpointDataplay.getAvailableAttributeUri(), {params:{nounCode, modifierCode, searchString, plantCode}})
   }
 
-
+  public getClassificationMappingData(request: ClassificationMappingRequest) {
+    return this.http.post<ClassificationMappingResponse>(this.endpointDataplay.getClassificationMappingUrl(), request);
+  }
 
   /**
    * Get all suggested noun based on objectNumber ..

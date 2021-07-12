@@ -151,7 +151,11 @@
                                                     (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP');
                                                     innerBreadcurmbtxt = 'Connekthub library' + ' / ' + noun?.nounDesc + ' / ' + (modifier?.modDesc ? modifier?.modDesc : 'Unknown' )">
                                                     <lib-button type="plain" icon="link"
-                                                        (click)="openAttributeMapping(noun.nounCode,modifier.modCode)">
+                                                    libBadge="?" class="lib-button" [class.classification-link-question]="!modifier.mapped" [matBadgeHidden]="modifier.mapped"
+                                                    [matBadgeOverlap]="true"
+                                                    matBadgePosition="above after"
+                                                        (click)="openAttributeMapping(noun.nounCode,modifier.modCode, modifier.mapped)">
+                                                        
                                                     </lib-button>
                                                     <lib-text-line type="base" class="expand-title">{{ modifier.modDesc ? modifier.modDesc :
                                                         'Unknown' }}</lib-text-line>
