@@ -4,47 +4,55 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div i18n="@@data_scope" class="display-heading-large">Data scope</div>
+                <lib-text-line type="leading" i18n="@@data_scope">{{ variantName.value || 'New Data scope' }}</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button [disabled]="!variantName.value.trim() || !variantInfo.filterCriteria || !variantInfo.filterCriteria.length" i18n="@@save" type="major" (afterClick)="saveVarient()">Save</lib-button>
+                <lib-button
+                    [disabled]="!variantName.value.trim() || !variantInfo.filterCriteria || !variantInfo.filterCriteria.length"
+                    i18n="@@save" type="major" (afterClick)="saveVarient()">Save</lib-button>
             </div>
         </div>
     </div>
-    <div class="cnt-banner">
-        <lib-banner status="info" text="Your scope contains {{scopeCnt}} records"></lib-banner>
-    </div>
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
-            <div class="f-col mdo-form-field">
-                <lib-input class="mdo-scheduler-input" [formControl]="variantName" type="text"  [value]="variantInfo.variantName" i18n-label="@@name" label="Name"></lib-input>
+            <lib-banner status="info" text="Your scope contains {{scopeCnt}} records"></lib-banner>
+            <div class="f-col">
+                <lib-input class="mdo-scheduler-input" [formControl]="variantName" type="text"
+                    [value]="variantInfo.variantName" i18n-label="@@name" label="Name"></lib-input>
             </div>
-            <div class="f-col mdo-form-field">
-                <mat-label i18n="@@scope">Scope</mat-label>
+            <div class="f-col mdo-field">
+                <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@scope">Scope</lib-text-line>
                 <div class="f-row">
-                    <mat-chip-list>
+                    <lib-chip-list class="mdo-chip-list">
                         <ng-container *ngIf="variantInfo">
                             <ng-template ngFor let-ctrl [ngForOf]="variantInfo.filterCriteria">
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                    [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                <lib-chip label="{{ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown'}}:"
+                                    disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
+                                    (click)="loadDropValues(ctrl)" [removable]="true" type="info">
+                                    {{prepareTextToShow(ctrl)}}</lib-chip>
+                                <!-- <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                        [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                     <label>{{ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown'}}:</label>
                                     <span class="info">{{prepareTextToShow(ctrl)}}</span>
                                     <mat-icon matChipRemove (click)="removeFilter(ctrl)">clear</mat-icon>
-                                </mat-chip>
+                                </mat-chip> -->
                             </ng-template>
                         </ng-container>
 
-                        <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addFilterMenu"
+                        <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addFilterMenu"
+                            (click)="reInilize = !reInilize" iconFontType="solid" icon="filter"></lib-chip>
+
+                        <!-- <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addFilterMenu"
                             (click)="reInilize = !reInilize">
                             <mat-icon fontSet="mdo-icons">filter</mat-icon>
-                        </mat-chip>
+                        </mat-chip> -->
 
                         <mat-menu #addFilterMenu="matMenu">
                             <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)"
                                 [reInilize]="reInilize" [isSearchEnable]="true"
                                 [alreadySelectedValues]="variantInfo.filterCriteria"></pros-add-filter-menu>
                         </mat-menu>
-                    </mat-chip-list>
+                    </lib-chip-list>
 
                     <mat-menu #appliedfiltermenu="matMenu">
                         <pros-filter-values [moduleId]="moduleId"

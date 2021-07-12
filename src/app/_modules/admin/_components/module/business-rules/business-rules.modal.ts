@@ -54,6 +54,12 @@ export class CoreSchemaBrInfo {
     apiKey: string;
     dep_rules?:CoreSchemaBrInfo[];
     depandantStatus?:null;
+    isTransformationApplied?:boolean;
+    dontMapped?: boolean;
+    transformationMappingDTO?: TransformationRuleMapped[];
+    source_field? : string;
+    target_field? : string;
+    accuracyScore? : number;
 }
 
 export enum BusinessRuleType {
@@ -134,6 +140,7 @@ export interface DropDownValue {
     TEXT: string;
     LANGU: string;
     isSugested?: boolean;
+    fieldId?:string;
 }
 
 export class UDRBlocksModel {
@@ -198,4 +205,22 @@ export class DuplicateRuleModel {
     mergeRules: any[];
     removeList: any[];
     // objectId: string;
+}
+
+export class TransformationMappingResponse {
+    success: TransformationMappingTabResponse[];
+    error: TransformationMappingTabResponse[];
+}
+export class TransformationMappingTabResponse {
+    ruleInfo: CoreSchemaBrInfo;
+    isEnabled: boolean;
+    isConfigured: boolean;
+}
+
+export class TransformationRuleMapped {
+    status: string;
+    order: number;
+    isEnabled: boolean;
+    isConfigured: boolean;
+    transformationRule: string;
 }

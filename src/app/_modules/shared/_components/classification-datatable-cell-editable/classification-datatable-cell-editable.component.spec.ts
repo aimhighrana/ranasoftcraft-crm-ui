@@ -3,9 +3,11 @@ import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { NounModifier } from '@models/schema/noun-modifier';
+import { ClassificationHeader } from '@models/schema/schemadetailstable';
 import { Userdetails } from '@models/userdetails';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserService } from '@services/user/userservice.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -17,6 +19,7 @@ describe('ClassificationDatatableCellEditableComponent', () => {
   let fixture: ComponentFixture<ClassificationDatatableCellEditableComponent>;
   let nounModifierService: NounModifierService;
   let userService: UserService;
+  let schemaDetailService: SchemaDetailsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,6 +36,7 @@ describe('ClassificationDatatableCellEditableComponent', () => {
 
     nounModifierService = fixture.debugElement.injector.get(NounModifierService);
     userService = fixture.debugElement.injector.get(UserService);
+    schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
     spyOn(userService, 'getUserDetails').and.returnValue(of({plantCode: '1005'} as Userdetails));
 
     component.schemaId = 'schema1';
@@ -198,5 +202,15 @@ describe('ClassificationDatatableCellEditableComponent', () => {
     expect(component.getLocalModifiers).toHaveBeenCalledTimes(1);
 
   });
+
+  it('getAttributeValues(), get attribute test ', async(()=>{
+
+    component.attrControl = {colId:'2342423', colSno:'323532'} as ClassificationHeader;
+    spyOn(schemaDetailService,'getClassificationAttributeValue').withArgs('323532','').and.returnValue(of([]));
+
+    component.getAttributeValues('');
+
+    expect(schemaDetailService.getClassificationAttributeValue).toHaveBeenCalled();
+  }));
 
 });

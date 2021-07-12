@@ -82,6 +82,7 @@ export class SchemaListDetails {
     successValue: number;
     variants: SchemaVariantsModel[];
     schemaCategory: string;
+    description?: string;
 }
 
 export class SchemaRunningDetails {
@@ -269,6 +270,9 @@ export class SchemaStaticThresholdRes {
     exeEndDate: string;
     isInRunning: boolean;
     schemaDescription: string;
+    outdatedCnt: number;
+    skippedCnt: number;
+
 }
 
 export class SchemaDashboardPermission {

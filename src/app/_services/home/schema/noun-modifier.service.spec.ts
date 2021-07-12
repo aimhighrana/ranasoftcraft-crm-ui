@@ -146,7 +146,7 @@ describe('NounModifierService', () => {
     spyOn(endpointDataplay, 'getAvailableAttributeUri').and.returnValue('getAvailableAttributeUri');
 
     expect(() => service.getGsnAttribute('', 'Ball', '0')).toThrowError('Nouncode must be required ');
-    expect(() => service.getGsnAttribute('Bearing', '', '0')).toThrowError('Modifier must be required ');
+    // expect(() => service.getGsnAttribute('Bearing', '', '0')).toThrowError('Modifier must be required ');
 
     service.getGsnAttribute('Bearing', 'Ball', '0').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
@@ -269,11 +269,11 @@ describe('NounModifierService', () => {
 
     spyOn(endpointClassic, 'getSaveAttributesMappingUrl').and.returnValue('getSaveAttributesMappingUrl');
 
-    service.saveAttributesMapping(request).subscribe(actualReponse => {
+    service.saveAttributesMapping(request,'8733747').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}`);
+    const mockRequest = httpTestingController.expectOne(`${url}?schemaId=8733747`);
     expect(mockRequest.request.method).toEqual('POST');
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();

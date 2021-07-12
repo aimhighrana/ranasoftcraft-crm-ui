@@ -1,22 +1,20 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="close()" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Create new attribute</div>
-                <span class="f-col-spacer-half"></span>
+                <lib-text-line type="leading">Create new attribute</lib-text-line>
                 <span class="f-spacer"></span>
-                <button (click)="save()" mat-flat-button color="primary">Save</button>
+                <lib-button type="major" (click)="save()">Save</lib-button>
             </div>
         </div>
     </div>
+
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <form [formGroup]="attributeForm">
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('attrCode')"
                     [placeholder]="'Name'" [label]="'Name'">
                     </pros-form-input>
@@ -25,7 +23,7 @@
                         Please enter name
                     </mat-error>
                 </div>
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('attrCode')" 
                     [placeholder]="'Description'" [label]="'Description'"></pros-form-input>
                     <mat-error
@@ -33,7 +31,7 @@
                         Please enter description
                     </mat-error>
                 </div>
-                <div class="f-col mdo-form-field">
+                <div class="f-col mdo-field">
                     <div class="f-row-spacer-half"></div>
                     <div class="f-row">
                         <mat-button-toggle-group formControlName="type" appearance="legacy">
@@ -42,11 +40,11 @@
                             <mat-button-toggle [value]="ATTRIBUTE_DATA_TYPE.LIST">List</mat-button-toggle>
                         </mat-button-toggle-group>
                         <div class="f-col-spacer-half"></div>
-                        <a class="info-link"> Default value (4)</a>
+                        <lib-text-line type="base" textColor="link" class="cursor">Default value (4)</lib-text-line>
                     </div>
                     <div class="f-row-spacer-half"></div>
                 </div>
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input type="number" [control]="formField('attFieldLen')"
                      [placeholder]="'Field length'" [label]="'Field length'"></pros-form-input>
                     <mat-error
@@ -54,7 +52,7 @@
                         Please enter field length
                     </mat-error>
                 </div>
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('prefix')"
                      [placeholder]="'Prefix'" [label]="'Prefix'"></pros-form-input>
                     <mat-error

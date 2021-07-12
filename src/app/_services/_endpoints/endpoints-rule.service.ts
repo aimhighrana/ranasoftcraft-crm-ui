@@ -2,15 +2,13 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EndpointsRuleService {
-
   readonly origin = `${environment.apiurl}/rule`;
   readonly classicOrigin = `${environment.apiurl}/MDOSF/fapi`;
 
-  constructor() { }
-
+  constructor() {}
 
   public getSchemaListByGroupIdUrl() {
     return this.classicOrigin + '/schema/schema-list-module';
@@ -100,7 +98,7 @@ export class EndpointsRuleService {
   }
 
   public getBusinessRulesInfoByModuleIdUrl() {
-    return this.origin + `/schema/metadata/get-business-rules/`
+    return this.origin + `/schema/metadata/get-business-rules/`;
   }
 
   public getBusinessRulesInfoBySchemaIdUrl(schemaId: string) {
@@ -116,7 +114,7 @@ export class EndpointsRuleService {
   }
 
   public createBr() {
-    return this.origin + '/schema/metadata/create-update-br'
+    return this.origin + '/schema/metadata/create-update-br';
   }
 
   public createSchema() {
@@ -126,7 +124,6 @@ export class EndpointsRuleService {
   public deleteBr(id): string {
     return this.origin + '/schema/metadata/delete-business-rule/' + id;
   }
-
 
   public returnCollaboratorsPermisisonUrl(reportId: string): string {
     return `${this.origin}/admin/permission/collaborators/permission/${reportId}`;
@@ -167,7 +164,6 @@ export class EndpointsRuleService {
   public getUdrBusinessRuleInfoUrl(ruleId: string): string {
     return `${this.origin}/schema/metadata/br/udr/${ruleId}`;
   }
-
 
   public deleteConditionBlock(blockId: string): string {
     return `${this.origin}/schema/metadata/br/udr/delete-conditionblock/${blockId}`;
@@ -218,7 +214,7 @@ export class EndpointsRuleService {
   }
 
   public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
-    return `${this.classicOrigin}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
+    return `${this.classicOrigin}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`;
   }
 
   /**
@@ -236,7 +232,6 @@ export class EndpointsRuleService {
   public getModuleInfoByModuleIdUrl(): string {
     return `${this.classicOrigin}/schema/getModuleInfo`;
   }
-
 
   /**
    * Get schema with variants .. use for data intilligence ...
@@ -295,7 +290,7 @@ export class EndpointsRuleService {
   }
 
   public getWorkflowDataURL(): string {
-    return this.origin + '/schema/get-wf-module-data'
+    return this.origin + '/schema/get-wf-module-data';
   }
 
   /**
@@ -310,27 +305,26 @@ export class EndpointsRuleService {
     return this.origin + `/schema/get-wfpath`;
   }
 
-
   /**
    * Endpoint url to get notifications
    * @param senderUid username of logged in user
    */
   public getNotificationsUrl(senderUid, from: string, to: string): string {
-    return `${this.origin}/notification/getNotification?senderUid=${senderUid}&from=${from}&to=${to}`
+    return `${this.origin}/notification/getNotification?senderUid=${senderUid}&from=${from}&to=${to}`;
   }
 
   /**
    * Endpoint to update/save notification
    */
   public getUpdateNotificationUrl(): string {
-    return `${this.origin}/notification/saveNotification`
+    return `${this.origin}/notification/saveNotification`;
   }
 
   /**
    * Endpoint to update/save notification
    */
   public getDeleteNotificationUrl(): string {
-    return `${this.origin}/notification/deleteNotification`
+    return `${this.origin}/notification/deleteNotification`;
   }
 
   /**
@@ -339,12 +333,11 @@ export class EndpointsRuleService {
    * @param plantCode plantcode of logged in user
    */
   public getJobQueueUrl(userName: string, plantCode: string): string {
-    return `${this.origin}/schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`
+    return `${this.origin}/schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`;
   }
 
-
   public getNotificationsCount(senderUid): string {
-    return `${this.origin}/notification/getNotificationCount?senderUid=${senderUid}`
+    return `${this.origin}/notification/getNotificationCount?senderUid=${senderUid}`;
   }
 
   /**
@@ -373,7 +366,7 @@ export class EndpointsRuleService {
   /**
    * endpoint for copy duplicate rule
    */
-  public copyDuplicate(): string{
+  public copyDuplicate(): string {
     return `${this.origin}/duplicate/copyDuplicate`;
   }
 
@@ -410,7 +403,7 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/getClassificationListData/${schemaId}/${runId}`;
   }
 
-  public getAllDataScopesUri(schemaId: string, type: string ) {
+  public getAllDataScopesUri(schemaId: string, type: string) {
     return `${this.classicOrigin}/schema/variants/${schemaId}/${type}`;
   }
 
@@ -441,7 +434,7 @@ export class EndpointsRuleService {
   }
 
   public getAllBusinessRulesUrl() {
-    return this.origin + `/schema/metadata/get-all-business-rules/`
+    return this.origin + `/schema/metadata/get-all-business-rules/`;
   }
 
   /**
@@ -455,23 +448,22 @@ export class EndpointsRuleService {
    * URI for get all available nouns ..from local library
    */
   public getAvailableNounsUri(): string {
-    return `${this.origin}/mro/noun`;
+    return `${this.classicOrigin}/mro/noun`;
   }
 
   /**
    * URI for get all available modifiers  ..from local library
    */
   public getAvailableModifierUri(): string {
-    return `${this.origin}/mro/modifier`;
+    return `${this.classicOrigin}/mro/modifier`;
   }
 
   /**
    * URI for get all available attributes  ..from local library
    */
   public getAvailableAttributeUri(): string {
-    return `${this.origin}/mro/attribute`;
+    return `${this.classicOrigin}/mro/attribute`;
   }
-
 
   /**
    * Get uri for suggested noun ..
@@ -491,7 +483,6 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/modifier/${schemaId}/${runid}`;
   }
 
-
   /**
    * Get uri for suggested attribute ..
    *
@@ -508,20 +499,20 @@ export class EndpointsRuleService {
   public doClassificationCorrectionUri(): string {
     return `${this.origin}/schema/actions/do-mro-correction`;
   }
-  public getCreateNounModUrl() : string{
+  public getCreateNounModUrl(): string {
     return this.origin + '/schema/metadata/create-noun';
   }
 
-  public getCreateAttributeUrl(nounSno: string) : string{
+  public getCreateAttributeUrl(nounSno: string): string {
     return this.origin + `/schema/metadata/add-attributes/${nounSno}`;
   }
 
-  public getSaveAttributesMappingUrl() : string{
+  public getSaveAttributesMappingUrl(): string {
     return this.origin + `/schema/metadata/save-mappings`;
   }
 
-  public getFetchAttributesMappingUrl() : string{
-    return this.origin + `/schema/get-mappings`;
+  public getFetchAttributesMappingUrl(): string {
+    return this.origin + `/schema/metadata/get-mappings`;
   }
 
   /**
@@ -583,7 +574,6 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/actions/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 
-
   /**
    * Uri for reset schema execution correction data ..
    * @param schemaId append as request path
@@ -601,14 +591,14 @@ export class EndpointsRuleService {
    * @param schemaid append on request path ..
    */
   public downloadMroExceutionUri(schemaid: string): string {
-    return `${this.origin}/schema/download/mro/${schemaid}`;
+    return `${this.classicOrigin}/schema/download/mro/${schemaid}`;
   }
 
   /**
    * Uri for generate mro classification description ..
    */
   public generateMroClassificationDescriptionUri(): string {
-    return `${this.origin}/schema/mro/generate-description`;
+    return `${this.classicOrigin}/schema/mro/generate-description`;
   }
   public getCreateUpdateSchemaActionUrl(): string {
     return this.origin + `/schema/actions/create-update`;
@@ -634,7 +624,6 @@ export class EndpointsRuleService {
     return this.classicOrigin + `/schema/actions/getCrossMapping?plantCode=${plantCode}`;
   }
 
-
   /**
    * URL for schema execution progress details
    * @param schemaId: schema id for which execution details needed.
@@ -647,7 +636,14 @@ export class EndpointsRuleService {
     return `${this.origin}/duplicate/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
 
-  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
+  public getSchemaExecutionTree(
+    moduleId: string,
+    schemaId: string,
+    variantId: string,
+    plantCode: string,
+    userId: string,
+    requestStatus: string
+  ) {
     return `${this.origin}/schema/execution-tree/${moduleId}/${schemaId}?plantCode=${plantCode}&userId=${userId}&variantId=${variantId}&requestStatus=${requestStatus}`;
   }
 
@@ -672,7 +668,7 @@ export class EndpointsRuleService {
    * @returns will return the url for get all fields based on nodeid
    */
   public getallFieldsbynodeId(): string {
-    return  `${this.classicOrigin}/schema/getallFieldsbynodeId`;
+    return `${this.classicOrigin}/schema/getallFieldsbynodeId`;
   }
 
   /**
@@ -687,7 +683,48 @@ export class EndpointsRuleService {
    * Cancle schema uri
    * @returns will return the url
    */
-  public cancleSchemaUri(): string{
-    return `${this.origin}/schema/cancle-schema`;
+  public cancleSchemaUri(): string {
+    return `${this.origin}/schema/cancel-schema`;
+  }
+
+  /**
+   * get all the transformation rules url
+   * @returns will return the trans uri
+   */
+  public transformationRules(): string {
+    return `${this.origin}/schema/metadata/transformationRuleLibrary`;
+  }
+
+  /**
+   * Get the url for all transformatiom inside rule
+   * @returns will return the mapped transformation rule inside the rule
+   */
+  public getMappedTransformationRulesUrl(): string {
+    return `${this.origin}/schema/metadata/getTransformationmapping`;
+  }
+
+  /**
+   * Get schema related global counts
+   * @param schemaId selected schemaId
+   * @returns will return schema global counts such as success,skipped and error
+   */
+  public getSchemaGlobalCounts(): string {
+    return `${this.origin}/schema/get-global-count`;
+  }
+
+  /**
+   * Get the table header metadata ...
+   * @returns will return the url for get table header metadata ...
+   */
+  public getClassificationDatatableHeader(): string {
+    return `${this.origin}/schema/get-nounheader-info`;
+  }
+
+  /**
+   * Url for get the master lib. attribute value ...
+   * @returns will return get attribute value url
+   */
+  public getClassificationAttributeValueUrl(): string {
+    return `${this.classicOrigin}/schema/getAttributeValues`;
   }
 }

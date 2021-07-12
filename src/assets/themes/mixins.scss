@@ -144,7 +144,8 @@
   }
 
   //Form-Input
-  pros-form-input {
+  pros-form-input,
+  .mdo-field {
     .error-validation-field {
       color: $color-status-error;
 
@@ -227,6 +228,7 @@
       padding-bottom: 0;
       border-radius: 4px;
       background-color: $color-app-accent;
+      margin: 0;
 
       .mat-form-field-flex {
         padding-right: 0;
@@ -256,6 +258,7 @@
             .mat-select-arrow {
               margin-top: 8px;
               margin-right: 12px;
+              color: $color-text-primary;
             }
           }
         }
@@ -275,6 +278,14 @@
 
     &.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
       border-width: 1px;
+    }
+
+    &.mat-form-field-appearance-outline {
+      &.mat-focused {
+        .mat-form-field-outline-thick {
+          color: $color-app-canvas;
+        }
+      }
     }
 
     &.error-matfield {
@@ -454,10 +465,10 @@
           cursor: pointer;
 
           .option-icon {
-            font-size: 10px;
-            width: 10px;
-            height: 10px;
-            margin-right: 8px;
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
           }
         }
 
@@ -545,84 +556,88 @@
   mat-chip-list {
     outline: none;
 
-    mat-chip.mat-chip {
-      font-weight: normal;
-      min-height: 24px;
-      border-radius: 30px;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      overflow: hidden;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      padding: 3px 12px;
-      font-size: 0.8rem;
+    .mat-chip-list-wrapper {
+      margin: 0;
 
-      .mat-info-icon {
-        font-size: 12px;
-      }
+      mat-chip.mat-chip {
+        font-weight: normal;
+        min-height: 24px;
+        border-radius: 30px;
+        text-overflow: ellipsis;
+        white-space: pre-line;
+        overflow: hidden;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        padding: 3px 12px;
+        font-size: 0.8rem;
 
-      &.none-stats-chip {
-        border: 1px solid $color-app-border;
-        background-color: mat-color($background-palette, card);
-        white-space: nowrap;
-      }
+        .mat-info-icon {
+          font-size: 12px;
+        }
 
-      &.mdo-filter-matchip {
-        display: flex;
-        height: 35px;
-        width: auto;
-        cursor: pointer;
-        padding: 5px 10px;
-        line-height: 0.9em;
-        border: 1px solid $color-app-border;
-        background-color: mat-color($background-palette, card);
-        margin: 0 4px;
+        &.none-stats-chip {
+          border: 1px solid $color-app-border;
+          background-color: mat-color($background-palette, card);
+          white-space: nowrap;
+        }
 
-        label {
+        &.mdo-filter-matchip {
+          display: flex;
+          height: 35px;
+          width: auto;
+          cursor: pointer;
+          padding: 5px 10px;
+          line-height: 0.9em;
+          border: 1px solid $color-app-border;
+          background-color: mat-color($background-palette, card);
           margin: 0 4px;
+
+          label {
+            margin: 0 4px;
+          }
+
+          .info {
+            color: $color-text-link;
+            margin-right: 3px;
+          }
         }
 
-        .info {
-          color: $color-text-link;
-          margin-right: 3px;
+        &.info-status {
+          background: $color-status-info-accent;
+          color: $color-status-info;
+        }
+
+        &.error-status {
+          background: $color-status-error-accent;
+          color: $color-status-error;
+        }
+
+        &.success-status {
+          background: $color-status-success-accent;
+          color: $color-status-success;
+        }
+
+        &.warning-status {
+          background: $color-status-warning-accent;
+          color: $color-status-warning;
+        }
+
+        &.selected {
+          background: $color-app-selected;
+          border-color: $color-app-selected;
+          color: $color-text-canvas;
+        }
+
+        &.unselected {
+          background: mat-color($background-palette, card);
+          border: 1px solid $color-app-border;
+          color: $color-text-primary;
         }
       }
 
-      &.info-status {
-        background: $color-status-info-accent;
-        color: $color-status-info;
+      mat-chip.mat-chip.mat-standard-chip::after {
+        background: transparent;
       }
-
-      &.error-status {
-        background: $color-status-error-accent;
-        color: $color-status-error;
-      }
-
-      &.success-status {
-        background: $color-status-success-accent;
-        color: $color-status-success;
-      }
-
-      &.warning-status {
-        background: $color-status-warning-accent;
-        color: $color-status-warning;
-      }
-
-      &.selected {
-        background: $color-app-selected;
-        border-color: $color-app-selected;
-        color: $color-text-canvas;
-      }
-
-      &.unselected {
-        background: mat-color($background-palette, card);
-        border: 1px solid $color-app-border;
-        color: $color-text-primary;
-      }
-    }
-
-    mat-chip.mat-chip.mat-standard-chip::after {
-      background: transparent;
     }
   }
 
@@ -756,14 +771,6 @@
     }
   }
 
-  .filter-btn button,
-  .menu-link-btn button {
-    border-color: $color-app-border;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 50%;
-  }
-
   //Mat-Menu
   .cdk-overlay-pane {
     &.display-dialog {
@@ -797,27 +804,14 @@
       }
 
       &.navigation-menu {
+        .menu-search-row {
+          padding: 8px;
+        }
+
         .menu-customdropdown {
           max-height: 360px;
           min-height: auto;
           overflow: auto;
-
-          &.search-module-dropdown {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            overflow-y: auto;
-
-            .lib-button {
-              width: 100%;
-
-              button {
-                width: 100%;
-                text-align: left;
-                margin-left: 5px;
-              }
-            }
-          }
         }
 
         mat-divider.mat-divider {
@@ -873,15 +867,13 @@
           top: -1px;
         }
 
-        .mdo-field-tooltip {
-          margin-bottom: 8px;
-          display: flex;
-          flex-direction: column;
+        .field-label {
+          margin-bottom: 6px;
+        }
 
-          mat-label {
-            font-weight: 500;
-            font-size: 0.8rem;
-          }
+        .field-button {
+          width: 100%;
+          display: flex;
         }
       }
     }
@@ -1077,6 +1069,11 @@
     border: 1px solid  $color-status-error;
   }
 
+  .sidesheetcontent-listing .mandatory {
+    margin: initial 5px;
+    color: $color-status-error;
+  }
+
   //MDO-Table
   .mat-table {
     .mat-row,
@@ -1137,6 +1134,10 @@
 
       .mat-sort-header {
         display: inline-block;
+      }
+
+      .mandatory {
+        color: $color-status-error;
       }
     }
 
@@ -1247,32 +1248,6 @@
       .mat-cell.action-buttons-width {
         min-width: 300px;
       }
-    }
-  }
-
-  .schema-details-table .mat-table {
-    .schema-header-cell {
-      background: $color-app-accent;
-    }
-
-    .mat-row:hover {
-      .schema-header-cell {
-        background: inherit;
-      }
-    }
-
-    .mat-cell {
-      .grid-cell-editable {
-        min-height: 50px;
-      }
-
-      &.error-cell {
-        border-width: 1px;
-      }
-    }
-
-    .mat-cell.edit-mode {
-      border: 1px solid #000;
     }
   }
 
@@ -1410,10 +1385,6 @@
     }
   }
 
-  .lib-button.navbar-action .mdo-button.mdo-minor {
-    background: $color-text-canvas;
-  }
-
   pros-primary-navigation {
     mat-sidenav-content.body-sidecontent {
       height: calc(100% - 60px);
@@ -1478,10 +1449,6 @@
     }
   }
 
-  .mat-nav-list .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
-    top: 5px;
-  }
-
   pros-settings {
     .mat-list-item.selected {
       background-color: $color-app-hover;
@@ -1494,13 +1461,7 @@
         box-shadow: $inset-box-shadow;
 
         .nav-tree {
-          .badge {
-            color: $color-text-secondary;
-          }
-
           .mat-list-item {
-            font-size: 14px;
-
             &.selected {
               background-color: $color-app-hover;
             }
@@ -1529,27 +1490,6 @@
         &.selected:hover,
         &.selected:focus {
           background-color: $color-app-hover;
-        }
-      }
-    }
-  }
-
-  pros-welcome-mdo,
-  pros-schema-lists {
-    pros-svg-icon.welcome-logo {
-      .logo-primary {
-        fill: mat-color($primary-palette);
-      }
-    }
-
-    mat-list.mat-list {
-      mat-list-item.mat-list-item {
-        .mat-list-item-content {
-          padding: 0;
-
-          .short-line {
-            color: $color-text-secondary;
-          }
         }
       }
     }
@@ -1589,7 +1529,8 @@
     }
   }
 
-  pros-setup-duplicate-rule {
+  pros-setup-duplicate-rule,
+  pros-datascope-list-sidesheet {
     .colunm-box {
       &.rule-border-row {
         border-bottom: 1px solid $color-app-border;
@@ -1721,56 +1662,6 @@
     }
   }
 
-  pros-new-business-rules {
-    .user-defined-set {
-      &::before {
-        background: $color-app-border;
-      }
-
-      .defined-row {
-        border-color: $color-app-border;
-
-        div.col {
-          &.select-col {
-            background: $color-accent;
-          }
-        }
-      }
-    }
-  }
-
-  pros-brrule-side-sheet,
-  pros-duplicate-datacheck-sidesheet {
-    div.root {
-      .user-defined-set {
-        &::before {
-          background: $color-accent;
-        }
-
-        .defined-row {
-          border-color: $color-app-border;
-
-          div.col {
-            &.select-col {
-              background: $color-accent;
-            }
-
-            button.f-selected-col,
-            .range-slider {
-              background-color: mat-color($background-palette, card);
-            }
-          }
-        }
-      }
-
-      .colunm-box {
-        &.rule-border-row {
-          border-bottom: 1px solid $color-app-border;
-        }
-      }
-    }
-  }
-
   pros-report-list {
     mat-card.root {
       mat-list.mat-list {
@@ -1816,6 +1707,108 @@
 
           .mat-form-field-underline {
             display: none;
+          }
+        }
+      }
+    }
+  }
+
+  pros-library-mapping-sidesheet {
+    div.root {
+      .rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+
+        .col {
+          &.error-cell {
+            border-bottom: 1px solid mat-color($primary-palette);
+            background-color: mat-color($background-palette, app-bar);
+          }
+
+          mat-form-field.customfield-dropdown {
+            width: 100%;
+            background: transparent;
+
+            .mat-form-field-wrapper {
+              .mat-form-field-flex {
+                padding-top: 0;
+                background: transparent;
+              }
+
+              .mat-form-field-infix {
+                mat-select.mat-select {
+                  .mat-select-value-text {
+                    color: mat-color($primary-palette);
+                  }
+                }
+              }
+
+              .mat-form-field-underline {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-brrule-side-sheet,
+  pros-new-business-rules {
+    div.root {
+      .user-defined-set {
+        &::before {
+          background: $color-accent;
+        }
+
+        .defined-row {
+          border-color: $color-app-border;
+
+          div.col {
+            &.select-col {
+              background: $color-accent;
+            }
+
+            .mat-select {
+              &.udr-form-select {
+                box-sizing: border-box;
+              }
+
+              // &.ng-touched.ng-invalid {
+              //   border: 1px solid $color-status-error;
+              //   color: $color-status-error;
+              // }
+            }
+
+            .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
+            .udr-select-col.has-error {
+              border: 1px solid  $color-status-error;
+            }
+
+            .udr-option:hover {
+              button.mdo-button:hover {
+                background: transparent;
+
+                .mat-button-focus-overlay {
+                  opacity: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .colunm-box {
+        &.rule-border-row {
+          border-bottom: 1px solid $color-app-border;
+        }
+      }
+
+      .field-chip-list {
+        .lib-chip {
+          button.mdo-filter-pill {
+            height: 28px;
+            margin-top: -1px;
+            font-size: 13px;
           }
         }
       }
@@ -1888,47 +1881,6 @@
     }
   }
 
-  pros-configure-sidesheet,
-  pros-library-mapping-sidesheet,
-  pros-lookup-rule {
-    div.root {
-      .rule-border-row {
-        border-bottom: 1px solid $color-app-border;
-
-        .col {
-          &.error-cell {
-            border-bottom: 1px solid mat-color($primary-palette);
-            background-color: mat-color($background-palette, app-bar);
-          }
-
-          mat-form-field.customfield-dropdown {
-            width: 100%;
-            background: transparent;
-
-            .mat-form-field-wrapper {
-              .mat-form-field-flex {
-                padding-top: 0;
-                background: transparent;
-              }
-
-              .mat-form-field-infix {
-                mat-select.mat-select {
-                  .mat-select-value-text {
-                    color: mat-color($primary-palette);
-                  }
-                }
-              }
-
-              .mat-form-field-underline {
-                display: none;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   pros-system-tray {
     div.root {
       mat-tab-header.mat-tab-header {
@@ -1946,6 +1898,10 @@
           mat-list-item.mat-list-item {
             border-bottom: 1px solid $color-app-border;
 
+            &.mat-list-item:hover {
+              background-color: $color-app-hover;
+            }
+
             .mat-list-item-content {
               min-height: 48px;
               padding: 0;
@@ -1954,12 +1910,6 @@
               .mat-expand-icon {
                 color: $color-text-secondary;
               }
-
-              mat-card-header.mat-card-header {
-                .mat-card-header-text {
-                  margin: 0;
-                }
-              }
             }
           }
         }
@@ -1967,35 +1917,43 @@
     }
   }
 
+  // pros-table-cell-input {
+  //   mat-form-field.edit-cell {
+  //     background: #;
+  //   }
+  // }
+
   pros-classification-builder {
     div.root {
-      .dataset-grid-navigation {
+      .listset-navigation {
+        border-right-color: $color-app-border;
+
         .nav-tree {
           mat-nav-list.mat-nav-list.tree-nav-list {
             .understep-two {
-              .mat-list-item-content {
-                padding: 0 0 0 72px;
+              &.selected,
+              &.mat-list-item:hover {
+                background: $color-app-hover;
+              }
 
-                .mat-list-text {
-                  padding-left: 0;
-                }
+              .mat-list-item-content {
+                padding: 0 16px 0 64px;
               }
             }
           }
+        }
 
-          .error-badge {
-            color: $color-status-error;
-          }
-
-          .success-badge {
-            color: $color-status-success;
-          }
-
-          .warning-badge {
-            color: $color-status-warning;
-          }
+        .split-panel-mark {
+          box-shadow: $box-shadow;
+          background-color: mat-color($background-palette, card);
         }
       }
+    }
+  }
+
+  pros-global-count {
+    .sum-collection::after {
+      background-color: $color-text-secondary;
     }
   }
 
@@ -2090,100 +2048,15 @@
     }
   }
 
-  .sidesheetcontent-listing .mandatory {
-    margin: initial 5px;
-    color: $color-status-error;
-  }
-
-  pros-import-log {
-    table.mat-table.table-vertical tbody tr {
-      td.mat-cell {
-        border-bottom-color: $color-app-border;
-        background: $color-text-canvas;
-
-        &.open-status {
-          background: $color-status-warning-accent;
-          border-bottom: 1px solid $color-status-warning;
-
-          .mdo-field .mdo-field-input {
-            background: $color-status-warning-accent;
-            border: none;
-
-            input {
-              background: $color-status-warning-accent;
-            }
-          }
-
-          &:hover {
-            background: $color-status-warning-accent;
-          }
-        }
-
-        &.close-status {
-          background: $color-status-info-accent;
-          border-bottom: 1px solid $color-status-info;
-
-          .mdo-field .mdo-field-input {
-            background: $color-status-info-accent;
-            border: none;
-
-            input {
-              background: $color-status-info-accent;
-            }
-          }
-
-          &:hover {
-            background: $color-status-info-accent;
-          }
-        }
-
-        &:first-child {
-          font-weight: 400;
-        }
-
-        &.text-end {
-          text-align: right;
-        }
-      }
-
-      &.mat-row:hover .mat-cell.mat-table-sticky {
-        &.open-status {
-          background: $color-status-warning-accent;
-
-          .mdo-field .mdo-field-input {
-            background: $color-status-warning-accent;
-            border: none;
-          }
-        }
-
-        &.close-status {
-          background: $color-status-info-accent;
-
-          .mdo-field .mdo-field-input {
-            background: $color-status-info-accent;
-            border: none;
+  pros-schema-lists {
+    table.mat-table {
+      &.table-vertical {
+        .mat-row {
+          td.mat-cell {
+            border-bottom-color: $color-app-border;
           }
         }
       }
-    }
-
-    th.mat-sort-header.mat-header-cell.cdk-header-cell {
-      padding-right: 0;
-    }
-
-    .mat-sort-header-container.mat-focus-indicator {
-      justify-content: flex-end;
-    }
-  }
-
-  .mat-select.udr-form-select {
-    padding: 7px;
-    box-sizing: border-box;
-    border-radius: 5px;
-
-    &.ng-touched.ng-invalid {
-      border: 1px solid $color-status-error;
-      color: $color-status-error;
     }
   }
 
@@ -2368,14 +2241,6 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
   margin-bottom: 17px;
 }
 
-// primary menu btns
-.menu-btn {
-  button {
-    width: 100%;
-    text-align: start;
-  }
-}
-
 .date-picker-option .dropdown-option {
   padding: initial;
 }
@@ -2393,16 +2258,8 @@ mat-tooltip-component {
   user-select: none;
 }
 
-.schema-info-tabs {
-  mat-tab-group {
-    height: calc(100% - 75px);
-  }
-}
-
-.br-sidesheet-btn button {
-  width: 60px;
-}
-
-.lib-chip-list.vertical > .mdo-chip-list {
-  flex-direction: column;
-}
+// .schema-info-tabs {
+//   mat-tab-group {
+//     height: calc(100% - 75px);
+//   }
+// }

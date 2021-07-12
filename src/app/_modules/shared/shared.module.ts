@@ -85,6 +85,7 @@ import { GenericFieldControlComponent } from './_components/generic-field-contro
 import { StatusBadgeDirective } from './_directives/status-badge.directive';
 import { UDRValueControlComponent } from './_components/udr-value-control/udr-value-control.component';
 import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loader.component';
+import { OptionFilterComponent } from './_components/lookup/option-filter/option-filter.component';
 
 @NgModule({
   declarations: [
@@ -133,7 +134,8 @@ import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loa
     GenericFieldControlComponent,
     UDRValueControlComponent,
     StatusBadgeDirective,
-    OverlayLoaderComponent
+    OverlayLoaderComponent,
+    OptionFilterComponent
   ],
   imports: [
     // ng modules

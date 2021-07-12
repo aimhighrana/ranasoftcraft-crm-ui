@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RequestForSchemaDetailsWithBr, SchemaTableViewRequest, CategoryInfo, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule, UDRDropdownValue } from 'src/app/_models/schema/schemadetailstable';
+import { RequestForSchemaDetailsWithBr, SchemaTableViewRequest, CategoryInfo, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule, UDRDropdownValue, ClassificationHeader, AttributeValue } from 'src/app/_models/schema/schemadetailstable';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
@@ -138,11 +138,11 @@ export class SchemaDetailsService {
     requestStatus = requestStatus ? requestStatus : '';
     return this.http.get<any>(this.endpointService.getClassificationNounMod(schemaId, runId, variantId), {params:{searchString, requestStatus}}).pipe(map(res=>{
       const  finalRes = {} as ClassificationNounMod;
-      const mro = res.filter(fil => fil.ruleType === 'mro_local_lib');
-      finalRes.mro_local_lib = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
+      const mro = res.filter(fil => fil.ruleType === 'MRO_CLS_MASTER_CHECK');
+      finalRes.MRO_CLS_MASTER_CHECK = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
 
-      const gsn = res.filter(fil => fil.ruleType === 'mro_gsn_lib');
-      finalRes.mro_gsn_lib = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};
+      const gsn = res.filter(fil => fil.ruleType === 'MRO_MANU_PRT_NUM_LOOKUP');
+      finalRes.MRO_MANU_PRT_NUM_LOOKUP = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};
 
       const unmatched = res.filter(fil => fil.ruleType === 'unmatched');
       finalRes.unmatched = {doc_count: unmatched[0].doc_count ? unmatched[0].doc_count : 0};
@@ -183,7 +183,9 @@ export class SchemaDetailsService {
    */
   public doCorrectionForClassification(schemaId: string ,fieldId: string,  request: SchemaMROCorrectionReq): Observable<any>{
     fieldId = fieldId ? fieldId : '';
-    return this.http.post<any>(this.endpointService.doClassificationCorrectionUri(), request , {params:{schemaId, fieldId}});
+    const fromUnmatch:any = request.fromUnmatch ? request.fromUnmatch : false;
+    delete request.fromUnmatch;
+    return this.http.post<any>(this.endpointService.doClassificationCorrectionUri(), request , {params:{schemaId, fieldId, fromUnmatch}});
   }
 
   /**
@@ -248,7 +250,7 @@ export class SchemaDetailsService {
    * @param isFromMasterLib use to make identify the request from ..
    */
   public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[], isFromMasterLib?: any): Observable<any> {
-    return this.http.put<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId, isFromMasterLib}});
+    return this.http.post<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId, isFromMasterLib}});
   }
 
 
@@ -288,5 +290,28 @@ export class SchemaDetailsService {
 
   public getUDRDropdownValues(fieldId: string, searchStr: string): Observable<UDRDropdownValue[]> {
     return this.http.get<UDRDropdownValue[]>(this.endpointService.getUDRDropdownValues(fieldId, searchStr));
+  }
+
+  /**
+   * Get the classification datatable columns with metadata ....
+   * @param schemaId current schema id ...
+   * @param ruleType data based on this rule type ... either mro_master_lib or connekthub_lib
+   * @param nounCode as the requestParams , which is the selected node nounCode
+   * @param modeCode as the requestParams , which is the selected modifier nounCode
+   * @returns will return the all possiable columns with metadata ...
+   */
+  public getClassificationDatatableColumns(schemaId: string, ruleType: string, nounCode: string, modeCode: string): Observable<ClassificationHeader[]> {
+    return this.http.get<ClassificationHeader[]>(this.endpointService.getClassificationDatatableHeader(), {params:{schemaId, ruleType, nounCode, modeCode}});
+  }
+
+  /**
+   * Get the attribute values ...
+   * @param attrCode selected attribute id
+   * @param searchQuery serach string for attribite ...
+   * @returns will return all the attribute values ...
+   */
+  public getClassificationAttributeValue(attrCode: string, searchQuery: string): Observable<AttributeValue[]> {
+    searchQuery = searchQuery ? searchQuery : '';
+    return this.http.get<AttributeValue[]>(this.endpointService.getClassificationAttributeValueUrl(), {params:{attrCode, searchQuery}});
   }
 }

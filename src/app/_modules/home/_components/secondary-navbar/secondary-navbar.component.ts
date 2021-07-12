@@ -273,7 +273,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         }
       }
     });
+
+    this.sharedService.refresSchemaListTrigger
+    .subscribe((res: boolean) => {
+      if(res) {  this.getSchemaList(); }
+    });
+
     this.getInboxNodesCount();
+
     const subscription = this.schemaSearchSub.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -438,17 +445,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    */
   public getreportList() {
     const subscription = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      const subs = this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
-        this.reportOb = of(reportList);
-        this.reportList = reportList;
-        if (this.reportList.length > 0 && !this.isPageReload) {
-          const firstReportId = this.reportList[0].reportId;
-          this.router.navigate(['home/report/dashboard', firstReportId]);
-        } else if(this.reportList.length === 0 && !this.isPageReload) {
-          this.router.navigate(['home/report/dashboard/new']);
-        }
-      }, error => console.error(`Error : ${error}`));
-      this.subscriptions.push(subs);
+      if(user?.plantCode && user?.currentRoleId){
+        const subs = this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
+          this.reportOb = of(reportList);
+          this.reportList = reportList;
+          if (this.reportList.length > 0 && !this.isPageReload) {
+            const firstReportId = this.reportList[0].reportId;
+            this.router.navigate(['home/report/dashboard', firstReportId]);
+          } else if(this.reportList.length === 0 && !this.isPageReload) {
+            this.router.navigate(['home/report/dashboard/new']);
+          }
+        }, error => console.error(`Error : ${error}`));
+        this.subscriptions.push(subs);
+      }
     });
     this.subscriptions.push(subscription);
   }
@@ -810,10 +819,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    * Open dialog for import a report
    */
   importReport() {
-    this.matDialog.open(ImportComponent, {
+    const dialogRef = this.matDialog.open(ImportComponent, {
       width: '600px',
       minHeight: '250px',
       disableClose: false,
+    });
+
+    // Reload once import is successfull
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.getreportList();
+      }
     });
   }
 }

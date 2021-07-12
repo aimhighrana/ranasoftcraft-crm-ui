@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, Output, EventEmitter, NgZone } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject, Subscription } from 'rxjs';
@@ -26,6 +26,7 @@ import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 import { debounce } from 'lodash';
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'pros-schema-details',
@@ -181,6 +182,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   @ViewChild('navscroll')navscroll:ElementRef;
   @ViewChild('listingContainer')listingContainer:ElementRef;
+  @ViewChild('table') table: MatTable<any>;
 
   FIELD_TYPE = FieldInputType;
 
@@ -281,6 +283,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }, 300)
 
   constructor(
+    private ngZone: NgZone,
     public activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
     private router: Router,
@@ -329,9 +332,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
 
     const moduleSub = this.getModuleInfo(this.moduleId);
-    const sub = this.getDataScope();
-    forkJoin({getDataScope: sub, getModuleInfo: moduleSub}).subscribe((res) => {
-      if (res) {
+    forkJoin({...!this.isInRunning && {getDataScope: this.getDataScope()}, getModuleInfo: moduleSub}).subscribe((res) => {
+      if (res && !this.isInRunning) {
         this.getSchemaDetails();
       }
     });
@@ -399,6 +401,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     });
     // this.setNavDivPositions();
     // this.enableResize();
+  }
+
+  /**
+   * use this method to update the UI after dynamic columns are displayed
+   */
+  updateTableColumnSize() {
+    this.ngZone.onMicrotaskEmpty.pipe(take(3)).subscribe(() => this.table.updateStickyColumnStyles());
   }
 
   ngOnInit(): void {
@@ -738,6 +747,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     request.isLoadMore = isLoadMore ? isLoadMore : false;
     request.ruleSelected = this.appliedBrList ? this.appliedBrList.map(m => m.brIdStr) : [];
     this.dataSource.getTableData(request);
+    this.updateTableColumnSize();
   }
 
 
@@ -770,6 +780,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (this.userDetails) {
       this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     }
+    this.getSchemaStatics();
   }
 
   /**
@@ -810,7 +821,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(fldid);
     console.log(row);
 
-    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId && (this.activeTab === 'outdated' || this.activeTab === 'skipped')) {
+    if(this.activeNode && this.activeNode.nodeId !== this.metadataFldLst[fldid].nodeId || this.activeTab === 'outdated' || this.activeTab === 'skipped') {
       return;
     }
 
@@ -1029,6 +1040,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData();
         this.selection.clear();
         this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
+        this.getSchemaStatics();
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -1245,7 +1257,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
 
   addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
-
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
       TableCellInputComponent
     );

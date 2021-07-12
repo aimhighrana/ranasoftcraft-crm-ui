@@ -4,7 +4,7 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div i18n="@@system_tray" class="display-heading-large">System tray</div>
+                <lib-text-line i18n="@@system_tray" type="leading">System tray</lib-text-line>
             </div>
         </div>
     </div>
@@ -12,57 +12,66 @@
     <div class="f-col sidesheetcontent-listing">
         <lib-tab-group disableRipple="true" #matTabgroup class="lib-tab">
             <lib-tab i18n-label="@@notifications" label="Notifications">
-                <mat-nav-list>
+                <mat-nav-list class="notification-list" prosInfiniteScroll bufferPercentage="20"
+                    (scrollEnd)="paginateNotification()">
                     <mat-list-item *ngFor="let notification of notifications;">
-                        <div class="f-col notification-listing">
-                            <div mat-line>{{notification.headerText}}</div>
-                            <div class="f-row notify-row">
-                                <div class="f-row notify-message-row">
-                                    <ng-template [ngIf]="!notification.showMore" [ngIfElse]= "withoutTruncate">
-                                        <div class="notify-content" >
-                                            <p>{{notification.contentText}}</p>
-                                            <a (click)="download(notification.downloadLink)">{{notification.downloadLink}}</a>
-                                        </div>
-                                        <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96)|| (notification.contentText && notification.contentText.length > 96)" (click)="notification.showMore = !notification.showMore">
-                                            <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-right</mat-icon>
-                                        </a>
-                                    </ng-template>
-                                   
-                                    <ng-template  #withoutTruncate>
-                                        <div class="notify-content expand-content">
-                                            <p class="collapse-text">{{notification.contentText}}</p>
-                                            <a (click)="download(notification.downloadLink)">{{notification.downloadLink}}</a>
-                                        </div>
-                                        <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96) || (notification.contentText && notification.contentText.length > 96)" (click)="notification.showMore = !notification.showMore">
-                                            <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-down</mat-icon>
-                                        </a>
-                                    </ng-template>
- 
-                                </div>
-                                <span class="f-spacer"></span>
-                                <div class="f-row">
-                                    <mat-card-header>
-                                        <ng-template [ngIf]="notification.senderUid || notification.senderMail" [ngIfElse]="showUserProfile">
-                                            <mat-card-header>
-                                                <lib-avatar [initials]="notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]"></lib-avatar>
-                                            </mat-card-header>
-                                        </ng-template>
-            
-                                        <ng-template #showUserProfile>
-                                            <mat-card-header>
-                                                <div mat-card-avatar>
-                                                    <mat-icon fontSet="mdo-icons">home-channel2</mat-icon>
-                                                </div>
-                                            </mat-card-header>
-                                        </ng-template>
-                                    </mat-card-header>
-                                    <span class="f-col-spacer-half"></span>
-                                    <lib-button (click)="deleteNotification(notification.id)" type="plain" icon="trash-alt" prosClickStopPropagation></lib-button>
-                                </div>
-                            </div>
-                            <p class="notify-content" disableRipple="true">{{notification.sendTime | date:"dd MMM hh:mm:ss" }}</p>
-                        </div>
+                        <div class="f-row notification-listing">
+                            <div class="f-col notify-row">
+                                <ng-template [ngIf]="!notification.showMore" [ngIfElse]="withoutTruncate">
+                                    <lib-text-line type="base" weight="strong" textColor="primary">{{notification.headerText}}
+                                    </lib-text-line>
 
+                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true">
+                                        {{notification.contentText}}
+                                    </lib-text-line>
+
+                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true"
+                                        (click)="download(notification.downloadLink)">
+                                        {{notification.downloadLink}}</lib-text-line>
+
+                                    <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96)|| (notification.contentText && notification.contentText.length > 96)"
+                                        (click)="notification.showMore = !notification.showMore">
+                                        <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-right
+                                        </mat-icon>
+                                    </a>
+
+                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true">
+                                        {{notification.sendTime | date:"dd
+                                        MMM
+                                        hh:mm:ss" }}
+                                    </lib-text-line>
+                                </ng-template>
+                                <ng-template #withoutTruncate>
+                                    <div class="notify-content expand-content">
+                                        <lib-text-line type="xsmall" textColor="secondary">{{notification.contentText}}</lib-text-line>
+                                        <lib-text-line type="xsmall" textColor="secondary" (click)="download(notification.downloadLink)">
+                                            {{notification.downloadLink}}</lib-text-line>
+                                    </div>
+                                    <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96) || (notification.contentText && notification.contentText.length > 96)"
+                                        (click)="notification.showMore = !notification.showMore">
+                                        <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-down
+                                        </mat-icon>
+                                    </a>
+                                </ng-template>
+                            </div>
+                            <div class="f-row">
+                                <ng-template [ngIf]="notification.senderUid || notification.senderMail"
+                                        [ngIfElse]="showUserProfile">
+                                        <lib-avatar
+                                            [initials]="notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]">
+                                        </lib-avatar>
+                                    </ng-template>
+
+                                    <ng-template #showUserProfile>
+                                        <lib-avatar>
+                                            <mat-icon fontSet="mdo-icons">user</mat-icon>
+                                        </lib-avatar>
+                                    </ng-template>
+                                <span class="f-col-spacer-half"></span>
+                                <lib-button (click)="deleteNotification(notification.id)" type="plain" icon="trash-alt"
+                                    prosClickStopPropagation></lib-button>
+                            </div>
+                        </div>
                     </mat-list-item>
                 </mat-nav-list>
             </lib-tab>
@@ -70,23 +79,24 @@
             <lib-tab label="Job queue" [badgeCount]="jobQueueData.length">
                 <mat-nav-list>
                     <mat-list-item *ngFor="let job of jobQueueData">
-                        <div mat-line class="job-line">{{job.logMessage}}</div>
-                        <span class="f-spacer"></span>
-                        <mat-chip-list>
-                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'IN_PROGRESS'" class="success-status">
-                                <mat-spinner diameter="14"></mat-spinner>&nbsp;Running
-                            </mat-chip>
-                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'" class="unselected job-date">
-                                <mat-icon fontSet="mdo-icons" class="time-icon">clock</mat-icon>&nbsp;{{
-                                job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
-                            </mat-chip>
-                        </mat-chip-list>
-                        <span class="col-spacer"></span>
-                        <mat-card-header>
+                        <div class="f-row notification-listing">
+                            <div class="f-col job-row">
+                                <lib-text-line type="base">{{job.logMessage}}</lib-text-line>
+                            </div>
+                            
+                            <span class="f-spacer"></span>
+
+                            <lib-chip-list>
+                                <lib-label status="success" *ngIf="job.jobPk.status === 'IN_PROGRESS'">
+                                    <lib-spinner size="13"></lib-spinner>&nbsp; Running
+                                </lib-label>
+                                <lib-label *ngIf="job.jobPk.status === 'COMPLETE'" prefixIcon="clock" appearance="outline">&nbsp; {{job.startDate | date:'dd-MMM-yyyy hh:mm:ss'}}</lib-label>
+                            </lib-chip-list>
+                            <span class="col-spacer"></span>
                             <lib-avatar [initials]="job.initiatedBy"></lib-avatar>
-                        </mat-card-header>
-                        <span class="col-spacer"></span>
-                        <lib-button type="plain" icon="ellipsis-h"></lib-button>
+                            <span class="col-spacer"></span>
+                            <lib-button type="plain" icon="ellipsis-h"></lib-button>
+                        </div>
                     </mat-list-item>
                 </mat-nav-list>
             </lib-tab>
