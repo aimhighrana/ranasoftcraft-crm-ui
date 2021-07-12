@@ -183,8 +183,9 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.classificationCategory = resp;
         const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
         frmAray.clear();
+        const status = this.isMapped? 'matched' : 'unmatched';
         this.gsnAttributes.forEach((row) => {
-          row.status = this.classificationCategory.attrLists.find(x => x.targetCtrl?.ATTR_CODE === row.ATTR_CODE)?.status.toLowerCase() || 'unmatched';
+          row.status = this.classificationCategory.attrLists.find(x => x.targetCtrl?.ATTR_CODE === row.ATTR_CODE)?.status.toLowerCase() || status;
           this.addAttributeMappingRow(row);
         });
         this.statas.forEach((stat) => {
@@ -196,11 +197,12 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   getStatus(fieldname: string) {
+    const status = this.isMapped? 'matched' : 'unmatched';
     return this.classificationCategory
     ? this.classificationCategory[fieldname]?.status?.toLowerCase()
       || this.classificationCategory.attrLists.find(row => row.targetCtrl?.ATTR_CODE === fieldname)?.status.toLowerCase()
-      || 'unmatched'
-    : 'unmatched';
+      || status
+    : status;
   }
 
   canDisplayField(fieldname: string) {
@@ -301,7 +303,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.getAttributesMapping();
       }, error => {
         // Test Function starts
-        const res  ={"SHORT_DESC":null,"LONG_DESC":null,"MANUFACTURER":null,"PARTNO":null,"NOUN_LONG":null,"NOUN_CODE":"RELAY","NOUN_ID":null,"MODE_CODE":"ASSEMBLY","MOD_LONG":null,"UNSPSC":null,"UNSPSC_DESC":null,"MGROUP":"electrical relays and accessories","ATTRIBUTES":[{"MANDATORY":"0","ATTRIBUTE_ID":"556659709411771566","ATTR_DESC":"HEAT SINK","ATTR_CODE":"HEAT SINK","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"806309029946291363","ATTR_DESC":"660 VAC","ATTR_CODE":"660 VAC","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"698677964805359701","ATTR_DESC":"50 A","ATTR_CODE":"50 A","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"875000061862357095","ATTR_DESC":"3 W","ATTR_CODE":"3 W","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"536213119970963522","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"386283772916406823","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"842029563364864818","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"873533793106140575","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"619039059793861681","ATTR_DESC":"PANEL","ATTR_CODE":"PANEL","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"195659578631390226","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"332983479494141746","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"321850039293403042","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"700337140126953413","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"296302413945997794","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"253046953977586241","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"571950879301744450","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"762980065633042591","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"657898411525272022","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"108680459667187621","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"818852862876049336","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"860806687185273927","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"760579005703298521","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"326491031680016514","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"true","DROPDOWN_FIELD":"false","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"787081299558045389","ATTR_DESC":"electrical relays and accessories","ATTR_CODE":"electrical relays and accessories","TEXT_FIELD":"true","DROPDOWN_FIELD":"false","ATTRIBUTES_VALUES":null}]};
+        const res  ={'SHORT_DESC':null,'LONG_DESC':null,'MANUFACTURER':null,'PARTNO':null,'NOUN_LONG':null,'NOUN_CODE':'RELAY','NOUN_ID':null,'MODE_CODE':'ASSEMBLY','MOD_LONG':null,'UNSPSC':null,'UNSPSC_DESC':null,'MGROUP':'electrical relays and accessories','ATTRIBUTES':[{'MANDATORY':'0','ATTRIBUTE_ID':'556659709411771566','ATTR_DESC':'HEAT SINK','ATTR_CODE':'HEAT SINK','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'806309029946291363','ATTR_DESC':'660 VAC','ATTR_CODE':'660 VAC','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'698677964805359701','ATTR_DESC':'50 A','ATTR_CODE':'50 A','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'875000061862357095','ATTR_DESC':'3 W','ATTR_CODE':'3 W','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'536213119970963522','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'386283772916406823','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'842029563364864818','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'873533793106140575','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'619039059793861681','ATTR_DESC':'PANEL','ATTR_CODE':'PANEL','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'195659578631390226','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'332983479494141746','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'321850039293403042','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'700337140126953413','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'296302413945997794','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'253046953977586241','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'571950879301744450','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'762980065633042591','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'657898411525272022','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'108680459667187621','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'818852862876049336','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'860806687185273927','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'760579005703298521','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'326491031680016514','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'true','DROPDOWN_FIELD':'false','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'787081299558045389','ATTR_DESC':'electrical relays and accessories','ATTR_CODE':'electrical relays and accessories','TEXT_FIELD':'true','DROPDOWN_FIELD':'false','ATTRIBUTES_VALUES':null}]};
         this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
         this.mgroup = res.MGROUP ? res.MGROUP : '';
 
@@ -316,14 +318,14 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * Add attribute mapping row
    */
   addAttributeMappingRow(attr: AttributesDoc) {
-
+    const status = this.isMapped? 'matched' : 'unmatched';
     this.attributeMapData.push(
       this.formBuilder.group({
         libraryAttributeCode: [attr && attr.ATTR_CODE ? attr.ATTR_CODE : ''],
         libraryAttributeText: [attr && (attr.ATTR_DESC ? attr.ATTR_DESC :  attr.ATTR_CODE) ? attr.ATTR_CODE : ''],
         localAttributeCode: [attr && attr.localAttributeCode ? attr.localAttributeCode : ''],
         localAttributeText: [attr && attr.localAttributeText ? attr.localAttributeText : ''],
-        status: [attr && attr.status ? attr.status : 'unmatched']
+        status: [attr && attr.status ? attr.status : status]
       })
     );
 
@@ -437,28 +439,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   searchAttributeVal(val: string) {
     debounceTime(1000);
     this.searchString = val;
-    // this.filterAttribute(val);
-  }
-
-  /**
-   * filter attribute fuzzy search ..
-   * @param serachString search able string ..
-   * @param status search for what ..
-   */
-  filterAttribute(serachString?: string, status?: string []) {
-    let filterAttr: Array<AttributesDoc> = this.gsnAttributes;
-    if(serachString && serachString.trim()) {
-      filterAttr = this.gsnAttributes.filter(fil=> (fil.ATTR_CODE.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1 ||
-                            fil.ATTR_DESC.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1));
-    }
-    if(status?.length) {
-      filterAttr = filterAttr.filter(f => status.includes(f.status));
-    }
-    const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
-    frmAray.clear();
-    filterAttr.forEach(att=>{
-      this.addAttributeMappingRow(att);
-    });
   }
 
   /**

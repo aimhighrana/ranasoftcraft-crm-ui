@@ -15,7 +15,7 @@
                 <div class="f-col-spacer-half"></div>
 
                 <ng-template ngFor let-chip [ngForOf]="statas">
-                    <lib-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip)"
+                    <lib-chip class="classification-chip mdo-filter-matchip" (click)="filterAsStatus(chip)"
                         [selected]="chip.isSeleted" [selectable]="true">
                         <lib-text-line type="base">{{ chip.text }} <span *ngIf="chip.count" [ngClass]="!chip.isSeleted ? chip.code : ''">{{chip.count}}</span></lib-text-line>
                     </lib-chip>

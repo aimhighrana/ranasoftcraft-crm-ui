@@ -2109,6 +2109,49 @@
       background-color: $color-text-canvas;
     }
   }
+.classification-chip.mdo-filter-matchip {
+  .unmatched {
+    color: $color-status-error;
+  }
+  .suggested {
+    color: $color-status-info;
+  }
+}
+
+.classification-field {
+  &.suggested {
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
+      background: $color-status-info-accent;
+    }
+    mat-form-field.mat-form-field.null-cell .info-arrow,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
+      color: $color-status-info;
+    }
+  }
+  &.unmatched {
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
+      background: $color-status-error-accent;
+    }
+    mat-form-field.mat-form-field.null-cell .info-arrow,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
+      color: $color-status-error;
+    }
+  }
+}
+
+.lib-button.classification-link-question {
+    button {
+      color: $color-status-error;
+    }
+    &.mat-badge-medium.mat-badge-overlap.mat-badge-after span.mat-badge-content {
+      background: transparent;
+      color: $color-status-error;
+      right: -5px;
+      top: 0px;
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {
@@ -2271,25 +2314,3 @@ mat-tooltip-component {
 //   }
 // }
 
-.classification-field {
-  &.suggested {
-    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
-      background: #D0EBFF;
-    }
-    mat-form-field.mat-form-field.null-cell .info-arrow,
-    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
-    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
-      color: #0078D4;
-    }
-  }
-  &.unmatched {
-    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
-      background: #FFE3E3;
-    }
-    mat-form-field.mat-form-field.null-cell .info-arrow,
-    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
-    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
-      color: #F05B57;
-    }
-  }
-}

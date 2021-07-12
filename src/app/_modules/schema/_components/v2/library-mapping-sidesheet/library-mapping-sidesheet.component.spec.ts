@@ -185,7 +185,7 @@ describe('LibraryMappingSidesheetComponent', () => {
 
     component.buildMappingForm();
     component.getAttributesFromGsn('Bearing', 'Ball');
-    expect(component.attributeMapData.length).toEqual(1);
+    expect(component.gsnAttributes.length).toEqual(1);
 
   });
 
@@ -237,32 +237,15 @@ describe('LibraryMappingSidesheetComponent', () => {
   });
 
   it('should filterAsStatus', () => {
-    spyOn(component, 'filterAttribute');
     const matchedStatus = {code:'matched', count: 0, text:'Matched', isSeleted: false};
     component.filterAsStatus(matchedStatus);
-    expect(component.statas[0].isSeleted).toBeTrue();
+    expect(matchedStatus.isSeleted).toBeTrue();
 
     component.filterAsStatus(matchedStatus);
-    expect(component.statas[0].isSeleted).toBeFalse();
+    expect(matchedStatus.isSeleted).toBeFalse();
 
   });
 
-  it('should filterAttribute', () => {
-    component.buildMappingForm();
-
-    const attr = {ATTR_CODE:'length', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
-    component.gsnAttributes.push(attr);
-
-    component.filterAttribute();
-    expect(component.attributeMapData.controls.length).toEqual(1);
-
-    component.filterAttribute('length');
-    expect(component.attributeMapData.controls.length).toEqual(1);
-
-    component.filterAttribute('length', ['unmapped']);
-    expect(component.attributeMapData.controls.length).toEqual(1);
-
-  });
 
   it('should nounSuggestion', () => {
     component.localNounsList = [{NOUN_ID: 'Bearing'} as NounModifier];
