@@ -9,7 +9,7 @@ mat-card.root {
 
   mat-horizontal-stepper {
     display: block;
-    height: calc(100% - 76px - 6px - 16px * 5);
+    height: calc(100% - 76px - 6px - 16px * 4);
     overflow: auto;
 
     .upload-col {
@@ -25,39 +25,14 @@ mat-card.root {
       }
     }
 
-    .mat-radio-button {
-      margin: 8px 0;
-    }
-
     .dashed-divider {
       position: relative;
       margin: 16px 0;
       border-top-style: dashed;
     }
 
-    .mdo-form-field {
-      mat-label {
-        font-weight: 500;
-        font-size: 0.8rem;
-      }
-    }
-
-    .empty-state {
-      align-items: center;
-
-      .empty-heading {
-        font-size: 1.2rem;
-        margin-bottom: 24px;
-      }
-
-      .label-text {
-        z-index: 1;
-        margin-bottom: 24px;
-      }
-
-      button.mat-flat-button {
-        z-index: 1;
-      }
+    .field-label {
+      margin-bottom: 6px;
     }
 
     .schedule-row {
@@ -72,10 +47,13 @@ mat-card.root {
   .bottom-actions {
     align-items: center;
   }
+
+  .cursor {
+    cursor: pointer;
+  }
 }
 
 .colunm-box {
-  align-items: center;
   box-sizing: border-box;
   padding: 4px 0;
   min-height: 48px;
@@ -86,7 +64,16 @@ mat-card.root {
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 16px;
+    margin: 0 2px;
+    flex-wrap: wrap;
+
+    .lib-input {
+      width: 80%;
+    }
+
+    &.col-x2 {
+      flex: 2;
+    }
 
     &.col-x4 {
       flex: 4;
@@ -108,20 +95,10 @@ mat-card.root {
       justify-content: flex-end;
     }
 
-    .info-link {
-      align-items: center;
-      font-size: 0.9rem;
-      cursor: pointer;
-
-      mat-icon {
-        font-size: 12px;
-        width: 16px;
-        height: 12px;
-      }
-    }
-
-    strong {
-      align-items: center;
+    mat-icon {
+      font-size: 12px;
+      width: 16px;
+      height: 12px;
     }
 
     pros-form-input,

@@ -1,15 +1,13 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
-        <lib-text-line type="leading">{{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): </lib-text-line>
+        <lib-text-line type="leading">{{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}):
+        </lib-text-line>
         <lib-text-line type="leading" weight="500">{{toolbarHeaderText}}</lib-text-line>
         <span class="f-spacer"></span>
         <lib-button type="plain" (click)="closeDialog()" iconFontType="light" icon="times"></lib-button>
     </div>
-
-    <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
-
+    <lib-progress mode="determinate" [value]="progressBar"></lib-progress>
     <div class="row-spacer"></div>
-
     <lib-banner *ngIf="uploadError.status" status="error" [text]="uploadError.message"></lib-banner>
 
     <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
@@ -17,16 +15,10 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col upload-col" *ngIf="uploadLoader && !uploadError.status">
-            <lib-spinner color="primary" diameter="30"></lib-spinner>
+                <lib-spinner color="primary" diameter="30"></lib-spinner>
             </div>
 
             <div class="f-col upload-col" *ngIf="!uploadLoader">
-                <!-- <pros-null-state 
-                [button]="{text: 'Select a file'}"
-                [subtext]="'No data file selected'"
-                [message]="'Drag & drop or select a file to upload'"
-                (action)="openExplorer()">
-                </pros-null-state> -->
                 <lib-empty-state icon="table" iconSize="120" primaryText="No data file selected"
                     secondaryText="Drag & drop or select a file to upload">
                     <lib-button i18n="@@select_a_file" (click)="openExplorer()" type="minor">
@@ -67,20 +59,25 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <lib-input i18n-label="@@module_name" label="Module name" [hasError]="stepSubmitted && requestForm.controls['objectDesc'].errors"
-            [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : 'Module name is required'"
-            [formControl]="formField('objectDesc')"></lib-input>
+                <lib-input i18n-label="@@module_name" label="Module name"
+                    [hasError]="stepSubmitted && requestForm.controls['objectDesc'].errors"
+                    [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : 'Module name is required'"
+                    [formControl]="formField('objectDesc')"></lib-input>
                 <!-- <mat-error i18n="@@module_name_required" *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
                 </mat-error> -->
-                <div class="row-spacer"></div>
 
                 <div class="colunm-listing">
                     <div class="f-row colunm-box rule-border-row">
-                        <div class="col col-x8"><strong i18n="@@header">Header</strong></div>
-                        <div class="col col-x8 text-end"><strong i18n="@@preview_row">Preview row</strong></div>
+                        <div class="col col-x8">
+                            <lib-text-line type="small" weight="strong" i18n="@@header">Header</lib-text-line>
+                        </div>
+                        <div class="col col-x8">
+                            <lib-text-line type="small" weight="strong" i18n="@@preview_row">Preview row</lib-text-line>
+                        </div>
                         <div class="col col-x8" *ngIf="requestForm.value.objectId">
-                            <strong i18n="@@target_field">Target field</strong>
+                            <lib-text-line type="small" weight="strong" i18n="@@target_field">Target field
+                            </lib-text-line>
                         </div>
                     </div>
 
@@ -88,21 +85,21 @@
                         <ng-container *ngFor="let data of dataSource;let rowIndex=index;">
                             <div class="f-row colunm-box">
                                 <div class="col col-x8">
-                                    <div [style.display]="isEditable(data)? 'block': 'none'" (click)="onClick($event)">
-                                        <lib-input i18n-placeholder="@@enter_value" placeholder="Enter a value"  [disabled]="false"
-                                        [value]="data.excelFld" [id]="data.mdoFldId"
-                                        (valueChange)="setFormValue($event, data.mdoFldId)"></lib-input>
-                                        <mat-error i18n="@@required_field_msg" *ngIf="headerForm.controls[data.mdoFldId].errors">
+                                    <div [style.display]="isEditable(data)? 'block': 'none'" class="lib-input" (click)="onClick($event)">
+                                        <lib-input i18n-placeholder="@@enter_value" placeholder="Enter a value"
+                                            [disabled]="false" [value]="data.excelFld" [id]="data.mdoFldId"
+                                            (valueChange)="setFormValue($event, data.mdoFldId)"></lib-input>
+                                        <mat-error i18n="@@required_field_msg"
+                                            *ngIf="headerForm.controls[data.mdoFldId].errors">
                                             This field is required
                                         </mat-error>
                                     </div>
-                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line"
-                                        (click)="makeEditable(data)">
-                                        {{data.excelFld}}
-                                    </div>
+                                    <lib-text-line type="base" [style.display]="isEditable(data)? 'none': 'block'"
+                                        (click)="makeEditable(data)">{{data.excelFld}}</lib-text-line>
+
                                 </div>
-                                <div class="col col-x8 text-end">
-                                    <div class="mat-line">{{data.excelFrstRow}}</div>
+                                <div class="col col-x8">
+                                    <lib-text-line type="base" enableWrap="true">{{data.excelFrstRow}}</lib-text-line>
                                 </div>
                                 <div class="col col-x8" *ngIf="requestForm.value.objectId">
                                     <pros-map-mdo-field [cellIndex]="rowIndex"
@@ -122,15 +119,15 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <lib-input [value]="requestForm.get('core_schema').value.discription" i18n-label="@@schema_name" [label]="'Schema name'"
-                (valueChange)="setschemaName($event)"
-                [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : 'Schema name is required'"
-                [disabled]="isdisabled(requestForm.controls.schemaId.value)" [hasError]="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)"></lib-input>
+                <lib-input [value]="requestForm.get('core_schema').value.discription" i18n-label="@@schema_name"
+                    [label]="'Schema name'" (valueChange)="setschemaName($event)"
+                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : 'Schema name is required'"
+                    [disabled]="isdisabled(requestForm.controls.schemaId.value)"
+                    [hasError]="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)"></lib-input>
                 <!-- <mat-error i18n="@@schema_name_required" *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
                     Schema name is required
                 </mat-error> -->
 
-                <div class="row-spacer"></div>
 
                 <!-- <mat-label>Select output view</mat-label>
                 <mat-form-field appearance="outline">
@@ -148,39 +145,52 @@
                     [value]="requestForm.controls.dataScope.value"></pros-form-input>
                 <div class="row-spacer"></div> -->
 
-                <div class="f-col mdo-form-field">
-                    <mat-label i18n="@@threshold">Threshold</mat-label>
+                <div class="f-col">
+                    <lib-text-line type="xsmall" weight="strong" i18n="@@threshold" class="field-label">Threshold
+                    </lib-text-line>
                     <div class="f-row slider-row">
-                        <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="requestForm.controls.schemaThreshold"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="requestForm.controls.schemaThreshold.value" color="primary"></lib-range-slider>
-                        <span class="f-col-spacer-half"></span>
-                        <div class="percent-count">{{requestForm.controls.schemaThreshold.value}}%</div>
+
+                        <lib-range-slider class="lib-slider" color="primary"
+                            [formControl]="requestForm.controls.schemaThreshold"
+                            [formatLabelFn]="rangeSliderLabelFormat"
+                            [value]="requestForm.controls.schemaThreshold.value"></lib-range-slider>
+                        &nbsp;
+                        <lib-text-line type="base">{{requestForm.controls.schemaThreshold.value}}%</lib-text-line>
                     </div>
                 </div>
+
             </div>
 
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
-                    <div class="col"></div>
-                    <div class="col col-x8"><strong i18n="@@business_rule">Business rule</strong></div>
+                    <div class="col col-x2"></div>
+                    <div class="col col-x8">
+                        <lib-text-line i18n="@@business_rule" type="small" weight="strong">Business rule</lib-text-line>
+                    </div>
                     <div class="col col-x8 mat-item-center">
                         <div class="f-row">
-                            <strong><span i18n="@@weightage">Weightage</span> &nbsp;<mat-icon fontSet="mdo-icons"
-                                    i18n-libTooltip="@@weightage_help_msg" libTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">
-                                    question-circle</mat-icon></strong>
+                            <lib-text-line i18n="@@weightage" type="small" weight="strong">Weightage <mat-icon
+                                    fontSet="mdo-icons" i18n-libTooltip="@@weightage_help_msg"
+                                    libTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">
+                                    question-circle</mat-icon>
+                            </lib-text-line>
                         </div>
                     </div>
-                    <div class="col col-x4"><strong i18n="@@enabled">Enabled</strong></div>
-                    <div class="col col col-x4 text-end"></div>
+                    <div class="col col-x4 mat-item-center">
+                        <lib-text-line i18n="@@enabled" type="small" weight="strong">Enabled</lib-text-line>
+                    </div>
+                    <div class="col col col-x4 mat-item-end"></div>
                 </div>
 
                 <ng-container>
-                    <div class="f-row colunm-box rule-border-row">
+                    <div class="f-row colunm-box">
                         <div class="mdo-auto-complete">
-                            <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" [fieldLabel]="'Type rule name to add'"
-                                (optionSelectedEmit)="selectBusinessRule($event)"
+                            <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add"
+                                [fieldLabel]="'Type rule name to add'" (optionSelectedEmit)="selectBusinessRule($event)"
                                 (openCustomDialog)="openGlobalDialog($event)" [updatedOptionsList]="businessRulesList"
                                 [viewMoreAction]="'existingBR'" [extraOption]="'createBR'"
-                                i18n-extraOptionLabel="@@add_br_rule" [extraOptionLabel]="'Add new business rule'" [labelKey]="'brInfo'">
+                                i18n-extraOptionLabel="@@add_br_rule" [extraOptionLabel]="'Add new business rule'"
+                                [labelKey]="'brInfo'">
                             </pros-form-input-autoselect>
                         </div>
                     </div>
@@ -188,10 +198,11 @@
                         [message]="'No business rule added, please add at least one business rule to continue'"
                         (action)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0">
                     </pros-null-state> -->
-                    <lib-empty-state *ngIf="!selectedBusinessRules?.length" icon="table" iconSize="120" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
-                        i18n-secondaryText="@@no_br_added_msg" secondaryText="No business rule added, please add at least one business rule to continue">
-                        <lib-button i18n="@@add_br_rule" (click)="openGlobalDialog('createBR')"
-                            type="minor">
+                    <lib-empty-state *ngIf="!selectedBusinessRules?.length" icon="table" iconSize="120"
+                        i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
+                        i18n-secondaryText="@@no_br_added_msg"
+                        secondaryText="No business rule added, please add at least one business rule to continue">
+                        <lib-button i18n="@@add_br_rule" (click)="openGlobalDialog('createBR')" type="minor">
                             Add Business Rule
                         </lib-button>
                     </lib-empty-state>
@@ -199,113 +210,138 @@
                 </ng-container>
                 <ng-container>
                     <div cdkDropList (cdkDropListDropped)="reoderBR($event)" class="br-rules-list">
-                        <div *ngFor="let businessRule of selectedBusinessRules;let k=index;" cdkDrag cdkDragLockAxis="y" cdkDragBoundary=".br-rules-list">
+                        <div *ngFor="let businessRule of selectedBusinessRules;let k=index;" cdkDrag cdkDragLockAxis="y"
+                            cdkDragBoundary=".br-rules-list">
                             <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <lib-button type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
+                                <div class="col col-x2">
+                                    <lib-button type="plain" iconFontType="light" icon="grip-lines"></lib-button>
                                 </div>
                                 <div class="col col-x8">
-                                    <div mat-line><a class="info-link"
-                                            (click)="configureRule(businessRule)">{{businessRule.brInfo ||
-                                            'UNTITLED'}}</a></div>
+                                    <lib-text-line type="base" class="cursor" textColor="link"
+                                        (click)="configureRule(businessRule)">
+                                        {{businessRule.brInfo ||
+                                        'UNTITLED'}}</lib-text-line>
                                 </div>
 
                                 <div class="col col-x8 mat-item-center">
                                     <div class="f-row slider-row"
                                         *ngIf="!isExistingRule(businessRule.tempId); else notConfigured">
-                                        <lib-range-slider class="lib-slider" [minValue]="0" [maxValue]="100" thumbLabel="true"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="getWeightage(businessRule)" color="primary" (valueChange)="weightageChange({value:$event}, k)"></lib-range-slider>
-                                        <span class="f-col-spacer-half"></span>
-                                        <div class="percent-count">{{getWeightage(businessRule)}}%</div>
+                                        <lib-range-slider class="lib-slider" [minValue]="0" [maxValue]="100"
+                                            thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
+                                            [value]="getWeightage(businessRule)" color="primary"
+                                            (valueChange)="weightageChange({value:$event}, k)"></lib-range-slider>
+                                        &nbsp;
+                                        <lib-text-line type="base">{{getWeightage(businessRule)}}%</lib-text-line>
                                     </div>
                                     <ng-template #notConfigured>
-                                        <lib-label i18n="@@not_configured" status="error" text="Not configured"></lib-label>
+                                        <lib-label i18n="@@not_configured" status="error" text="Not configured">
+                                        </lib-label>
                                     </ng-template>
                                 </div>
 
-                                <div class="col col-x4">
-                                    <lib-checkbox *ngIf="!isExistingRule(businessRule.tempId); else configure" (valueChange)="toggleBrStatus($event,businessRule)"
+                                <div class="col col-x4 mat-item-center">
+                                    <lib-checkbox *ngIf="!isExistingRule(businessRule.tempId); else configure"
+                                        (valueChange)="toggleBrStatus($event,businessRule)"
                                         [checked]="businessRule.status === '1'">
                                     </lib-checkbox>
-
                                     <span class="f-col-spacer-half"></span>
-
                                     <ng-template #configure>
-                                       
-                                        <lib-button i18n="@@configure" (click)="configureRule(businessRule)" type="minor"> Configure
+                                        <lib-button i18n="@@configure" (click)="configureRule(businessRule)"
+                                            type="minor"> Configure
                                         </lib-button>
                                     </ng-template>
                                 </div>
-                                <div class="col col-x4 text-end">
-                                    <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" [disabled]="k===0"icon="link"></lib-button>
+
+                                <div class="col col-x4 mat-item-end">
+                                    <lib-button type="plain" [matMenuTriggerFor]="mappingdependency" [disabled]="k===0"
+                                        icon="link"></lib-button>
                                     <!-- Mapping Dropdown Menu -->
                                     <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above"
                                         xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
                                         <!-- <div class="top-tiparrow"></div> -->
                                         <div class="f-col">
-                                            <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
-                                            <lib-radio-group layout="vertical" [value]="getSelectedDependantStatus(businessRule.dependantStatus)" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
+                                            <lib-text-line enableWrap="true" type="base" i18n="@@run_rule_warning_msg">
+                                                Only run this rule
+                                                if the preceding rule
+                                                returns</lib-text-line>
+                                            <lib-radio-group layout="vertical"
+                                                [value]="getSelectedDependantStatus(businessRule.dependantStatus)"
+                                                [options]="dependantStatusList"
+                                                (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                         </div>
                                     </mat-menu>
-                                    <lib-button (click)="deleteBR(businessRule)" type="plain" icon="trash-alt"></lib-button>
-
+                                    <lib-button (click)="deleteBR(businessRule)" type="plain" icon="trash-alt">
+                                    </lib-button>
                                 </div>
+
                             </div>
                             <div cdkDropList [cdkDropListData]="businessRule.dep_rules"
                                 (cdkDropListDropped)="drop($event)" class="br-dep-rules-list">
-                                <div cdkDrag *ngFor="let deps of businessRule.dep_rules;let i=index;" cdkDragLockAxis="y" cdkDragBoundary=".br-dep-rules-list">
+                                <div cdkDrag *ngFor="let deps of businessRule.dep_rules;let i=index;"
+                                    cdkDragLockAxis="y" cdkDragBoundary=".br-dep-rules-list">
                                     <div class="f-row colunm-box rule-border-row">
-                                        <div class="col">
-                                    
+                                        <div class="col col-x2">
                                             <lib-button type="plain" cdkDragHandle>
                                                 <mat-icon [fontSet]="fontSet">subdirectory_arrow_right</mat-icon>
                                             </lib-button>
-
                                         </div>
                                         <div class="col col-x8">
-                                            <div mat-line><a class="info-link"
-                                                    (click)="configureRule(deps)">{{deps.brInfo || 'UNTITLED'}}</a>
-                                            </div>
+                                            <lib-text-line enableWrap="true" type="base" textColor="link"
+                                                (click)="configureRule(deps)">
+                                                {{deps.brInfo ||
+                                                'UNTITLED'}}</lib-text-line>
                                         </div>
 
                                         <div class="col col-x8 mat-item-center">
                                             <div class="f-row slider-row"
                                                 *ngIf="!isExistingRule(deps.tempId); else notConfigured">
-                                                <lib-range-slider class="lib-slider" thumbLabel="true" minValue="0" maxValue="100" [value]="getWeightage(businessRule)"
-                                                (valueChange)="weightageChange($event, k)" [formatLabelFn]="rangeSliderLabelFormat" color="primary"></lib-range-slider>
-                                                <span class="f-col-spacer-half"></span>
-                                                <div class="percent-count">{{getWeightage(deps)}}%</div>
+                                                <lib-range-slider class="lib-slider" thumbLabel="true" minValue="0"
+                                                    maxValue="100" [value]="getWeightage(businessRule)"
+                                                    (valueChange)="weightageChange($event, k)"
+                                                    [formatLabelFn]="rangeSliderLabelFormat" color="primary">
+                                                </lib-range-slider>
+                                                &nbsp;
+                                                <lib-text-line type="base">{{getWeightage(deps)}}%</lib-text-line>
                                             </div>
                                             <ng-template #notConfigured>
-                                                <lib-chip-list>
-                                                    <lib-chip i18n="@@not_configured" disableRipple="true" type="error">Not configured</lib-chip>
-                                                </lib-chip-list>
+                                                <lib-label i18n="@@not_configured" status="error" text="Not configured">
+                                                </lib-label>
                                             </ng-template>
                                         </div>
 
-                                        <div class="col col-x4">
-                                            <lib-checkbox *ngIf="!isExistingRule(deps.tempId); else configure" (valueChange)="toggleBrStatus($event,deps)" [checked]="deps.status === '1'">
+                                        <div class="col col-x4 mat-item-center">
+                                            <lib-checkbox *ngIf="!isExistingRule(deps.tempId); else configure"
+                                                (valueChange)="toggleBrStatus($event,deps)"
+                                                [checked]="deps.status === '1'">
                                             </lib-checkbox>
-
                                             <span class="f-col-spacer-half"></span>
-
                                             <ng-template #configure>
-                                                <lib-button i18n="@@configure" (click)="configureRule(deps)" type="minor" >Configure</lib-button>
+                                                <lib-button i18n="@@configure" (click)="configureRule(deps)"
+                                                    type="minor">Configure</lib-button>
                                             </ng-template>
                                         </div>
 
-                                        <div class="col col-x4 text-end">
-                                            <lib-button [matMenuTriggerFor]="mappingdependency" type="plain" icon="link"></lib-button>
+                                        <div class="col col-x4 mat-item-end">
+                                            <lib-button [matMenuTriggerFor]="mappingdependency" type="plain"
+                                                icon="link"></lib-button>
                                             <!-- Mapping Dropdown Menu -->
                                             <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu"
                                                 yPosition="above" xPosition="before"
                                                 class="mat-elevation-z0 tooltip-fields-menu">
                                                 <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
-                                                    <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
-                                                    <lib-radio-group layout="vertical" [value]="getSelectedDependantStatus(deps.dependantStatus)" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
+                                                    <lib-text-line enableWrap="true" i18n="@@run_rule_warning_msg"
+                                                        type="base">Only run
+                                                        this rule if the preceding
+                                                        rule returns</lib-text-line>
+                                                    <lib-radio-group layout="vertical"
+                                                        [value]="getSelectedDependantStatus(deps.dependantStatus)"
+                                                        [options]="dependantStatusList"
+                                                        (valueChange)="updateDepRuleForChild(businessRule,i,$event)">
+                                                    </lib-radio-group>
                                                 </div>
                                             </mat-menu>
-                                           
+
                                             <lib-button type="plain" (click)="deleteBrChild(deps,businessRule)"
                                                 icon="trash-alt"></lib-button>
                                         </div>
@@ -324,18 +360,28 @@
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
-                    <div class="col col-x4"><strong i18n="@@subscriber">Subscriber</strong></div>
-                    <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
-                    <div class="col col-x8"></div>
-                    <div class="col col-x8" *ngIf="false"><strong i18n="@@data_allocation">Data allocation</strong></div>
+                    <div class="col col-x8">
+                        <lib-text-line i18n="@@subscriber" type="small" weight="strong" i18n="@@preview_row">
+                            Collaborator
+                        </lib-text-line>
+                    </div>
+                    <div class="col col-x4">
+                        <lib-text-line i18n="@@role" type="small" weight="strong">Role</lib-text-line>
+                    </div>
+                    <div class="col col-x8" *ngIf="false">
+                        <lib-text-line i18n="@@data_allocation" type="small" weight="strong">Data allocation
+                        </lib-text-line>
+                    </div>
                     <div class="col"></div>
                 </div>
-                <div class="f-row colunm-box rule-border-row">
+                <div class="f-row colunm-box">
                     <div class="mdo-auto-complete">
-                        <pros-form-input-autoselect i18n-fieldLabel="@@select_subscribers" [fieldLabel]="'Select subscribers'"
-                            (optionSelectedEmit)="updateSubscribersList($event)" (openCustomDialog)="addSubscribers()"
-                            [updatedOptionsList]="allSubscribers" [viewMoreAction]="'addSubscribers'"
-                            [extraOption]="'addSubscribers'" i18n-extraOptionLabel="@@invite_people_to_team" [extraOptionLabel]="'Invite people to your team'"
+                        <pros-form-input-autoselect i18n-fieldLabel="@@select_subscribers"
+                            [fieldLabel]="'Select Collaborator'" (optionSelectedEmit)="updateSubscribersList($event)"
+                            (openCustomDialog)="addSubscribers()" [updatedOptionsList]="allSubscribers"
+                            [viewMoreAction]="'addSubscribers'" [extraOption]="'addSubscribers'"
+                            i18n-extraOptionLabel="@@invite_people_to_team"
+                            [extraOptionLabel]="'Invite people to your team'"
                             (emitSearchValue)="getCollaborators($event)" [loader]="subscriberLoader"
                             [debounceValue]="650" [valueKey]="" [labelKey]="'fullName'">
                         </pros-form-input-autoselect>
@@ -345,10 +391,13 @@
                     [message]="'No subscribers found, please add subscribers to continue'" (action)="addSubscribers()"
                     *ngIf="subscribersList.length === 0">
                 </pros-null-state> -->
-                <lib-empty-state *ngIf="!subscribersList.length" icon="table" iconSize="120" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
-                    i18n-secondaryText="@@no_subscribers_msg" secondaryText="No subscribers added, please add at least one subscriber to continue">
-                    <lib-button i18n="@@add_subscribers" (click)="addSubscribers()" *ngIf="subscribersList.length === 0" type="minor">
-                        Add subscribers
+                <lib-empty-state *ngIf="!subscribersList.length" icon="table" iconSize="120"
+                    i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
+                    i18n-secondaryText="@@no_subscribers_msg"
+                    secondaryText="No subscribers added, please add at least one subscriber to continue">
+                    <lib-button i18n="@@add_subscribers" (click)="addSubscribers()" *ngIf="subscribersList.length === 0"
+                        type="minor">
+                        Add Collaborator
                     </lib-button>
                 </lib-empty-state>
 
@@ -356,24 +405,28 @@
                     <div class="col">
                         <lib-avatar [initials]="shortName(subscriber.fName, subscriber.lName)"></lib-avatar>
                     </div>
-                    <div class="col col-x4">
-                        <mat-card-header>
-                            <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
-                        </mat-card-header>
+                    <div class="col col-x8">
+                        <lib-text-line enableWrap="true" type="base">{{subscriber.fullName}}</lib-text-line>
                     </div>
 
                     <div class="col col-x4" [matMenuTriggerFor]="subscriberlist">
-                        <lib-button i18n="@@admin" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">Admin</lib-button>
-                        <lib-button i18n="@@reviewer" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isReviewer">Reviewer</lib-button>
-                        <lib-button  i18n="@@viewer"type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isViewer">Viewer</lib-button>
-                        <lib-button i18n="@@editor" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isEditer">Editor</lib-button>
+                        <lib-label i18n="@@admin" text="Admin" iconFontType="Solid" *ngIf="subscriber.isAdmin"
+                            suffixIcon="caret-down">
+                        </lib-label>
+                        <lib-label i18n="@@reviewer" text="Reviewer" iconFontType="Solid" *ngIf="subscriber.isReviewer"
+                            suffixIcon="caret-down">
+                        </lib-label>
+                        <lib-label i18n="@@viewer" text="Viewer" iconFontType="Solid" *ngIf="subscriber.isViewer"
+                            suffixIcon="caret-down">
+                        </lib-label>
+                        <lib-label i18n="@@editor" text="Editor" iconFontType="Solid" *ngIf="subscriber.isEditer"
+                            suffixIcon="caret-down">
+                        </lib-label>
                     </div>
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role.code, subscriber,l)">
                             {{ role.text }}</button>
                     </mat-menu>
-
-                    <div class="col col-x8"></div>
                     <div class="col col-x8" *ngIf="false">
                         <mat-chip-list>
                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
@@ -397,7 +450,6 @@
                                 [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
                                 <mat-icon fontSet="mdo-icons">filter</mat-icon>
                             </mat-chip>
-
                         </mat-chip-list>
 
                         <!-- Append dynamic filter MatMenu -->
@@ -428,7 +480,8 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <lib-radio-group layout="vertical" [value]="selectedRunningSchedule" [options]="runningScheduleList" (valueChange)="setRunningSchedule($event)"></lib-radio-group>
+                <lib-radio-group layout="vertical" [value]="selectedRunningSchedule" [options]="runningScheduleList"
+                    (valueChange)="setRunningSchedule($event)"></lib-radio-group>
 
                 <mat-divider class="dashed-divider"></mat-divider>
 
@@ -436,16 +489,21 @@
                 <div class="f-row schedule-row">
                     <!-- in case of existing schedule, will show edit button and toggle-->
                     <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
-                        <mat-slide-toggle color="primary"  [checked]="currentSchedule && currentSchedule.isEnable" i18n="@@enable_schedule"
-                            (toggleChange)="toggleScheduleStatus($event)">Enable schedule</mat-slide-toggle>
+                        <lib-slide-toggle label="Enable schedule" labelPosition="after" theme="primary"
+                            [checked]="currentSchedule && currentSchedule.isEnable" i18n="@@enable_schedule"
+                            (toggleChange)="toggleScheduleStatus($event)">
+                        </lib-slide-toggle>
                         <span class="f-spacer"></span>
-                        <lib-button i18n="@@add_schedule" (click)="openScheduleSideSheet()" iconPosition="before" type="major" icon="history">Add schedule</lib-button>
+                        <span class="f-col-spacer-half"></span>
+                        <lib-button i18n="@@add_schedule" (click)="openScheduleSideSheet()" iconPosition="before"
+                            type="major" icon="history">Add schedule</lib-button>
                     </ng-template>
 
                     <!-- in case of there is no schedule, will show only add button -->
                     <ng-template #addSchedule>
                         <span class="f-spacer"></span>
-                        <lib-button i18n="@@add_schedule" (click)="openScheduleSideSheet()" iconPosition="before" type="major" icon="history">
+                        <lib-button i18n="@@add_schedule" (click)="openScheduleSideSheet()" iconPosition="before"
+                            type="major" icon="history">
                             Add schedule </lib-button>
                     </ng-template>
                 </div>
@@ -461,13 +519,15 @@
         <lib-button type="plain" i18n="@@cancel" (click)="closeDialog()"> Cancel </lib-button>
         <span class="f-spacer"></span>
         <div class="f-row bottom-actions">
-            
-            <lib-button type="plain" *ngIf="headerTextIndex > 2" i18n="@@back" (click)="step('previous')"> Back </lib-button>
+            <lib-button type="plain" *ngIf="headerTextIndex > 2" i18n="@@back" (click)="step('previous')"> Back
+            </lib-button>
             <ng-container *ngIf="progressBar < 100">
-                <lib-text-line i18n="@@choose_diff_file" *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" textColor="info">Choose a different file</lib-text-line>
+                <lib-text-line i18n="@@choose_diff_file" *ngIf="headerTextIndex === 2"
+                    (click)="step('previous'); clearFileInput()" class="cursor" textColor="info">Choose a different file
+                </lib-text-line>
                 <span class="f-col-spacer-half"></span>
-               
-                <lib-button type="major" i18n="@@next" (click)="step('next', true)" [disabled]="headerTextIndex === 1">Next</lib-button>
+                <lib-button type="major" i18n="@@next" (click)="step('next', true)" [disabled]="headerTextIndex === 1">
+                    Next</lib-button>
             </ng-container>
         </div>
         <lib-button type="major" i18n="@@done" *ngIf="progressBar === 100" (click)="save()"> Done </lib-button>
