@@ -142,7 +142,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     'Upload data',
     'Name your dataset',
     'Select business rule',
-    'Add subscribers',
+    'Collaborator',
     'Run the schema'
   ];
 
