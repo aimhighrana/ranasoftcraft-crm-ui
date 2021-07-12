@@ -130,56 +130,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       });
     } else {
       this.nounModifierService.getClassificationMappingData(request).subscribe((resp) => {
-        resp =  {
-          noun: {
-            source: '',
-            targetCtrl: {
-              MANDATORY: '',
-              ATTRIBUTE_ID: '',
-              ATTR_DESC: '',
-              ATTR_CODE: '',
-              TEXT_FIELD: '',
-              DROPDOWN_FIELD:'',
-              ATTRIBUTES_VALUES:'',
-              LENGTH: '',
-              DESC_ACTIVE:'',
-              FIELD_TYPE: '',
-            },
-            status: 'unmatched'
-          },
-          modifier: {
-            source: '',
-            targetCtrl: {
-              MANDATORY: '',
-              ATTRIBUTE_ID: '',
-              ATTR_DESC: '',
-              ATTR_CODE: '',
-              TEXT_FIELD: '',
-              DROPDOWN_FIELD:'',
-              ATTRIBUTES_VALUES:'',
-              LENGTH: '',
-              DESC_ACTIVE:'',
-              FIELD_TYPE: '',
-            },
-            status: 'suggested'
-          },
-          attrLists:[{
-              source: '',
-              targetCtrl: {
-                MANDATORY: '',
-                ATTRIBUTE_ID: '',
-                ATTR_DESC: '',
-                ATTR_CODE: '--',
-                TEXT_FIELD: '',
-                DROPDOWN_FIELD:'',
-                ATTRIBUTES_VALUES:'',
-                LENGTH: '',
-                DESC_ACTIVE:'',
-                FIELD_TYPE: '',
-              },
-              status: 'suggested'
-          }]
-        };
         this.classificationCategory = resp;
         const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
         frmAray.clear();
@@ -289,8 +239,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       .subscribe(attributes => {
         this.LocalAttributesList = attributes;
       },error=>{
-        console.log('Error loading Local Attributes', error);
-        console.log(error);
+        console.error('Error loading Local Attributes', error);
       })
   }
 
