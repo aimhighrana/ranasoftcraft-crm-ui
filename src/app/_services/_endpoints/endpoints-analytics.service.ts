@@ -166,4 +166,12 @@ export class EndpointsAnalyticsService {
   public shareReport(reportId: string): string {
     return `${this.apiUrl}/report/share?reportId=${reportId}`;
   }
+
+  public getImportLog(reportId: string,page : number,size : number) : string {
+    return `${this.apiUrl}/report/import/logs?reportId=${reportId}&_page=${page}&size=${size}`;
+  }
+
+  public updateImportLog(messageId:string,status:string) : string {
+    return `${this.apiUrl}/report/import/logs/update-status?messageId=${messageId}&status=${status}`;
+  }
 }
