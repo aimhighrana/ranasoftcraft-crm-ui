@@ -277,6 +277,82 @@ describe('LibraryMappingSidesheetComponent', () => {
     expect(component.openAttributeSidesheet).toHaveBeenCalledTimes(1);
   })
 
+  it('should search the attribute', () => {
+    component.classificationCategory = {
+      noun: {
+        source: '',
+        targetCtrl: {
+          MANDATORY: '',
+          ATTRIBUTE_ID: '',
+          ATTR_DESC: '',
+          ATTR_CODE: '',
+          TEXT_FIELD: '',
+          DROPDOWN_FIELD:'',
+          ATTRIBUTES_VALUES:'',
+          LENGTH: '',
+          DESC_ACTIVE:'',
+          FIELD_TYPE: '',
+        },
+        status: 'matched'
+      },
+      modifier: {
+        source: '',
+        targetCtrl: {
+          MANDATORY: '',
+          ATTRIBUTE_ID: '',
+          ATTR_DESC: '',
+          ATTR_CODE: '',
+          TEXT_FIELD: '',
+          DROPDOWN_FIELD:'',
+          ATTRIBUTES_VALUES:'',
+          LENGTH: '',
+          DESC_ACTIVE:'',
+          FIELD_TYPE: '',
+        },
+        status: 'suggested'
+      },
+      attrLists:[{
+          source: '',
+          targetCtrl: {
+            MANDATORY: '',
+            ATTRIBUTE_ID: '',
+            ATTR_DESC: '',
+            ATTR_CODE: 'test',
+            TEXT_FIELD: '',
+            DROPDOWN_FIELD:'',
+            ATTRIBUTES_VALUES:'',
+            LENGTH: '',
+            DESC_ACTIVE:'',
+            FIELD_TYPE: '',
+          },
+          status: 'matched'
+      }]
+    };
+    let value = {
+      libraryAttributeText: '',
+      libraryAttributeCode: ''
+    };
+    component.searchString = '';
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    value = {
+      libraryAttributeText: 'test',
+      libraryAttributeCode: ''
+    };
+    component.searchString = 'test';
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    value = {
+      libraryAttributeText: '',
+      libraryAttributeCode: 'test'
+    };
+    component.searchString = 'test';
+    expect(component.canDisplayAttribute(value)).toBeTrue();    
+    component.statas[0].isSeleted = true;
+    expect(component.canDisplayAttribute(value)).toBeTrue();
+    component.statas[0].isSeleted = false;
+    component.statas[1].isSeleted = true;
+    expect(component.canDisplayAttribute(value)).toBeFalse();
+  });
+
 
 
 });
