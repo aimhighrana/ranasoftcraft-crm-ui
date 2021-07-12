@@ -1662,24 +1662,6 @@
     }
   }
 
-  pros-new-business-rules {
-    .user-defined-set {
-      &::before {
-        background: $color-app-border;
-      }
-
-      .defined-row {
-        border-color: $color-app-border;
-
-        div.col {
-          &.select-col {
-            background: $color-accent;
-          }
-        }
-      }
-    }
-  }
-
   pros-report-list {
     mat-card.root {
       mat-list.mat-list {
@@ -1770,7 +1752,8 @@
     }
   }
 
-  pros-brrule-side-sheet {
+  pros-brrule-side-sheet,
+  pros-new-business-rules {
     div.root {
       .user-defined-set {
         &::before {
@@ -1817,6 +1800,16 @@
       .colunm-box {
         &.rule-border-row {
           border-bottom: 1px solid $color-app-border;
+        }
+      }
+
+      .field-chip-list {
+        .lib-chip {
+          button.mdo-filter-pill {
+            height: 28px;
+            margin-top: -1px;
+            font-size: 13px;
+          }
         }
       }
     }

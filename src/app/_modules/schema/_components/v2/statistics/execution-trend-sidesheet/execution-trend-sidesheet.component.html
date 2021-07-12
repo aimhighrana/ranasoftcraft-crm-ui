@@ -3,7 +3,7 @@
         <lib-button (click)="close()" type="plain" icon="times" iconFontType="light"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
-            <lib-text-line type="leading">
+            <lib-text-line type="leading" enableWrap="true">
                 <ng-template [ngIf]="schemaInfo" [ngIfElse]="loading">
                     {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
                     {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / Statistics
