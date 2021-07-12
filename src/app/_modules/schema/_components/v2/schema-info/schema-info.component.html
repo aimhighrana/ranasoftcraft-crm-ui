@@ -1,6 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-text-line type="leading">{{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription :
+        <lib-text-line type="leading" enableWrap="true">{{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription :
             'Untitled'}} /
             {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}</lib-text-line>
         <span class="f-spacer"></span>
@@ -337,14 +337,14 @@
                         </div>
 
                         <div class="col col-x8" [matMenuTriggerFor]="subscriberRole">
-                            <lib-label *ngIf="subscriber.isAdmin" i18n="@@admin" text="Admin" suffixIcon="caret-down"></lib-label>
+                            <lib-label *ngIf="subscriber.isAdmin" i18n="@@admin" text="Admin" iconFontType="solid" suffixIcon="caret-down"></lib-label>
 
-                            <lib-label *ngIf="subscriber.isReviewer" i18n="@@viewer" text="Reviewer" suffixIcon="caret-down"></lib-label>
+                            <lib-label *ngIf="subscriber.isReviewer" i18n="@@viewer" text="Reviewer" iconFontType="solid" suffixIcon="caret-down"></lib-label>
 
-                            <lib-label *ngIf="subscriber.isEditer" i18n="@@editor" text="Editor" suffixIcon="caret-down"></lib-label>
+                            <lib-label *ngIf="subscriber.isEditer" i18n="@@editor" text="Editor" iconFontType="solid" suffixIcon="caret-down"></lib-label>
 
                             <ng-template [ngIf]="!subscriber.isAdmin && !subscriber.isReviewer && !subscriber.isEditer">
-                                <lib-label  *ngIf="subscriber.isViewer" i18n="@@viewer" text="Viewer" suffixIcon="caret-down"></lib-label>
+                                <lib-label  *ngIf="subscriber.isViewer" i18n="@@viewer" text="Viewer" iconFontType="solid" suffixIcon="caret-down"></lib-label>
                             </ng-template>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
