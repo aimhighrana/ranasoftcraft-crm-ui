@@ -15,29 +15,11 @@
                 <div class="f-col-spacer-half"></div>
 
                 <ng-template ngFor let-chip [ngForOf]="statas">
-                    <ng-template [ngIf]="chip.code === 'matched'">
-                        <lib-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)"
-                            [class.selected]="chip.isSeleted">
-                            <lib-text-line type="base">{{ chip.text }}</lib-text-line>
-                        </lib-chip>
-                        <span class="f-col-spacer-half"></span>
-                    </ng-template>
-
-                    <ng-template [ngIf]="chip.code === 'suggest'">
-                        <lib-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)"
-                            [class.selected]="chip.isSeleted">
-                            <lib-text-line type="base">{{ chip.text }}</lib-text-line>
-                        </lib-chip>
-                        <span class="f-col-spacer-half"></span>
-                    </ng-template>
-
-                    <ng-template [ngIf]="chip.code === 'unmapped'">
-                        <lib-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)"
-                            [class.selected]="chip.isSeleted">
-                            <lib-text-line type="base">{{ chip.text }}</lib-text-line>
-                        </lib-chip>
-                        <span class="f-col-spacer-half"></span>
-                    </ng-template>
+                    <lib-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip)"
+                        [selected]="chip.isSeleted" [selectable]="true">
+                        <lib-text-line type="base">{{ chip.text }} <span *ngIf="chip.count" [ngClass]="!chip.isSeleted ? chip.code : ''">{{chip.count}}</span></lib-text-line>
+                    </lib-chip>
+                    <span class="f-col-spacer-half"></span>
                 </ng-template>
             </div>
         </div>
@@ -51,7 +33,7 @@
                         <lib-text-line type="base" weight="strong">Type</lib-text-line>
                     </div>
                     <div class="col col-x8">
-                        <lib-text-line type="base" weight="strong">GSN</lib-text-line>
+                        <lib-text-line type="base" weight="strong">Connekthub library</lib-text-line>
                     </div>
                     <div class="col col-x8">
                         <lib-text-line type="base" weight="strong">Master library</lib-text-line>
@@ -60,14 +42,14 @@
 
                 <div>
                     <form [formGroup]="mappingForm">
-                        <div class="f-row colunm-box rule-border-row">
+                        <div *ngIf="canDisplayField('noun')" class="f-row colunm-box rule-border-row">
                             <div class="col col-x4">
                                 <lib-text-line type="base" weight="strong">Noun</lib-text-line>
                             </div>
                             <div class="col col-x8">
                                 <lib-text-line type="base">{{ libraryNounCode }}</lib-text-line>
                             </div>
-                            <div class="col col-x8">
+                            <div class="col col-x8 classification-field" [ngClass]="getStatus('noun')">
                                 <!-- <mat-form-field appearance="outline">
                                 <mat-select formControlName="localNounCode">
                                     <mat-option (click)="openNounSidesheet()">
@@ -87,7 +69,8 @@
                                 [labelKey]="'NOUN_CODE'">
                             </pros-form-input-autoselect> -->
 
-                                <pros-noun-modifier-autocomplete [formCtrl]="mappingForm.get('localNounCode')"
+                                <pros-noun-modifier-autocomplete 
+                                 [formCtrl]="mappingForm.get('localNounCode')"
                                     [data]="localNounsList" [requestFor]="'noun'"
                                     (clickAddNew)="createNewWidgetFor($event)">
                                 </pros-noun-modifier-autocomplete>
@@ -95,14 +78,14 @@
                             </div>
                         </div>
 
-                        <div class="f-row colunm-box rule-border-row">
+                        <div *ngIf="canDisplayField('modifier')" class="f-row colunm-box rule-border-row">
                             <div class="col col-x4">
                                 <lib-text-line type="base" weight="strong">Modifier</lib-text-line>
                             </div>
                             <div class="col col-x8">
                                 <lib-text-line type="base">{{ libraryModifierCode }}</lib-text-line>
                             </div>
-                            <div class="col col-x8">
+                            <div class="col col-x8 classification-field" [ngClass]="getStatus('modifier')">
                                 <!-- <mat-form-field appearance="outline">
                                 <mat-select formControlName="localModCode">
                                     <mat-option (click)="openModifierSidesheet()">
@@ -116,7 +99,8 @@
                                         {{ modifier.MODE_CODE || 'Unknown' }} </mat-option>
                                 </mat-select>
                             </mat-form-field> -->
-                                <pros-noun-modifier-autocomplete [formCtrl]="mappingForm.get('localModCode')"
+                                <pros-noun-modifier-autocomplete 
+                                [formCtrl]="mappingForm.get('localModCode')"
                                     [data]="LocalModifiersList" [requestFor]="'modifier'"
                                     [selectedNoun]="mappingForm.get('localNounCode').value"
                                     (clickAddNew)="createNewWidgetFor($event)">
@@ -125,8 +109,8 @@
                         </div>
 
                         <ng-container formArrayName="attributeMapData">
-                            <div class="f-row colunm-box rule-border-row"
-                                *ngFor="let attributeRow of attributeMapData.controls; let i=index; let isFirst=first">
+                            <ng-container *ngFor="let attributeRow of attributeMapData.controls; let i=index; let isFirst=first">
+                            <div *ngIf="canDisplayAttribute(attributeRow.value)" class="f-row colunm-box rule-border-row">
                                 <ng-container [formGroupName]="i">
                                     <div class="col col-x4">
                                         <lib-text-line type="base" weight="strong" *ngIf="isFirst">Attribute
@@ -137,7 +121,7 @@
                                             attributeRow.value.libraryAttributeText :
                                             attributeRow.value.libraryAttributeCode }}</lib-text-line>
                                     </div>
-                                    <div class="col col-x8">
+                                    <div class="col col-x8 classification-field" [ngClass]="attributeRow.value.status">
                                         <!-- <mat-form-field appearance="outline">
                                     <mat-select formControlName="localAttributeCode">
                                         <mat-option value="" >
@@ -165,6 +149,7 @@
                                     </div>
                                 </ng-container>
                             </div>
+                        </ng-container>
                         </ng-container>
                     </form>
                 </div>

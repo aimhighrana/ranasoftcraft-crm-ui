@@ -238,11 +238,11 @@ describe('LibraryMappingSidesheetComponent', () => {
 
   it('should filterAsStatus', () => {
     spyOn(component, 'filterAttribute');
-
-    component.filterAsStatus('matched');
+    const matchedStatus = {code:'matched', count: 0, text:'Matched', isSeleted: false};
+    component.filterAsStatus(matchedStatus);
     expect(component.statas[0].isSeleted).toBeTrue();
 
-    component.filterAsStatus('matched');
+    component.filterAsStatus(matchedStatus);
     expect(component.statas[0].isSeleted).toBeFalse();
 
   });

@@ -2270,3 +2270,26 @@ mat-tooltip-component {
 //     height: calc(100% - 75px);
 //   }
 // }
+
+.classification-field {
+  &.suggested {
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
+      background: #D0EBFF;
+    }
+    mat-form-field.mat-form-field.null-cell .info-arrow,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
+      color: #0078D4;
+    }
+  }
+  &.unmatched {
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
+      background: #FFE3E3;
+    }
+    mat-form-field.mat-form-field.null-cell .info-arrow,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
+    mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
+      color: #F05B57;
+    }
+  }
+}

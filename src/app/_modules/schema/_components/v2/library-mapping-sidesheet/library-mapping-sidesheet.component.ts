@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributeMapData, AttributesMapping } from '@models/schema/classification';
-import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
+import { AttributesDoc, ClassificationMappingRequest, ClassificationMappingResponse, NounModifier } from '@models/schema/noun-modifier';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -13,6 +13,7 @@ import { debounceTime } from 'rxjs/operators';
 interface Status {
   text: string;
   code: string;
+  count: number;
   isSeleted: boolean;
 }
 
@@ -59,17 +60,19 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   gsnAttributes: AttributesDoc[] = [];
 
   preInpVal = '';
+  searchString = '';
 
   /**
    * Store material group info ..
    */
   mgroup: string;
-
+  isMapped = false;
   statas: Status[] = [
-    {code:'matched', text:'Matched', isSeleted: false},
-    {code:'suggest', text:'Suggested', isSeleted: false},
-    {code:'unmapped', text:'Unmapped', isSeleted: false},
+    {code:'matched', count: 0, text:'Matched', isSeleted: false},
+    {code:'suggested', count: 0, text:'Suggested', isSeleted: false},
+    {code:'unmatched', count: 0, text:'Unmatched', isSeleted: false},
   ];
+  classificationCategory: ClassificationMappingResponse;
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -87,9 +90,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.libraryNounCode = params.nounCode;
       this.libraryModifierCode = params.modCode;
       this.schemaId = params.schemaId;
-
-      this.buildMappingForm();
-
+      this.activatedRoute.queryParams.subscribe((queryParams) => {
+        this.isMapped = Boolean(queryParams.isMapped === 'true');
+        this.buildMappingForm();
+      });
     });
 
     this.getLocalNouns();
@@ -105,8 +109,110 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       .subscribe(resp => {
         this.patchMappingForm(resp);
       });
+    const data = this.mappingForm.value;
+    const request: ClassificationMappingRequest = {
+      nounCode: data.libraryNounCode,
+      modCode: data.libraryModCode,
+      nounDesc: '',
+      modDesc: '',
+      attrList: this.gsnAttributes.map((att) => {
+        const attr = {
+          attrCode: att.ATTR_CODE,
+          attrDesc: att.ATTR_DESC
+        };
+        return attr;
+      })
+    };
+    if(this.isMapped) {
+      this.gsnAttributes.forEach((row) => {
+        row.status = 'matched';
+        this.addAttributeMappingRow(row);
+      });
+    } else {
+      this.nounModifierService.getClassificationMappingData(request).subscribe((resp) => {
+        resp =  {
+          noun: {
+            source: '',
+            targetCtrl: {
+              MANDATORY: '',
+              ATTRIBUTE_ID: '',
+              ATTR_DESC: '',
+              ATTR_CODE: '',
+              TEXT_FIELD: '',
+              DROPDOWN_FIELD:'',
+              ATTRIBUTES_VALUES:'',
+              LENGTH: '',
+              DESC_ACTIVE:'',
+              FIELD_TYPE: '',
+            },
+            status: 'unmatched'
+          },
+          modifier: {
+            source: '',
+            targetCtrl: {
+              MANDATORY: '',
+              ATTRIBUTE_ID: '',
+              ATTR_DESC: '',
+              ATTR_CODE: '',
+              TEXT_FIELD: '',
+              DROPDOWN_FIELD:'',
+              ATTRIBUTES_VALUES:'',
+              LENGTH: '',
+              DESC_ACTIVE:'',
+              FIELD_TYPE: '',
+            },
+            status: 'suggested'
+          },
+          attrLists:[{
+              source: '',
+              targetCtrl: {
+                MANDATORY: '',
+                ATTRIBUTE_ID: '',
+                ATTR_DESC: '',
+                ATTR_CODE: '--',
+                TEXT_FIELD: '',
+                DROPDOWN_FIELD:'',
+                ATTRIBUTES_VALUES:'',
+                LENGTH: '',
+                DESC_ACTIVE:'',
+                FIELD_TYPE: '',
+              },
+              status: 'suggested'
+          }]
+        };
+        this.classificationCategory = resp;
+        const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
+        frmAray.clear();
+        this.gsnAttributes.forEach((row) => {
+          row.status = this.classificationCategory.attrLists.find(x => x.targetCtrl?.ATTR_CODE === row.ATTR_CODE)?.status.toLowerCase() || 'unmatched';
+          this.addAttributeMappingRow(row);
+        });
+        this.statas.forEach((stat) => {
+          stat.count = this.attributeMapData.value.filter(row => row.status === stat.code).length
+          + [resp.modifier.status, resp.noun.status].filter(status => status.toLowerCase() === stat.code).length;
+        });
+      });
+    }
   }
 
+  getStatus(fieldname: string) {
+    return this.classificationCategory
+    ? this.classificationCategory[fieldname]?.status?.toLowerCase()
+      || this.classificationCategory.attrLists.find(row => row.targetCtrl?.ATTR_CODE === fieldname)?.status.toLowerCase()
+      || 'unmatched'
+    : 'unmatched';
+  }
+
+  canDisplayField(fieldname: string) {
+    const status = this.getStatus(fieldname);
+    const selectedStatus = this.statas.filter(row => row.isSeleted).map(row => row.code);
+    return !selectedStatus.length || selectedStatus.includes(status);
+  }
+
+  canDisplayAttribute(value) {
+    const searchStr = this.searchString.toLowerCase();
+    return (!searchStr || (value.libraryAttributeText || value.libraryAttributeCode).toLowerCase().includes(searchStr)) && this.canDisplayField(value.libraryAttributeCode);
+  }
   /**
    * Build attribute mapping form
    */
@@ -181,21 +287,27 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       .subscribe(attributes => {
         this.LocalAttributesList = attributes;
       },error=>{
+        console.log('Error loading Local Attributes', error);
         console.log(error);
       })
   }
 
   getAttributesFromGsn(nounCode: string , modCode: string) {
     this.userDetails.getUserDetails().subscribe(user=>{
+      console.log('Caling attribute api', nounCode, modCode, user.plantCode);
       this.nounModifierService.getGsnAttribute(nounCode, modCode, user.plantCode).subscribe(res=>{
         this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
         this.mgroup = res.MGROUP ? res.MGROUP : '';
-        // create form ..
-        this.gsnAttributes.forEach(att=>{
-          this.addAttributeMappingRow(att);
-        });
+        this.getAttributesMapping();
+      }, error => {
+        // Test Function starts
+        const res  ={"SHORT_DESC":null,"LONG_DESC":null,"MANUFACTURER":null,"PARTNO":null,"NOUN_LONG":null,"NOUN_CODE":"RELAY","NOUN_ID":null,"MODE_CODE":"ASSEMBLY","MOD_LONG":null,"UNSPSC":null,"UNSPSC_DESC":null,"MGROUP":"electrical relays and accessories","ATTRIBUTES":[{"MANDATORY":"0","ATTRIBUTE_ID":"556659709411771566","ATTR_DESC":"HEAT SINK","ATTR_CODE":"HEAT SINK","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"806309029946291363","ATTR_DESC":"660 VAC","ATTR_CODE":"660 VAC","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"698677964805359701","ATTR_DESC":"50 A","ATTR_CODE":"50 A","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"875000061862357095","ATTR_DESC":"3 W","ATTR_CODE":"3 W","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"536213119970963522","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"386283772916406823","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"842029563364864818","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"873533793106140575","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"619039059793861681","ATTR_DESC":"PANEL","ATTR_CODE":"PANEL","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"195659578631390226","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"332983479494141746","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"321850039293403042","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"700337140126953413","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"296302413945997794","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"253046953977586241","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"571950879301744450","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"762980065633042591","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"657898411525272022","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"108680459667187621","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"818852862876049336","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"860806687185273927","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"760579005703298521","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"false","DROPDOWN_FIELD":"true","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"326491031680016514","ATTR_DESC":"--","ATTR_CODE":"--","TEXT_FIELD":"true","DROPDOWN_FIELD":"false","ATTRIBUTES_VALUES":null},{"MANDATORY":"0","ATTRIBUTE_ID":"787081299558045389","ATTR_DESC":"electrical relays and accessories","ATTR_CODE":"electrical relays and accessories","TEXT_FIELD":"true","DROPDOWN_FIELD":"false","ATTRIBUTES_VALUES":null}]};
+        this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
+        this.mgroup = res.MGROUP ? res.MGROUP : '';
 
         this.getAttributesMapping();
+        console.log(' Error in calling API', error);
+        // Test Fuunction Ends
       });
     });
   }
@@ -211,7 +323,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         libraryAttributeText: [attr && (attr.ATTR_DESC ? attr.ATTR_DESC :  attr.ATTR_CODE) ? attr.ATTR_CODE : ''],
         localAttributeCode: [attr && attr.localAttributeCode ? attr.localAttributeCode : ''],
         localAttributeText: [attr && attr.localAttributeText ? attr.localAttributeText : ''],
-        status: [attr && attr.status ? attr.status : 'unmapped']
+        status: [attr && attr.status ? attr.status : 'unmatched']
       })
     );
 
@@ -314,20 +426,8 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * Filte attributes based on status or serach ..
    * @param sta status ..
    */
-  filterAsStatus(sta: string) {
-    const preVState = this.statas.filter(f=> f.code === sta)[0];
-    const index = this.statas.indexOf(preVState);
-    if(preVState.isSeleted) {
-      this.statas.splice(index, 1);
-      preVState.isSeleted = false;
-      this.statas.splice(index,0,preVState);
-    } else {
-      this.statas.splice(index, 1);
-      preVState.isSeleted = true;
-      this.statas.splice(index,0,preVState);
-    }
-    this.preInpVal = '';
-    this.filterAttribute('',this.statas.filter(f=> f.isSeleted === true).map(map=> map.code));
+  filterAsStatus(status: Status) {
+    status.isSeleted = !status.isSeleted;
   }
 
   /**
@@ -336,7 +436,8 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    */
   searchAttributeVal(val: string) {
     debounceTime(1000);
-    this.filterAttribute(val);
+    this.searchString = val;
+    // this.filterAttribute(val);
   }
 
   /**
@@ -345,17 +446,13 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * @param status search for what ..
    */
   filterAttribute(serachString?: string, status?: string []) {
-    let filterAttr = this.gsnAttributes;
+    let filterAttr: Array<AttributesDoc> = this.gsnAttributes;
     if(serachString && serachString.trim()) {
       filterAttr = this.gsnAttributes.filter(fil=> (fil.ATTR_CODE.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1 ||
                             fil.ATTR_DESC.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1));
     }
-    if(status) {
-      status.forEach(st=>{
-        const ft = filterAttr.filter(f => f.status === st);
-        filterAttr.push(...ft);
-      });
-
+    if(status?.length) {
+      filterAttr = filterAttr.filter(f => status.includes(f.status));
     }
     const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
     frmAray.clear();
