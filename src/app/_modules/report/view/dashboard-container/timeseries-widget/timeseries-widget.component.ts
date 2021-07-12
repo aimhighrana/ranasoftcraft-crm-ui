@@ -364,7 +364,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getTimeSeriesMetadata(): void {
     const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.timeseriesData = res;
-      res.showTotal = true;
       this.chartType = this.timeseriesData.timeSeries.chartType === ChartType.LINE ? 'line' : 'bar';
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
