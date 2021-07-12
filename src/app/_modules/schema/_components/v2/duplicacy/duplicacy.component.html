@@ -1,7 +1,7 @@
 <div class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
         <ng-template [ngIf]="schemaInfo">
-            <lib-text-line type="leading">
+            <lib-text-line type="leading" enableWrap="true">
                 {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{
                 variantTotalCnt ? variantTotalCnt : 0 }} records)
@@ -47,21 +47,21 @@
         <div class="f-row">
             <lib-chip class="mdo-filter-matchip" label="Errors" disableRipple="true" (click)="changeTabStatus('error')"
                 [selected]="activeTab && activeTab === 'error'" [selectable]="true">
-                <lib-text-line textColor="error">{{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}
+                <lib-text-line [textColor]="(activeTab && activeTab === 'error') ? 'plain' : 'error'">{{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}
                 </lib-text-line>
             </lib-chip>
 
             <lib-chip label="Success" class="mdo-filter-matchip" disableRipple="true"
-                (click)="changeTabStatus('success')" [selected]="activeTab && activeTab === 'warnings'"
+                (click)="changeTabStatus('success')" [selected]="activeTab && activeTab === 'success'"
                 [selectable]="true">
-                <lib-text-line textColor="success"> {{ (statics && statics.successCnt) ? statics.successCnt : 0 }}
+                <lib-text-line [textColor]="(activeTab && activeTab === 'success') ? 'plain' : 'success'"> {{ (statics && statics.successCnt) ? statics.successCnt : 0 }}
                 </lib-text-line>
             </lib-chip>
 
             <lib-chip label="Corections" class="mdo-filter-matchip" disableRipple="true"
                 (click)="changeTabStatus('review')" [selected]="activeTab && activeTab === 'review'"
                 [selectable]="true">
-                <lib-text-line textColor="info">{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}
+                <lib-text-line [textColor]="(activeTab && activeTab === 'review') ? 'plain' : 'info'">{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}
                 </lib-text-line>
             </lib-chip>
         </div>
@@ -77,10 +77,9 @@
             <mat-divider [vertical]="true" class="mat-divider"></mat-divider>
             <div class="f-col dataset-grid-listing">
                 <div class="f-row">
-                    <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" class="lib-search">
-                    </lib-search>
-                    <div class="f-col-spacer-half"></div>
                     <mat-chip-list>
+                        <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" class="lib-search">
+                        </lib-search>
                         <!-- Applied filters -->
                         <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                             <ng-template [ngIf]="ctrl.type !== 'INLINE'">
@@ -147,18 +146,17 @@
                         <!-- Checkbox Column -->
                         <ng-container matColumnDef="select" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                <lib-checkbox (change)="$event ? masterToggle() : null"
                                     [checked]="selection.hasValue() && isAllSelected()"
                                     [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                    [aria-label]="checkboxLabel()" color="primary">
-                                </mat-checkbox>
+                                    [aria-label]="checkboxLabel()">
+                                </lib-checkbox>
                             </mat-header-cell>
                             <mat-cell class="fixed-width-c1" *matCellDef="let row">
-                                <mat-checkbox (click)="$event.stopPropagation()"
+                                <lib-checkbox (click)="$event.stopPropagation()"
                                     (change)="$event ? selection.toggle(row) : null"
-                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
-                                    color="primary">
-                                </mat-checkbox>
+                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                                </lib-checkbox>
                             </mat-cell>
                         </ng-container>
 
@@ -166,9 +164,7 @@
                         <ng-container matColumnDef="avatar">
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
                             <mat-cell class="fixed-width-c1" *matCellDef="let element">
-                                <mat-card-header>
-                                    <div mat-card-avatar>AK</div>
-                                </mat-card-header>
+                                <lib-avatar>AK</lib-avatar>
                             </mat-cell>
                         </ng-container>
 
@@ -315,36 +311,35 @@
                                                     [ngIf]="element[dynCol].oldData !== element[dynCol].fieldData"
                                                     [ngIfElse]="other">
                                                     <div class="f-col">
-                                                        <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                        <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">
                                                             {{ element[dynCol] ? formatCellData(dynCol,
-                                                            element[dynCol].fieldData) : '' }}
-                                                        </span>
-                                                        <span class="text-correction">
+                                                                element[dynCol].fieldData) : '' }}
+                                                        </lib-text-line>
+                                                        <lib-text-line type="base" textColor="info" class="text-correction">
                                                             {{ element[dynCol] ? formatCellData(dynCol,
-                                                            element[dynCol].oldData) : '' }}
-                                                        </span>
+                                                                element[dynCol].oldData) : '' }}
+                                                        </lib-text-line>
                                                     </div>
 
                                                 </ng-template>
                                                 <ng-template #other>
                                                     <div class="f-col">
-                                                        <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
-                                                            {{ element[dynCol] ? formatCellData(dynCol,
-                                                            element[dynCol].fieldData) : '' }}
-                                                        </span>
+                                                        <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">{{ element[dynCol] ? formatCellData(dynCol,
+                                                            element[dynCol].fieldData) : '' }}</lib-text-line>
                                                     </div>
                                                 </ng-template>
                                             </ng-template>
                                             <ng-template #normalCell>
                                                 <div class="f-col">
-                                                    <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                    <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">
                                                         {{ element[dynCol] ? formatCellData(dynCol,
-                                                        element[dynCol].fieldData) : '' }}
-                                                    </span>
-                                                    <span class="text-correction">
+                                                            element[dynCol].fieldData) : '' }}
+                                                    </lib-text-line>
+                                                   
+                                                    <lib-text-line type="base" textColor="info" class="text-correction">
                                                         {{ element[dynCol] ? element[dynCol].errorMsg : ''
                                                         }}
-                                                    </span>
+                                                    </lib-text-line>
                                                 </div>
                                             </ng-template>
                                         </div>

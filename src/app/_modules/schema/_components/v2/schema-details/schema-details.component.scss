@@ -124,6 +124,7 @@ div.root {
           .mat-cell {
             min-width: 170px;
             max-width: 170px;
+            border-bottom-width: 1px;
 
             .collapse-icon {
               padding: 4px;
@@ -178,16 +179,18 @@ div.root {
             }
           }
 
+          .editable-cell {
+            .mdo-form-input {
+              margin-top: 4px;
+            }
+          }
+
           .mat-column-_score_weightage {
             min-width: 120px;
             border-right: none;
 
             .progress-cell {
               width: 120px;
-
-              mat-progress-bar {
-                flex: 1;
-              }
             }
           }
         }
