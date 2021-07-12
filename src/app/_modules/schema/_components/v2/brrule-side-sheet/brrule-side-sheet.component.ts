@@ -1358,6 +1358,10 @@ export class BrruleSideSheetComponent implements OnInit {
       }
     }
 
+    if (this.isMPNI && !this.selectedTargetFields.length) {
+      return;
+    }
+
     if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
       this.selectedTransformationType === this.transformationType.LOOKUP &&
       this.lookupData.length === 0) {
