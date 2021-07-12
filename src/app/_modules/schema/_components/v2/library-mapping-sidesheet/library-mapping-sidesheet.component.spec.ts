@@ -32,7 +32,7 @@ describe('LibraryMappingSidesheetComponent', () => {
       imports: [ AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule ],
       providers: [{
         provide: ActivatedRoute,
-        useValue: {params: of(routeParams)}
+        useValue: {params: of(routeParams), queryParams: of({isMapped:'false'})}
       }]
     })
     .compileComponents();
