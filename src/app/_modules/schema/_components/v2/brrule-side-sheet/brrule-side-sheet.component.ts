@@ -750,7 +750,7 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
-   * Apply conditional form validation based on rule type...
+   * Apply conditional form validation based on rule type
    * keep the required field updated based on a selected rule type
    * loop through the required keys and add validators to all required fields
    * also nullify validators for all not required fields at the same time
