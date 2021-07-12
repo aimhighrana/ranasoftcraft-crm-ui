@@ -345,7 +345,7 @@ describe('LibraryMappingSidesheetComponent', () => {
       libraryAttributeCode: 'test'
     };
     component.searchString = 'test';
-    expect(component.canDisplayAttribute(value)).toBeTrue();    
+    expect(component.canDisplayAttribute(value)).toBeTrue();
     component.statas[0].isSeleted = true;
     expect(component.canDisplayAttribute(value)).toBeTrue();
     component.statas[0].isSeleted = false;
