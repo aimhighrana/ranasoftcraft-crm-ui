@@ -192,13 +192,15 @@ describe('TimeseriesWidgetComponent', () => {
     component.timeseriesData.timeSeries = { fieldId: 'STATUS' } as WidgetTimeseries;
     component.filterCriteria = [] as Criteria[];
 
-    let timeSeriesWidget = {showTotal  : false} as TimeSeriesWidget;
-    component.widgetInf.next(timeSeriesWidget);
+    let metaData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', isEnableGlobalFilter: false, showTotal: true } as TimeSeriesWidget;
+    component.widgetInf.next(metaData);
 
     component.transformDataSets(data);
     expect(component.transformDataSets.length).toEqual(1);
 
-    timeSeriesWidget = {showTotal  : true} as TimeSeriesWidget;
+    metaData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', isEnableGlobalFilter: false, showTotal: true } as TimeSeriesWidget;
+    component.widgetInf.next(metaData);
+
     component.transformDataSets(data);
     expect(component.transformDataSets.length).toEqual(1);
   }));
@@ -219,23 +221,23 @@ describe('TimeseriesWidgetComponent', () => {
   }));
 
   it('tarnsformForShowInPercentage(), transform response', async(() => {
-    const data = 
+    const data =
     { _shards: { total: 1, failed: 0, successful: 1, skipped: 0 },
-     hits: { hits: [], total: { value: 1221, relation: 'eq' }, max_score: null }, took: 3, timed_out: false, 
-     aggregations: { 'date_histogram#date': { buckets: 
-      [{ key_as_string: '04.00.2020', doc_count: 52, 'sterms#term': { doc_count_error_upper_bound: 0, sum_other_doc_count: 0, buckets: [{ doc_count: 33, key: 'APP' }, 
+     hits: { hits: [], total: { value: 1221, relation: 'eq' }, max_score: null }, took: 3, timed_out: false,
+     aggregations: { 'date_histogram#date': { buckets:
+      [{ key_as_string: '04.00.2020', doc_count: 52, 'sterms#term': { doc_count_error_upper_bound: 0, sum_other_doc_count: 0, buckets: [{ doc_count: 33, key: 'APP' },
       { doc_count: 19, key: 'INP' }] }, key: 1588550400000 }, { key_as_string: '11.00.2020', doc_count: 46, 'sterms#term': { doc_count_error_upper_bound: 0, sum_other_doc_count: 0, buckets: [{ doc_count: 33, key: 'APP' }, { doc_count: 13, key: 'INP' }] }, key: 1589155200000 }] } } };
     component.timeseriesData.timeSeries = { chartType: ChartType.BAR } as WidgetTimeseries;
-    let timeSeriesWidget = {showTotal : false} as TimeSeriesWidget;
-    component.widgetInf.next(timeSeriesWidget);
+    let metaData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', isEnableGlobalFilter: false, showTotal: false } as TimeSeriesWidget;
+    component.widgetInf.next(metaData);
     component.tarnsformForShowInPercentage(data, false);
     expect(component.dataSet.length).toEqual(2);
     expect(component.dataSetlabel.length).toEqual(12);
 
-    timeSeriesWidget = {showTotal : true} as TimeSeriesWidget;
-    component.widgetInf.next(timeSeriesWidget);
+    metaData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', isEnableGlobalFilter: false, showTotal: true } as TimeSeriesWidget;
+    component.widgetInf.next(metaData);
     component.filterCriteria = [];
-    component.totalCount = [];
+    // component.totalCount = [];
     component.tarnsformForShowInPercentage(data,true);
     expect(component.dataSet.length).toEqual(3);
     expect(component.dataSetlabel.length).toEqual(12);
