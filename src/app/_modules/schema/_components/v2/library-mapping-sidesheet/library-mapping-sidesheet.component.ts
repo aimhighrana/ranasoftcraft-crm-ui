@@ -133,8 +133,8 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.classificationCategory = resp;
         const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
         frmAray.clear();
-        const status = this.isMapped? 'matched' : 'unmatched';
         this.gsnAttributes.forEach((row) => {
+          const status = this.isMapped? 'matched' : 'unmatched';
           row.status = this.classificationCategory.attrLists.find(x => x.targetCtrl?.ATTR_CODE === row.ATTR_CODE)?.status.toLowerCase() || status;
           this.addAttributeMappingRow(row);
         });
