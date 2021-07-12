@@ -30,6 +30,7 @@
                     <lib-banner status="info"
                         text="{{ currentVariantCnt || 0 }} out of {{ entireDataSetCount || 0 }} records will be validated based on your data scope selection">
                     </lib-banner>
+                    <lib-banner *ngIf="schemaRunFailureMsg" status="error" [text]="schemaRunFailureMsg"></lib-banner>
                 </div>
 
                 <div class="f-col mdo-field" *ngIf="updateschema">
