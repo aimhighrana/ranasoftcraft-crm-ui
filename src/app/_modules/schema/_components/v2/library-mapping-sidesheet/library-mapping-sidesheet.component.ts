@@ -347,17 +347,17 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openNounSidesheet() {
     // need material group
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
     outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}]);
   }
 
   openModifierSidesheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
     outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}]);
   }
 
   openAttributeSidesheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
     outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
   }
 
