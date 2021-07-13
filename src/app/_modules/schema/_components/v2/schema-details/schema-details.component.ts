@@ -880,6 +880,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param row row data ..
    */
   emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
+    let code = value;
+    if(typeof value === 'object') {
+      code = value.CODE;
+      value = value.TEXT;
+    } else {
+      value = '';
+    }
     console.log(value);
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
@@ -898,7 +905,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
-        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: code, vt: value, isReviewed: null } as SchemaCorrectionReq;
         if(this.nodeType === 'GRID') {
           request.gridId = this.nodeId;
         } else if(this.nodeType === 'HEIRARCHY') {
@@ -1893,5 +1900,4 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.getData(this.filterCriteria.getValue(),this.sortOrder,0,false);
     this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
   }
-
 }

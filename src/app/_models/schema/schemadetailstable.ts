@@ -359,13 +359,14 @@ export class FieldExitsResponse {
 }
 
 export interface SchemaCorrectionReq {
-  id: string[];
-  fldId: string;
-  gridId: string;
-  heirerchyId: string;
-  vc: string;
-  rowSno: string;
-  isReviewed: boolean;
+    id: string[];
+    fldId: string;
+    gridId: string;
+    heirerchyId: string;
+    vc: string;
+    vt?: string;
+    rowSno: string;
+    isReviewed: boolean;
 }
 
 export interface SchemaExecutionLog {
