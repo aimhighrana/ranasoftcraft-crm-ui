@@ -22,6 +22,7 @@ describe('LibraryMappingSidesheetComponent', () => {
   let userDetails: UserService;
   const routeParams = {
     moduleId: '1005',
+    schemaId: '7573837766214',
     libraryNounCode: 'Bearing',
     libraryModifierCode: 'Ball'
   }
@@ -45,6 +46,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     nounModifierService = fixture.debugElement.injector.get(NounModifierService);
 
     component.moduleId = 'module';
+    component.schemaId = 'schema';
 
     component.libraryNounCode = 'Bearing';
     component.libraryModifierCode = 'Ball';
@@ -133,7 +135,7 @@ describe('LibraryMappingSidesheetComponent', () => {
   it('should openNounSidesheet', () => {
     spyOn(router, 'navigate');
     component.openNounSidesheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
     outer: `outer/schema/noun/${component.moduleId}/${component.mgroup}` }}])
   });
 
@@ -223,7 +225,7 @@ describe('LibraryMappingSidesheetComponent', () => {
 
     component.buildMappingForm();
     component.openModifierSidesheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
     outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` }}])
   });
 
@@ -232,7 +234,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.buildMappingForm();
     component.setFormControlValue('localNounCode', 'Bearing');
     component.openAttributeSidesheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
     outer: `outer/schema/attribute/${component.selectedNounCode}` }}])
   });
 
