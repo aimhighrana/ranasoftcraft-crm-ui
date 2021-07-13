@@ -4,12 +4,6 @@ div.root {
   overflow: hidden;
   margin: 0 -16px;
 
-  .mat-error {
-    font-size: 11.2px;
-    margin-top: 6px;
-    line-height: 12px;
-  }
-
   .breadcrum-toolbar {
     padding: 8px 16px;
 
@@ -19,15 +13,7 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
     }
   }
@@ -39,36 +25,30 @@ div.root {
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        margin: 8px 0;
+      .field-label {
+        margin-bottom: 6px;
+      }
 
-        mat-label {
-          font-weight: 500;
-          font-size: 0.8rem;
+      .slider-row {
+        flex: 1;
+
+        .lib-slider {
+          height: 48px;
+          width: 100%;
         }
 
-        .slider-row {
-          align-items: center;
-          flex-wrap: wrap;
-          justify-content: center;
-          flex: 1;
-
-          .lib-slider {
-            flex: 1;
-            height: 48px;
-          }
+        .percentage {
+          width: 36px;
         }
       }
 
-      .dashed-divider {
-        position: relative;
-        margin: 16px 0;
-        border-top-style: dashed;
+      .mat-error {
+        margin-top: 6px;
       }
 
       .user-defined-set {
         position: relative;
-        margin-top: 8px;
+        margin: 0 0 12px 0;
 
         &::before {
           display: block;
@@ -101,16 +81,6 @@ div.root {
               padding: 0;
             }
 
-            button.mat-button:hover {
-              background: transparent;
-            }
-
-            button.mat-flat-button {
-              height: 54px;
-              border-radius: 0;
-              width: 100px;
-            }
-
             &.select-col {
               width: 68px;
               padding: 0 16px;
@@ -118,13 +88,8 @@ div.root {
               align-items: center;
               display: flex;
               z-index: 1;
-            }
-
-            &.udr-select-col {
-              padding: 8px;
-              margin-left: 10px;
-              border-radius: 3px;
-              box-sizing: border-box;
+              justify-content: center;
+              text-align: center;
             }
           }
 
@@ -137,6 +102,22 @@ div.root {
         .sub-defined {
           padding-left: 100px;
           margin-top: -17px;
+        }
+      }
+
+      .field-chip-list {
+        flex-wrap: wrap;
+
+        .lib-chip {
+          display: flex;
+          flex-direction: row;
+          width: auto;
+          padding: 2px;
+        }
+
+        .mat-input {
+          width: auto;
+          flex: 1;
         }
       }
     }

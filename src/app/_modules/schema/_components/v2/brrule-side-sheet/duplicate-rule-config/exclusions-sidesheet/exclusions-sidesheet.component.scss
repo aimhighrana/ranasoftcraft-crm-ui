@@ -13,19 +13,7 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-
-        button.mat-flat-button {
-          min-width: auto;
-        }
       }
     }
   }
@@ -37,11 +25,11 @@ div.root {
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        margin: 8px 0;
+      .mdo-field {
+        margin-bottom: 12px;
       }
 
-      .info-link {
+      .cursor {
         cursor: pointer;
       }
 

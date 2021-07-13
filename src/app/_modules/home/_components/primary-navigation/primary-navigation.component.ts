@@ -9,6 +9,8 @@ import { HomeService } from '@services/home/home.service';
 import { UserService } from '@services/user/userservice.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoadingService } from '@services/loading.service';
+import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaService } from '@services/home/schema.service';
 @Component({
   selector: 'pros-primary-navigation',
   templateUrl: './primary-navigation.component.html',
@@ -65,7 +67,8 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
     private sharedService: SharedServiceService,
     private router: Router,
     public homeService: HomeService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private schemaService: SchemaService
   ) { }
 
   ngOnInit(): void {
@@ -107,9 +110,13 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
     }
   }
   ngOnDestroy() {
-    this.udSub.unsubscribe();
-    this.appStateSubject.complete();
-    this.appStateSubject.unsubscribe();
+    if(this.udSub) {
+      this.udSub.unsubscribe();
+    }
+    if(this.appStateSubject) {
+      this.appStateSubject.complete();
+      this.appStateSubject.unsubscribe();
+    }
   }
 
   /**
@@ -273,7 +280,15 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${schemaId}` } }], { queryParams: { name: moduleDesc } })
     }
     if (moduleId && !schemaId) {
-      this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/new` } }], { queryParams: { name: moduleDesc } })
+      const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+      schemaReq.moduleId = moduleId;
+      schemaReq.discription = 'New schema';
+      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+        const receivedSchemaId = response;
+        this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${receivedSchemaId}` } }], { queryParams: { name: moduleDesc,updateschema:true } })
+      }, (error) => {
+        console.log('Something went wrong while creating schema', error.message);
+      });
     }
   }
 

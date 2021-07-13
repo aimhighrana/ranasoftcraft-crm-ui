@@ -1,55 +1,41 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="close()" icon="times" iconFontType="light" ></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Exclusions</div>
-                <span class="f-col-spacer-half"></span>
+                <lib-text-line type="leading">Exclusions</lib-text-line>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+                <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
             </div>
         </div>
     </div>
 
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
-            <mat-tab-group disableRipple="true">
-                <mat-tab>
-                    <ng-template mat-tab-label>
-                        Ignore words
-                    </ng-template>
+            <lib-tab-group>
+                <lib-tab label="Ignore words">
                     <div class="f-col">
                         <mat-form-field appearance="outline">
-                            <textarea matInput [formControl]="exclusionControl" class="mdo-textarea"></textarea>
+                            <textarea matInput [formControl]="exclusionControl" class="mdo-textarea" cdkTextareaAutosize cdkAutosizeMinRows="1"></textarea>
                         </mat-form-field>
                         <mat-hint>Type one word per line</mat-hint>
                     </div>
-                </mat-tab>
-
-                <mat-tab>
-                    <ng-template mat-tab-label>
-                        Synonyms
-                    </ng-template>
-
+                </lib-tab>
+                <lib-tab label="Synonyms">
                     <div class="f-col">
-                        <div class="mdo-form-field">
-                            <pros-search-input [placeholder]="'Search word'" (value)="searchWords($event)">
-                            </pros-search-input>
-                        </div>
+                        <lib-search placeholder="Search word" (valueChange)="searchWords($event)"></lib-search>
 
-                        <div class="mdo-form-field">
-                            <a (click)="enableGroupCreation()" class="info-link">
+                        <div class="mdo-field">
+                            <lib-text-line type="base" (click)="enableGroupCreation()" textColor="link" class="cursor">
                                 <mat-icon fontSet="mdo-icons">plus</mat-icon> Add synonyms group
-                            </a>
+                            </lib-text-line>
                         </div>
 
-                        <div *ngIf="newGroupActive" class="f-col mdo-form-field">
+                        <div *ngIf="newGroupActive" class="f-col mdo-field">
                             <mat-form-field appearance="outline">
                                 <textarea matInput class="mdo-textarea" #input [(ngModel)]="editText"
-                                    (blur)="addSynonymGroup(input.value)"></textarea>
+                                    (blur)="addSynonymGroup(input.value)"  cdkTextareaAutosize cdkAutosizeMinRows="1"></textarea>
                             </mat-form-field>
                             <mat-hint>Type one word per line.Click outside the box when done-your changes are saved
                                 automatically</mat-hint>
@@ -58,14 +44,14 @@
                         <form [formGroup]="synonymsForm">
                             <ng-container formArrayName="synonymsArray">
                                 <div *ngFor="let synonym of synonymsArray.controls; let index = index"
-                                    class="f-col mdo-form-field">
+                                    class="f-col mdo-field">
                                     <ng-container [formGroupName]="index">
 
                                         <ng-template [ngIf]="synonym.value.editActive" [ngIfElse]="noEdit">
                                             <mat-form-field appearance="outline">
                                                 <textarea matInput class="mdo-textarea" #editInput="matInput"
                                                     [value]="splitStringLines(synonym.value.text)"
-                                                    (blur)="saveSynonymGroup(index, editInput.value)"></textarea>
+                                                    (blur)="saveSynonymGroup(index, editInput.value)" cdkTextareaAutosize cdkAutosizeMinRows="1"></textarea>
                                             </mat-form-field>
                                             <mat-hint>Type one word per line. Click outside the box when done-your changes
                                                 are saved automatically</mat-hint>
@@ -79,7 +65,7 @@
                                                 <input matInput formControlName="text" (focus)="editSynonymGroup(index)" />
                                                 <div class="f-row input-actions">
                                                     <button mat-button matSuffix>
-                                                        <mat-icon fontSet="mdo-icons" (click)="removeSynonymGroup(index)">recycle-bin</mat-icon>
+                                                        <mat-icon fontSet="mdo-icons" (click)="removeSynonymGroup(index)">trash-alt</mat-icon>
                                                     </button>
                                                 </div>
                                             </mat-form-field>
@@ -93,8 +79,8 @@
                             </pros-null-state>
                         </form>
                     </div>
-                </mat-tab>
-            </mat-tab-group>
+                </lib-tab>
+            </lib-tab-group>
         </div>
     </div>
 </div>

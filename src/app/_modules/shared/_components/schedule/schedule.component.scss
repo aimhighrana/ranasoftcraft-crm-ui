@@ -13,15 +13,7 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
     }
   }
@@ -33,61 +25,28 @@ div.root {
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        padding: 8px 0;
-
-        .mdo-schedule-segment {
-          margin-top: 6px;
-        }
-
-        mat-label {
-          font-weight: 500;
-          font-size: 0.8rem;
-        }
-
-        &.every-field {
-          align-items: center;
-
-          .mdo-scheduler-input {
-            flex: 2;
-          }
-
-          .week-label {
-            padding-top: 20px;
-            flex: 3;
-          }
-        }
+      .field-label {
+        margin-bottom: 6px;
       }
 
-      .panel-title {
-        font-weight: 500;
+      .mdo-scheduler-input {
+        flex: 2;
       }
 
-      .summary-rowlist {
-        mat-list-item.mat-list-item {
-          border-bottom-width: 1px;
-          border-bottom-style: solid;
-          font-size: 0.8rem;
-
-          .row-heading {
-            font-size: 0.9rem;
-          }
-        }
+      .week-label {
+        padding-top: 8px;
+        flex: 3;
       }
 
       mat-divider {
         position: relative;
-        margin: 16px 0;
+        margin: 8px 0 12px 0;
 
         &.divider-dashed {
           border-top-style: dashed;
         }
       }
     }
-  }
-
-  .mt-4 {
-    margin-top: 4px;
   }
 }
 

@@ -10,12 +10,14 @@ import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { BusinessrulelibrarySidesheetComponent } from './businessrulelibrary-sidesheet.component';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 describe('BusinessrulelibrarySidesheetComponent', () => {
   let component: BusinessrulelibrarySidesheetComponent;
   let fixture: ComponentFixture<BusinessrulelibrarySidesheetComponent>;
   let schemaService: SchemaService;
   let router: Router;
+  let sharedService: SharedServiceService
 
 
   beforeEach(async(() => {
@@ -36,6 +38,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     fixture = TestBed.createComponent(BusinessrulelibrarySidesheetComponent);
     component = fixture.componentInstance;
     schemaService = fixture.debugElement.injector.get(SchemaService);
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
     router = fixture.debugElement.injector.get(Router);
     // fixture.detectChanges();
   });
@@ -96,7 +99,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     } as CoreSchemaBrInfo
 
     res = component.isSelected(rule);
-    expect(res).toEqual(false);
+    expect(res).toEqual(true);
   })
 
   it('getBusinessRulesList(), Should get business rules list according to module Id', async () => {
@@ -172,15 +175,16 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     coreRequestInfo.copiedFrom = coreInfo.brIdStr;
 
     spyOn(component, 'closeDialogComponent');
-    spyOn(schemaService, 'copyDuplicateRule').withArgs(coreRequest).and.returnValue(of());
-    spyOn(schemaService, 'createBusinessRule').withArgs(coreRequestInfo).and.returnValue(of(null));
+    spyOn(schemaService, 'copyDuplicateRule').and.callFake(()=>of());
+    spyOn(schemaService, 'createBusinessRule').and.callFake(()=>of(null));
     component.saveSelection();
-    expect(schemaService.copyDuplicateRule).toHaveBeenCalledWith(coreRequest);
-    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(coreRequestInfo);
+    expect(schemaService.copyDuplicateRule).toHaveBeenCalled();
+    expect(schemaService.createBusinessRule).toHaveBeenCalled();
 
     component.outlet = '';
+    spyOn(sharedService,'setAfterBrSave').and.callFake(()=>of());
     component.saveSelection();
-    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(coreRequestInfo);
+    expect(sharedService.setAfterBrSave).toHaveBeenCalled();
 
   }));
 
@@ -195,5 +199,11 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     component.onScrollEnd();
     expect(component.getBusinessRulesList).toHaveBeenCalledWith(component.moduleId, component.searchString, component.selectedRuleType, true);
   }));
+
+  it('getRuleDesc(), should return rule description', async(() => {
+    expect(component.getRuleDesc('BR_API_RULE')).toEqual('API Rule');
+    expect(component.getRuleDesc('testRule')).toBeFalsy();
+  }));
+
 
 });

@@ -13,18 +13,10 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
 
-      pros-search-input {
+      .lib-search {
         min-width: 213px;
       }
     }
@@ -38,21 +30,18 @@ div.root {
       height: 100%;
 
       .mdo-justify {
-        margin: 0 16px;
+        margin: 0 66px;
 
         mat-list.rule-list {
           mat-list-item {
             border-bottom-width: 1px;
             border-bottom-style: solid;
 
-            button.mat-flat-button {
-              min-width: 60px;
+            .lib-button {
+              display: flex;
+              width: 64px;
             }
           }
-        }
-
-        mat-list mat-card-header.avatar-header {
-          flex-direction: row-reverse;
         }
       }
     }

@@ -12,20 +12,17 @@ div.root {
       width: 100%;
       margin-right: 0;
 
-      .breadcrum-head {
-        align-items: center;
-        width: 100%;
+      .business-filters {
+        flex-wrap: wrap;
 
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
+        .lib-search {
+          width: 213px;
+          margin-bottom: 4px;
         }
-      }
 
-      pros-search-input {
-        min-width: 213px;
+        .mdo-chip-list {
+          align-items: flex-start;
+        }
       }
     }
   }
@@ -38,10 +35,6 @@ div.root {
       height: 100%;
     }
 
-    mat-spinner {
-      margin: 0 auto;
-    }
-
     .mdo-justify {
       margin: 0 16px;
 
@@ -50,8 +43,13 @@ div.root {
           border-bottom-width: 1px;
           border-bottom-style: solid;
 
-          button.mat-flat-button {
-            min-width: 60px;
+          .br-info {
+            flex: 1;
+          }
+
+          .lib-button {
+            display: flex;
+            width: 64px;
           }
         }
       }

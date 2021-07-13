@@ -224,6 +224,7 @@ describe('BarChartComponent', () => {
     barWidget.scaleFrom = 0;
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
+    component.filterCriteria = [];
     component.barWidget.next(barWidget);
     const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}]
 
@@ -236,12 +237,13 @@ describe('BarChartComponent', () => {
 
     // scenario  2
     barWidget.dataSetSize = 1;
+    barWidget.showTotal = true;
     component.barWidget.next(barWidget);
 
     // call actual component method
     const actualResponse1 = component.transformDataSets(resBuckets);
-
-    expect(actualResponse1.length).toEqual(1,`After applied datasetSize length should be equals to dataSetSize`);
+    // console.log('actual response===',actualResponse1);
+    expect(actualResponse1.length).toEqual(2,`After applied datasetSize length should be equals to dataSetSize`);
 
 
   }));
@@ -279,10 +281,11 @@ describe('BarChartComponent', () => {
     const barWidget: BarChartWidget = new BarChartWidget();
     barWidget.fieldId = 'MATL_GROUP';
     barWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
-
+    barWidget.showTotal = true;
     component.barWidget.next(barWidget);
 
     component.widgetInfo = new Widget();
+    component.filterCriteria = [];
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
@@ -553,7 +556,7 @@ describe('BarChartComponent', () => {
     barWidget.blankValueAlias = 'MATL_GROUP';
     barWidget.orderWith = OrderWith.COL_ASC;
     component.barWidget.next(barWidget);
-    component.displayCriteriaOption.key = DisplayCriteria.CODE;
+    component.displayCriteriaOption = DisplayCriteria.CODE;
     component.sortBarChartData(buckets as Buckets[]);
     expect(buckets).toBeDefined();
 

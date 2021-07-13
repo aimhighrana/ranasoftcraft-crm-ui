@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
+import { AddFilterOutput, DataScopeSidesheet, SchemaVariantReq } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { LoadDropValueReq } from '@models/schema/schemalist';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -61,6 +61,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
 
   scopeCnt = 0;
   entireDatasetCnt = 0;
+
+  datascopeSheetState: DataScopeSidesheet;
 
   /**
    * holds list of all available filters
@@ -247,6 +249,12 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(dropdownSearchCtrlSub);
 
+
+    this.sharedService.getdatascopeSheetState().subscribe((res) => {
+      if (res) {
+        this.datascopeSheetState = res;
+      }
+    });
   }
 
   getModuleInfo() {
@@ -291,8 +299,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   /**
    * function to close dataScope side sheet
    */
-  close(){
+  close(isSave = false){
     this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }], {queryParamsHandling: 'preserve'});
+    if(this.datascopeSheetState) {
+      this.datascopeSheetState.editSheet = false;
+      this.datascopeSheetState.isSave = isSave;
+      this.sharedService.setdatascopeSheetState(this.datascopeSheetState);
+    }
   }
 
   /**
@@ -403,7 +416,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     this.variantInfo.variantType = 'RUNFOR';
     this.variantInfo.filterCriteria = this.selectedFilterCriteria;
     const saveVariant = this.schemaService.saveUpdateDataScope(this.variantInfo).subscribe((res) => {
-      this.close();
+      this.close(true);
       this.sharedService.setDataScope(res);
       this.toasterService.open('This action has been performed.', 'Okay', {
         duration: 2000

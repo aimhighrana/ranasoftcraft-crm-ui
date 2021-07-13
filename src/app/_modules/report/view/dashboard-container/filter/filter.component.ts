@@ -20,19 +20,19 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   displayCriteriaOptions = [
     {
-      key: DisplayCriteria.TEXT,
-      value: 'Text'
+      key: 'Text',
+      value: DisplayCriteria.TEXT
     },
     {
-      key: DisplayCriteria.CODE,
-      value: 'Code'
+      key: 'Code',
+      value: DisplayCriteria.CODE
     },
     {
-      key: DisplayCriteria.CODE_TEXT,
-      value: 'Code and Text'
+      key: 'Code and Text',
+      value: DisplayCriteria.CODE_TEXT
     }
   ];
-  displayCriteriaOption = this.displayCriteriaOptions[0];
+  displayCriteriaOption: DisplayCriteria = this.displayCriteriaOptions[0].value;
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
   filteredOptionsSubject: BehaviorSubject<DropDownValues[]> = new BehaviorSubject([]);
@@ -165,7 +165,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.subscriptions.push(filterWid);
 
     const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+      this.displayCriteriaOption = res.displayCriteria;
     }, error => {
       console.error(`Error : ${error}`);
     });
@@ -770,7 +770,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Return the value of DisplayCriteria
    */
   setDisplayCriteria(code: string, text: string): string {
-    switch (this.displayCriteriaOption.key) {
+    switch (this.displayCriteriaOption) {
       case DisplayCriteria.CODE:
         return code || '';
         case DisplayCriteria.TEXT:
@@ -787,7 +787,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Save DisplayCriteria and update filter widget
    */
   saveDisplayCriteria() {
-    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption).subscribe(res => {
       this.filteredOptionsSubject.value.forEach(v => {
         v.display = this.setDisplayCriteria(v.CODE, v.TEXT);
       });
@@ -820,13 +820,13 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   /* Sort dropdownn Data */
   sortDropdownData(values: DropDownValues[]){
     const sortBy = this.filterWidget.getValue()?.orderWith;
-    if(this.displayCriteriaOption.key === DisplayCriteria.TEXT){
+    if(this.displayCriteriaOption === DisplayCriteria.TEXT){
       if(sortBy === OrderWith.DESC){
         values?.sort((a, b) => { return b?.TEXT.localeCompare(a?.TEXT); });
       } else if(sortBy === OrderWith.ASC){
         values?.sort((a, b) => { return a?.TEXT.localeCompare(b?.TEXT); });
       }
-    } else if(this.displayCriteriaOption.key === DisplayCriteria.CODE || this.displayCriteriaOption.key === DisplayCriteria.CODE_TEXT) {
+    } else if(this.displayCriteriaOption === DisplayCriteria.CODE || this.displayCriteriaOption === DisplayCriteria.CODE_TEXT) {
       if(sortBy === OrderWith.DESC){
         values?.sort((a, b) => {
           if(isNaN(parseInt(a.CODE,10))){

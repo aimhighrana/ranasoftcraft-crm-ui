@@ -345,17 +345,13 @@
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
         <target>affärsregel</target>
-       <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">61</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">77</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
-          <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
@@ -464,18 +460,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-dataset\upload-dataset.component.html</context>
           <context context-type="linenumber">180</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="add_br_rule" datatype="html">
-        <source>Add new business rule</source>
-        <target>Lägg till ny affärsregel</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
-          <context context-type="linenumber">103</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
-          <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="rule_type" datatype="html">
@@ -1455,7 +1439,11 @@
         <target>Sortera efter</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
-          <context context-type="linenumber">370</context>
+          <context context-type="linenumber">379</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">673</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ascending" datatype="html">
@@ -2478,7 +2466,7 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="import_report" datatype="html">
+      <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>Importera rapport</target>
         <context-group purpose="location">
@@ -2495,12 +2483,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
+        <source>Upload a .mdopage report file</source>
         <target>Ladda upp en .mdopage-rapportfil</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2535,16 +2523,16 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
+        <source>Description</source>
         <target>Beskrivning</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
-	      <target>Importera datum</target>
+        <target>Importera datum</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">23</context>
@@ -2552,7 +2540,7 @@
       </trans-unit>
       <trans-unit id="category" datatype="html">
         <source>Category</source>
-	      <target>Kategori</target>
+        <target>Kategori</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
           <context context-type="linenumber">35</context>
@@ -2746,6 +2734,283 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="workFlowPath" datatype="html">
+        <source>Workflow path</source>
+        <target>Arbetsflödesväg</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">200</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aggregrationOperator" datatype="html">
+        <source>Aggregration operator</source>
+        <target>Aggregationsoperatör</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">247</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="groupBy" datatype="html">
+        <source>Group by</source>
+        <target>Grupp av</target>
+      </trans-unit>
+      <trans-unit id="count" datatype="html">
+        <source>Count</source>
+        <target>Räkna</target>
+      </trans-unit>
+      <trans-unit id="sum" datatype="html">
+        <source>Sum</source>
+        <target>Belopp</target>
+      </trans-unit>
+      <trans-unit id="includeField" datatype="html">
+        <source>Include field as distinct</source>
+        <target>Inkludera fält som distinkt</target>
+      </trans-unit>
+      <trans-unit id="selectDefaultDays" datatype="html">
+        <source>Select default days</source>
+        <target>Välj standarddagar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">331</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noDate" datatype="html">
+        <source>No date</source>
+        <target>Inget datum</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">337</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="DAY_7" datatype="html">
+        <source>7 days</source>
+        <target>7 dagar</target>
+      </trans-unit>
+      <trans-unit id="DAY_10" datatype="html">
+        <source>10 days</source>
+        <target>10 dagar</target>
+      </trans-unit>
+      <trans-unit id="DAY_20" datatype="html">
+        <source>20 days</source>
+        <target>20 dagar</target>
+      </trans-unit>
+      <trans-unit id="DAY_30" datatype="html">
+        <source>30 days</source>
+        <target>30 dagar</target>
+      </trans-unit>
+      <trans-unit id="CUSTOM" datatype="html">
+        <source>Custom date</source>
+        <target>Anpassat datum</target>
+      </trans-unit>
+      <trans-unit id="filterType" datatype="html">
+        <source>Filter type</source>
+        <target>Filtertyp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">359</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dropdownValue" datatype="html">
+        <source>Dropdown value</source>
+        <target>Nedrullningsvärde</target>
+      </trans-unit>
+      <trans-unit id="horizontalValue" datatype="html">
+        <source>Horizontal value</source>
+        <target>Horisontellt värde</target>
+      </trans-unit>
+      <trans-unit id="verticalValue" datatype="html">
+        <source>Vertical value</source>
+        <target>Vertikalt värde</target>
+      </trans-unit>
+      <trans-unit id="isMultiselect" datatype="html">
+        <source>Is multiselect</source>
+        <target>Är multiselect</target>
+      </trans-unit>
+      <trans-unit id="columnFormat" datatype="html">
+        <source>Column format</source>
+        <target>Kolumnformat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">541</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="globalFiltersNA" datatype="html">
+        <source>Global Filters not applicable</source>
+        <target>Globala filter är inte tillämpliga</target>
+      </trans-unit>
+      <trans-unit id="chartProperties" datatype="html">
+        <source>Chart properties</source>
+        <target>Diagramegenskaper</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">610</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartType" datatype="html">
+        <source>Chart type</source>
+        <target>Diagramtyp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">615</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pie" datatype="html">
+        <source>Pie</source>
+        <target>Paj</target>
+      </trans-unit>
+      <trans-unit id="bar" datatype="html">
+        <source>Bar</source>
+        <target>Bar</target>
+      </trans-unit>
+      <trans-unit id="line" datatype="html">
+        <source>Line</source>
+        <target>Linje</target>
+      </trans-unit>
+      <trans-unit id="orientation" datatype="html">
+        <source>Orientation</source>
+        <target>Orientering</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">642</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="vertical" datatype="html">
+        <source>Vertical</source>
+        <target>Vertikal</target>
+      </trans-unit>
+      <trans-unit id="horizontal" datatype="html">
+        <source>Horizontal</source>
+        <target>Horisontell</target>
+      </trans-unit>
+      <trans-unit id="enableDatalabels" datatype="html">
+        <source>Enable datalabels</source>
+        <target>Aktivera datamärken</target>
+      </trans-unit>
+      <trans-unit id="datalabelsPosition" datatype="html">
+        <source>Datalabels position</source>
+        <target>Datalabels position</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">735</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="center" datatype="html">
+        <source>Center</source>
+        <target>Centrum</target>
+      </trans-unit>
+      <trans-unit id="ShowDataIn" datatype="html">
+        <source>Show data in %</source>
+        <target>Visa data i%</target>
+      </trans-unit>
+      <trans-unit id="showLegend" datatype="html">
+        <source>Show legend</source>
+        <target>Visa legend</target>
+      </trans-unit>
+      <trans-unit id="legendPosition" datatype="html">
+        <source>Legend position</source>
+        <target>Legendposition</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">767</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="top" datatype="html">
+        <source>Top</source>
+        <target>Topp</target>
+      </trans-unit>
+      <trans-unit id="left" datatype="html">
+        <source>Left</source>
+        <target>Vänster</target>
+      </trans-unit>
+      <trans-unit id="bottom" datatype="html">
+        <source>Bottom</source>
+        <target>Botten</target>
+      </trans-unit>
+      <trans-unit id="right" datatype="html">
+        <source>Right</source>
+        <target>Rätt</target>
+      </trans-unit>
+      <trans-unit id="serieswith" datatype="html">
+        <source>Series with</source>
+        <target>Serie med</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">789</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="day" datatype="html">
+        <source>Day</source>
+        <target>Dag</target>
+      </trans-unit>
+      <trans-unit id="week" datatype="html">
+        <source>Week</source>
+        <target>Vecka</target>
+      </trans-unit>
+      <trans-unit id="month" datatype="html">
+        <source>Month</source>
+        <target>Månad</target>
+      </trans-unit>
+      <trans-unit id="quarter" datatype="html">
+        <source>Quarter</source>
+        <target>Fjärdedel</target>
+      </trans-unit>
+      <trans-unit id="year" datatype="html">
+        <source>Year</source>
+        <target>År</target>
+      </trans-unit>
+      <trans-unit id="seriesFormat" datatype="html">
+        <source>Series format</source>
+        <target>Serieformat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">812</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectInterval" datatype="html">
+        <source>Select interval</source>
+        <target>Välj intervall</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">828</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="SLAFilter" datatype="html">
+        <source>SLA filter</source>
+        <target>SLA-filter</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">856</context>
+        </context-group>
+      </trans-unit>
+
+      <trans-unit id="dafaultSLA" datatype="html">
+        <source>Default SLA</source>
+        <target>Standard SLA</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">870</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="useCustomSLAValue" datatype="html">
+        <source>Use custom SLA value</source>
+        <target>Använd anpassat SLA-värde</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">878</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="none" datatype="html">
+        <source>None</source>
+        <target>Ingen</target>
+      </trans-unit>
+      <trans-unit id="withinSLA" datatype="html">
+        <source>Within SLA</source>
+        <target>Inom SLA</target>
+      </trans-unit>
+      <trans-unit id="exceedsSLA" datatype="html">
+        <source>Exceeds SLA</source>
+        <target>Överstiga SLA</target>
+      </trans-unit>
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>
         <target>Detta schema körs Klicka här för att antingen spåra förloppet eller se resultatet</target>
@@ -2760,6 +3025,122 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type" datatype="html">
+        <source>Type</source>
+        <target>Typ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_br_rule" datatype="html">
+        <source>New business rule</source>
+        <target>Ny affärsregel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">106</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="accuracy_score" datatype="html">
+        <source>Accuracy Score</source>
+        <target>noggrannhet Score</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="accuracy_score_missing_msg" datatype="html">
+        <source>Please enter accuracy score</source>
+        <target>Ange noggrannhet poäng</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="source_field" datatype="html">
+        <source>Source Field</source>
+        <target>Source Field</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">171</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">174</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">160</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="source_field_missing" datatype="html">
+        <source>Please select the source field</source>
+        <target>Välj källfältet</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">185</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">168</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="target_fields" datatype="html">
+        <source>Target Fields</source>
+        <target>Target Fields</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">190</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
+          <context context-type="linenumber">172</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="hour" datatype="html">
+        <source>Hour</source>
+        <target>Timme</target>
+      </trans-unit>
+      <trans-unit id="errors" datatype="html">
+        <source>errors</source>
+        <target>fel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="success" datatype="html">
+        <source>success</source>
+        <target>Framgång</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="skipped" datatype="html">
+        <source>skipped</source>
+        <target>hoppat över</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
     </body>

@@ -3,23 +3,22 @@
         <lib-button type="plain" (click)="closeDialogComponent()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
-            <div class="f-row breadcrum-head">
-                <div class="display-heading-large" i18n="@@business_rule_library">Business rule library</div>
-                <span class="f-col-spacer-half"></span>
+            <div class="f-row">
+                <lib-text-line type="leading" i18n="@@business_rule_library">{{ isOnlyTransformation ? 'Transformation
+                    rule library' : 'Business rule library' }}</lib-text-line>
                 <div class="f-spacer"></div>
                 <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
-            <div class="f-row">
-               <lib-search (valueChange)="brSearchSubject.next($event)" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
-                <span class="col-spacer"></span>
-                <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
-                        <label><span i18n="@@business_rule_type">Business rule type</span>:</label> <span
-                            class="info">{{selectedRuleType ? selectedRuleType : 'All'}}
-                        </span>
-                    </mat-chip>
-                </mat-chip-list>
+            <div class="f-row business-filters">
+                <lib-search class="lib-search" (valueChange)="brSearchSubject.next($event)"
+                        i18n-placeholder="@@search" placeholder="Search..."></lib-search>
+                        <span class="f-col-spacer-half"></span>
+                <lib-chip-list class="mdo-chip-list" *ngIf="!isOnlyTransformation">
+                    <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType"
+                        label="Business rule type:" type="info">{{selectedRuleType ? getRuleDesc(selectedRuleType) :
+                        'All'}}</lib-chip>
+                </lib-chip-list>
                 <mat-menu #businessRuleType="matMenu" class="navigation-menu">
                     <button mat-menu-item (click)="selectCurrentRuleType('')"> All </button>
                     <ng-container *ngFor="let type of businessRuleTypes">
@@ -35,12 +34,13 @@
         <div class="mdo-justify">
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let brItem of businessRulesList; trackBy: trackByFn">
-                    <div class="mat-line">{{brItem.brInfo}}</div>
-                    <span class="f-spacer"></span>
-                    <lib-button class="br-sidesheet-btn" *ngIf="!isSelected(brItem); else doneButton"
-                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
+                    <lib-text-line type="base" class="br-info" enableWrap="true">{{brItem.brInfo}}</lib-text-line>
+                    <lib-text-line type="base" class="br-info" enableWrap="true">{{getRuleDesc(brItem.brType)}}</lib-text-line>
+                    <lib-button class="lib-button" *ngIf="!isSelected(brItem); else doneButton"
+                        (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
                     <ng-template #doneButton>
-                        <lib-button class="br-sidesheet-btn" (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
+                        <lib-button class="lib-button" (click)="selectBusinessRule(brItem, constants.REMOVE)"
+                            type="minor" icon="check"></lib-button>
                     </ng-template>
                 </mat-list-item>
             </mat-list>

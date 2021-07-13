@@ -494,7 +494,8 @@ describe('NewBusinessRulesComponent', () => {
 
     it('initiateAutocomplete(), should initiate autocomplete', async()=>{
         component.form = new FormGroup({
-            fields: new FormControl('')
+            fields: new FormControl(''),
+            target_field: new FormControl('')
         });
         component.fieldsList = [
             {
@@ -859,5 +860,81 @@ describe('NewBusinessRulesComponent', () => {
       expect(component.preDefinedRegexFiltered.length).toEqual(1);
       component.searchRegexFunctionStr = 'test1';
       expect(component.preDefinedRegexFiltered.length).toEqual(0);
+    });
+
+    it('patchTargetFieldValues()', async(() => {
+        component.fieldsList = [
+            {
+                fieldId: '1234',
+                fieldDescri: 'test'
+            }
+        ];
+        const fields = '1234,2345';
+        component.patchTargetFieldValues(fields);
+
+        expect(component.selectedTargetFields.length).toEqual(1);
+    }));
+
+    it('selectedField()', async(() => {
+        component.form = new FormGroup({
+            fields: new FormControl('')
+        });
+        const ev = {
+            option: {
+                value: '123',
+                viewValue: 'Test'
+            }
+        }
+        component.selectedFields = [
+            {
+                fieldId: '123',
+                fieldDescri: 'Test'
+            }
+        ];
+        const el = document.createElement('input');
+        el.setAttribute('id', 'fieldsInput');
+        fixture.nativeElement.appendChild(el);
+        component.selectedField(ev);
+
+        expect(component.selectedFields.length).toEqual(1);
+    }));
+
+    it('selectTargetField()', async(() => {
+        component.form = new FormGroup({
+            target_field: new FormControl('')
+        });
+        const ev = {
+            option: {
+                value: '123',
+                viewValue: 'Test'
+            }
+        }
+        component.selectedTargetFields = [
+            {
+                fieldId: '123',
+                fieldDescri: 'Test'
+            }
+        ];
+        const el = document.createElement('input');
+        el.setAttribute('id', 'targetFieldsInput');
+        fixture.nativeElement.appendChild(el);
+        component.selectTargetField(ev);
+
+        expect(component.selectedTargetFields.length).toEqual(1);
+    }));
+
+    it('sourceFieldFiltered should get source fields Filtered', async () => {
+        component.sourceFieldsObject = {
+            list: [{
+                fieldId: 'test',
+                fieldDescri: 'test'
+            }],
+            labelKey: 'fieldDescri',
+            valueKey: 'fieldId'
+        };
+        component.searchSourceFieldStr = '';
+        expect(component.sourceFieldFiltered.length).toEqual(1);
+        component.searchSourceFieldStr = 'test';
+        expect(component.sourceFieldFiltered.length).toEqual(1);
     });
 });

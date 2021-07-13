@@ -18,63 +18,40 @@ div.root {
     }
   }
 
-  .mdo-field-input.data-scope-input {
-    padding: 0;
-
-    input {
-      padding: 0 8px;
-    }
-  }
-
-  .cnt-banner {
-    padding: 0 65px;
-  }
-
   .sidesheetcontent-listing {
     height: calc(100% - 52px);
     overflow: auto;
 
-    .message {
-      display: flex;
-      padding: 8px;
-      align-items: center;
-    }
-
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        mat-label {
-          font-weight: 600;
-          font-size: 14px;
-        }
-      }
+      .field-label {
+        margin-bottom: 6px;
 
-      .panel-title {
-        font-weight: 500;
+        mat-icon.mat-icon {
+          width: 12px;
+          font-size: 10px;
+        }
       }
     }
   }
 }
 
 .colunm-box {
-  align-items: center;
   box-sizing: border-box;
-  padding: 4px 0;
-  min-height: 54px;
-  font-size: 0.8rem;
-
-  .mdo-auto-select {
-    width: 100%;
-  }
+  min-height: 48px;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 16px;
+    margin: 0 2px;
     flex-wrap: wrap;
+
+    &.col-x2 {
+      flex: 2;
+    }
 
     &.col-x4 {
       flex: 4;
@@ -84,72 +61,45 @@ div.root {
       flex: 8;
     }
 
-    &.text-center {
-      justify-content: center;
-    }
-
-    .info-link {
-      align-items: center;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    mat-slider {
-      width: 100%;
-    }
-
     &.col-x16 {
       flex: 16;
     }
 
-    strong {
-      align-items: center;
+    &.mat-item-center {
+      justify-content: center;
+    }
+
+    &.mat-item-end {
+      justify-content: flex-end;
+    }
+
+    &.action {
+      width: 72px;
+      flex: initial;
     }
 
     .mat-head-icon {
-      margin-left: 6px;
+      width: 12px;
+      font-size: 10px;
     }
 
-    .mat-line {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-      font-size: 0.9rem;
-    }
-
-    button.mat-stroked-button {
-      margin: 2px 0;
+    .cursor {
+      cursor: pointer;
     }
   }
 }
 
 .slider-row {
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
+  flex: 1;
 
   .lib-slider {
-    flex: 1;
     height: 48px;
+    width: 100%;
   }
-}
 
-.colunm-box.rule-border-row strong {
-  font-size: 14px;
-}
-
-.colunm-box .col.br-action {
-  max-width: 72px;
-  min-width: 72px;
-  margin-right: initial;
-}
-
-.mat-tooltip-icon {
-  font-size: 12px;
+  .percentage {
+    width: 36px;
+  }
 }
 
 @media (min-width: 1024px) {

@@ -116,7 +116,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.udSub.unsubscribe();
+    if(this.udSub) { this.udSub.unsubscribe(); };
     this.appStateSubject.complete();
     this.appStateSubject.unsubscribe();
   }

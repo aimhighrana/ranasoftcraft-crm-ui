@@ -1,15 +1,12 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">tmes</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="close()" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Create new noun</div>
-                <span class="f-col-spacer-half"></span>
+                <lib-text-line type="leading">Create new noun</lib-text-line>
                 <span class="f-spacer"></span>
-                <button (click)="save()" mat-flat-button color="primary">Save</button>
+                <lib-button type="major" (click)="save()">Save</lib-button>
             </div>
         </div>
     </div>
@@ -17,7 +14,7 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <form [formGroup]="nounForm">
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounCode')" [placeholder]="'Noun code'"
                          [label]="'Noun code'"></pros-form-input>
                     <mat-error *ngIf="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required">
@@ -25,30 +22,28 @@
                     </mat-error>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounText')" [placeholder]="'Noun text'"
                     [label]="'Noun text'">
                     </pros-form-input>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounNumCode')" [placeholder]="'Noun numeric code'"
                     [label]="'Noun numeric code'">
                     </pros-form-input>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounModeSep')" [placeholder]="'Noun modifier separator'"
                     [label]="'Noun modifier separator'">
                     </pros-form-input>
                 </div>
     
-                <div class="mdo-form-field">
-                    <div class="f-row-spacer-half"></div>
-                    <mat-slide-toggle formControlName="shortDescActive" color="primary">Short description active</mat-slide-toggle>
+                <div class="mdo-field">
+                    <lib-slide-toggle theme="primary" labelPosition="after" formControlName="shortDescActive" label="Short description active"></lib-slide-toggle>
                     <div class="row-spacer"></div>
-                    <mat-slide-toggle formControlName="active" color="primary">Noun active</mat-slide-toggle>
-                    <div class="f-row-spacer-half"></div>
+                    <lib-slide-toggle theme="primary" labelPosition="after" formControlName="active" label="Noun active"></lib-slide-toggle>
                 </div>
             </form>
         </div>

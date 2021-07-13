@@ -4,14 +4,14 @@ import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails, ModuleInfo } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, RuleDependentOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel, RULE_TYPES } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddFilterOutput} from '@models/schema/schema';
+import { AddFilterOutput, DataScopeSidesheet} from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -192,6 +192,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.getCollaborators('', 0); // To get all the subscribers
 
     this.getAllBusinessRulesList(this.moduleId, '', ''); // To get all business rules list
+
+    this.sharedService.getdatascopeSheetState().subscribe((response: DataScopeSidesheet) => {
+      if (response && response.openedFrom === 'schemaInfo' && response.editSheet && response.variantId) {
+        this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${response.variantId}/outer` } }], {queryParamsHandling: 'preserve'});
+      }
+    });
   }
 
   /**
@@ -480,6 +486,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * to convert rule type into rule description
+   * @param ruleType ruleType of a business rule object
+   */
+  public getRuleDesc(ruleType: string) {
+    return RULE_TYPES.find(rule => rule.ruleType === ruleType)?.ruleDesc;
+  }
 
   /**
    * Function to open sidesheet to add subscriber
@@ -1136,10 +1149,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaReq.discription = schemaDescription;
       schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
       schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
-      this.schemaLoader = {
-        loading: true,
-        error: false
-      };
+
+      // Show schema loader only when changing the schema name
+      if(this.schemaDetails?.schemaDescription !== schemaReq.discription) {
+        this.schemaLoader = {
+          loading: true,
+          error: false
+        };
+      }
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.schemaLoader = {
           loading: false,
@@ -1153,10 +1170,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         }
         this.getSchemaDetails(this.schemaId);
       }, (error) => {
-        this.schemaLoader = {
-          loading: false,
-          error: true
-        };
+        if(this.schemaDetails?.schemaDescription !== schemaReq.discription) {
+          this.schemaLoader = {
+            loading: false,
+            error: true
+          };
+        }
         this.toasterService.open('Something went wrong', 'ok', {
           duration: 2000
         });
@@ -1186,7 +1205,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param $event: updated schema description.
    */
   onChangeSchemaDescription($event) {
-    console.log($event);
     if (this.schemaValueChanged.observers.length === 0) {
       this.schemaValueChanged
         .pipe(distinctUntilChanged())
@@ -1387,5 +1405,15 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   openExecutionTrendSidesheet() {
     const schema = this.schemaDetails;
     this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${schema.moduleId}/${schema.schemaId}/${schema.variantId}` } }], {queryParamsHandling: 'preserve'});
+  }
+
+  openDatascopeListSidesheet() {
+    const state: DataScopeSidesheet = {
+      openedFrom: 'schemaInfo',
+      editSheet: false,
+      listSheet: true
+    };
+    this.sharedService.setdatascopeSheetState(state);
+    this.router.navigate([ { outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb` } }], {queryParamsHandling: 'preserve'});
   }
 }

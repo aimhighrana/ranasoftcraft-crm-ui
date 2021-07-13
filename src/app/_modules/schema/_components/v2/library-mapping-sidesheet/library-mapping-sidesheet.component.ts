@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributeMapData, AttributesMapping } from '@models/schema/classification';
-import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
+import { AttributesDoc, ClassificationMappingRequest, ClassificationMappingResponse, NounModifier } from '@models/schema/noun-modifier';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserService } from '@services/user/userservice.service';
+import { TransientService } from 'mdo-ui-library';
 import { debounceTime } from 'rxjs/operators';
 
 interface Status {
   text: string;
   code: string;
+  count: number;
   isSeleted: boolean;
 }
 
@@ -24,6 +25,11 @@ interface Status {
 export class LibraryMappingSidesheetComponent implements OnInit {
 
   moduleId: string;
+
+  /**
+   * Hold current schema id
+   */
+  schemaId: string;
 
   libraryNounCode: string;
 
@@ -54,24 +60,26 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   gsnAttributes: AttributesDoc[] = [];
 
   preInpVal = '';
+  searchString = '';
 
   /**
    * Store material group info ..
    */
   mgroup: string;
-
+  isMapped = false;
   statas: Status[] = [
-    {code:'matched', text:'Matched', isSeleted: false},
-    {code:'suggest', text:'Suggested', isSeleted: false},
-    {code:'unmapped', text:'Unmapped', isSeleted: false},
+    {code:'matched', count: 0, text:'Matched', isSeleted: false},
+    {code:'suggested', count: 0, text:'Suggested', isSeleted: false},
+    {code:'unmatched', count: 0, text:'Unmatched', isSeleted: false},
   ];
+  classificationCategory: ClassificationMappingResponse;
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private schemaDetailsService: SchemaDetailsService,
     private nounModifierService: NounModifierService,
-    private snackBar: MatSnackBar,
+    private snackBar: TransientService,
     private sharedServices: SharedServiceService,
     private userDetails: UserService
     ) { }
@@ -81,9 +89,11 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.moduleId = params.moduleId;
       this.libraryNounCode = params.nounCode;
       this.libraryModifierCode = params.modCode;
-
-      this.buildMappingForm();
-
+      this.schemaId = params.schemaId;
+      this.activatedRoute.queryParams.subscribe((queryParams) => {
+        this.isMapped = Boolean(queryParams.isMapped === 'true');
+        this.buildMappingForm();
+      });
     });
 
     this.getLocalNouns();
@@ -99,8 +109,62 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       .subscribe(resp => {
         this.patchMappingForm(resp);
       });
+    const data = this.mappingForm.value;
+    const request: ClassificationMappingRequest = {
+      nounCode: data.libraryNounCode,
+      modCode: data.libraryModCode,
+      nounDesc: '',
+      modDesc: '',
+      attrList: this.gsnAttributes.map((att) => {
+        const attr = {
+          attrCode: att.ATTR_CODE,
+          attrDesc: att.ATTR_DESC
+        };
+        return attr;
+      })
+    };
+    if(this.isMapped) {
+      this.gsnAttributes.forEach((row) => {
+        row.status = 'matched';
+        this.addAttributeMappingRow(row);
+      });
+    } else {
+      this.nounModifierService.getClassificationMappingData(request).subscribe((resp) => {
+        this.classificationCategory = resp;
+        const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
+        frmAray.clear();
+        this.gsnAttributes.forEach((row) => {
+          const status = this.isMapped? 'matched' : 'unmatched';
+          row.status = this.classificationCategory.attrLists.find(x => x.targetCtrl?.ATTR_CODE === row.ATTR_CODE)?.status.toLowerCase() || status;
+          this.addAttributeMappingRow(row);
+        });
+        this.statas.forEach((stat) => {
+          stat.count = this.attributeMapData.value.filter(row => row.status === stat.code).length
+          + [resp.modifier.status, resp.noun.status].filter(status => status.toLowerCase() === stat.code).length;
+        });
+      });
+    }
   }
 
+  getStatus(fieldname: string) {
+    const status = this.isMapped? 'matched' : 'unmatched';
+    return this.classificationCategory
+    ? this.classificationCategory[fieldname]?.status?.toLowerCase()
+      || this.classificationCategory.attrLists.find(row => row.targetCtrl?.ATTR_CODE === fieldname)?.status.toLowerCase()
+      || status
+    : status;
+  }
+
+  canDisplayField(fieldname: string) {
+    const status = this.getStatus(fieldname);
+    const selectedStatus = this.statas.filter(row => row.isSeleted).map(row => row.code);
+    return !selectedStatus.length || selectedStatus.includes(status);
+  }
+
+  canDisplayAttribute(value) {
+    const searchStr = this.searchString.toLowerCase();
+    return (!searchStr || (value.libraryAttributeText || value.libraryAttributeCode).toLowerCase().includes(searchStr)) && this.canDisplayField(value.libraryAttributeCode);
+  }
   /**
    * Build attribute mapping form
    */
@@ -175,7 +239,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       .subscribe(attributes => {
         this.LocalAttributesList = attributes;
       },error=>{
-        console.log(error);
+        console.error('Error loading Local Attributes', error);
       })
   }
 
@@ -184,12 +248,9 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.nounModifierService.getGsnAttribute(nounCode, modCode, user.plantCode).subscribe(res=>{
         this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
         this.mgroup = res.MGROUP ? res.MGROUP : '';
-        // create form ..
-        this.gsnAttributes.forEach(att=>{
-          this.addAttributeMappingRow(att);
-        });
-
         this.getAttributesMapping();
+      }, error => {
+        console.log('Error occured while loading the attributes', error);
       });
     });
   }
@@ -198,14 +259,14 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * Add attribute mapping row
    */
   addAttributeMappingRow(attr: AttributesDoc) {
-
+    const status = this.isMapped? 'matched' : 'unmatched';
     this.attributeMapData.push(
       this.formBuilder.group({
         libraryAttributeCode: [attr && attr.ATTR_CODE ? attr.ATTR_CODE : ''],
         libraryAttributeText: [attr && (attr.ATTR_DESC ? attr.ATTR_DESC :  attr.ATTR_CODE) ? attr.ATTR_CODE : ''],
         localAttributeCode: [attr && attr.localAttributeCode ? attr.localAttributeCode : ''],
         localAttributeText: [attr && attr.localAttributeText ? attr.localAttributeText : ''],
-        status: [attr && attr.status ? attr.status : 'unmapped']
+        status: [attr && attr.status ? attr.status : status]
       })
     );
 
@@ -238,9 +299,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
     console.log(attrMapRequest);
 
-    this.nounModifierService.saveAttributesMapping(attrMapRequest)
+    this.nounModifierService.saveAttributesMapping(attrMapRequest, this.schemaId)
       .subscribe(resp => {
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });
+        this.sharedServices.setAfterMappingSaved(true);
         this.close();
       },
         error => {
@@ -285,15 +347,18 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openNounSidesheet() {
     // need material group
-    this.router.navigate(['', { outlets: { outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` } }])
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}]);
   }
 
   openModifierSidesheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` } }])
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}]);
   }
 
   openAttributeSidesheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/attribute/${this.selectedNounCode}` } }])
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
   }
 
   close() {
@@ -304,20 +369,8 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * Filte attributes based on status or serach ..
    * @param sta status ..
    */
-  filterAsStatus(sta: string) {
-    const preVState = this.statas.filter(f=> f.code === sta)[0];
-    const index = this.statas.indexOf(preVState);
-    if(preVState.isSeleted) {
-      this.statas.splice(index, 1);
-      preVState.isSeleted = false;
-      this.statas.splice(index,0,preVState);
-    } else {
-      this.statas.splice(index, 1);
-      preVState.isSeleted = true;
-      this.statas.splice(index,0,preVState);
-    }
-    this.preInpVal = '';
-    this.filterAttribute('',this.statas.filter(f=> f.isSeleted === true).map(map=> map.code));
+  filterAsStatus(status: Status) {
+    status.isSeleted = !status.isSeleted;
   }
 
   /**
@@ -326,32 +379,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    */
   searchAttributeVal(val: string) {
     debounceTime(1000);
-    this.filterAttribute(val);
-  }
-
-  /**
-   * filter attribute fuzzy search ..
-   * @param serachString search able string ..
-   * @param status search for what ..
-   */
-  filterAttribute(serachString?: string, status?: string []) {
-    let filterAttr = this.gsnAttributes;
-    if(serachString && serachString.trim()) {
-      filterAttr = this.gsnAttributes.filter(fil=> (fil.ATTR_CODE.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1 ||
-                            fil.ATTR_DESC.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1));
-    }
-    if(status) {
-      status.forEach(st=>{
-        const ft = filterAttr.filter(f => f.status === st);
-        filterAttr.push(...ft);
-      });
-
-    }
-    const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
-    frmAray.clear();
-    filterAttr.forEach(att=>{
-      this.addAttributeMappingRow(att);
-    });
+    this.searchString = val;
   }
 
   /**

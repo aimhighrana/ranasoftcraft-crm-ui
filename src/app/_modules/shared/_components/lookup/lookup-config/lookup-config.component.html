@@ -1,23 +1,23 @@
 <div class="f-col">
     <form [formGroup]="lookupForm">
-        <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
-            <mat-label>Lookup table</mat-label>
+        <div class="f-col mdo-field" (click)="$event.stopPropagation()">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Lookup table</lib-text-line>
             <mat-form-field appearance="outline">
                 <mat-select formControlName="moduleId">
                     <mat-option [value]="module.objectid" *ngFor="let module of availableModules">{{module.objectdesc}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
-            <mat-label>Lookup column</mat-label>
+        <div class="f-col mdo-field" (click)="$event.stopPropagation()">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Lookup column</lib-text-line>
             <mat-form-field appearance="outline">
                 <mat-select formControlName="lookupColumn">
                     <mat-option [value]="field.fieldId" *ngFor="let field of moduleHeaderFields">{{field.fieldDescri}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
-            <mat-label>Result lookup column</mat-label>
+        <div class="f-col mdo-field" (click)="$event.stopPropagation()">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Result lookup column</lib-text-line>
             <mat-form-field appearance="outline">
                 <mat-select formControlName="lookupColumnResult">
                     <mat-option [value]="'id'">Module object number</mat-option>
@@ -26,5 +26,5 @@
             </mat-form-field>
         </div>
     </form>
-    <button mat-flat-button type="button" color="primary" [disabled]="!lookupForm.valid" (click)="saveConfig()">Save</button>
+    <lib-button type="major" [disabled]="!lookupForm.valid" (click)="saveConfig()" class="field-button">Save</lib-button>
 </div>

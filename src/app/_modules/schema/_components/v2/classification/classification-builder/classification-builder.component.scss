@@ -4,101 +4,67 @@ div.root {
   height: 100%;
   overflow: hidden;
 
-  .breadcrum-toolbar {
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 0;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 40px;
-      align-items: center;
-    }
-
-    .counts::after {
-      content: "\a";
-      width: 2px;
-      height: 2px;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 8px;
-      vertical-align: middle;
-    }
-
-    .counts:last-of-type::after {
-      display: none;
-    }
-  }
-
   .mat-tab-container {
     height: 100%;
+    overflow: hidden;
 
     .filter-container {
       flex-wrap: wrap;
       margin: 8px 0;
+      align-items: flex-start;
 
-      pros-search-input {
+      .lib-search {
         width: 213px;
         margin-right: 4px;
+      }
+
+      .mdo-filter-matchip {
+        margin: 0 4px 4px 0;
       }
     }
 
     .listing-container {
-      height: 100%;
+      height: calc(100% - 48px - 40px - 20px);
       overflow: hidden;
+      align-items: flex-start;
 
       .listset-navigation {
         height: 100%;
         width: 292px;
-        padding-right: 12px;
         margin-right: 12px;
         border-right-width: 1px;
         border-right-style: solid;
         position: relative;
 
         .nav-tree {
-          height: calc(100% - 107px);
+          height: 100%;
           overflow-y: auto;
           overflow-x: hidden;
 
           mat-accordion.mat-accordion {
             mat-expansion-panel {
+              border-radius: 0;
+
               .mat-expansion-panel-header {
-                padding: 0 0 0 8px;
+                padding: 0 16px 0 8px;
 
                 mat-panel-title {
                   width: 100%;
                   margin-right: 0;
+                  align-items: center;
 
                   .expand-title {
                     text-overflow: ellipsis;
                     overflow: hidden;
                     white-space: nowrap;
-                    font-size: 0.9rem;
                   }
                 }
               }
 
               .undertree-expansion-panel {
-                padding-left: 42px;
-              }
-
-              mat-nav-list {
-                mat-list-item {
-                  font-size: 0.9rem;
-                  height: 48px;
-                }
+                padding-left: 36px;
               }
             }
-          }
-
-          .default-badge {
-            margin: 0 8px;
-            min-width: 24px;
-            text-align: right;
           }
         }
 
@@ -124,15 +90,11 @@ div.root {
       .listset-grid {
         width: calc(100% - 292px - 24px);
         overflow: hidden;
-
-        .listset-text {
-          font-size: 1.2rem;
-          line-height: 48px;
-        }
+        height: 100%;
 
         .datasource {
           overflow-x: auto;
-          height: calc(100% - 107px);
+          height: calc(100% - 24px);
 
           mat-table.mat-table {
             display: table;

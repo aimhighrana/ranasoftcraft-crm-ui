@@ -161,6 +161,11 @@ describe('DatascopeSidesheetComponent', () => {
   }));
 
   it('close(), should close side sheet', async() => {
+    component.datascopeSheetState = {
+      openedFrom: 'schemaInfo',
+      listSheet: true,
+      editSheet: false
+    };
     component.outlet = 'sb';
     spyOn(router, 'navigate');
     component.close();
