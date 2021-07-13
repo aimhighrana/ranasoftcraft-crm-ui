@@ -8,7 +8,8 @@ import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoint
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { BehaviorSubject } from 'rxjs';
-import { EmailTemplateBody, EmailRequestBody,EmailResponseBody, EmailTemplate } from '../_models/email';
+import { EmailTemplateBody, EmailRequestBody, EmailResponseBody, EmailTemplate } from '../_models/email';
+import { ImportLogs } from '../_models/import-log';
 
 @Injectable({
   providedIn: 'root'
@@ -125,7 +126,7 @@ export class ReportService {
     return this.isSideSheetClose.asObservable();
   }
 
-  public shareReport(request: EmailRequestBody, reportId:string): Observable<EmailResponseBody[]> {
+  public shareReport(request: EmailRequestBody, reportId: string): Observable<EmailResponseBody[]> {
     return this.http.put<EmailResponseBody[]>(this.endpointAnalyticService.shareReport(reportId), request);
   }
 
@@ -133,7 +134,15 @@ export class ReportService {
     return this.http.get<EmailTemplate[]>(this.endpointService.getAllTemplates());
   }
 
-  public getTemplateById(_id:string): Observable<EmailTemplateBody> {
+  public getTemplateById(_id: string): Observable<EmailTemplateBody> {
     return this.http.get<EmailTemplateBody>(this.endpointService.getTemplateById(_id));
+  }
+
+  public getImportLogList(reportId:string, page:number, size:number): Observable<ImportLogs[]> {
+    return this.http.get<ImportLogs[]>(this.endpointAnalyticService.getImportLog(reportId, page, size));
+  }
+
+  public updateImportLogStatus(messageId:string, status:string) : Observable<ImportLogs> {
+    return this.http.put<ImportLogs>(this.endpointAnalyticService.updateImportLog(messageId, status),{});
   }
 }

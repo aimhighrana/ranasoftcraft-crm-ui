@@ -141,6 +141,11 @@ export class LookupRuleComponent implements OnInit, OnChanges {
     })
   }
 
+  /**
+   * Remove selected fields after confirm
+   * @param res pass the confirmation
+   * @param index pass the index
+   */
   removeFieldAfterConfirm(res: string, index: number) {
     if (res === 'yes') {
       this.selectedFields.splice(index, 1);
@@ -330,12 +335,12 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index field index
    * @param key field key
    */
-  getValue(index: number, key: string) {
+  getValue(index: number, key: string = null) {
     const obj: LookupFields = this.selectedFieldsCopy[index];
     if (key) {
       return obj[key] ? obj[key] : '';
     } else {
-      return obj
+      return obj;
     }
   }
 

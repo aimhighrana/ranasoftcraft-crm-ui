@@ -9,8 +9,8 @@ import { HomeService } from '@services/home/home.service';
 import { UserService } from '@services/user/userservice.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { LoadingService } from '@services/loading.service';
-import { SchemaService } from '@services/home/schema.service';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaService } from '@services/home/schema.service';
 @Component({
   selector: 'pros-primary-navigation',
   templateUrl: './primary-navigation.component.html',
@@ -285,10 +285,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       schemaReq.discription = 'New schema';
       this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         const receivedSchemaId = response;
-         this.router.navigate(
-           [`/home/schema/schema-info/${moduleId}/${receivedSchemaId}`],
-           { queryParams: {isCheckData: false} }
-         );
+        this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${receivedSchemaId}` } }], { queryParams: { name: moduleDesc,updateschema:true } })
       }, (error) => {
         console.log('Something went wrong while creating schema', error.message);
       });

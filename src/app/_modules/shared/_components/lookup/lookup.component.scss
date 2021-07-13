@@ -1,17 +1,17 @@
 div.root {
   .colunm-box {
-    align-items: center;
     box-sizing: border-box;
-    padding: 4px 0;
     min-height: 48px;
-    font-size: 0.8rem;
 
     .col {
       display: flex;
       flex: 1 0 auto;
       width: 1px;
       align-items: center;
-      margin: 0 8px;
+
+      &.col-x2 {
+        flex: 2;
+      }
 
       &.col-x8 {
         flex: 8;
@@ -21,12 +21,12 @@ div.root {
         flex: 16;
       }
 
-      &.text-end {
-        justify-content: flex-end;
+      &.mat-item-center {
+        justify-content: center;
       }
 
-      strong {
-        align-items: center;
+      &.mat-item-end {
+        justify-content: flex-end;
       }
 
       mat-form-field {
@@ -35,16 +35,6 @@ div.root {
 
       .divided-matfield {
         flex: 0 0 47%;
-      }
-
-      .mat-line {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: pre-line;
-        word-break: break-word;
       }
     }
   }

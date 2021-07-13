@@ -305,6 +305,7 @@ export interface TimeSeriesWidget {
     desc: string;
     timeSeries: WidgetTimeseries;
     isEnableGlobalFilter: boolean;
+    showTotal : boolean;
 }
 export interface WidgetTimeseries {
     widgetId: number;

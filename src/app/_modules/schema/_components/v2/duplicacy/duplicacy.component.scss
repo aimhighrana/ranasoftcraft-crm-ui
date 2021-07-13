@@ -6,6 +6,11 @@ div.root {
 
   .action-button {
     margin: 0 2px;
+
+    mat-icon.mat-icon {
+      font-size: 14px;
+      height: 18px;
+    }
   }
 
   .breadcrum-toolbar {
@@ -17,7 +22,7 @@ div.root {
   }
 
   .mdo-filter-matchip {
-    margin: 0 4px;
+    margin: 0 4px 4px 0;
   }
 
   .dataset-grid {
@@ -31,7 +36,7 @@ div.root {
       padding-right: 12px;
 
       pros-group-data-table {
-        height: calc(100% - 252px);
+        height: calc(100% - 96px);
         overflow-y: auto;
         overflow-x: hidden;
       }
@@ -41,6 +46,11 @@ div.root {
       padding-left: 12px;
       height: 100%;
       width: calc(100% - 340px - 13px);
+
+      .lib-search {
+        width: 213px;
+        margin: 0 4px 4px 0;
+      }
 
       .data {
         overflow: auto;
@@ -63,15 +73,11 @@ div.root {
           }
 
           .mat-column-action {
-            min-width: 260px;
+            min-width: 300px;
           }
 
           .mat-column-select {
             min-width: 38px;
-          }
-
-          .action-iconbtns {
-            flex-wrap: wrap;
           }
         }
       }

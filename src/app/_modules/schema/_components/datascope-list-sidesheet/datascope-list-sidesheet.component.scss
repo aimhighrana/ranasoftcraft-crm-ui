@@ -1,0 +1,58 @@
+div.root {
+  user-select: none;
+  height: 100%;
+  overflow: hidden;
+  width: 750px;
+
+  .breadcrum-toolbar {
+    padding: 8px 16px;
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+      margin-right: 0;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  .variants-list {
+    margin: 15px 80px;
+    max-height: calc(100% - 150px);
+    overflow: auto;
+
+    .list-item {
+      height: 50px;
+      padding-left: 10px;
+      padding-right: 15px;
+
+      .name {
+        width: 90%;
+
+        span {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
+  }
+}

@@ -98,7 +98,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    */
   @Output()
   transformationFormOutput: EventEmitter<TransformationFormData> = new EventEmitter(null);
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(private snackBar: MatSnackBar, private elementRef: ElementRef) { }
 
   /**
    * Angular hook for on init
@@ -239,6 +239,10 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
     }
 
     this.emitTransformationOutput();
+    const inputField = this.elementRef.nativeElement?.querySelector('#targetFieldId');
+    if(inputField) {
+      inputField.value = '';
+    }
     this.form.controls.targetFld.setValue('');
     if(this.targetFieldInput){
       this.targetFieldInput.nativeElement.blur();
@@ -268,6 +272,10 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
       [valueKey]: event.option.value
     };
     this.form.controls.sourceFld.setValue('');
+    const inputField = this.elementRef.nativeElement?.querySelector('#sourceFieldId');
+    if(inputField) {
+      inputField.value = '';
+    }
     if(this.sourceFieldInput) {
       this.sourceFieldInput.nativeElement.blur();
     }

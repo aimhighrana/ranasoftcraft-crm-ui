@@ -142,7 +142,8 @@ describe('EndpointsAnalyticsService', () => {
   it('exportReport(), should get API string', async(() => {
     const serviceobj = new EndpointsAnalyticsService();
     const reportId = '6547898676578';
-    expect(serviceobj.exportReport(reportId)).toContain(`/report/export-config?reportId=${reportId}`);
+    const reportName = 'Test report';
+    expect(serviceobj.exportReport(reportId,reportName)).toContain(`/report/export-config?reportId=${reportId}&reportName=${reportName}`);
   }));
 
   it('importUploadReport(), should get API string', async(() => {
@@ -162,5 +163,20 @@ describe('EndpointsAnalyticsService', () => {
     const serviceobj = new EndpointsAnalyticsService();
     const reportId = '1234';
     expect(serviceobj.shareReport(reportId)).toContain(`/report/share?reportId=${reportId}`);
+  }));
+
+  it('getImportLog(), should get getImportLog api string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const reportId = '1234';
+    const page = 0;
+    const size = 10;
+    expect(serviceobj.getImportLog(reportId,page,size)).toContain(`/report/import/logs?reportId=${reportId}&_page=${page}&size=${size}`);
+  }));
+
+  it('updateImportLog(), should get updateStatus api string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const messageId = '1234';
+    const status = 'CLOSE'
+    expect(serviceobj.updateImportLog(messageId,status)).toContain(`/report/import/logs/update-status?messageId=${messageId}&status=${status}`);
   }));
 });

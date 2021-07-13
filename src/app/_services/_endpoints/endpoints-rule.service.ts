@@ -711,4 +711,20 @@ export class EndpointsRuleService {
   public getSchemaGlobalCounts(): string {
     return `${this.origin}/schema/get-global-count`;
   }
+
+  /**
+   * Get the table header metadata ...
+   * @returns will return the url for get table header metadata ...
+   */
+  public getClassificationDatatableHeader(): string {
+    return `${this.origin}/schema/get-nounheader-info`;
+  }
+
+  /**
+   * Url for get the master lib. attribute value ...
+   * @returns will return get attribute value url
+   */
+  public getClassificationAttributeValueUrl(): string {
+    return `${this.classicOrigin}/schema/getAttributeValues`;
+  }
 }

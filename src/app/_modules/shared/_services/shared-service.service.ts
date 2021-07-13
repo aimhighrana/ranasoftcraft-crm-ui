@@ -3,6 +3,7 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ListPageViewDetails } from '@models/list-page/listpage';
+import { DataScopeSidesheet } from '@models/schema/schema';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,10 @@ export class SharedServiceService {
   private chooseColumnSub: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private afterEditDatascopeSideSheetClose: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private editDatascopeTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
 
@@ -34,6 +39,11 @@ export class SharedServiceService {
    * behavior subject to contain settings info of the report-data-table widget
    */
   public reportDataTableSetting: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  /**
+   * Trigger to refresh schema list so the latest running schema appears on top
+   */
+  public refresSchemaListTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
 
   /**
    * Identify whether loged in from msteam .. or web
@@ -66,12 +76,19 @@ export class SharedServiceService {
 
   private schemaRunSub: Subject<boolean> = new Subject();
 
-  private isSecondaySideNavBarOpen : Subject<boolean> = new Subject();
+  private isSecondaySideNavBarOpen: Subject<boolean> = new Subject();
 
   /**
    * Subject for after saved  trans and reload in br map ...
    */
-  private transSavedBehaviourSub:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private transSavedBehaviourSub: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * Flag after save mappings ...
+   */
+  private afterMappingSaved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  private datascopeSheetState: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() {}
 
@@ -254,11 +271,11 @@ export class SharedServiceService {
     this.loader.next(false);
   }
 
-  public setSecondarySideNavBarState(data:boolean) {
+  public setSecondarySideNavBarState(data: boolean) {
     this.isSecondaySideNavBarOpen.next(data);
   }
 
-  public getSecondarySideNavBarState():Observable<any> {
+  public getSecondarySideNavBarState(): Observable<any> {
     return this.isSecondaySideNavBarOpen.asObservable();
   }
 
@@ -268,6 +285,22 @@ export class SharedServiceService {
 
   public gettransSavedBehaviourSub(): Observable<boolean> {
     return this.transSavedBehaviourSub.asObservable();
+  }
+
+  public setAfterMappingSaved(flag: boolean) {
+    this.afterMappingSaved.next(flag);
+  }
+
+  public getAfterMappingSaved(): Observable<boolean> {
+    return this.afterMappingSaved.asObservable();
+  }
+
+  public setdatascopeSheetState(data: DataScopeSidesheet) {
+    this.datascopeSheetState.next(data);
+  }
+
+  public getdatascopeSheetState() {
+    return this.datascopeSheetState.asObservable();
   }
 
 }

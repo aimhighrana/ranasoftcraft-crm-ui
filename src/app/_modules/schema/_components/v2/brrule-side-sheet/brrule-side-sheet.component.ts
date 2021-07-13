@@ -56,7 +56,7 @@ export class BrruleSideSheetComponent implements OnInit {
   ) { }
 
   /**
-   * getter for transformation types
+   * getter for transformation types...
    */
   get transformationType() {
     return TransformationRuleType;
@@ -94,6 +94,14 @@ export class BrruleSideSheetComponent implements OnInit {
     return this.preDefinedRegex.filter(x => x.FUNC_NAME?.toLowerCase().includes(searchStr) || x.FUNC_TYPE?.toLowerCase().includes(searchStr));
   }
 
+  /**
+   * filter source field dropdown
+   */
+  get sourceFieldsFiltered() {
+    const searchStr = this.form.value.sourceFieldSearchStr?.toLowerCase();
+    return this.sourceFieldsObject.list.filter(x => x[this.sourceFieldsObject.labelKey]?.toLowerCase().includes(searchStr) || x[this.sourceFieldsObject.valueKey]?.toLowerCase().includes(searchStr));
+  }
+
   get isFormLoading() {
     return Boolean(this.moduleId && !this.metataData);
   }
@@ -110,6 +118,13 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   get isRegexType() {
     return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
+  }
+
+  /**
+   * check if rule type is Manufacturer Part Number Identification
+   */
+  get isMPNI() {
+    return this.form.controls.rule_type.value === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI
   }
 
   /**
@@ -210,9 +225,19 @@ export class BrruleSideSheetComponent implements OnInit {
   filteredModules: Observable<{} | string | void> = of([]);
 
   /**
+   * obervable for autocomplete in target field multiselect dropdown
+   */
+  targetFilteredModules: Observable<{} | string | void> = of([]);
+
+  /**
    * array to save the selected fields
    */
   selectedFields = [];
+
+  /**
+   * array to save the selected target fields
+   */
+  selectedTargetFields = [];
 
   /**
    * list of event to consider as selection
@@ -272,6 +297,11 @@ export class BrruleSideSheetComponent implements OnInit {
    * reference to the input
    */
   @ViewChild('fieldsInput') fieldsInput: ElementRef;
+
+  /**
+   * reference to target field search input
+   */
+  @ViewChild('targetFieldsInput') targetFieldsInput: ElementRef;
 
   /* To access properties of Child for validation purpose
    */
@@ -388,6 +418,7 @@ export class BrruleSideSheetComponent implements OnInit {
     this.filterRuleTypes();
     this.getCategories();
     this.filteredModules = of(this.fieldsList);
+    this.targetFilteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
 
     this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
@@ -437,6 +468,15 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
     /**
+     * After add the transformation from side sheet should add on the rules...
+     */
+     this.sharedService.getAfterBrSave().subscribe((res: CoreSchemaBrInfo[])=>{
+      if(res) {
+        this.addTransRules(res);
+      }
+    });
+
+    /**
      * Call api to get the transformation ....
      */
     this.hasAppliedTransformationCtrl.valueChanges.subscribe(r=>{
@@ -460,7 +500,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * Removes untested rule types
    */
   filterRuleTypes() {
-    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK','BR_TRANSFORMATION', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK'];
+    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK','BR_TRANSFORMATION', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK', 'MRO_MANU_PRT_NUM_IDENTI'];
     this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
   }
 
@@ -555,6 +595,23 @@ export class BrruleSideSheetComponent implements OnInit {
           }
         }),
       )
+
+    this.targetFilteredModules = this.form.controls.target_field.valueChanges.pipe(startWith(''), map(keyword => {
+      if (keyword) {
+        keyword = keyword.toLowerCase();
+
+        return this.fieldsList.filter(item => {
+          return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1
+          ?
+          this.fieldsList.filter(item => {
+            return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+          })
+          :
+          [{ fieldDescri: 'No header data found', fieldId: null }];
+      } else {
+        return this.fieldsList;
+      }
+    }));
   }
   /**
    * return grid fields by grid key
@@ -648,7 +705,11 @@ export class BrruleSideSheetComponent implements OnInit {
         udrTreeData: new FormControl(),
         weightage: new FormControl(0, [Validators.required]),
         categoryId: new FormControl(''),
-        transformationRuleType: new FormControl('')
+        transformationRuleType: new FormControl(''),
+        source_field: new FormControl(''),
+        target_field: new FormControl(''),
+        accuracyScore: new FormControl(0),
+        sourceFieldSearchStr: new FormControl('')
       };
 
       this.currentControls = controls;
@@ -663,7 +724,9 @@ export class BrruleSideSheetComponent implements OnInit {
       this.form.controls.transformationRuleType.valueChanges
         .pipe(distinctUntilChanged())
         .subscribe((type) => {
-          this.applyValidatorsByRuleType(BusinessRuleType.BR_TRANSFORMATION);
+          if (this.form.value.rule_type !== BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+            this.applyValidatorsByRuleType(BusinessRuleType.BR_TRANSFORMATION);
+          }
         });
 
       resolve(null);
@@ -704,8 +767,11 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
-    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
+    }
+    if (selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'source_field', 'accuracyScore', 'apiKey'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
@@ -733,7 +799,7 @@ export class BrruleSideSheetComponent implements OnInit {
       if (index === -1) {
         this.form.get(key).setValidators(null);
         this.form.get(key).clearValidators();
-        if (key !== 'rule_type' && key !== 'weightage' && key !== 'transformationRuleType') {
+        if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && key !== 'transformationRuleType') {
           this.form.get(key).setValue('');
         }
       } else {
@@ -768,14 +834,17 @@ export class BrruleSideSheetComponent implements OnInit {
       udrTreeData: '',
       weightage: br.brWeightage,
       categoryId: br.categoryId,
-      transformationRuleType: ''
+      transformationRuleType: '',
+      source_field: br.source_field || '',
+      target_field: br.target_field || '',
+      accuracyScore: br.accuracyScore || 0
     };
     // set the value for transformation ...
     this.hasAppliedTransformationCtrl.setValue(br.isTransformationApplied ? br.isTransformationApplied : false);
 
     let patchList = [];
 
-    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
@@ -796,6 +865,10 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if (br.brType === BusinessRuleType.MRO_GSN_DESC_MATCH || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey'];
+    }
+
+    if(br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey', 'accuracyScore', 'source_field'];
     }
 
     if (patchList && patchList.length > 0) {
@@ -1043,13 +1116,16 @@ export class BrruleSideSheetComponent implements OnInit {
           valueKey: 'fieldId',
           list: this.fieldsList
         }
+        this.targetFilteredModules = of(this.fieldsList);
         this.filteredModules = of(this.fieldsList);
         this.initGridAndHierarchyToAutocompleteDropdown(metadataModeleResponse);
         this.initiateAutocomplete();
         if (this.brId && this.coreSchemaBrInfo) {
           try {
             const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
+            const targetFlds = this.coreSchemaBrInfo.target_field ? this.coreSchemaBrInfo.target_field.split(',') : [];
             this.selectedFields = [];
+            this.selectedTargetFields = [];
             fldIds.forEach(fld => {
               const fldCtrl = this.fieldsList.find(fil => fil.fieldId === fld);
               if (fldCtrl) {
@@ -1064,6 +1140,19 @@ export class BrruleSideSheetComponent implements OnInit {
                 }
               }
             });
+            targetFlds.forEach(fld => {
+              const fldCtrl = this.fieldsList.find(fil => fil.fieldId === fld);
+              if (fldCtrl) {
+                this.selectedTargetFields.push({ fieldDescri: fldCtrl.fieldDescri, fieldId: fld });
+              }
+            });
+
+            if (this.coreSchemaBrInfo.source_field) {
+              const fld = this.sourceFieldsObject.list.find(fil => fil.fieldId === this.coreSchemaBrInfo.source_field);
+              if (fld) {
+                this.form.controls.sourceFieldSearchStr.setValue(fld.fieldId);
+              }
+            }
           } catch (ex) { console.error(ex) }
         }
       });
@@ -1138,6 +1227,40 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * func to select target field
+   * @param event selected target field
+   */
+  selectTargetField(event) {
+    if (!!event.option.value) {
+      const alreadyExists = this.selectedTargetFields.find(item => item.fieldId === event.option.value);
+      if (alreadyExists) {
+        this.transientService.open(`This field is already selected`, `Close`, { duration: 2000 });
+      } else {
+        this.selectedTargetFields.push({
+          fieldDescri: event.option.viewValue,
+          fieldId: event.option.value
+        });
+      }
+      this.form.get('target_field').patchValue('');
+      const txtfield = document.getElementById('targetFieldsInput') as HTMLInputElement;
+      if (txtfield) {
+        txtfield.value = '';
+      }
+      if (this.targetFieldsInput) {
+        this.targetFieldsInput.nativeElement.blur();
+      }
+    }
+  }
+
+  /**
+   * fn to remove selected target fields
+   * @param i index of the field to be removed
+   */
+  removeTargetField(i) {
+    this.selectedTargetFields.splice(i, 1);
+  }
+
+  /**
    * function to set the value in the form
    * @param value entered value
    * @param field the selected field of form
@@ -1194,11 +1317,21 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * function to fetch field description from field field id
+   * @param value field object
+   * @returns field description
+   */
+  displaySourceFieldFn(value?: string) {
+    return value ? this.sourceFieldsObject.list.find(field => field[this.sourceFieldsObject.valueKey] === value)?.[this.sourceFieldsObject.labelKey] : '';
+  }
+
+  /**
    * function to save the form data
    */
   save() {
     this.submitted = true;
     this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
+    this.form.controls.target_field.setValue(this.selectedTargetFields.map(item => item.fieldId).join(','));
     (Object).values(this.form.controls).forEach(control => {
       if (control.invalid)
         control.markAsTouched();
@@ -1223,6 +1356,10 @@ export class BrruleSideSheetComponent implements OnInit {
       if (brType!=='BR_CUSTOM_SCRIPT') {
         return;
       }
+    }
+
+    if (this.isMPNI && !this.selectedTargetFields.length) {
+      return;
     }
 
     if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
@@ -1301,6 +1438,21 @@ export class BrruleSideSheetComponent implements OnInit {
       udrDto.objectType = this.moduleId;
       udrDto.udrHierarchies = blockHierarchy;
 
+      // attach the transformation for this rule
+      udrDto.brInfo.isTransformationApplied = this.hasAppliedTransformationCtrl?.value ? this.hasAppliedTransformationCtrl.value : false;
+      const sendMappings:TransformationRuleMapped[] = [];
+      if(this.attachedTransRules) {
+        // add for success
+        this.attachedTransRules.success.forEach(s=>{
+          sendMappings.push({order: sendMappings.length, isEnabled: s.isEnabled ? s.isEnabled : false, isConfigured: s.isConfigured, status:'SUCCESS', transformationRule: s.ruleInfo?.brIdStr});
+        });
+        // add for error
+        this.attachedTransRules.error.forEach(s=>{
+          sendMappings.push({order: sendMappings.length, isEnabled: s.isEnabled ? s.isEnabled : false, isConfigured: s.isConfigured, status:'ERROR', transformationRule: s.ruleInfo?.brIdStr});
+        });
+      }
+      udrDto.brInfo.transformationMappingDTO = sendMappings;
+
       this.schemaService.saveUpdateUDR(udrDto).subscribe(res => {
         this.snackBar.open(`Successfully saved !`, 'Close', { duration: 3000 });
         this.sharedService.setAfterBrSave(res);
@@ -1359,12 +1511,15 @@ export class BrruleSideSheetComponent implements OnInit {
       request.schemaId = this.schemaId;
       request.moduleId = this.moduleId;
       request.brWeightage = this.form.value.weightage;
-      request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
+      request.categoryId =  this.form.value.categoryId || this.coreSchemaBrInfo.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
       request.dependantStatus = this.coreSchemaBrInfo.dependantStatus || RuleDependentOn.ALL;
       request.order = this.coreSchemaBrInfo.order || 0;
       request.status = this.coreSchemaBrInfo.status || '1';
+      request.source_field = this.form.value.source_field || '';
+      request.target_field = this.form.value.target_field || '';
+      request.accuracyScore= this.form.value.accuracyScore || 0;
 
       // attach the transformation for this rule
       request.isTransformationApplied = this.hasAppliedTransformationCtrl?.value ? this.hasAppliedTransformationCtrl.value : false;
@@ -1605,6 +1760,9 @@ export class BrruleSideSheetComponent implements OnInit {
     this.schemaDetailsService.getAllCategoryInfo().subscribe((response: CategoryInfo[]) => {
       if (response && response.length > 0) {
         this.categoryList = response;
+        if(this.form) {
+          this.form.controls.categoryId.setValue(this.form.value.categoryId);
+        }
       }
     })
   }
@@ -1859,6 +2017,37 @@ export class BrruleSideSheetComponent implements OnInit {
   editTransRule(br: TransformationMappingTabResponse, tab: string) {
     this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
     outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+  }
+
+  /**
+   * Add the trans rules from library ...
+   * @param res from side sheet
+   */
+  addTransRules(res: CoreSchemaBrInfo[]) {
+    res = Array.isArray(res) ? res : [];
+    if(this.transTabIndex === 0) {
+      res.forEach(r=>{
+        const isExits = this.attachedTransRules.success.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
+        if(!isExits) {
+          this.attachedTransRules.success.push({
+            isConfigured:false,
+            isEnabled: false,
+            ruleInfo: r
+          });
+        }
+      })
+    } else {
+      res.forEach(r=>{
+        const isExits = this.attachedTransRules.error.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
+        if(!isExits) {
+          this.attachedTransRules.error.push({
+            isConfigured:false,
+            isEnabled: false,
+            ruleInfo: r
+          });
+        }
+      })
+    }
   }
 
 }

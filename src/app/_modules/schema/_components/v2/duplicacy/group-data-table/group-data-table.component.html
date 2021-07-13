@@ -3,14 +3,14 @@
 
         <ng-container matColumnDef="check">
             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                <lib-checkbox (change)="$event ? masterToggle() : null"
                     [checked]="selection.hasValue() && isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"></lib-checkbox>
             </mat-header-cell>
             <mat-cell *matCellDef="let row" class="fixed-width-c1">
-                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                <lib-checkbox (click)="$event.stopPropagation()"
                     (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
-                </mat-checkbox>
+                </lib-checkbox>
             </mat-cell>
         </ng-container>
     
@@ -26,11 +26,9 @@
             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
             </mat-header-cell>
             <mat-cell *matCellDef="let row" class="fixed-width-c1">
-                <mat-card-header>
-                    <div mat-card-avatar> 
-                        {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
-                    </div>
-                </mat-card-header>
+                <lib-avatar>
+                    {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
+                </lib-avatar>
             </mat-cell>
         </ng-container>
     

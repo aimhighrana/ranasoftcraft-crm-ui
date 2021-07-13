@@ -1,5 +1,4 @@
 <ng-container [ngSwitch]="inputType">
-
     <!-- Input type number -->
     <mat-form-field *ngSwitchCase="FIELD_TYPE.NUMBER" appearance="outline" prosClickStopPropagation class="edit-cell">
         <input matInput type="number" step="any" class="mat-input" #input
@@ -27,9 +26,9 @@
                 <!-- <mat-icon fontSet="mdo-icons" class="info-arrow">menu-arrow1</mat-icon> -->
             </div>
             
-        <mat-autocomplete #auto="matAutocomplete">  
+        <mat-autocomplete [displayWith]="singleSelectDisplayFn" #auto="matAutocomplete">  
             <mat-option *ngFor="let option of filterdOptionsObs | async" 
-                        [value]="option.CODE"> {{ option.TEXT }} </mat-option>
+                        [value]="option"> {{ option.TEXT }} </mat-option>
         </mat-autocomplete>
     </mat-form-field> 
 
@@ -49,6 +48,5 @@
             (blur)="emitInputBlur($event.target.value)"
             [value]="value">
     </mat-form-field>
-
 </ng-container>
 
