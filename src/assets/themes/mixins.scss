@@ -788,7 +788,7 @@
 
     .mat-menu-panel {
       max-width: 300px;
-      width: 240px;
+      // width: 240px;
       min-height: auto;
       // max-height: 470px;
       margin: 8px 0;
@@ -1450,6 +1450,20 @@
   pros-settings {
     .mat-list-item.selected {
       background-color: $color-app-hover;
+    }
+  }
+
+  pros-datascope-sidesheet {
+    mat-list.date-picker-list .mat-radio-group .mat-radio-button {
+      margin-bottom: 0;
+
+      .mat-radio-label {
+        height: 48px;
+      }
+    }
+
+    .mat-list-item.selected {
+      background-color: $color-app-hover !important;
     }
   }
 

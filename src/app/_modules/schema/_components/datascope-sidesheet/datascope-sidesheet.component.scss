@@ -105,6 +105,19 @@ div.root {
           padding-left: 9px;
         }
       }
+
+      .date-picker-section {
+        display: flex;
+        margin-bottom: 7px;
+
+        .date-picker-list {
+          width: 45%;
+
+          &.options-list {
+            margin-left: 7px;
+          }
+        }
+      }
     }
 
     .hide {

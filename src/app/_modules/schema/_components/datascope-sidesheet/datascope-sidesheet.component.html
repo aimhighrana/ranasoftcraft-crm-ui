@@ -122,7 +122,19 @@
                 </div>
             </ng-container>
             <ng-container *ngIf="filterControlType === 'picker_date'">
-                <lib-date-time-range-picker [selectedDate]="dateRangeValue" [enableTimeInput]="true" (valueChange)="dateChanged($event)">
+                <div class="date-picker-section">
+                    <mat-list role="list" class="mdo-list date-picker-list">
+                        <mat-list-item [class.selected]="item === currentPickerType" role="listitem" *ngFor="let item of datePickerList" (click)="updateDatePickerType(item)">
+                            <span>{{ item }}</span>
+                            <span class="f-spacer"></span>
+                            <lib-button type="plain" icon="long-arrow-right"></lib-button>
+                        </mat-list-item>
+                    </mat-list>
+                    <mat-list class="date-picker-list options-list">
+                        <lib-radio-group layout="vertical" [options]="datePickerOptionsList" [value]="filterData.dateCriteria" (valueChange)="updateFilterValue($event)"></lib-radio-group>
+                    </mat-list>
+                </div>
+                <lib-date-time-range-picker *ngIf="currentPickerType === 'Date Range'" [selectedDate]="dateRangeValue" [enableTimeInput]="true" (valueChange)="dateChanged($event)">
                 </lib-date-time-range-picker>
             </ng-container>
             <ng-container *ngIf="filterControlType === 'picker_time'">

@@ -113,6 +113,34 @@ export class FilterCriteria {
     startValue?: string;
     endValue?: string;
     operator?: string;
+    dateCriteria?: DateCriteria;
+}
+
+export enum DateCriteria {
+  yesterday,
+  Last_2_Day,
+  Last_3_Day,
+  Last_4_Day,
+  Last_5_Day,
+  Last_6_Day,
+  Last_Week,
+  Last_2_Week,
+  Last_3_Week,
+  Last_4_Week,
+  Last_5_Week,
+  Last_6_Week,
+  Last_Month,
+  Last_2_Month,
+  Last_3_Month,
+  Last_4_Month,
+  Last_5_Month,
+  Last_6_Month,
+  Last_Year,
+  Last_2_Year,
+  Last_3_Year,
+  Last_4_Year,
+  Last_5_Year,
+  Last_6_Year
 }
 
 export class DataTableSourceResponse {

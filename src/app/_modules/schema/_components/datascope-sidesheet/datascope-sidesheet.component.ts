@@ -151,7 +151,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     inputTextVal: undefined,
     inputNumericVal: undefined,
     textareaVal: undefined,
-    selectedValue: undefined
+    selectedValue: undefined,
+    dateCriteria: undefined
   };
   /**
    * hold dropdown values for mulitple choice filter types
@@ -196,6 +197,51 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   };
 
   /**
+   * holds available date picker list
+   */
+  datePickerList = ['Day', 'Week', 'Month', 'Year', 'Date Range'];
+  /**
+   * holds current date picker type
+   */
+  currentPickerType = 'Day';
+
+  /**
+   * holds date picker options list
+   */
+  get datePickerOptionsList() {
+    const list = [];
+
+    if (this.currentPickerType !== 'Date Range') {
+      if (this.currentPickerType === 'Day') {
+        list.push(
+          {
+            key: 'yesterday',
+            value: 'Yesterday'
+          }
+        );
+      } else {
+        list.push(
+          {
+            key: `Last_${this.currentPickerType}`,
+            value: `Last ${this.currentPickerType.toLowerCase()}`
+          }
+        );
+      }
+
+      for (let i=2; i<=6; i++) {
+        list.push(
+          {
+            key: `Last_${i}_${this.currentPickerType}`,
+            value: `Last ${i} ${this.currentPickerType.toLowerCase()}s`
+          }
+        );
+      }
+    }
+
+    return list;
+  }
+
+  /**
    * Constructor of the class
    */
   constructor(private router: Router,
@@ -213,6 +259,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * It will be called once when component will be loaded.
    */
   ngOnInit(): void {
+    this.filterControlType = 'picker_date';
+    this.currentPickerType = 'Month';
+    this.filterData.dateCriteria = 'Last_3_Month';
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
       this.moduleId = params.moduleId;
@@ -703,13 +752,12 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       const dropdownPickLists = ['1', '30', '37'];
       if (dropdownPickLists.includes(picklist)) {
         this.filterControlType = (this.currentFilter.isCheckList === 'true') ? 'dropdown_multi' : 'dropdown_single';
+      } else if (this.dynmaicFilterSchema[picklist]) {
+        const res = this.dynmaicFilterSchema[picklist].find((x) => x.dataType === dataType.toUpperCase());
+        if (res) {
+          this.filterControlType = res.type;
+        }
       }
-      // else if (this.dynmaicFilterSchema[picklist]) {
-        // const res = this.dynmaicFilterSchema[picklist].find((x) => x.dataType === dataType.toUpperCase());
-        // if (res) {
-        //   this.filterControlType = res.type;
-        // }
-      // }
       this.getFilterValues(filter.fieldId, isUpdate);
     }
   }
@@ -743,7 +791,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       startValue: null,
       endValue: null,
       type: fieldType,
-      operator: fieldOperator
+      operator: fieldOperator,
+      dateCriteria: null
     };
 
     this.selectedFilterCriteria.push(filterCtrl);
@@ -818,6 +867,19 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
             start: currentFilterCriteria.startValue ? new Date(Number(currentFilterCriteria.startValue)) : null,
             end: currentFilterCriteria.endValue ? new Date(Number(currentFilterCriteria.endValue)) : null
           }
+
+          if (currentFilterCriteria.dateCriteria) {
+            const val = currentFilterCriteria.dateCriteria;
+            this.datePickerList.forEach((x) => {
+              if (val === 'yesterday') {
+                this.currentPickerType = 'Day';
+              } else if (val.toLowerCase().includes(x.toLowerCase())) {
+                this.currentPickerType = x;
+              }
+            });
+            const value = this.datePickerOptionsList.find(x => x.key === val);
+            this.filterData.dateCriteria = value.value;
+          }
         } else if (this.filterControlType === 'picker_time') {
           const startDate = currentFilterCriteria.startValue ? new Date(Number(currentFilterCriteria.startValue)) : null;
           const endDate = currentFilterCriteria.endValue ? new Date(Number(currentFilterCriteria.endValue)) : null;
@@ -854,6 +916,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         this.filterData.selectedValue = ev;
         const value = this.dropdownValues.find((x) => x.value === ev);
         currentFilterCriteria.values = [`${value.key}`];
+      } else if (this.filterControlType === 'picker_date') {
+        const value = this.datePickerOptionsList.find(x => x.value === ev);
+        this.filterData.dateCriteria = value.key;
+        currentFilterCriteria.dateCriteria = value.key;
       }
 
       this.filterCriteriaSub.next('true');
@@ -979,7 +1045,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       inputTextVal: undefined,
       inputNumericVal: undefined,
       textareaVal: undefined,
-      selectedValue: undefined
+      selectedValue: undefined,
+      dateCriteria: undefined
     };
     this.dropdownValues = [];
     this.dropdownFilteredValues = [];
@@ -996,5 +1063,13 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         minutes: 0
       }
     };
+  }
+
+  /**
+   * updates date picker type
+   * @param type datepicker type
+   */
+  updateDatePickerType(type) {
+    this.currentPickerType = type;
   }
 }
