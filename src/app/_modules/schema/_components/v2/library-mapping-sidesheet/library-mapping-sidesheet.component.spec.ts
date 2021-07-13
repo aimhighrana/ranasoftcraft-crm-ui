@@ -228,6 +228,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
     outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` }}])
   });
+
   it('should openAttributeSidesheet', () => {
     spyOn(router, 'navigate');
     component.buildMappingForm();
