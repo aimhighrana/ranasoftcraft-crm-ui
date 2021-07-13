@@ -146,3 +146,4 @@ export class ReportService {
     return this.http.put<ImportLogs>(this.endpointAnalyticService.updateImportLog(messageId, status),{});
   }
 }
+
