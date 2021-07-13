@@ -268,14 +268,10 @@
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row progress-cell">
-                                        <mat-progress-bar mode="determinate"
-                                            value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }} "
-                                            class="f-col"></mat-progress-bar>
-                                        <span class="f-col-spacer-half"></span>
-                                        <span>
-                                            {{ element['_score_weightage'] ? element['_score_weightage'].fieldData : ''
-                                            }}%
-                                        </span>
+                                        <lib-progress mode="determinate"
+                                        value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }}"></lib-progress>
+                                        &nbsp;
+                                        <lib-text-line type="small" >{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : ''}}%</lib-text-line>
                                     </div>
                                 </td>
                             </ng-container>
