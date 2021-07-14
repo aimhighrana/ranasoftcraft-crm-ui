@@ -13,19 +13,11 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
 
-      pros-search-input {
-        min-width: 213px;
+      .lib-search {
+        width: 213px;
       }
     }
   }
@@ -41,18 +33,14 @@ div.root {
         mat-list-item {
           border-bottom-width: 1px;
           border-bottom-style: solid;
-          height: 52px;
 
-          button.mat-flat-button {
-            min-width: 60px;
+          .lib-button {
+            display: flex;
+            width: 64px;
           }
         }
       }
     }
-  }
-
-  .row-reverse {
-    flex-direction: row-reverse;
   }
 }
 

@@ -90,7 +90,7 @@
                                 <lib-label status="success" *ngIf="job.jobPk.status === 'IN_PROGRESS'">
                                     <lib-spinner size="13"></lib-spinner>&nbsp; Running
                                 </lib-label>
-                                <lib-label *ngIf="job.jobPk.status === 'COMPLETE'" prefixIcon="clock" appearance="outline">&nbsp; {{job.startDate | date:'dd-MMM-yyyy hh:mm:ss'}}</lib-label>
+                                <lib-label *ngIf="job.jobPk.status === 'COMPLETE'" prefixIcon="clock" iconFontType="light">&nbsp; {{job.startDate | date:'dd-MMM-yyyy hh:mm:ss'}}</lib-label>
                             </lib-chip-list>
                             <span class="col-spacer"></span>
                             <lib-avatar [initials]="job.initiatedBy"></lib-avatar>
