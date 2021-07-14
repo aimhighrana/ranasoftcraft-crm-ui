@@ -7,11 +7,11 @@ import { NounModifierService } from '@services/home/schema/noun-modifier.service
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 @Component({
-  selector: 'pros-attribute',
-  templateUrl: './attribute.component.html',
-  styleUrls: ['./attribute.component.scss']
+  selector: 'pros-attribute-default-value',
+  templateUrl: './attribute-default-value.component.html',
+  styleUrls: ['./attribute-default-value.component.scss']
 })
-export class AttributeComponent implements OnInit {
+export class AttributeDefaultValueComponent implements OnInit {
 
   attributeForm: FormGroup;
 
@@ -21,6 +21,8 @@ export class AttributeComponent implements OnInit {
 
   nounSno: string;
   isMapped = false;
+
+  nullMessage = 'Nothing to see here';
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
@@ -97,20 +99,9 @@ export class AttributeComponent implements OnInit {
   }
 
   close() {
-    this.router.navigate([{ outlets: { [`outer`]: null } }], {
+    this.router.navigate([{ outlets: { [`outer2`]: null } }], {
       queryParams: {isMapped: this.isMapped}
     });
   }
 
-  openDefaultValueSideSheet() {
-
-   this.router.navigate([{
-     outlets: {
-       outer2: 'outer2/schema/attribute-values'
-     }
-   }], {
-      queryParamsHandling: 'preserve',
-      queryParams: {editValues:true}
-    }); 
-  }
 }

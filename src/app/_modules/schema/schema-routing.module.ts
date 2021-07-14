@@ -28,6 +28,7 @@ import { BusinessrulelibrarySidesheetComponent } from './_components/businessrul
 import { StaticsComponent } from './_components/v2/statics/statics.component';
 import { SubscriberInviteSidesheetComponent } from '@modules/shared/_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
 import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/attribute/attribute.component';
+import { AttributeDefaultValueComponent } from './_components/v2/library-mapping-sidesheet/attribute-default-value/attribute-default-value.component';
 import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
 import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
@@ -43,6 +44,7 @@ const routes: Routes = [
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'attribute-mapping/:moduleId/:schemaId/:nounCode/:modCode', component: LibraryMappingSidesheetComponent },
   { path: 'attribute/:nounSno', component: AttributeComponent },
+  { path: 'attribute-values', component: AttributeDefaultValueComponent },
   { path: 'noun/:moduleId/:matlGroup', component: NounComponent },
   { path: 'modifier/:moduleId/:matlGroup/:nounCode', component: ModifierComponent },
   { path: 'uploaddata', component: UploadDataComponent },

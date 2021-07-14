@@ -124,12 +124,13 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       })
     };
     if(this.isMapped) {
+      debugger;
       this.gsnAttributes.forEach((row) => {
         row.status = 'matched';
         this.addAttributeMappingRow(row);
       });
     } else {
-      this.nounModifierService.getClassificationMappingData(request).subscribe((resp) => {
+      this.nounModifierService.getClassificationMappingData(request).subscribe((resp: any) => {
         this.classificationCategory = resp;
         const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
         frmAray.clear();
@@ -250,7 +251,11 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.mgroup = res.MGROUP ? res.MGROUP : '';
         this.getAttributesMapping();
       }, error => {
+        const res = {'SHORT_DESC':null,'LONG_DESC':null,'MANUFACTURER':null,'PARTNO':null,'NOUN_LONG':null,'NOUN_CODE':'RELAY','NOUN_ID':null,'MODE_CODE':'','MOD_LONG':null,'UNSPSC':null,'UNSPSC_DESC':null,'MGROUP':'electrical relays and accessories','ATTRIBUTES':[{'MANDATORY':'0','ATTRIBUTE_ID':'801937717823315010','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'737392928809319742','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'892775831428792698','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'887233343180336166','ATTR_DESC':'240 V','ATTR_CODE':'240 V','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'109137229439351638','ATTR_DESC':'AC','ATTR_CODE':'AC','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'785295148770670115','ATTR_DESC':'8A','ATTR_CODE':'8A','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'189467864790392324','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'435305943954763218','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'593557942681721062','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'701901400935092518','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'578404212365169433','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'150835749385810243','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'948083501629453215','ATTR_DESC':'1 PHASE','ATTR_CODE':'1 PHASE','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'871407829868085572','ATTR_DESC':'150 HZ','ATTR_CODE':'150 HZ','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'138625115400073336','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'642656204350360733','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'769262909456835241','ATTR_DESC':'PLUG-IN','ATTR_CODE':'PLUG-IN','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'894427101111076663','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'345030176542277251','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'152503543986142695','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'196346606895270141','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'394252203598727706','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'945208293753790638','ATTR_DESC':'--','ATTR_CODE':'--','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'692669304685522335','ATTR_DESC':'46.52.0054','ATTR_CODE':'46.52.0054','TEXT_FIELD':'false','DROPDOWN_FIELD':'true','ATTRIBUTES_VALUES':null},{'MANDATORY':'0','ATTRIBUTE_ID':'191445982585771485','ATTR_DESC':'electrical relays and accessories','ATTR_CODE':'electrical relays and accessories','TEXT_FIELD':'true','DROPDOWN_FIELD':'false','ATTRIBUTES_VALUES':null}]};
         console.log('Error occured while loading the attributes', error);
+        this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
+        this.mgroup = res.MGROUP ? res.MGROUP : '';
+        this.getAttributesMapping();
       });
     });
   }
@@ -269,7 +274,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         status: [attr && attr.status ? attr.status : status]
       })
     );
-
+      console.log('Adding Row', attr);
   }
 
   save() {
@@ -348,17 +353,23 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   openNounSidesheet() {
     // need material group
     this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}]);
+    outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}], {
+      queryParamsHandling: 'preserve'
+    });
   }
 
   openModifierSidesheet() {
     this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}]);
+    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}], {
+      queryParamsHandling: 'preserve'
+    });
   }
 
   openAttributeSidesheet() {
     this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
+    outer: `outer/schema/attribute/${this.selectedNounCode}` }}], {
+      queryParamsHandling: 'preserve'
+    });
   }
 
   close() {

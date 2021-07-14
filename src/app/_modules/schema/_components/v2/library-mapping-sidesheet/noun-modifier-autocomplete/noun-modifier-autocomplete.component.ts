@@ -22,6 +22,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
 
   @Input()
   formCtrl: FormControl;
+  dropdownformCtrl: FormControl = new FormControl();
 
   @Input()
   requestFor: RequestFor;
@@ -48,8 +49,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   constructor(
     private nounModifierService: NounModifierService,
     private userDetailsService: UserService
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void {
     this.formCtrl = this.formCtrl ? this.formCtrl : new FormControl('');
@@ -81,6 +81,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
      if(changes && changes.requestFor && changes.requestFor.previousValue !== changes.requestFor.currentValue) {
        this.requestFor = changes.requestFor.currentValue;
      }
+     this.setDropdownValue(this.formCtrl?.value);
   }
 
 
@@ -125,19 +126,23 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
       } else if(this.requestFor && this.requestFor === 'modifier') {
         return option.MODE_CODE ? option.MODE_CODE : option.MOD_LONG;
       } else if(this.requestFor && this.requestFor === 'attribute') {
-        return option.ATTR_CODE ? option.ATTR_CODE : option.ATTR_DESC;
+        return option.ATTR_DESC || option.ATTR_CODE;
       }
     }
+  }
+
+  displayFn(value: any): string {
+    return this.displayDroptext(value);
   }
 
   getOptionVal(option: any): string {
     if(option) {
       if(this.requestFor && this.requestFor === 'noun') {
-        return option.NOUN_CODE ? option.NOUN_CODE : option.NOUN_LONG;
+        return option.NOUN_CODE || option.NOUN_LONG;
       } else if(this.requestFor && this.requestFor === 'modifier') {
-        return option.MODE_CODE ? option.MODE_CODE : option.MOD_LONG;
+        return option.MODE_CODE || option.MOD_LONG;
       } else if(this.requestFor && this.requestFor === 'attribute') {
-        return option.ATTR_CODE ? option.ATTR_CODE : option.ATTR_DESC;
+        return option.ATTR_CODE || option.ATTR_DESC;
       }
     }
   }
@@ -174,5 +179,22 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
       });
     });
   }
+  selectOption($event) {
+    this.formCtrl.setValue(this.getOptionVal($event.option.value));
+    console.log('Form controll changed', this.formCtrl.value, $event.option.value);
+  }
 
+  setDropdownValue(value: any) {
+    if(!value) {
+      this.dropdownformCtrl.reset();
+      return;
+    }
+    const option = this.data.find(row => row[{
+      noun: 'NOUN_CODE',
+      modifier: 'MODE_CODE',
+      attribute: 'ATTR_CODE'
+    }[this.requestFor]] === value);
+    console.log('Setting Option', option,'For', value);
+    this.dropdownformCtrl.setValue(option);
+  }
 }

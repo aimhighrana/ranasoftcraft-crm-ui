@@ -23,6 +23,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @ViewChild('rightSideNav1', { static: true })
   rightSideNav1: MatSidenav;
+  @ViewChild('rightSideNav2', { static: true })
+  rightSideNav2: MatSidenav;
 
   @ViewChild('globalDialog', { static: true }) globalDialog: TemplateRef<any>;
 
@@ -67,6 +69,11 @@ export class AppComponent implements OnInit, OnDestroy {
         this.rightSideNav1.open();
       } else {
         this.rightSideNav1.close();
+      }
+      if (evt.url.indexOf('outer2:') > 0) {
+        this.rightSideNav2.open();
+      } else {
+        this.rightSideNav2.close();
       }
     });
     this.routeSub = this.route.queryParams.subscribe((params) => {
