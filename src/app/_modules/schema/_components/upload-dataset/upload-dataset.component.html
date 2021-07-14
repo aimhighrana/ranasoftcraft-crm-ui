@@ -203,7 +203,7 @@
                         i18n-secondaryText="@@no_br_added_msg"
                         secondaryText="No business rule added, please add at least one business rule to continue">
                         <lib-button i18n="@@add_br_rule" (click)="openGlobalDialog('createBR')" type="minor">
-                            Add Business Rule
+                            Add business rule
                         </lib-button>
                     </lib-empty-state>
 
@@ -226,7 +226,7 @@
                                     <div class="f-row slider-row"
                                         *ngIf="!isExistingRule(businessRule.tempId); else notConfigured">
                                         <lib-range-slider class="lib-slider" [minValue]="0" [maxValue]="100"
-                                            thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
+                                            tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat"
                                             [value]="getWeightage(businessRule)" color="primary"
                                             (valueChange)="weightageChange({value:$event}, k)"></lib-range-slider>
                                         &nbsp;

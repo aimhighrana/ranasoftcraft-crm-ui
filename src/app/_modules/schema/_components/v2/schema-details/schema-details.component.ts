@@ -884,8 +884,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if(typeof value === 'object') {
       code = value.CODE;
       value = value.TEXT;
-    } else {
-      value = '';
     }
     console.log(value);
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
@@ -933,7 +931,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         });
         this.subscribers.push(sub);
       } else {
-        console.error(`Wrong with object number or can't change if old and new same  ... `);
+        console.error(`Wrong with object number or can't change if old and new same... `);
       }
     }
 
@@ -995,7 +993,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   manageStaticColumns() {
     let dispCols: string[] = [];
     if (this.activeTab === 'success' || this.activeTab === 'error') {
-      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
+      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', 'OBJECTNUMBER'];
       this.tableHeaderActBtn = [];
     } else {
       dispCols = ['_select_columns', '_assigned_buckets', '_row_actions', 'OBJECTNUMBER'];
