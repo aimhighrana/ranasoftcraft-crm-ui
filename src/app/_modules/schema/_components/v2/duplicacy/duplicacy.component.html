@@ -78,7 +78,7 @@
             <div class="f-col dataset-grid-listing">
                 <div class="f-row">
                     <mat-chip-list>
-                        <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" class="lib-search">
+                        <lib-search placeholder="Search..."  [formControl]="searchFrmCtrl" class="lib-search">
                         </lib-search>
                         <!-- Applied filters -->
                         <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
@@ -128,6 +128,14 @@
                             </pros-add-filter-menu>
                         </mat-menu>
                     </mat-chip-list>
+            
+                    <!-- More control -->
+                    <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu" icon="ellipsis-h"></lib-chip>
+                    <!-- More control MatMenu -->
+                    <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
+                        <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->
+                        <button mat-menu-item i18n="@@reset" (click)="resetAppliedFilter()">Reset</button>
+                    </mat-menu>
                 </div>
 
                 <div class="f-row-spacer-half"></div>

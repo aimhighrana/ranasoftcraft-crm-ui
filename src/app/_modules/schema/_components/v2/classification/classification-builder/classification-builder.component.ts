@@ -1,5 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -261,6 +262,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     */
    colsAndMetadata: ClassificationHeader[] = [];
 
+   /**
+    * Search noun modifier form control
+    */
+   searchNounNavCtrl: FormControl = new FormControl();
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -339,7 +345,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           columns.splice(columns.indexOf('row_action'),1);
           this.displayedColumns.next(columns);
         }
-        this.getClassificationNounMod();
+        this.getClassificationNounMod(this.searchNounNavCtrl.value);
 
 
 
@@ -368,9 +374,14 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
      */
      this.sharedServices.getAfterMappingSaved().subscribe(res=>{
        if(res) {
-        this.getClassificationNounMod();
+        this.getClassificationNounMod(this.searchNounNavCtrl.value);
        }
      },err=> console.error(`Error : ${err.message}`));
+
+
+     this.searchNounNavCtrl.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(va=>{
+      this.getClassificationNounMod(va, true);
+     });
   }
 
   ngAfterViewInit(){
@@ -419,7 +430,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   getSchemaDetails() {
     const sub = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
-      this.getClassificationNounMod();
+      this.getClassificationNounMod(this.searchNounNavCtrl.value);
     }, error => console.error(`Error : ${error.message}`));
     this.subsribers.push(sub);
   }
@@ -818,6 +829,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             if(fldid === 'NOUN_CODE' || fldid === 'MODE_CODE') {
               // refresh the tree
               this.getClassificationNounMod('',true);
+              this.searchNounNavCtrl.setValue('');
               // refresh the table
               if(this.dataFrm === 'unmatched') {
                 this.applyFilter('', '', 'unmatched');
@@ -960,7 +972,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
       if(res) {
         setTimeout(()=>{
-          this.getClassificationNounMod();
+          this.getClassificationNounMod(this.searchNounNavCtrl.value);
           this.applyFilter(nounCode, modCode, this.dataFrm);
         },1000);
         this.schemaInfo.correctionValue = res.count;
