@@ -920,7 +920,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         currentFilterCriteria.values = [`${value.key}`];
       } else if (this.filterControlType === 'picker_date') {
         const value = this.datePickerOptionsList.find(x => x.value === ev);
-        this.filterData.dateCriteria = value.key;
+        this.filterData.dateCriteria = value.value;
         currentFilterCriteria.dateCriteria = value.key;
       }
 
@@ -1074,5 +1074,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    */
   updateDatePickerType(type) {
     this.currentPickerType = type;
+    if (this.currentFilter) {
+      const currentFilterCriteria = this.selectedFilterCriteria.find((x) => x.fieldId === this.currentFilter.fieldId);
+      this.filterData.dateCriteria = undefined;
+      currentFilterCriteria.dateCriteria = null;
+    }
   }
 }
