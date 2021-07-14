@@ -205,7 +205,7 @@
           </mat-error>
         </div>
 
-        <div class="mdo-field" *ngIf="isRegexType">
+        <div class="f-col mdo-field" *ngIf="isRegexType">
           <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@standard_function">Standard function
           </lib-text-line>
           <div class="mdo-field-input">
@@ -281,7 +281,7 @@
             </div>
 
             <!-- Comparison value -->
-            <div class="col"
+            <div class="col comparison-input"
               *ngIf="udrBlock.operator !== 'RANGE' && udrBlock.operator !== 'EMPTY' && udrBlock.operator !== 'NOT_EMPTY'">
               <lib-input [placeholder]="udrBlock.operator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'"
                 [value]="udrBlock.comparisonValue" (valueChange)="setComparisonValue($event,i)"></lib-input>
@@ -289,11 +289,11 @@
 
             <div class="col" *ngIf="udrBlock.operator === 'RANGE'">
               <div class="f-row">
-                <lib-input placeholder="start value" [value]="udrBlock.rangeStartValue"
+                <lib-input placeholder="Start value" [value]="udrBlock.rangeStartValue"
                   (valueChange)="setRangeValue($event,'start',i)">
                 </lib-input>
                 <div class="f-col-spacer-half"></div>
-                <lib-input placeholder="end value" [value]="udrBlock.rangeEndValue"
+                <lib-input placeholder="End value" [value]="udrBlock.rangeEndValue"
                   (valueChange)="setRangeValue($event,'end',i)">
                 </lib-input>
               </div>

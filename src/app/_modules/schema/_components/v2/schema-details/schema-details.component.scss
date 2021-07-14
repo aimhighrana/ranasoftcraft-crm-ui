@@ -147,9 +147,12 @@ div.root {
           }
 
           .mat-column-_row_actions {
-            min-width: 36px;
-            max-width: 200px;
             border-right: none;
+
+            .action-iconbtns {
+              max-width: 200px;
+              min-width: 36px;
+            }
           }
 
           .mat-column-_select_columns,
