@@ -22,7 +22,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   let reportServiceSpy: ReportService;
   let sharedserviceSpy: SharedServiceService;
   let schemaDetailsService: SchemaDetailsService;
-  const selectedColumns  = (displayCriteria = DisplayCriteria.CODE) => {
+  const selectedColumns = (displayCriteria = DisplayCriteria.CODE) => {
     return [
       {
         fieldId: 'NDCTYPE',
@@ -40,10 +40,10 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ReportDatatableColumnSettingsComponent, SearchInputComponent],
-      imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
+      imports: [MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
     })
       .compileComponents();
-      router = TestBed.inject(Router);
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('close(), should close the side sheet', async() => {
+  it('close(), should close the side sheet', async () => {
     // fixture.detectChanges();
     spyOn(router, 'navigate');
     component.close();
@@ -87,10 +87,10 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     // expect(component.data.selectedColumns.length).toEqual(1);
   })
 
-  it('manageStateOfCheckbox(), should manage the state of checkboxes', async() => {
+  it('manageStateOfCheckbox(), should manage the state of checkboxes', async () => {
     component.headers = [
       {
-        fieldId : 'NDCTYPE',
+        fieldId: 'NDCTYPE',
         fieldDescri: 'NDC TYPE MATERIAL'
       } as MetadataModel
     ]
@@ -111,12 +111,15 @@ describe('ReportDatatableColumnSettingsComponent', () => {
       widgetId: 123456
     }
 
+
+    component.hvyFields = [];
+    component.gvsFields = [];
     component.manageStateOfCheckbox();
     expect(component.allIndeterminate).toEqual(true);
 
     component.headers = [
       {
-        fieldId : 'NDCTYPE',
+        fieldId: 'NDCTYPE',
         fieldDescri: 'NDC TYPE MATERIAL'
       } as MetadataModel
     ]
@@ -140,14 +143,14 @@ describe('ReportDatatableColumnSettingsComponent', () => {
 
   it('getCustomFields(), get Custom Fields of widget', async(() => {
     const obj = 'numberoflogin';
-    component.data= {};
-    const res = [{fieldId: 'USERID', fieldDescri: 'User Id'}, {fieldId: 'TIMEZONE', fieldDescri: 'Time Zone'}];
-    spyOn(reportServiceSpy,'getCustomDatasetFields').withArgs(obj).and.returnValue(of(res));
+    component.data = {};
+    const res = [{ fieldId: 'USERID', fieldDescri: 'User Id' }, { fieldId: 'TIMEZONE', fieldDescri: 'Time Zone' }];
+    spyOn(reportServiceSpy, 'getCustomDatasetFields').withArgs(obj).and.returnValue(of(res));
     component.getCustomFields(obj);
     expect(reportServiceSpy.getCustomDatasetFields).toHaveBeenCalledWith(obj);
     expect(component.headers.length).toEqual(2);
 
-    component.data= {
+    component.data = {
       selectedColumns: ['fname']
     };
     component.getCustomFields(obj);
@@ -155,8 +158,8 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: 'numberoflogin', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
-    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    const response = { objectType: 'numberoflogin', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh: false, displayCriteria: DisplayCriteria.TEXT };
+    spyOn(sharedserviceSpy, 'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
     expect(component.data.objectType).toEqual('numberoflogin');
@@ -164,8 +167,8 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: 'numberoflogin,test', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
-    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    const response = { objectType: 'numberoflogin,test', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh: false, displayCriteria: DisplayCriteria.TEXT };
+    spyOn(sharedserviceSpy, 'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
     expect(component.data.objectType).toEqual('numberoflogin,test');
@@ -173,14 +176,13 @@ describe('ReportDatatableColumnSettingsComponent', () => {
 
   it('getWorkFlowFields(), get Workflow Fields of widget', async(() => {
     const obj = Array('1005');
-    component.data= {};
-    const res = {static:[{fieldId: 'status', fieldDescri: 'Staus'}, {fieldId: 'CRID', fieldDescri: 'Criteria Id'}], dynamic:[{fieldId: 'PO_UNIT', fieldDescri: 'Order Unit'}]};
-    spyOn(schemaDetailsService,'getWorkflowFields').withArgs(obj).and.returnValue(of(res));
+    const res = { static: [{ fieldId: 'status', fieldDescri: 'Staus' }, { fieldId: 'CRID', fieldDescri: 'Criteria Id' }], dynamic: [{ fieldId: 'PO_UNIT', fieldDescri: 'Order Unit' }] };
+    spyOn(schemaDetailsService, 'getWorkflowFields').withArgs(obj).and.returnValue(of(res));
     component.getWorkFlowFields(obj);
     expect(schemaDetailsService.getWorkflowFields).toHaveBeenCalledWith(obj);
     expect(component.headers.length).toEqual(3);
 
-    component.data= {
+    component.data = {
       selectedColumns: ['WFID']
     };
     component.getWorkFlowFields(obj);
@@ -188,8 +190,8 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: '1005', selectedColumns: selectedColumns(), isWorkflowdataSet: true, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
-    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    const response = { objectType: '1005', selectedColumns: selectedColumns(), isWorkflowdataSet: true, isCustomdataSet: false, widgetId: '9876534433', isRefresh: false, displayCriteria: DisplayCriteria.TEXT };
+    spyOn(sharedserviceSpy, 'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
     expect(component.data.objectType).toEqual('1005');
@@ -197,34 +199,48 @@ describe('ReportDatatableColumnSettingsComponent', () => {
 
   it('getAllMetaDataFields(), get metadata Fields of widget', async(() => {
     const obj = '1005';
-    component.data= {};
+    component.data = { selectedColumns: [] };
     const res = {
-      headers:{
-        MARA_NRFHG:{
-          fieldId:'MARA_NRFHG',
-          fieldDescri:'Qual.f.FreeGoodsDis'
+      headers: {
+        MARA_NRFHG: {
+          fieldId: 'MARA_NRFHG',
+          fieldDescri: 'Qual.f.FreeGoodsDis'
         },
-        GS_TO_DATE:{
-          fieldId:'GS_TO_DATE',
-          fieldDescri:'To Date'
+        GS_TO_DATE: {
+          fieldId: 'GS_TO_DATE',
+          fieldDescri: 'To Date'
         }
+      },
+      grids: { ADD_EANDATA: { fieldId: 'ADD_EANDATA', fieldDescri: 'Additional EAN Grid', dataType: 'CHAR', maxChar: '100' } },
+      gridFields: {
+        ADD_EANDATA: {
+          ADD_EANCAT: { fieldId: 'ADD_EANCAT', fieldDescri: 'EAN category', dataType: 'CHAR', maxChar: '2', mandatory: '0' }
+        }
+      },
+      hierarchy: [
+        { objnr: 1, heirarchyId: '1', heirarchyText: 'Plant Data', fieldId: 'PLANT', structureId: '0002' }
+      ],
+      hierarchyFields: {
+        1: { ABC_ID: { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator', dataType: 'CHAR', maxChar: '1', mandatory: '0' } }
       }
     } as MetadataModeleResponse;
-    spyOn(schemaDetailsService,'getMetadataFields').withArgs(obj).and.returnValue(of(res));
+    spyOn(schemaDetailsService, 'getMetadataFields').withArgs(obj).and.returnValue(of(res));
     component.getAllMetaDataFields(obj);
     expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(obj);
     expect(component.headers.length).toEqual(7);
+    expect(component.nestedDataSource.length).toEqual(2);
 
-    component.data= {
-      selectedColumns: ['NDC_TYPE']
+    component.data = {
+      selectedColumns: [{ fieldId: '\'GS_TO_DATE\'', fieldDescri: 'GS To DATE',displayCriteria : DisplayCriteria.TEXT}, { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator',displayCriteria : DisplayCriteria.TEXT}, { fieldId: '\'ADD_EANCAT\'', fieldDescri: 'EAN category',displayCriteria : DisplayCriteria.TEXT}]
     };
     component.getAllMetaDataFields(obj);
-    expect(component.headers.length).toEqual(8);
+    expect(component.headers.length).toEqual(7);
+    expect(component.nestedDataSource.length).toEqual(2)
   }));
 
   it('ngOnInit(), preloadaed function', async(() => {
-    const response = { objectType: '1005', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false, displayCriteria: DisplayCriteria.TEXT};
-    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    const response = { objectType: '1005', selectedColumns: selectedColumns(), isWorkflowdataSet: false, isCustomdataSet: false, widgetId: '9876534433', isRefresh: false, displayCriteria: DisplayCriteria.TEXT };
+    spyOn(sharedserviceSpy, 'getReportDataTableSetting').and.returnValue(of(response));
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
     expect(component.data.objectType).toEqual('1005');

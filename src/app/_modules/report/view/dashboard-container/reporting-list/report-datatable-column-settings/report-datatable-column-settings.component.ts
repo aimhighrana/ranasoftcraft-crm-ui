@@ -1,15 +1,13 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MetadataModel } from '@models/schema/schemadetailstable';
+import { GridFields, Heirarchy, MetadataModel } from '@models/schema/schemadetailstable';
 import { DisplayCriteria } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { WidgetService } from '@services/widgets/widget.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { isEqual } from 'lodash';
-import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-report-datatable-column-settings',
@@ -66,29 +64,50 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   /** system fields for Transactional module dataset */
   systemFields = [
     {
-      fieldId:'STATUS',
-      fieldDescri:'Status',
+      fieldId: 'STATUS',
+      fieldDescri: 'Status',
     } as MetadataModel,
     {
-      fieldId:'USERMODIFIED',
-      fieldDescri:'User Modified',
+      fieldId: 'USERMODIFIED',
+      fieldDescri: 'User Modified',
       picklist: '37',
       dataType: 'AJAX',
-    }as MetadataModel,{
-      fieldId:'APPDATE',
-      fieldDescri:'Update Date',
+    } as MetadataModel, {
+      fieldId: 'APPDATE',
+      fieldDescri: 'Update Date',
       picklist: '0',
       dataType: 'DTMS',
-    }as MetadataModel,{
-      fieldId:'STAGE',
-      fieldDescri:'Creation Date',
+    } as MetadataModel, {
+      fieldId: 'STAGE',
+      fieldDescri: 'Creation Date',
       picklist: '0',
       dataType: 'DTMS',
-    }as MetadataModel
+    } as MetadataModel
   ];
   userConfigured: boolean = undefined;
   showConfiguredBanner: boolean;
   tempHeaders: MetadataModel[] = [];
+
+  /**
+   * array that stores the data of grid and hierarchy data
+   */
+  nestedDataSource: any[] = [];
+
+  /**
+   * array that stored the gridfields values
+   */
+  gvsFields: GridFields[] = [];
+
+  /**
+   * array to store the data of grid and heirarchy data
+   */
+  dataSource: any;
+
+  /**
+   * array to store all child nodes for hierarchy
+   */
+  hvyFields: MetadataModel[] = [];
+
 
   /**
    * Constructor of class
@@ -97,8 +116,6 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
     private reportService: ReportService,
-    private widgetService: WidgetService,
-    private transientService: TransientService,
   ) { }
 
   ngOnDestroy(): void {
@@ -112,10 +129,10 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    */
   ngOnInit(): void {
     const reportDataTable = this.sharedService.getReportDataTableSetting().subscribe(data => {
-        if(data?.isRefresh === false){
-          this.data = data;
+      if (data?.isRefresh === false) {
+        this.data = data;
 
-          this.setOriginalConfigured();
+        this.setOriginalConfigured();
 
         this.objectNumber = data.objectType;
         if ((data.isWorkflowdataSet === null || data.isWorkflowdataSet === false) && (data.isCustomdataSet === null || data.isCustomdataSet === false)) {
@@ -129,11 +146,11 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
             this.getWorkFlowFields(Array(this.objectNumber))
           }
         }
-        if(data.isCustomdataSet === true && (data.isWorkflowdataSet === null || data.isWorkflowdataSet === false)) {
+        if (data.isCustomdataSet === true && (data.isWorkflowdataSet === null || data.isWorkflowdataSet === false)) {
           this.getCustomFields(this.objectNumber);
         }
         this.manageStateOfCheckbox()
-        }
+      }
     });
     this.subscriptions.push(reportDataTable);
   }
@@ -153,7 +170,15 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     const metadataFields = this.schemaDetailsService.getMetadataFields(objectNumber).subscribe(data => {
       if (this.data && this.data.selectedColumns && this.data.selectedColumns.length > 0) {
         this.data.selectedColumns.forEach(selectedColumn => {
-          this.headers.push(selectedColumn);
+          const index = Object.keys(data.headers).indexOf(selectedColumn.fieldId);
+          if (index > -1) {
+            this.headers.push(selectedColumn);
+          } else {
+            const ind = this.systemFields.findIndex(fields => fields.fieldId === selectedColumn.fieldId)
+            if (ind > -1) {
+              this.headers.push(selectedColumn);
+            }
+          }
         });
       }
       /**
@@ -164,7 +189,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
 
       this.systemFields.forEach(system => {
         const index = this.fieldIdArray.indexOf(system.fieldId);
-        if(index === -1) {
+        if (index === -1) {
           this.headers.push(system);
         }
       })
@@ -181,8 +206,79 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         const objectnumber: any = { fieldId: 'objectNumber', fieldDescri: 'Object Number' };
         this.headers.unshift(objectnumber)
       }
-
       this.headersObs = of(this.headers);
+
+      const gvs = [];
+      Object.keys(data.grids).sort().forEach(item => {
+        if (item) {
+          const gridNode: any = {};
+          gridNode.nodeDesc = data.grids[item].fieldDescri;
+          gridNode.nodeId = item;
+          const childNodeData = [];
+          if (data.gridFields.hasOwnProperty(item)) {
+            this.data.selectedColumns.forEach(column => {
+              const selectedColumn = Object.keys(data.gridFields[item]).find(key => key === column.fieldId);
+              if (selectedColumn) {
+                const childNode = data.gridFields[item][selectedColumn];
+                childNode.displayCriteria = column.displayCriteria;
+                childNode.nodeDesc = data.gridFields[item][selectedColumn].fieldDescri;
+                childNodeData.push(childNode);
+              }
+            })
+            Object.keys(data.gridFields[item]).forEach(gridData => {
+              const index = this.data.selectedColumns.findIndex(selectedColumn => selectedColumn.fieldId === gridData);
+              if (index === -1) {
+                const childNode = data.gridFields[item][gridData];
+                const ind = this.data.selectedColumns.findIndex(column => column.fieldId === gridData);
+                childNode.displayCriteria = index > -1 ? this.data.selectedColumns[ind].displayCriteria : null;
+                childNode.nodeDesc = data.gridFields[item][gridData].fieldDescri;
+                childNodeData.push(childNode)
+              }
+            });
+            gridNode.child = [...childNodeData]
+            this.gvsFields.push(...gridNode.child);
+          }
+          else {
+            gridNode.child = null;
+          }
+          gvs.push(gridNode);
+        }
+      })
+
+      const hvysData: Heirarchy[] = [];
+      this.hvyFields = [];
+      const hierarchyData: any = {};
+      data.hierarchy.forEach((hierarchy: Heirarchy) => {
+        hierarchyData.nodeDesc = hierarchy.heirarchyText;
+        hierarchyData.nodeId = hierarchy.fieldId;
+        const childNodeData = [];
+        this.data.selectedColumns.forEach(column => {
+          const selectedColumn = Object.keys(data.hierarchyFields[hierarchy.heirarchyId]).find(key => key === column.fieldId);
+          if (selectedColumn) {
+            const childNode = data.hierarchyFields[hierarchy.heirarchyId][selectedColumn];
+            childNode.displayCriteria = column.displayCriteria;
+            childNode.nodeDesc = data.hierarchyFields[hierarchy.heirarchyId][selectedColumn].fieldDescri;
+            childNodeData.push(childNode);
+          }
+        })
+
+        Object.keys(data.hierarchyFields[hierarchy.heirarchyId]).forEach((hierarchydata: string) => {
+          const index = this.data.selectedColumns.findIndex(selectedColumn => data.hierarchyFields[hierarchy.heirarchyId][hierarchydata].fieldId === selectedColumn.fieldId);
+          if (index === -1) {
+            const childNode = data.hierarchyFields[hierarchy.heirarchyId][hierarchydata];
+            childNode.nodeId = hierarchy.fieldId;
+            childNode.displayCriteria = null;
+            childNode.nodeDesc = data.hierarchyFields[hierarchy.heirarchyId][hierarchydata].fieldDescri;
+            childNodeData.push(childNode);
+          }
+        });
+
+        hierarchyData.child = childNodeData;
+        hvysData.push({ ...hierarchyData });
+        this.hvyFields.push(...childNodeData);
+      })
+      this.nestedDataSource = [...gvs, ...hvysData];
+      this.dataSource = [...this.nestedDataSource];
     }, error => {
       console.error('Error occur while getting meta data fields', error.message)
     });
@@ -214,7 +310,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         if (index === -1) {
           this.headers.push(staticHeader);
         }
-        if(index !== -1) {
+        if (index !== -1) {
           this.headers[index] = staticHeader;
         }
       })
@@ -281,11 +377,11 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * function to manage the state of checkbox
    */
   manageStateOfCheckbox() {
-    if(this.headers.length === this.data.selectedColumns.length){
+    if (this.headers.length + this.gvsFields.length + this.hvyFields.length  === this.data.selectedColumns.length) {
       this.allCheckboxSelected = true;
       this.allIndeterminate = false;
     }
-    if((this.headers.length !== this.data.selectedColumns.length) && this.data.selectedColumns.length !== 0){
+    if ((this.headers.length + this.gvsFields.length + this.hvyFields.length !== this.data.selectedColumns.length) && this.data.selectedColumns.length !== 0) {
       this.allIndeterminate = true;
       this.allCheckboxSelected = false;
     }
@@ -359,13 +455,13 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   /**
    * function to select all or unselect all checkbox.
    */
-  selectAllCheckboxes(){
-    if(!this.allCheckboxSelected){
+  selectAllCheckboxes() {
+    if (!this.allCheckboxSelected) {
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
-      this.data.selectedColumns = JSON.parse(JSON.stringify(this.headers));
+      this.data.selectedColumns = [...JSON.parse(JSON.stringify(this.headers)), ...JSON.parse(JSON.stringify(this.gvsFields)), ...JSON.parse(JSON.stringify(this.hvyFields))];
       this.allCheckboxSelected = true;
-    }else{
+    } else {
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
       this.allCheckboxSelected = false;
@@ -378,12 +474,32 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * @param value string to be searched
    */
   searchHeader(value: string) {
-    if(value && value.trim() !== '') {
+    const listData = JSON.parse(JSON.stringify(this.dataSource));
+    this.nestedDataSource = [];
+    if (value && value.trim() !== '') {
       const headers = this.headers.filter(header => header.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1);
       this.headersObs = of(headers);
+      this.nestedDataSource = value ? this.filtered(listData,value) : listData;
     } else {
+      this.nestedDataSource = this.dataSource;
       this.headersObs = of(this.headers);
     }
+  }
+
+  filtered(array, text) {
+    const getChildren = (result, object) => {
+      const re = new RegExp(text, 'gi');
+      if (object.nodeDesc.match(re)) {
+        result.push(object);
+        return result;
+      }
+      if (Array.isArray(object.child)) {
+        const children = object.child.reduce(getChildren, []);
+        if (children.length) result.push({ ...object, child: children });
+      }
+      return result;
+    };
+    return array.reduce(getChildren, []);
   }
 
   /**
@@ -400,13 +516,23 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         inOrderHeader.push(header);
       }
     })
+
+    this.nestedDataSource.forEach(item => {
+      item.child.forEach(data => {
+        const index = fieldId.findIndex((el) => el === data.fieldId)
+        if (index > -1) {
+          inOrderHeader.push(data);
+        }
+      })
+    })
+
     this.updateTableView(inOrderHeader);
   }
 
   /**
    * function to update table view
    */
-  updateTableView(headerInOrder: MetadataModel[]){
+  updateTableView(headerInOrder: MetadataModel[]) {
     if (this.showConfiguredBanner && this.userConfigured === undefined) {
       this.setUserConfigured(true);
       return;
@@ -416,7 +542,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     let order = 0;
     headerInOrder.forEach(header => {
       const obj = {
-        widgetId : this.data.widgetId,
+        widgetId: this.data.widgetId,
         fields: header.fieldId,
         sno: header.sno,
         displayCriteria: this.userConfigured ? header.displayCriteria : null,
@@ -465,7 +591,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         if (index === -1) {
           this.headers.push(CustomField);
         }
-        if(index !== -1) {
+        if (index !== -1) {
           this.headers[index] = CustomField;
         }
       });
@@ -486,6 +612,14 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       this.headers.forEach((item) => {
         item.displayCriteria = this.data.displayCriteria;
       });
+
+      this.hvyFields.forEach(item => {
+        item.displayCriteria = this.data.displayCriteria;
+      })
+
+      this.gvsFields.forEach((item: any) => {
+        item.displayCriteria = this.data.displayCriteria
+      })
     }
   }
 }

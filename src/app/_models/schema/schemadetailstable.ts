@@ -303,6 +303,7 @@ export class Heirarchy {
   structureId: string;
   tableName: string;
   objectType: string;
+  child? : Heirarchy[];
 }
 
 export class MetadataModeleResponse {
