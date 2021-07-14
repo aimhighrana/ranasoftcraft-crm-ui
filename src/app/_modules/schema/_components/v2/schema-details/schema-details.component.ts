@@ -27,6 +27,7 @@ import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/sch
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 import { debounce } from 'lodash';
 import { MatTable } from '@angular/material/table';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'pros-schema-details',
@@ -278,6 +279,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    filterableRulesOb: Observable<CoreSchemaBrInfo[]> = of([]);
    appliedBrList: CoreSchemaBrInfo[] = [];
 
+  searchFrmCtrl: FormControl = new FormControl();
+
    delayedCall = debounce((searchText: string) => {
     this.businessRulesBasedOnLastRun(searchText);
   }, 300)
@@ -502,6 +505,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
+
+
+    this.searchFrmCtrl.valueChanges.subscribe(v=>{
+      this.inlineSearchSubject.next(v);
+    });
 
   }
 
@@ -1182,6 +1190,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   resetAppliedFilter() {
     this.filterCriteria.next([]);
     this.preInpVal = '';
+    this.searchFrmCtrl.setValue('');
   }
 
   /**
