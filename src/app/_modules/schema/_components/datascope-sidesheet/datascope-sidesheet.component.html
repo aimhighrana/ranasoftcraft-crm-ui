@@ -129,13 +129,21 @@
                             <span class="f-spacer"></span>
                             <lib-button type="plain" icon="long-arrow-right"></lib-button>
                         </mat-list-item>
+                        <mat-list-item [matMenuTriggerFor]="dateRangePickerMenu" [class.selected]="currentPickerType === 'Date Range'" (click)="updateDatePickerType('Date Range')">
+                            <span>Date Range</span>
+                            <span class="f-spacer"></span>
+                            <lib-button type="plain" icon="long-arrow-right"></lib-button>
+                        </mat-list-item>
+                        <mat-menu  #dateRangePickerMenu="matMenu" class="date-picker-menu navigation-menu">
+                            <div class="f-col">
+                                <lib-date-range-picker prosClickStopPropagation [selectedDate]="dateRangeValue" [hideInput]="true" [enableTimeInput]="true" (valueChange) ="dateChanged($event)"></lib-date-range-picker>
+                            </div>
+                        </mat-menu>
                     </mat-list>
-                    <mat-list class="date-picker-list options-list">
+                    <mat-list class="date-picker-list options-list" *ngIf="currentPickerType !== 'Date Range'">
                         <lib-radio-group layout="vertical" [options]="datePickerOptionsList" [value]="filterData.dateCriteria" (valueChange)="updateFilterValue($event)"></lib-radio-group>
                     </mat-list>
                 </div>
-                <lib-date-time-range-picker *ngIf="currentPickerType === 'Date Range'" [selectedDate]="dateRangeValue" [enableTimeInput]="true" (valueChange)="dateChanged($event)">
-                </lib-date-time-range-picker>
             </ng-container>
             <ng-container *ngIf="filterControlType === 'picker_time'">
                 <lib-time-range-picker [selected]="selectedTimeRange" [enableTimeInput]="true" (valueChange)="timeRangeChanged($event)"></lib-time-range-picker>

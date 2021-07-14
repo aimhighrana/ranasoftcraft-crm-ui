@@ -195,7 +195,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   /**
    * holds available date picker list
    */
-  datePickerList = ['Day', 'Week', 'Month', 'Year', 'Date Range'];
+  datePickerList = ['Day', 'Week', 'Month', 'Year'];
   /**
    * holds current date picker type
    */
@@ -207,31 +207,29 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   get datePickerOptionsList() {
     const list = [];
 
-    if (this.currentPickerType !== 'Date Range') {
-      if (this.currentPickerType === 'Day') {
-        list.push(
-          {
-            key: 'yesterday',
-            value: 'Yesterday'
-          }
-        );
-      } else {
-        list.push(
-          {
-            key: `Last_${this.currentPickerType}`,
-            value: `Last ${this.currentPickerType.toLowerCase()}`
-          }
-        );
-      }
+    if (this.currentPickerType === 'Day') {
+      list.push(
+        {
+          key: 'yesterday',
+          value: 'Yesterday'
+        }
+      );
+    } else {
+      list.push(
+        {
+          key: `Last_${this.currentPickerType}`,
+          value: `Last ${this.currentPickerType.toLowerCase()}`
+        }
+      );
+    }
 
-      for (let i=2; i<=6; i++) {
-        list.push(
-          {
-            key: `Last_${i}_${this.currentPickerType}`,
-            value: `Last ${i} ${this.currentPickerType.toLowerCase()}s`
-          }
-        );
-      }
+    for (let i=2; i<=6; i++) {
+      list.push(
+        {
+          key: `Last_${i}_${this.currentPickerType}`,
+          value: `Last ${i} ${this.currentPickerType.toLowerCase()}s`
+        }
+      );
     }
 
     return list;
@@ -863,7 +861,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
             }
           });
           this.dropdownSelectedChips = this.dropdownValues.filter((x) => x.checked === true);
-        } else if (this.filterControlType === 'picker_date') {
+        }
+      } else {
+        if (this.filterControlType === 'picker_date') {
           if (currentFilterCriteria.dateCriteria) {
             const val = currentFilterCriteria.dateCriteria;
             this.datePickerList.forEach((x) => {
@@ -990,7 +990,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       if (ev && ev.end) {
         const date = new Date(ev.end);
         const endOfDay = moment(date).endOf('day').toDate().getTime();
-        currentFilterCriteria.startValue = (date.getHours() === 0) ? String(endOfDay) : String(date.getTime());
+        currentFilterCriteria.endValue = (date.getHours() === 0) ? String(endOfDay) : String(date.getTime());
       }
 
       this.filterCriteriaSub.next('true');
