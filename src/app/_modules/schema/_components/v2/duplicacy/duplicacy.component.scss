@@ -4,15 +4,6 @@ div.root {
   height: 100%;
   overflow: hidden;
 
-  .action-button {
-    margin: 0 2px;
-
-    mat-icon.mat-icon {
-      font-size: 14px;
-      height: 18px;
-    }
-  }
-
   .breadcrum-toolbar {
     padding-top: 8px;
   }
@@ -33,7 +24,6 @@ div.root {
     .dataset-grid-navigation {
       height: 100%;
       width: 340px;
-      padding-right: 12px;
 
       pros-group-data-table {
         height: calc(100% - 96px);
@@ -54,7 +44,7 @@ div.root {
 
       .data {
         overflow: auto;
-        height: calc(100% - 126px);
+        height: calc(100% - 44px - 24px - 40px - 44px);
 
         mat-table.mat-table {
           overflow-x: auto;
@@ -73,11 +63,20 @@ div.root {
           }
 
           .mat-column-action {
-            min-width: 300px;
+            min-width: 260px;
           }
 
           .mat-column-select {
             min-width: 38px;
+          }
+
+          .action-button {
+            margin: 0 .5px;
+        
+            mat-icon.mat-icon {
+              font-size: 14px;
+              height: 18px;
+            }
           }
         }
       }

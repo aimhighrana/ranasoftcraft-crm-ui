@@ -995,7 +995,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   manageStaticColumns() {
     let dispCols: string[] = [];
     if (this.activeTab === 'success' || this.activeTab === 'error') {
-      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
+      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', 'OBJECTNUMBER'];
       this.tableHeaderActBtn = [];
     } else {
       dispCols = ['_select_columns', '_assigned_buckets', '_row_actions', 'OBJECTNUMBER'];

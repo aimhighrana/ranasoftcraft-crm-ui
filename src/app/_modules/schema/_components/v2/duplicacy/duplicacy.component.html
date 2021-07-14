@@ -174,9 +174,8 @@
                                 <lib-button type="plain" (click)="openTableColumnSettings()" icon="cog">
                                 </lib-button>
                             </mat-header-cell>
-                            <mat-cell *matCellDef="let element" [class.action-buttons-width]="activeTab === 'review'"
-                                class="no-text-decoration">
-                                <div class="f-row">
+                            <mat-cell *matCellDef="let element" [class.action-buttons-width]="activeTab === 'review'">
+                                <div class="f-row action-iconbtns">
                                     <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
                                         <lib-button-group>
                                             <lib-button icon="ellipsis-h" type="minor"
@@ -212,7 +211,6 @@
 
                                     <ng-template #review>
                                         <!-- Secondary actions -->
-
                                         <ng-template
                                             [ngIf]="!element['OBJECTNUMBER'].isReviewed && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
                                             <lib-button *ngIf="secondaryActions.length"
