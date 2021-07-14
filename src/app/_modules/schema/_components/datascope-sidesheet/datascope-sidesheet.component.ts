@@ -259,9 +259,6 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * It will be called once when component will be loaded.
    */
   ngOnInit(): void {
-    this.filterControlType = 'picker_date';
-    this.currentPickerType = 'Month';
-    this.filterData.dateCriteria = 'Last_3_Month';
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
       this.moduleId = params.moduleId;
@@ -863,11 +860,6 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
           });
           this.dropdownSelectedChips = this.dropdownValues.filter((x) => x.checked === true);
         } else if (this.filterControlType === 'picker_date') {
-          this.dateRangeValue = {
-            start: currentFilterCriteria.startValue ? new Date(Number(currentFilterCriteria.startValue)) : null,
-            end: currentFilterCriteria.endValue ? new Date(Number(currentFilterCriteria.endValue)) : null
-          }
-
           if (currentFilterCriteria.dateCriteria) {
             const val = currentFilterCriteria.dateCriteria;
             this.datePickerList.forEach((x) => {
@@ -879,6 +871,12 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
             });
             const value = this.datePickerOptionsList.find(x => x.key === val);
             this.filterData.dateCriteria = value.value;
+          } else {
+            this.currentPickerType = 'Date Range';
+            this.dateRangeValue = {
+              start: currentFilterCriteria.startValue ? new Date(Number(currentFilterCriteria.startValue)) : null,
+              end: currentFilterCriteria.endValue ? new Date(Number(currentFilterCriteria.endValue)) : null
+            }
           }
         } else if (this.filterControlType === 'picker_time') {
           const startDate = currentFilterCriteria.startValue ? new Date(Number(currentFilterCriteria.startValue)) : null;
