@@ -141,13 +141,13 @@
         <div class="f-col mdo-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType && !isMPNI">
           <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@fields">Fields</lib-text-line>
           <mat-form-field appearance="outline">
-            <div class="f-row field-chip-list" #chipList>
+            <mat-chip-list class="f-row field-chip-list" #chipList>
               <lib-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
                 (removed)="remove(field,i)" class="lib-chip">{{field.fieldDescri}}</lib-chip>
               <input matInput id="fieldsInput" #fieldsInput class="mat-input" [matAutocomplete]="auto"
                 formControlName="fields" [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-            </div>
+            </mat-chip-list>
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
               (optionSelected)="selectedField($event)">
               <mat-option *ngFor="let fieldItem of filteredModules | async" [value]="fieldItem.fieldId">
@@ -185,14 +185,14 @@
           <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@target_fields">Target fields
           </lib-text-line>
           <mat-form-field appearance="outline">
-            <div class="f-row field-chip-list" #chipList>
+            <mat-chip-list class="f-row field-chip-list" #chipList1>
               <lib-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
                 (removed)="removeTargetField(field,i)" class="lib-chip">
                 {{field.fieldDescri}}</lib-chip>
               <input matInput id="targetFieldsInput" #targetFieldsInput class="mat-input" [matAutocomplete]="auto"
-                formControlName="target_field" [matChipInputFor]="chipList"
+                formControlName="target_field" [matChipInputFor]="chipList1"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-            </div>
+            </mat-chip-list>
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
               (optionSelected)="selectTargetField($event)">
               <mat-option *ngFor="let fieldItem of targetFieldModules | async" [value]="fieldItem.fieldId">

@@ -565,6 +565,8 @@ export class BrruleSideSheetComponent implements OnInit {
         startWith(''),
         map(keyword => {
           if (keyword) {
+            console.log(keyword);
+
             keyword = keyword.toLowerCase();
             const filterData = [];
             this.allGridAndHirarchyData.forEach(item => {
@@ -704,7 +706,7 @@ export class BrruleSideSheetComponent implements OnInit {
         includeScript: new FormControl(''),
         udrTreeData: new FormControl(),
         weightage: new FormControl(0, [Validators.required]),
-        categoryId: new FormControl(''),
+        categoryId: new FormControl(null),
         transformationRuleType: new FormControl(''),
         source_field: new FormControl(''),
         target_field: new FormControl(''),
@@ -800,7 +802,7 @@ export class BrruleSideSheetComponent implements OnInit {
         this.form.get(key).setValidators(null);
         this.form.get(key).clearValidators();
         if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && key !== 'transformationRuleType') {
-          this.form.get(key).setValue('');
+          this.form.get(key).setValue(null);
         }
       } else {
         // this.form.get(key).setValidators([Validators.required]);
@@ -874,11 +876,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (patchList && patchList.length > 0) {
       patchList.map((key) => {
         if (dataToPatch[key]) {
-          if (key === 'categoryId') {
-            this.form.controls[key].setValue(`${dataToPatch[key]}`);
-          } else {
-            this.form.controls[key].setValue(dataToPatch[key]);
-          }
+          this.form.controls[key].setValue(dataToPatch[key]);
         }
       });
     }

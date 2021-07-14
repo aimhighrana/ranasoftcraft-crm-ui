@@ -93,24 +93,19 @@
                 <div class="f-col mdo-field"
                     [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)"
                     *ngIf="!isDuplicateType && !isUDR">
-                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@category">Category <span
-                            class="mandatory">*</span></lib-text-line>
-                    <div class="mdo-field-input">
-                        <input matInput formControlName="categoryId" i18n-placeholder="@@category"
-                            placeholder="Category" [matAutocomplete]="categoryIDAuto" />
-                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)"
-                            #categoryIDAuto="matAutocomplete"
-                            (optionSelected)="selectSingle(form, 'categoryId', $event)">
-                            <mat-option class="mdo-option" *ngFor="let category of categoryList"
-                                [value]="category.categoryId">
-                                {{category.categoryDesc}}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </div>
-                    <mat-error i18n="@@please_select_category"
-                        *ngIf="submitted && (submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value))">
-                        <lib-text-line type="small">Please select category</lib-text-line>
-                    </mat-error>
+                   
+                    <pros-select *ngIf="categoryList?.length>0"
+                        formControlName="categoryId"
+                        label="Category"
+                        error="Please select category"
+                        [hasError]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)"
+                        [isRequired]="true"
+                        [availableOptions]="categoryList"
+                        [value]="form.controls.categoryId.value"
+                        labelKey="categoryDesc"
+                        valueKey="categoryId">
+                    </pros-select>
+
                 </div>
 
                 <div class="f-col">
@@ -162,13 +157,16 @@
                     <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@fields">Fields <span
                             class="mandatory">*</span></lib-text-line>
                     <mat-form-field appearance="outline">
-                        <div class="f-row field-chip-list">
-                            <lib-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
-                                class="lib-chip" (removed)="remove(field,i)">{{field.fieldDescri}}</lib-chip>
-                            <input matInput id="fieldsInput" #fieldsInput class="mat-input" [matAutocomplete]="auto"
-                                formControlName="fields" [matChipInputFor]="chipList"
+                        <mat-chip-list class="f-row field-chip-list" #chipList1>
+                            <lib-chip *ngFor="let field of selectedFields;let i = index" 
+                                [removable]="true"
+                                class="lib-chip" 
+                                (removed)="remove(field,i)">
+                                {{field.fieldDescri}}</lib-chip>
+                            <input matInput id="fieldsInput1" #fieldsInput1 class="mat-input" [matAutocomplete]="auto"
+                                formControlName="fields" [matChipInputFor]="chipList1"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-                        </div>
+                        </mat-chip-list>
                         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectField($event)"
                             [displayWith]="displayFn.bind(this)">
                             <mat-option *ngFor="let fieldItem of filteredModules | async"
@@ -230,14 +228,14 @@
                     <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@target_fields">Target
                         fields <span class="mandatory">*</span></lib-text-line>
                     <mat-form-field appearance="outline">
-                        <div class="f-row field-chip-list" #chipList>
+                        <mat-chip-list class="f-row field-chip-list" #chipList>
                             <lib-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
                                 (removed)="removeTargetField(field,i)" class="lib-chip">
                                 {{field.fieldDescri}}</lib-chip>
                             <input matInput id="targetFieldsInput" #targetFieldsInput class="mat-input"
-                                [matAutocomplete]="auto" formControlName="target_field" [matChipInputFor]="chipList"
+                                [matAutocomplete]="auto" formControlName="target_field"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-                        </div>
+                        </mat-chip-list>
                         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectTargetField($event)"
                             [displayWith]="displayFn.bind(this)">
                             <mat-option *ngFor="let fieldItem of targetFilteredModules | async"
