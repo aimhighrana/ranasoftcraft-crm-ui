@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Attribute, AttributeDataType, AttributeDefaultValue } from '@models/schema/classification';
+import { Router } from '@angular/router';
+import { AttributeDefaultValue } from '@models/schema/classification';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
-import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { TransientService } from 'mdo-ui-library';
 
 @Component({
@@ -15,60 +12,19 @@ import { TransientService } from 'mdo-ui-library';
 })
 export class AttributeDefaultValueComponent implements OnInit {
 
-  attributeForm: FormGroup;
-
-  ATTRIBUTE_DATA_TYPE = AttributeDataType;
-
-  submitted = false;
-
-  nounSno: string;
-
   valueList: Array<AttributeDefaultValue> = [];
   searchStr = '';
 
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar,
     private globalDialogService: GlobaldialogService,
     private nounModifierService: NounModifierService,
-    private schemaDetailsService: SchemaDetailsService,
-    private transientService: TransientService,
-    private activatedRoute: ActivatedRoute) { }
+    private transientService: TransientService) { }
 
   ngOnInit(): void {
-
-    this.buildAttributeForm();
-
-    this.activatedRoute.params.subscribe(params => {
-      this.nounSno = params.nounSno;
-    });
-
-  }
-
-  /**
-   * Build attribute form
-   */
-  buildAttributeForm() {
     if (!this.nounModifierService.attributeValuesModels) {
       this.nounModifierService.attributeValuesModels = [];
     }
     this.valueList = this.nounModifierService.attributeValuesModels;
-  }
-
-  /**
-   * function to return formField
-   */
-  formField(field: string) {
-    return this.attributeForm.get(field);
-  }
-
-  /**
-   * set form control value
-   * @param controlName from control name
-   * @param value value to be set
-   */
-  setControlValue(controlName: string, value) {
-    this.attributeForm.get(controlName).setValue(value);
   }
 
   isValidRow(row: AttributeDefaultValue) {
@@ -77,6 +33,7 @@ export class AttributeDefaultValueComponent implements OnInit {
 
   close() {
     const isAnyInvalidRow = this.valueList.find(row => !this.isValidRow(row));
+    const routerCommands = this.nounModifierService.attributeSheetRoute;
     if (isAnyInvalidRow) {
       this.transientService.confirm({
         data: { label: 'Empty entries will not be saved. Click Ok to continue.' },
@@ -86,12 +43,12 @@ export class AttributeDefaultValueComponent implements OnInit {
       }, (response) => {
         if (response === 'yes') {
           this.nounModifierService.attributeValuesModels = this.valueList.filter(this.isValidRow);
-          this.nounModifierService.openAttributeSidesheet();
+          this.router.navigate(routerCommands, { queryParamsHandling: 'preserve' });
         }
       });
     } else {
       this.nounModifierService.attributeValuesModels = this.valueList;
-      this.nounModifierService.openAttributeSidesheet();
+      this.router.navigate(routerCommands, { queryParamsHandling: 'preserve' });
     }
   }
 
@@ -99,7 +56,6 @@ export class AttributeDefaultValueComponent implements OnInit {
     if (document.getElementById('uploadFileCtrl')) {
       document.getElementById('uploadFileCtrl').click();
     }
-
     return true;
   }
 
@@ -120,15 +76,14 @@ export class AttributeDefaultValueComponent implements OnInit {
     this.globalDialogService.confirm({
       label: 'Are you sure to delete this?'
     }, (response: string) => {
-      console.log('Response', response);
       if (response === 'yes') {
         this.valueList.splice(i, 1);
       }
     });
   }
+
   doSearch($event) {
     this.searchStr = $event;
-    console.log('Search strin', this.searchStr);
   }
 
   canDisplayRow(row: AttributeDefaultValue) {

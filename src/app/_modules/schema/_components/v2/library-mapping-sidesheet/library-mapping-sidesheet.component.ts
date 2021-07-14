@@ -124,7 +124,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       })
     };
     if(this.isMapped) {
-      debugger;
       this.gsnAttributes.forEach((row) => {
         row.status = 'matched';
         this.addAttributeMappingRow(row);
@@ -366,8 +365,12 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   openAttributeSidesheet() {
-    this.nounModifierService.openAttributeSidesheet(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
+    const routerCommand = ['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/attribute/${this.selectedNounCode}` }}];
+    this.nounModifierService.attributeSheetRoute = routerCommand;
+    this.router.navigate(routerCommand, {
+      queryParamsHandling: 'preserve'
+    });
   }
 
   close() {

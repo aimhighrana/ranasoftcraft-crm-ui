@@ -136,7 +136,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     spyOn(router, 'navigate');
     component.openNounSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/noun/${component.moduleId}/${component.mgroup}` }}])
+    outer: `outer/schema/noun/${component.moduleId}/${component.mgroup}` }}], {queryParamsHandling: 'preserve'})
   });
 
 
@@ -226,7 +226,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.buildMappingForm();
     component.openModifierSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` }}])
+    outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` }}], {queryParamsHandling: 'preserve'})
   });
 
   it('should openAttributeSidesheet', () => {
@@ -235,7 +235,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.setFormControlValue('localNounCode', 'Bearing');
     component.openAttributeSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${component.selectedNounCode}` }}])
+    outer: `outer/schema/attribute/${component.selectedNounCode}` }}], {queryParamsHandling: 'preserve'})
   });
 
   it('should filterAsStatus', () => {
