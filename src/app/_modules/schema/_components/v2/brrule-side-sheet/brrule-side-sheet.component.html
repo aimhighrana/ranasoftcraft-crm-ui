@@ -116,18 +116,25 @@
                     </lib-input>
                 </div>
 
-                <div class="f-col mdo-field"
+                <div class="f-col"
                     *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_IDENTI'">
-                    <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@enter_access_token">Enter
-                        access token <span class="mandatory">*</span></lib-text-line>
-                    <pros-form-input [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
+                    {{form.controls.apiKey.value}}
+                    <lib-input [isRequired]="true" i18n-label="@@rule_name_desc" label="Enter access token"
+                        formControlName="apiKey"
+                        [hint]="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required ? 'Please enter an access token' : ''"
+                        [hasError]="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
+                    </lib-input>
+                    <!-- <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@enter_access_token">Enter
+                        access token <span class="mandatory">*</span></lib-text-line> -->
+                    <!-- <pros-form-input [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
                         [isHelpIcon]="true" i18n-toolTipInfo="@@access_token_tooltip"
                         [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
-                    </pros-form-input>
-                    <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required"
+                    </pros-form-input> -->
+                   
+                    <!-- <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required"
                         i18n="@@access_token_msg">
                         <lib-text-line type="small">Please enter access token</lib-text-line>
-                    </mat-error>
+                    </mat-error> -->
                 </div>
 
                 <div class="f-row mdo-field" *ngIf="isTransformationRule">
@@ -163,7 +170,7 @@
                                 class="lib-chip" 
                                 (removed)="remove(field,i)">
                                 {{field.fieldDescri}}</lib-chip>
-                            <input matInput id="fieldsInput1" #fieldsInput1 class="mat-input" [matAutocomplete]="auto"
+                            <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto"
                                 formControlName="fields" [matChipInputFor]="chipList1"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                         </mat-chip-list>
