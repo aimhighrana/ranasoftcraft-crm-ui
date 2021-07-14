@@ -3,12 +3,12 @@
         <div class="f-col mdo-field">
             <lib-text-line class="field-label" type="xsmall" weight="strong">Source field</lib-text-line>
             <mat-form-field appearance="outline">
-                <div class="f-row field-chip-list" #sourceChips>
+                <mat-chip-list class="f-row field-chip-list" #sourceChips>
                     <lib-chip *ngIf="selectedSourceField" [removable]="true"
                     (removed)="removeSourceField()" class="lib-chip">{{selectedSourceField[sourceFieldsObject.labelKey]}}</lib-chip>
                     <input id="sourceFieldId" matInput class="mat-input" #sourceFieldInput [matAutocomplete]="autoSource" formControlName="sourceFld"
                         [matChipInputFor]="sourceChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-                </div>
+                </mat-chip-list>
                 <mat-autocomplete #autoSource="matAutocomplete" [displayWith]="displayFnSource.bind(this)"
                     (optionSelected)="selectSourceField($event)">
                     <mat-option *ngFor="let fieldItem of filteredSourceFields | async"
@@ -25,12 +25,12 @@
         <div class="f-col mdo-field">
             <lib-text-line class="field-label" type="xsmall" weight="strong">Target fields</lib-text-line>
             <mat-form-field appearance="outline">
-                <div class="f-row field-chip-list" #targetChips>
+                <mat-chip-list class="f-row field-chip-list" #targetChips>
                     <lib-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
                     (removed)="removeTargetField(i)" class="lib-chip">{{field[targetFieldsObject.labelKey]}}</lib-chip>
                     <input matInput id="targetFieldId" class="mat-input" #targetFieldInput [matAutocomplete]="autoTarget" formControlName="targetFld"
                         [matChipInputFor]="targetChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-                </div>
+                </mat-chip-list>
                 <mat-autocomplete #autoTarget="matAutocomplete" [displayWith]="displayFnTarget.bind(this)"
                     (optionSelected)="selectTargetField($event)">
                     <mat-option *ngFor="let fieldItem of filteredTargetFields | async"
