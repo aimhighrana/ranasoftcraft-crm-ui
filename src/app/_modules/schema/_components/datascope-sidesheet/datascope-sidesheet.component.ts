@@ -107,7 +107,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       { dataType: 'DEC', type: 'input_desc' },
       { dataType: 'ALTN', type: 'input_text' },
       { dataType: 'ISCN', type: 'input_text' },
-      { dataType: 'REQ', type: 'input_text' }
+      { dataType: 'REQ', type: 'input_text' },
+      { dataType: 'DATS', type: 'picker_date' },
+      { dataType: 'DTMS', type: 'picker_date' }
     ],
     1: [
       { dataType: 'AJAX', type: 'dropdown_single' },
@@ -129,12 +131,6 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     ],
     22: [
       { dataType: 'CHAR', type: 'textarea' }
-    ],
-    DATS: [
-      { dataType: 'CHAR', type: 'picker_date' }
-    ],
-    DTMS: [
-      { dataType: 'CHAR', type: 'picker_date' }
     ],
     TIMS: [
       { dataType: 'Char', type: 'picker_time' }
@@ -605,6 +601,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
           this.selectFilter(x, false, false);
         }
       });
+
+      if (selectedFiltersList.length) {
+        this.selectDynamicFilter(selectedFiltersList[0], true);
+      }
     }, error => {
       console.error(`Error : ${error.message}`);
     });
@@ -754,6 +754,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         if (res) {
           this.filterControlType = res.type;
         }
+      }
+
+      if (!this.filterControlType) {
+        this.filterControlType = 'input_text';
       }
       this.getFilterValues(filter.fieldId, isUpdate);
     }
@@ -1031,6 +1035,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     }
 
     this.dropdownSelectedChips = this.dropdownValues.filter((x) => x.checked === true);
+    this.dropdownSearchCtrl.setValue('');
     this.filterCriteriaSub.next('true');
   }
 
