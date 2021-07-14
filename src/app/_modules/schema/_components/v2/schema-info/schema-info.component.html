@@ -28,8 +28,8 @@
             <ng-container *ngIf="schemaDetails">
                 <div class="f-col">
                     <lib-banner *ngIf="schemaDetails.isInRunning" status="info" i18n-text="@@schema_running_msg"
-                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
-                        text="This schema is running Click here to either track the progress or see result">
+                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]">
+                       This schema is running&nbsp;<lib-text-line textColor="link" class="cursor"> Click here </lib-text-line>&nbsp;to either track the progress or see result
                     </lib-banner>
 
                     <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'"
@@ -174,7 +174,7 @@
                                 </div>
 
                                 <div class="col action mat-item-end">
-                                    <lib-button *ngIf="i===0" type="plain" [disabled]="true" iconFontType="light"
+                                    <lib-button *ngIf="i===0" type="plain" [disabled]="true"
                                         icon="link"></lib-button>
 
                                     <lib-button *ngIf="i>0" type="plain" [matMenuTriggerFor]="mappingdependency"
@@ -185,7 +185,7 @@
                                         xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
                                         <!-- <div class="top-tiparrow"></div> -->
                                         <div class="f-col">
-                                            <lib-text-line i18n="@@run_rule_warning_msg" type="base">Only run this rule
+                                            <lib-text-line i18n="@@run_rule_warning_msg" type="base" enableWrap="true">Only run this rule
                                                 if the preceding rule returns</lib-text-line>
 
                                             <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
@@ -238,13 +238,13 @@
 
                                         <div class="col action mat-item-end">
                                             <lib-button type="plain" [matMenuTriggerFor]="mappingdependency"
-                                                iconFontType="light" icon="link"></lib-button>
+                                                icon="link"></lib-button>
                                             <!-- Mapping Dropdown Menu -->
                                             <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu"
                                                 yPosition="above" xPosition="before"
                                                 class="mat-elevation-z0 tooltip-fields-menu">
                                                 <div class="f-col">
-                                                    <lib-text-line type="base" i18n="@@run_rule_warning_msg">Only run
+                                                    <lib-text-line type="base" enabledWrap="true" i18n="@@run_rule_warning_msg">Only run
                                                         this rule if the preceding rule returns</lib-text-line>
                                                     <lib-radio-group (click)="$event.stopPropagation()"
                                                         [options]="depRuleList" class="f-col" color="primary"

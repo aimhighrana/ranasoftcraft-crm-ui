@@ -35,17 +35,14 @@ mat-card.root {
       margin-bottom: 6px;
     }
 
-    .schedule-row {
-      align-items: center;
-
-      mat-slide-toggle {
-        padding-left: 8px;
-      }
+    .lib-slide-toggle {
+      padding-left: 8px;
     }
   }
 
-  .bottom-actions {
-    align-items: center;
+  .lib-button {
+    min-width: 90px;
+    display: flex;
   }
 
   .cursor {
@@ -57,7 +54,6 @@ mat-card.root {
   box-sizing: border-box;
   padding: 4px 0;
   min-height: 48px;
-  font-size: 0.8rem;
 
   .col {
     display: flex;
@@ -69,6 +65,7 @@ mat-card.root {
 
     .lib-input {
       width: 80%;
+      height: 36px;
     }
 
     &.col-x2 {
@@ -106,21 +103,6 @@ mat-card.root {
     pros-form-input-autoselect,
     .mat-form-item {
       width: 100%;
-    }
-
-    .mat-line {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-    }
-
-    button.mat-stroked-button {
-      margin-right: 4px;
-      min-width: auto;
     }
   }
 
