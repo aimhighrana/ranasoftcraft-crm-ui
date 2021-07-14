@@ -794,8 +794,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
-    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
+    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType) {
       this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
+    }
+
+    if (this.chartPropCtrlGrp.get('chartType').value !== 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+      this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
+      this.selStyleWid.chartProperties.bucketFilter = null;
+    }
   }
 
   /**
