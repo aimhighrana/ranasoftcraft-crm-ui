@@ -802,6 +802,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
       this.selStyleWid.chartProperties.bucketFilter = null;
     }
+
   }
 
   /**
