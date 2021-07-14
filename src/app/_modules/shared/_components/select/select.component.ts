@@ -163,7 +163,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
    * Method to emit blur event
    */
   registerOnBlur(): void {
-    const val = typeof this.control.value === 'object'?
+    const val = typeof this.control.value === 'object' && this.control.value ?
       this.control.value[this.valueKey]: '';
       this.onChange(val);
       this.afterBlur.emit(val);
