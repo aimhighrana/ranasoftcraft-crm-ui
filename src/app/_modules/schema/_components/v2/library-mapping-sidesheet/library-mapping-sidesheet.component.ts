@@ -105,10 +105,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * fetch already saved mappings
    */
   getAttributesMapping() {
-    this.nounModifierService.getAttributesMapping(this.libraryNounCode, this.libraryModifierCode)
-      .subscribe(resp => {
-        this.patchMappingForm(resp);
-      });
+
     const data = this.mappingForm.value;
     const request: ClassificationMappingRequest = {
       nounCode: data.libraryNounCode,
@@ -128,6 +125,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         row.status = 'matched';
         this.addAttributeMappingRow(row);
       });
+      this.nounModifierService.getAttributesMapping(this.libraryNounCode, this.libraryModifierCode)
+      .subscribe(resp => {
+        this.patchMappingForm(resp);
+      });
     } else {
       this.nounModifierService.getClassificationMappingData(request).subscribe((resp: any) => {
         this.classificationCategory = resp;
@@ -141,6 +142,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.statas.forEach((stat) => {
           stat.count = this.attributeMapData.value.filter(row => row.status === stat.code).length
           + [resp.modifier.status, resp.noun.status].filter(status => status.toLowerCase() === stat.code).length;
+        });
+        this.nounModifierService.getAttributesMapping(this.libraryNounCode, this.libraryModifierCode)
+        .subscribe(resp => {
+          this.patchMappingForm(resp);
         });
       });
     }
@@ -169,7 +174,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * Build attribute mapping form
    */
   buildMappingForm() {
-
     this.mappingForm = this.formBuilder.group({
       libraryNounCode: [this.libraryNounCode || ''],
       localNounCode: [''],
@@ -205,8 +209,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     if (attributesMapping.attributeMapData) {
       const {localNounCode, localModCode} = attributesMapping;
       this.mappingForm.patchValue({localNounCode, localModCode});
-      console.log(this.mappingForm.value);
-
       attributesMapping.attributeMapData.forEach(mapData => {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
         if (index !== -1) {
@@ -273,7 +275,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         status: [attr && attr.status ? attr.status : status]
       })
     );
-      console.log('Adding Row', attr);
   }
 
   save() {

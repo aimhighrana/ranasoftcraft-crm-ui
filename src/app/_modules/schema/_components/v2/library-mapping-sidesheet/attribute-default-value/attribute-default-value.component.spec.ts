@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AttributeDefaultValue } from '@models/schema/classification';
 import { SharedModule } from '@modules/shared/shared.module';
-import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { AttributeDefaultValueComponent } from './attribute-default-value.component';

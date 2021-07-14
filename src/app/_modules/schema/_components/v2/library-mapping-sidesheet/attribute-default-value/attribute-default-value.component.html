@@ -6,16 +6,10 @@
             <div class="f-row breadcrum-head">
                 <lib-text-line type="leading">Default values</lib-text-line>
                 <span class="f-spacer"></span>
-                <lib-button-group>
-                    <lib-button class="lib-button" type="major" (click)="addValueRow()">
-                        New value
-                    </lib-button>
-                    <lib-button class="lib-button" type="major" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h">
-                    </lib-button>
-                </lib-button-group>
-                <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-                    <button mat-menu-item i18n="@@import_from_csv" (click)="uploadData()">Import from CSV</button>
-                </mat-menu>
+                
+                <lib-button class="lib-button" type="major" (click)="addValueRow()">
+                    New value
+                </lib-button>
             </div>
         </div>
     </div>

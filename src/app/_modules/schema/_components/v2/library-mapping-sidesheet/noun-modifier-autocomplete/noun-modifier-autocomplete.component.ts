@@ -181,7 +181,6 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
   selectOption($event) {
     this.formCtrl.setValue(this.getOptionVal($event.option.value));
-    console.log('Form controll changed', this.formCtrl.value, $event.option.value);
   }
 
   setDropdownValue(value: any) {
@@ -194,7 +193,6 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
       modifier: 'MODE_CODE',
       attribute: 'ATTR_CODE'
     }[this.requestFor]] === value);
-    console.log('Setting Option', option,'For', value);
     this.dropdownformCtrl.setValue(option);
   }
 }
