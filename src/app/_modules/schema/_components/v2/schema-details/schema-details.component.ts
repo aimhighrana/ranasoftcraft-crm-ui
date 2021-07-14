@@ -884,8 +884,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if(typeof value === 'object') {
       code = value.CODE;
       value = value.TEXT;
-    } else {
-      value = '';
     }
     console.log(value);
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
@@ -933,7 +931,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         });
         this.subscribers.push(sub);
       } else {
-        console.error(`Wrong with object number or can't change if old and new same  ... `);
+        console.error(`Wrong with object number or can't change if old and new same... `);
       }
     }
 
