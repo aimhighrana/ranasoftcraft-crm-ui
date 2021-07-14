@@ -21,6 +21,11 @@ export class AttributeComponent implements OnInit {
 
   nounSno: string;
   isMapped = false;
+
+  get defaultValueCount() {
+    return this.nounModifierService.attributeValuesModels?.length || 0;
+  }
+
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
@@ -51,14 +56,14 @@ export class AttributeComponent implements OnInit {
       type: [this.ATTRIBUTE_DATA_TYPE.TEXT],
       attFieldLen: [''],
       prefix: ['']
-    })
+    });
   }
 
   /**
    * function to return formField
    */
-    formField(field: string){
-      return this.attributeForm.get(field);
+  formField(field: string) {
+    return this.attributeForm.get(field);
   }
 
   /**
@@ -77,14 +82,19 @@ export class AttributeComponent implements OnInit {
     this.submitted = true;
     if (this.attributeForm.invalid) {
       (Object).values(this.attributeForm.controls).forEach(control => {
-        if(control.invalid)
-        control.markAsTouched();
+        if (control.invalid)
+          control.markAsTouched();
       });
       this.snackBar.open('Please enter the missing fields !', 'close', { duration: 3000 });
       return;
     }
 
-    const request: Attribute[] = [{ ...this.attributeForm.value } as Attribute];
+    const attribute: Attribute = {
+      ...this.attributeForm.value,
+      attributeValuesModels: this.attributeForm.value.type === this.ATTRIBUTE_DATA_TYPE.LIST ? this.nounModifierService.attributeValuesModels : []
+    };
+    const request: Attribute[] = [attribute];
+    debugger;
 
     this.nounModifierService.addAttribute(request, this.nounSno)
       .subscribe(resp => {
@@ -98,19 +108,20 @@ export class AttributeComponent implements OnInit {
 
   close() {
     this.router.navigate([{ outlets: { [`outer`]: null } }], {
-      queryParams: {isMapped: this.isMapped}
+      queryParams: { isMapped: this.isMapped }
     });
+    this.nounModifierService.attributeValuesModels = [];
   }
 
   openDefaultValueSideSheet() {
 
-   this.router.navigate([{
-     outlets: {
-       outer2: 'outer2/schema/attribute-values'
-     }
-   }], {
+    this.router.navigate([{
+      outlets: {
+        outer2: 'outer2/schema/attribute-values'
+      }
+    }], {
       queryParamsHandling: 'preserve',
-      queryParams: {editValues:true}
-    }); 
+      queryParams: { editValues: true }
+    });
   }
 }

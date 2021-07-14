@@ -6,13 +6,15 @@ import { Observable } from 'rxjs';
 import {AttributesDoc, ClassificationMappingRequest, ClassificationMappingResponse, NounModifier} from '@models/schema/noun-modifier';
 import { HttpClient } from '@angular/common/http';
 import { Modifier } from '@models/schema/schemadetailstable';
-import { Attribute, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
+import { Attribute, AttributeDefaultValue, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
 import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NounModifierService {
+
+  attributeValuesModels: Array<AttributeDefaultValue> = [];
 
   constructor(
     private endpointClassic: EndpointsRuleService,

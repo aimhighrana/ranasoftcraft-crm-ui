@@ -8,7 +8,7 @@ export interface Attribute {
     attFieldLen;
     attFieldType;
     attributeOrder;
-    attributeValuesModels;
+    attributeValuesModels: Array<AttributeDefaultValue>;
     descActive: string;
     helpText: string;
     isActive: string;
@@ -27,6 +27,11 @@ export enum AttributeDataType {
     TEXT = '0',
     NUMBER = '1',
     LIST = '2'
+}
+
+export interface AttributeDefaultValue {
+    CODE: string;
+    shortValue: string;
 }
 
 /* export interface Modifier {
