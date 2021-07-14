@@ -19,109 +19,72 @@ div.root {
   }
 
   .sidesheetcontent-listing {
-    // height: calc(100% - 103px);
-    overflow: auto;
+    height: calc(100% - 52px);
+    overflow: hidden;
 
     .mdo-justify {
       margin: 0 16px;
+      height: 100%;
+      overflow: hidden;
 
       .field-label {
         margin-bottom: 6px;
       }
-    }
-  }
 
-  .filter-section {
-    padding: 0 65px;
-    height: 60%;
+      .filter-section {
+        align-items: flex-start;
+        height: 100%;
+        overflow: auto;
 
-    .filter-list {
-      width: 35%;
-      height: 100%;
-      border-right: 1px solid #e4ebf3;
-      padding-right: 15px;
+        .filter-list {
+          width: 240px;
+          height: 100%;
+          border-right-width: 1px;
+          border-right-style: solid;
 
-      .filter-scroll {
-        height: 90%;
-        overflow-y: scroll;
+          .lib-search {
+            margin: 0 8px 8px 0;
+          }
 
-        .mat-panel-title {
-          width: 100%;
-          align-items: center;
-          justify-content: space-between;
-          margin: 0;
+          .filter-scroll {
+            height: 100%;
+            overflow: auto;
+            padding-right: 12px;
 
-          .list-item {
-            max-width: 97%;
-
-            &.selected {
-              max-width: 84%;
+            .mat-panel-title {
+              display: flex;
+              align-items: center;
+              width: 100%;
+              margin: 0 0 0 8px;
             }
           }
         }
-      }
-    }
 
-    .text-line {
-      max-width: 97%;
-
-      &.selected {
-        max-width: 82%;
-      }
-    }
-
-    .lib-checkbox {
-      margin-bottom: 11px;
-    }
-
-    .dynamic-container {
-      height: 100%;
-      width: 100%;
-      padding: 15px;
-      overflow-y: auto;
-
-      // obtained from lib-input style
-      .dropdown-single,
-      .dropdown-multi {
-        mat-label {
-          font-size: 11.2px;
-          font-weight: 600;
-          line-height: 12px;
-          color: #272d37;
-          margin-bottom: 6px;
+        .lib-checkbox {
+          margin-bottom: 12px;
         }
 
-        input {
-          font-size: 14px;
-          color: #272d37;
-          line-height: 32px;
-          outline: none;
-          width: 100%;
-          padding: 0;
-          background: #fafbfc;
-          border: 1px solid #e4ebf3;
-          border-radius: 3px;
-          min-height: 34px;
-          padding-left: 9px;
-        }
-      }
+        .dynamic-container {
+          flex: 1;
+          padding-left: 12px;
 
-      .date-picker-section {
-        display: flex;
-        margin-bottom: 7px;
+          .mdo-chip-list {
+            margin-bottom: 16px;
+          }
 
-        .date-picker-list {
-          width: 45%;
+          .date-picker-section {
+            align-items: flex-start;
 
-          &.options-list {
-            margin-left: 7px;
+            .date-picker-list {
+              width: 49%;
+            }
           }
         }
-      }
-    }
 
-    .hide {
-      display: none;
+        .hide {
+          display: none;
+        }
+      }
     }
   }
 }

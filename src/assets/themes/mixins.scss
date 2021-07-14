@@ -1629,6 +1629,12 @@
         }
       }
     }
+
+    div.root {
+      .filter-list {
+        border-right-color: $color-app-border;
+      }
+    }
   }
 
   pros-schema-summary-sidesheet,
