@@ -366,10 +366,8 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   openAttributeSidesheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}` }}], {
-      queryParamsHandling: 'preserve'
-    });
+    this.nounModifierService.openAttributeSidesheet(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
   }
 
   close() {

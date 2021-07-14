@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { Modifier } from '@models/schema/schemadetailstable';
 import { Attribute, AttributeDefaultValue, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
 import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,13 @@ import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.servic
 export class NounModifierService {
 
   attributeValuesModels: Array<AttributeDefaultValue> = [];
-
+  attributeFormValue;
+  private attributeSheetRoute;
   constructor(
     private endpointClassic: EndpointsRuleService,
     private endpointAnalytics: EndpointsAnalyticsService,
     private endpointDataplay: EndpointsDataplayService,
+    private router: Router,
     private http: HttpClient
   ) { }
 
@@ -188,4 +191,10 @@ export class NounModifierService {
     return this.http.post<any>(this.endpointClassic.getFetchAttributesMappingUrl(), null, {params: {libnounSno, libmodSno}});
   }
 
+  public openAttributeSidesheet(routerCommand = this.attributeSheetRoute) {
+    this.router.navigate(routerCommand, {
+      queryParamsHandling: 'preserve'
+    });
+    this.attributeSheetRoute = routerCommand;
+  }
 }

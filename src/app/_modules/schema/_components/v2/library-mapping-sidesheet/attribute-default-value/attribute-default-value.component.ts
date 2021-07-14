@@ -22,7 +22,6 @@ export class AttributeDefaultValueComponent implements OnInit {
   submitted = false;
 
   nounSno: string;
-  isMapped = false;
 
   valueList: Array<AttributeDefaultValue> = [];
   searchStr = '';
@@ -42,10 +41,6 @@ export class AttributeDefaultValueComponent implements OnInit {
 
     this.activatedRoute.params.subscribe(params => {
       this.nounSno = params.nounSno;
-      this.activatedRoute.queryParams.subscribe((queryParams) => {
-        this.isMapped = Boolean(queryParams.isMapped === 'true');
-
-      });
     });
 
   }
@@ -91,16 +86,12 @@ export class AttributeDefaultValueComponent implements OnInit {
       }, (response) => {
         if (response === 'yes') {
           this.nounModifierService.attributeValuesModels = this.valueList.filter(this.isValidRow);
-          this.router.navigate([{ outlets: { [`outer2`]: null } }], {
-            queryParams: { isMapped: this.isMapped }
-          });
+          this.nounModifierService.openAttributeSidesheet();
         }
       });
     } else {
       this.nounModifierService.attributeValuesModels = this.valueList;
-      this.router.navigate([{ outlets: { [`outer2`]: null } }], {
-        queryParams: { isMapped: this.isMapped }
-      });
+      this.nounModifierService.openAttributeSidesheet();
     }
   }
 

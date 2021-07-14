@@ -20,7 +20,6 @@ export class AttributeComponent implements OnInit {
   submitted = false;
 
   nounSno: string;
-  isMapped = false;
 
   get defaultValueCount() {
     return this.nounModifierService.attributeValuesModels?.length || 0;
@@ -39,9 +38,6 @@ export class AttributeComponent implements OnInit {
 
     this.activatedRoute.params.subscribe(params => {
       this.nounSno = params.nounSno;
-      this.activatedRoute.queryParams.subscribe((queryParams) => {
-        this.isMapped = Boolean(queryParams.isMapped === 'true');
-      });
     });
 
   }
@@ -57,6 +53,9 @@ export class AttributeComponent implements OnInit {
       attFieldLen: [''],
       prefix: ['']
     });
+    if(this.nounModifierService.attributeFormValue) {
+      this.attributeForm.patchValue(this.nounModifierService.attributeFormValue);
+    }
   }
 
   /**
@@ -94,7 +93,6 @@ export class AttributeComponent implements OnInit {
       attributeValuesModels: this.attributeForm.value.type === this.ATTRIBUTE_DATA_TYPE.LIST ? this.nounModifierService.attributeValuesModels : []
     };
     const request: Attribute[] = [attribute];
-    debugger;
 
     this.nounModifierService.addAttribute(request, this.nounSno)
       .subscribe(resp => {
@@ -108,16 +106,17 @@ export class AttributeComponent implements OnInit {
 
   close() {
     this.router.navigate([{ outlets: { [`outer`]: null } }], {
-      queryParams: { isMapped: this.isMapped }
+      queryParamsHandling: 'preserve'
     });
     this.nounModifierService.attributeValuesModels = [];
+    delete this.nounModifierService.attributeFormValue;
   }
 
   openDefaultValueSideSheet() {
-
+    this.nounModifierService.attributeFormValue = this.attributeForm.value;
     this.router.navigate([{
       outlets: {
-        outer2: 'outer2/schema/attribute-values'
+        outer: 'outer/schema/attribute-values'
       }
     }], {
       queryParamsHandling: 'preserve',
