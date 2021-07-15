@@ -19,6 +19,9 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   @Input()
   emitClearBtnEvent: boolean;
 
+  @Input() 
+  emtClearBtnClickedEvent:boolean;
+  
   @Output()
   emitFilterApplied: EventEmitter<boolean> = new EventEmitter<boolean>();
 

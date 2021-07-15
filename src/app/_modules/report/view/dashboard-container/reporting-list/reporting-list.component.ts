@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy, SimpleChanges, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -16,7 +16,7 @@ import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { debounceTime, map } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 @Component({
@@ -89,6 +89,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   userDetails: Userdetails;
   reportingListFilterForm: FormGroup;
 
+  /**
+   * to hold that is filter criteria clicked  or not
+   */
+  @Input() hasFilterCriteria: boolean;
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog,
@@ -130,10 +134,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
     const subs = this.reportingListWidget.subscribe(res => {
       if (res) {
-        if (!this.filterCriteria.length) {
+        if (this.hasFilterCriteria) {
           this.clearFilter(false);
         }
-        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
+        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria.concat(this.localFilterCriteria), this.activeSorts);
       }
     });
     this.subscription.push(subs);
@@ -255,7 +259,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   public getListTableMetadata(): void {
     this.displayedColumnsId = ['action'];
     // this.columnDescs = {};
-    const fieldsArray=[];
+    const fieldsArray = [];
     const sub = this.widgetService.getListTableMetadata(this.widgetId).subscribe((returnData: ReportingWidget[]) => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
@@ -574,6 +578,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   onFilterApplied(fieldId: string, formControlType, value?: DropDownValue[]) {
     const ind = this.localFilterCriteria.findIndex(item => item.fieldId === fieldId)
     if (ind > -1 && formControlType !== FormControlType.MULTI_SELECT) {
+      let selectedText = ''
       if (this.reportingListFilterForm.controls[fieldId].value === '') {
         this.localFilterCriteria.splice(ind, 1);
       } else if (formControlType === FormControlType.NUMBER) {
@@ -592,12 +597,16 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.localFilterCriteria[ind].conditionFieldEndValue = new Date().setHours(endValue.hours, endValue.minutes).toString();
       } else if (formControlType === FormControlType.DROP_DOWN && typeof (this.reportingListFilterForm.controls[fieldId].value) === 'object') {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
+        selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else if (formControlType === FormControlType.RADIO) {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
+        selectedText = this.reportingListFilterForm.controls[fieldId].value.value;
       }
       else {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
+      this.filteredList[ind] = JSON.parse(JSON.stringify(this.localFilterCriteria[ind]));
+      this.filteredList[ind].conditionFieldText = selectedText;
     } else if (ind === -1 && formControlType !== FormControlType.MULTI_SELECT) {
       let selectedText;
       let conditionOperator;
@@ -640,10 +649,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
-      this.localFilterCriteria.push(filterCriteria);
+      this.localFilterCriteria.push({...filterCriteria});
       filterCriteria.conditionFieldText = selectedText;
       if (selectedDataIndex > -1) this.filteredList[selectedDataIndex] = filterCriteria;
-      else this.filteredList.push(filterCriteria);
+      else this.filteredList.push({...filterCriteria});
     } else {
       if (value) {
         const selectedData = this.filteredList.find(item => item.fieldId === fieldId);
@@ -657,7 +666,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           filterCriteria.blockType = BlockType.COND;
           filterCriteria.widgetType = WidgetType.TABLE_LIST;
           filterCriteria.conditionOperator = selectedData && selectedData.conditionOperator ? selectedData.conditionOperator : ConditionOperator.EQUAL;
-          this.localFilterCriteria.push(filterCriteria);
+          this.localFilterCriteria.push({...filterCriteria});
           filterCriteria.conditionFieldText = item.TEXT;
           this.filteredList.push(filterCriteria);
         })
