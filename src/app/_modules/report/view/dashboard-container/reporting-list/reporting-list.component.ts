@@ -363,6 +363,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
             this.listData.push({ ...obj });
           }
         })
+      } else if(hvysData.length && !gvsData.length) {
+        this.listData.push({...obj});
       }
 
       if (!gvsData.length && !hvysData.length) {

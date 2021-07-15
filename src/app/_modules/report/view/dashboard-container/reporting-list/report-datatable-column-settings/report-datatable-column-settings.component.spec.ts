@@ -405,9 +405,8 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   }));
 
   it('change displayCriteria(), change display criteria',async(()=>{
-    component.dataSource = [{nodeId:'ADD_EANDATA', nodeDesc:"Additional EAN Grid", child:[{fieldId : "ADD_EANNO"} as MetadataModel]}]
-    // expect();
-    const data = { fieldId : "ADD_EANNO", displayCriteria : 'CODE'}
+    component.dataSource = [{nodeId:'ADD_EANDATA', nodeDesc:'Additional EAN Grid', child:[{fieldId : 'ADD_EANNO'} as MetadataModel]}]
+    const data = { fieldId : 'ADD_EANNO', displayCriteria : 'CODE'}
     component.changeDisplayCriteria(data);
     expect(component.dataSource[0].child[0].displayCriteria).toEqual('CODE');
   }));
