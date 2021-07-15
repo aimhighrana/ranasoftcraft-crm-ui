@@ -28,7 +28,7 @@ export class AttributeDefaultValueComponent implements OnInit {
   }
 
   isValidRow(row: AttributeDefaultValue) {
-    return row && row.CODE && row.shortValue
+    return row && row.code && row.shortValue
   }
 
   close() {
@@ -61,7 +61,7 @@ export class AttributeDefaultValueComponent implements OnInit {
 
   addValueRow() {
     const valueRow: AttributeDefaultValue = {
-      CODE: '',
+      code: '',
       shortValue: ''
     };
     this.valueList.unshift(valueRow);
@@ -88,6 +88,6 @@ export class AttributeDefaultValueComponent implements OnInit {
 
   canDisplayRow(row: AttributeDefaultValue) {
     const searchStr = this.searchStr.toLowerCase();
-    return !this.searchStr || row.CODE.toLowerCase().includes(searchStr) || row.shortValue.toLowerCase().includes(searchStr);
+    return !this.searchStr || row.code.toLowerCase().includes(searchStr) || row.shortValue.toLowerCase().includes(searchStr);
   }
 }

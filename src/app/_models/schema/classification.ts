@@ -30,7 +30,7 @@ export enum AttributeDataType {
 }
 
 export interface AttributeDefaultValue {
-    CODE: string;
+    code: string;
     shortValue: string;
 }
 
