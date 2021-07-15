@@ -8,7 +8,7 @@ import { debounceTime, startWith } from 'rxjs/operators';
 @Component({
   selector: 'pros-form-single-select',
   templateUrl: './form-single-select.component.html',
-  // styleUrls: ['./form-single-select.component.scss'],
+  styleUrls: ['./form-single-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class FormSingleSelectComponent implements OnInit, OnChanges {

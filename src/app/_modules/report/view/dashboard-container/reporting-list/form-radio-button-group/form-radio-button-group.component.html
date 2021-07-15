@@ -1,4 +1,4 @@
-<div class="f-col mdo-field" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
+<div class="f-col lib-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
     <lib-input disabled="true" *ngIf="isTableFilter">
     </lib-input>
     <lib-search [formControl]="fltrCtrl" [placeholder]="placeholder" *ngIf="!isTableFilter"></lib-search>
