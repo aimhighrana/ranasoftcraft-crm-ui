@@ -18,7 +18,7 @@
                 <lib-button type="major" (afterClick)="setUserConfigured(true)" i18n="@@no">No</lib-button>
             </div>
             <div class="row-spacer"></div>
-            <lib-search placeholder="Search fields" (valueChange)="searchHeader($event)"></lib-search>
+            <lib-search placeholder="Search fields" [formControl]="searchFormControl"></lib-search>
         </div>
     </div>
     <div class="f-col sidesheetcontent-listing">

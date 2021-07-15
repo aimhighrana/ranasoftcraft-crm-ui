@@ -8,6 +8,8 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { isEqual } from 'lodash';
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-report-datatable-column-settings',
@@ -108,7 +110,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    */
   hvyFields: MetadataModel[] = [];
 
-
+  searchFormControl : FormControl;
   /**
    * Constructor of class
    */
@@ -128,6 +130,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * ANGULAR HOOK
    */
   ngOnInit(): void {
+    this.searchFormControl = new FormControl();
     const reportDataTable = this.sharedService.getReportDataTableSetting().subscribe(data => {
       if (data?.isRefresh === false) {
         this.data = data;
@@ -153,6 +156,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     });
     this.subscriptions.push(reportDataTable);
+    this.searchFormControl.valueChanges.pipe(debounceTime(500)).subscribe(res=>{
+      this.searchHeader(res);
+    })
   }
 
   /**
