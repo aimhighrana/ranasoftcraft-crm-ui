@@ -41,7 +41,7 @@
                     </div>
 
                     <ng-container *ngFor="let row of valueList;let i=index">
-                        <div *ngIf="canDisplayRow(row)" class="f-row colunm-box rule-border-row">
+                        <div *ngIf="canDisplayRow(row)" class="f-row colunm-box rule-border-row value-row">
                             <div class="col col-x4 val-input-field" (click)="editRowValue(row, 'code')"
                                 [class.editable]="row.codeEditable">
                                 <lib-text-line class="lib-text-line">{{row.code || ' '}}</lib-text-line>

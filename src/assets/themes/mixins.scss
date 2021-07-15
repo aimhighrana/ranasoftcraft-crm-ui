@@ -1541,10 +1541,10 @@
       &.rule-border-row {
         border-bottom: 1px solid $color-app-border;
         padding: 0px 12px;
+      }
 
-        &:hover {  
-          background: $color-app-border;
-        }
+      &.value-row:hover {  
+        background: $color-app-border;
       }
     }
   }

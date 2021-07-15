@@ -96,6 +96,7 @@ export class AttributeComponent implements OnInit {
 
     this.nounModifierService.addAttribute(request, this.nounSno)
       .subscribe(resp => {
+        this.nounModifierService.attributeSaved.next(resp);
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });
         this.close();
       },

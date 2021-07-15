@@ -39,7 +39,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   @Output()
   clickAddNew: EventEmitter<string> = new EventEmitter<string>();
 
-  filteredOptions: Observable<any[]>= of([]);
+  filteredOptions: Observable<any[]> = of([]);
 
 
   @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger })
@@ -54,34 +54,34 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.formCtrl = this.formCtrl ? this.formCtrl : new FormControl('');
 
-    this.formCtrl.valueChanges.pipe(debounceTime(1000)).subscribe(res=>{
+    this.formCtrl.valueChanges.pipe(debounceTime(1000)).subscribe(res => {
       this.filterAutocompleteOptions(res);
     });
 
   }
 
   filterAutocompleteOptions(res) {
-    if(typeof res === 'string') {
-      if(this.requestFor && this.requestFor === RequestFor.noun) {
+    if (typeof res === 'string') {
+      if (this.requestFor && this.requestFor === RequestFor.noun) {
         this.getNouns(res.trim());
-      } else if(this.requestFor && this.requestFor === RequestFor.moifier) {
+      } else if (this.requestFor && this.requestFor === RequestFor.moifier) {
         this.getModifiers(res.trim());
-      } else if(this.requestFor && this.requestFor === RequestFor.attribute) {
+      } else if (this.requestFor && this.requestFor === RequestFor.attribute) {
         this.getAttributes(res.trim());
       }
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-     if(changes && changes.data && changes.data.previousValue !== changes.data.currentValue) {
-        this.data = changes.data.currentValue;
-        this.filteredOptions = of(this.data);
-     }
+    if (changes && changes.data && changes.data.previousValue !== changes.data.currentValue) {
+      this.data = changes.data.currentValue;
+      this.filteredOptions = of(this.data);
+    }
 
-     if(changes && changes.requestFor && changes.requestFor.previousValue !== changes.requestFor.currentValue) {
-       this.requestFor = changes.requestFor.currentValue;
-     }
-     this.setDropdownValue(this.formCtrl?.value);
+    if (changes && changes.requestFor && changes.requestFor.previousValue !== changes.requestFor.currentValue) {
+      this.requestFor = changes.requestFor.currentValue;
+    }
+    this.setDropdownValue(this.formCtrl?.value);
   }
 
 
@@ -90,12 +90,12 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
    * @param object pass object from which the value should be displayed
    */
   mdoFieldDisplayWith = (object) => {
-    if(object) {
-      if(this.requestFor && this.requestFor === 'noun') {
+    if (object) {
+      if (this.requestFor && this.requestFor === 'noun') {
         return object.NOUN_CODE ? object.NOUN_CODE : '';
-      } else if(this.requestFor && this.requestFor === 'modifier') {
+      } else if (this.requestFor && this.requestFor === 'modifier') {
         return object.MODE_CODE ? object.MODE_CODE : '';
-      } else if(this.requestFor && this.requestFor === 'attribute') {
+      } else if (this.requestFor && this.requestFor === 'attribute') {
         return object.ATTR_CODE ? object.ATTR_CODE : '';
       }
     }
@@ -108,11 +108,11 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
    */
   suggestedMdoFldTrkBy(object): string {
     if (object) {
-      if(this.requestFor && this.requestFor === 'noun') {
+      if (this.requestFor && this.requestFor === 'noun') {
         return object.NOUN_CODE ? object.NOUN_CODE : '';
-      } else if(this.requestFor && this.requestFor === 'modifier') {
+      } else if (this.requestFor && this.requestFor === 'modifier') {
         return object.MODE_CODE ? object.MODE_CODE : '';
-      } else if(this.requestFor && this.requestFor === 'attribute') {
+      } else if (this.requestFor && this.requestFor === 'attribute') {
         return object.ATTR_CODE ? object.ATTR_CODE : '';
       }
     }
@@ -120,12 +120,12 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   displayDroptext(option: any): string {
-    if(option) {
-      if(this.requestFor && this.requestFor === 'noun') {
+    if (option) {
+      if (this.requestFor && this.requestFor === 'noun') {
         return option.NOUN_CODE ? option.NOUN_CODE : option.NOUN_LONG;
-      } else if(this.requestFor && this.requestFor === 'modifier') {
+      } else if (this.requestFor && this.requestFor === 'modifier') {
         return option.MODE_CODE ? option.MODE_CODE : option.MOD_LONG;
-      } else if(this.requestFor && this.requestFor === 'attribute') {
+      } else if (this.requestFor && this.requestFor === 'attribute') {
         return option.ATTR_DESC || option.ATTR_CODE;
       }
     }
@@ -136,12 +136,12 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   getOptionVal(option: any): string {
-    if(option) {
-      if(this.requestFor && this.requestFor === 'noun') {
+    if (option) {
+      if (this.requestFor && this.requestFor === 'noun') {
         return option.NOUN_CODE || option.NOUN_LONG;
-      } else if(this.requestFor && this.requestFor === 'modifier') {
+      } else if (this.requestFor && this.requestFor === 'modifier') {
         return option.MODE_CODE || option.MOD_LONG;
-      } else if(this.requestFor && this.requestFor === 'attribute') {
+      } else if (this.requestFor && this.requestFor === 'attribute') {
         return option.ATTR_CODE || option.ATTR_DESC;
       }
     }
@@ -153,8 +153,8 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   getNouns(serachString: string) {
-    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.nounModifierService.getLocalNouns(user.plantCode, '','',serachString).subscribe(res=>{
+    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      this.nounModifierService.getLocalNouns(user.plantCode, '', '', serachString).subscribe(res => {
         this.data = res;
         this.filteredOptions = of(res);
       });
@@ -162,8 +162,8 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   getModifiers(serachString: string) {
-    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.nounModifierService.getLocalModifier(user.plantCode,this.selectedNoun ? this.selectedNoun : '',serachString).subscribe(res=>{
+    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      this.nounModifierService.getLocalModifier(user.plantCode, this.selectedNoun ? this.selectedNoun : '', serachString).subscribe(res => {
         this.data = res;
         this.filteredOptions = of(res);
       });
@@ -171,12 +171,12 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   getAttributes(serachString: string) {
-    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.nounModifierService.getLocalAttribute(this.selectedNoun ? this.selectedNoun : '' , this.selectedModifier ? this.selectedModifier : '',
-       user.plantCode,serachString).subscribe(res=>{
-        this.data = res;
-        this.filteredOptions = of(res);
-      });
+    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      this.nounModifierService.getLocalAttribute(this.selectedNoun ? this.selectedNoun : '', this.selectedModifier ? this.selectedModifier : '',
+        user.plantCode, serachString).subscribe(res => {
+          this.data = res;
+          this.filteredOptions = of(res);
+        });
     });
   }
   selectOption($event) {
@@ -184,7 +184,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   setDropdownValue(value: any) {
-    if(!value) {
+    if (!value) {
       this.dropdownformCtrl.reset();
       return;
     }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import {AttributesDoc, ClassificationMappingRequest, ClassificationMappingResponse, NounModifier} from '@models/schema/noun-modifier';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +17,7 @@ export class NounModifierService {
   attributeValuesModels: Array<AttributeDefaultValue> = [];
   attributeFormValue;
   attributeSheetRoute;
+  attributeSaved = new Subject();
   constructor(
     private endpointClassic: EndpointsRuleService,
     private endpointAnalytics: EndpointsAnalyticsService,
