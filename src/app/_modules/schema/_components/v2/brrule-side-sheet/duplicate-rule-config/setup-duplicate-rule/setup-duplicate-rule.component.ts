@@ -152,6 +152,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
     duplicacyField.forEach(field => this.addFieldRecord(field.fieldId, field));
     duplicacyMaster.forEach(master => this.addMasterRecord(master.ruleType, master));
 
+    this.formChange.emit(this.duplicateRuleForm);
   }
 
 
