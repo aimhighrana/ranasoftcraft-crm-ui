@@ -252,7 +252,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
         this.mgroup = res.MGROUP ? res.MGROUP : '';
         this.getAttributesMapping();
-      }, error => {        
+      }, error => {
         console.log('Error occured while loading the attributes', error);
       });
     });

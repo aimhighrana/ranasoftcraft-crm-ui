@@ -19,9 +19,9 @@ describe('AttributeComponent', () => {
       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         GlobaldialogService, {
-        provide: ActivatedRoute,
-        useValue: { params: of({ nounSno: '1701' }) }
-      }]
+          provide: ActivatedRoute,
+          useValue: { params: of({ nounSno: '1701' }) }
+        }]
     })
       .compileComponents();
   }));
@@ -82,5 +82,25 @@ describe('AttributeComponent', () => {
     component.deleteValueRow(0);
     expect(globaldialogService.confirm).toHaveBeenCalled();
     expect(component.valueList.length).toEqual(0);
+  });
+  it('saveRowValue should save row value', async () => {
+    const row: AttributeDefaultValue = {
+      code: 'test',
+      codeTemp: 'test2',
+      codeEditable: true,
+      shortValue: 'test'
+    };
+    component.saveRowValue(row, 'code');
+    expect(row.code).toEqual('test2');
+  });
+  it('editRowValue should edit row value', async () => {
+    const row: AttributeDefaultValue = {
+      code: 'test',
+      codeTemp: '',
+      codeEditable: false,
+      shortValue: 'test'
+    };
+    component.editRowValue(row, 'code');
+    expect(row.codeTemp).toEqual('test');
   });
 });
