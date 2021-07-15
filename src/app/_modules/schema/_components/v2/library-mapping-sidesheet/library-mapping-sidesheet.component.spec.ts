@@ -267,16 +267,13 @@ describe('LibraryMappingSidesheetComponent', () => {
   it('should createNewWidgetFor', () => {
     spyOn(component, 'openNounSidesheet');
     spyOn(component, 'openModifierSidesheet');
-    spyOn(component, 'openAttributeSidesheet');
 
     component.createNewWidgetFor('noun');
     component.createNewWidgetFor('modifier');
-    component.createNewWidgetFor('attribute');
     component.createNewWidgetFor('other');
 
     expect(component.openNounSidesheet).toHaveBeenCalledTimes(1);
     expect(component.openModifierSidesheet).toHaveBeenCalledTimes(1);
-    expect(component.openAttributeSidesheet).toHaveBeenCalledTimes(1);
   })
 
   it('should search the attribute', () => {
