@@ -132,7 +132,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   }
 
   displayFn(value: any): string {
-    return this.displayDroptext(value);
+    return this.displayDroptext(value) || value || this.formCtrl.value;
   }
 
   getOptionVal(option: any): string {
