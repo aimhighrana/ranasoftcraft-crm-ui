@@ -27,6 +27,7 @@ import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/sch
 import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 import { debounce } from 'lodash';
 import { MatTable } from '@angular/material/table';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'pros-schema-details',
@@ -278,6 +279,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    filterableRulesOb: Observable<CoreSchemaBrInfo[]> = of([]);
    appliedBrList: CoreSchemaBrInfo[] = [];
 
+  searchFrmCtrl: FormControl = new FormControl();
+
    delayedCall = debounce((searchText: string) => {
     this.businessRulesBasedOnLastRun(searchText);
   }, 300)
@@ -502,6 +505,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
+
+
+    this.searchFrmCtrl.valueChanges.subscribe(v=>{
+      this.inlineSearchSubject.next(v);
+    });
 
   }
 
@@ -884,8 +892,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if(typeof value === 'object') {
       code = value.CODE;
       value = value.TEXT;
-    } else {
-      value = '';
     }
     console.log(value);
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
@@ -933,7 +939,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         });
         this.subscribers.push(sub);
       } else {
-        console.error(`Wrong with object number or can't change if old and new same  ... `);
+        console.error(`Wrong with object number or can't change if old and new same... `);
       }
     }
 
@@ -995,7 +1001,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   manageStaticColumns() {
     let dispCols: string[] = [];
     if (this.activeTab === 'success' || this.activeTab === 'error') {
-      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
+      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', 'OBJECTNUMBER'];
       this.tableHeaderActBtn = [];
     } else {
       dispCols = ['_select_columns', '_assigned_buckets', '_row_actions', 'OBJECTNUMBER'];
@@ -1184,6 +1190,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   resetAppliedFilter() {
     this.filterCriteria.next([]);
     this.preInpVal = '';
+    this.searchFrmCtrl.setValue('');
   }
 
   /**

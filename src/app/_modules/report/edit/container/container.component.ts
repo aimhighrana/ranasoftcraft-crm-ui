@@ -370,12 +370,16 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
        else {
         this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
        }
-       if(latestProp.bucketFilter?.key === 'none'){
+       if(latestProp.chartType?.key === 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+        if(latestProp.bucketFilter?.key === 'none'){
           this.selStyleWid.chartProperties.bucketFilter = BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
         }
         else{
             this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter?.key : BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
         }
+       } else {
+        this.selStyleWid.chartProperties.bucketFilter = null;
+       }
         this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : this.timeInterval[1].key;
         this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : this.chartType[0].key;
         this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : this.datalabelsPosition[0].key;
@@ -794,8 +798,15 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
-    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
+    if (fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType) {
       this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
+    }
+
+    if (this.chartPropCtrlGrp.get('chartType').value !== 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+      this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
+      this.selStyleWid.chartProperties.bucketFilter = null;
+    }
+
   }
 
   /**
