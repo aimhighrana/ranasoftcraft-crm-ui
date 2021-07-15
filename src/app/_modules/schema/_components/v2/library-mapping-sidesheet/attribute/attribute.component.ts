@@ -114,8 +114,9 @@ export class AttributeComponent implements OnInit {
 
   openDefaultValueSideSheet() {
     this.nounModifierService.attributeFormValue = this.attributeForm.value;
-    this.router.navigate([{
+    this.router.navigate(['', {
       outlets: {
+        ...this.nounModifierService.attributeSheetRoute[1].outlets,
         outer: 'outer/schema/attribute-values'
       }
     }], {
