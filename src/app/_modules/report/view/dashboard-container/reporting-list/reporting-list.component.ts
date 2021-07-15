@@ -581,6 +581,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * @returns the observable that calls the api of meta deta fields
    */
   getMetaDataFields(objectNumber) {
-    return this.schemaDetailsService.getMetadataFields(objectNumber);
+    return this.schemaDetailsService.getMetadataFields(objectNumber)
   }
 }
