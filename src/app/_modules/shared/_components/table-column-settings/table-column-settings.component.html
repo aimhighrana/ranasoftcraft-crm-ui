@@ -198,7 +198,7 @@
                         <div class="col col-x4">
                             <lib-checkbox [disabled]="!action.isPrimaryAction && primaryActions.length === 3"
                                 [checked]="action.isPrimaryAction"
-                                (valueChange)="actionChanged(index, 'isPrimaryAction', $event.checked)">
+                                (valueChange)="actionChanged(index, 'isPrimaryAction', $event)">
                             </lib-checkbox>
                         </div>
 

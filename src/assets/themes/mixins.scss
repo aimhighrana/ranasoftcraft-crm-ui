@@ -1109,6 +1109,12 @@
         color: $color-status-error;
       }
 
+      &.text-strike {
+        opacity: 0.4;
+        pointer-events: none;
+        text-decoration: line-through;
+      }
+
       .edit-cell {
         height: 100%;
 
