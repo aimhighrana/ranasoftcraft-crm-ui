@@ -495,6 +495,7 @@ get selectedRunningSchedule () {
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
+          (evt.target as any).value = '';
           this.showValidationError('File size too large , upload less then 10 MB');
           return false;
         }
@@ -542,6 +543,7 @@ get selectedRunningSchedule () {
         this.uploadFileData();
       } else {
         this.uploadedFile = null;
+        (evt.target as any).value = '';
         this.showValidationError('Unsupported file format, allowed file formats are .xlsx, .xls and .csv')
       }
     }
