@@ -396,7 +396,16 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37'|| this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35')) {
       const metadatas: DropDownValues[] = [];
       buckets.forEach(bucket => {
-        const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER, display: this.setDisplayCriteria(bucket.key.FILTER, bucket.key.FILTER)} as DropDownValues;
+        const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+        const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
+          ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+          (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
+          ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+        let code = bucket.key.FILTER;
+        if(val && val[0] && val[0].c) {
+          code = val[0].c;
+        }
+        const metaData = {CODE: code, FIELDNAME: fieldId, TEXT: bucket.key.FILTER, display: this.setDisplayCriteria(code, bucket.key.FILTER)} as DropDownValues;
         metadatas.push(metaData);
       });
       this.values = metadatas;
