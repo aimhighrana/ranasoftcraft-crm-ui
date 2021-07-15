@@ -799,13 +799,13 @@ export class BrruleSideSheetComponent implements OnInit {
     controlKeys.map((key) => {
       const index = requiredKeys.findIndex(reqKey => reqKey === key);
       if (index === -1) {
-        this.form.get(key).setValidators(null);
-        this.form.get(key).clearValidators();
+        this.form.controls[key].setValidators(null);
+        this.form.controls[key].clearValidators();
+        this.form.controls[key].updateValueAndValidity();
         if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && key !== 'transformationRuleType') {
-          this.form.get(key).setValue(null);
+          this.form.controls[key].setValue(null);
         }
       } else {
-        // this.form.get(key).setValidators([Validators.required]);
         this.form.controls[key].setValidators([Validators.required]);
         this.form.controls[key].updateValueAndValidity();
       }
@@ -1340,7 +1340,6 @@ export class BrruleSideSheetComponent implements OnInit {
         if (control.invalid)
           control.markAsTouched();
       });
-    this.submitted = true;
 
     let brType: string = this.form.value ? this.form.value.rule_type : '';
     brType = brType ? brType : this.coreSchemaBrInfo.brType;
@@ -1348,7 +1347,10 @@ export class BrruleSideSheetComponent implements OnInit {
     if(this.isOnlyForTrans) {
       brType = BusinessRuleType.BR_TRANSFORMATION;
     }
+
     if (!this.form.valid) {
+      console.log(this.form.controls);
+
       this.form.markAllAsTouched();
       this.showValidationError('Please fill the required fields.');
       if (brType!=='BR_CUSTOM_SCRIPT') {
