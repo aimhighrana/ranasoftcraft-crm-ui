@@ -522,7 +522,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * fetches first few filters alomg with selected filters
+   * fetches first few filters alomg with selected filters...
    */
   getAllFilters() {
     if (this.allFilters.length) {
