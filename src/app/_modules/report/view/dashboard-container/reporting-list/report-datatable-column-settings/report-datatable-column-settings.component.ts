@@ -103,14 +103,14 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   /**
    * array to store the data of grid and heirarchy data
    */
-  dataSource: any;
+  dataSource: any[] =[] ;
 
   /**
    * array to store all child nodes for hierarchy
    */
   hvyFields: MetadataModel[] = [];
 
-  searchFormControl : FormControl;
+  searchFormControl: FormControl;
   /**
    * Constructor of class
    */
@@ -156,7 +156,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     });
     this.subscriptions.push(reportDataTable);
-    this.searchFormControl.valueChanges.pipe(debounceTime(500)).subscribe(res=>{
+    this.searchFormControl.valueChanges.pipe(debounceTime(500)).subscribe(res => {
       this.searchHeader(res);
     })
   }
@@ -383,7 +383,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * function to manage the state of checkbox
    */
   manageStateOfCheckbox() {
-    if (this.headers.length + this.gvsFields.length + this.hvyFields.length  === this.data.selectedColumns.length) {
+    if (this.headers.length + this.gvsFields.length + this.hvyFields.length === this.data.selectedColumns.length) {
       this.allCheckboxSelected = true;
       this.allIndeterminate = false;
     }
@@ -442,6 +442,13 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     }
     this.headers.forEach(row => selectDisplayCriteria(row));
+    this.dataSource.forEach(data => {
+      data.child.forEach(row => selectDisplayCriteria(row));
+    })
+
+    this.nestedDataSource.forEach(data => {
+      data.child.forEach(row => selectDisplayCriteria(row))
+    })
     this.data.selectedColumns.forEach(row => selectDisplayCriteria(row));
     this.manageConfigure();
   }
@@ -463,9 +470,15 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    */
   selectAllCheckboxes() {
     if (!this.allCheckboxSelected) {
+      const allSelectedData = [];
+      this.dataSource.forEach(item => {
+        item.child.forEach(data => {
+          allSelectedData.push(data);
+        })
+      })
       this.allIndeterminate = false;
       this.data.selectedColumns = [];
-      this.data.selectedColumns = [...JSON.parse(JSON.stringify(this.headers)), ...JSON.parse(JSON.stringify(this.gvsFields)), ...JSON.parse(JSON.stringify(this.hvyFields))];
+      this.data.selectedColumns = [...JSON.parse(JSON.stringify(this.headers)), ...JSON.parse(JSON.stringify(allSelectedData))];
       this.allCheckboxSelected = true;
     } else {
       this.allIndeterminate = false;
@@ -485,7 +498,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     if (value && value.trim() !== '') {
       const headers = this.headers.filter(header => header.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1);
       this.headersObs = of(headers);
-      this.nestedDataSource = value ? this.filtered(listData,value) : listData;
+      this.nestedDataSource = value ? this.filtered(listData, value) : listData;
     } else {
       this.nestedDataSource = this.dataSource;
       this.headersObs = of(this.headers);
@@ -523,7 +536,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     })
 
-    this.nestedDataSource.forEach(item => {
+    this.dataSource.forEach(item => {
       item.child.forEach(data => {
         const index = fieldId.findIndex((el) => el === data.fieldId)
         if (index > -1) {
@@ -619,13 +632,22 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
         item.displayCriteria = this.data.displayCriteria;
       });
 
-      this.hvyFields.forEach(item => {
-        item.displayCriteria = this.data.displayCriteria;
+      this.dataSource.forEach(data => {
+        data.child.forEach(item => item.displayCriteria = this.data.displayCriteria);
+      })
+      this.nestedDataSource.forEach(data => {
+        data.child.forEach(item => item.displayCriteria = this.data.displayCriteria);
       })
 
-      this.gvsFields.forEach((item: any) => {
-        item.displayCriteria = this.data.displayCriteria;
-      })
     }
+  }
+
+  changeDisplayCriteria(value) {
+    this.dataSource.forEach((data, ind) => {
+      const index = data.child.findIndex(item => item.fieldId === value.fieldId);
+      if (index > -1) {
+        this.dataSource[ind].child[index].displayCriteria = value.displayCriteria;
+      }
+    })
   }
 }

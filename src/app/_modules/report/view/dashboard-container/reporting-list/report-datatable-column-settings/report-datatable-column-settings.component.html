@@ -79,7 +79,7 @@
                                             <mat-form-field appearance="outline"
                                                 *ngIf="data.picklist == '1' || data.picklist == '30' || data.picklist == '37'">
                                                 <mat-select [(ngModel)]="data.displayCriteria"
-                                                    (ngModelChange)="manageAllDisplayCriteria(); manageConfigure()">
+                                                    (ngModelChange)="changeDisplayCriteria(data); manageAllDisplayCriteria(); manageConfigure()">
                                                     <mat-option value="TEXT" i18n="@@text">Text</mat-option>
                                                     <mat-option value="CODE" i18n="@@code">Code</mat-option>
                                                     <mat-option value="CODE_TEXT" i18n="@@codeAndText">Code and Text
