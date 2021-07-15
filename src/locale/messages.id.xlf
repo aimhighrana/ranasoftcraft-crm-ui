@@ -613,6 +613,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">351</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
         <source>Type inside the search box to find fields</source>
@@ -1885,6 +1889,10 @@
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="codeAndText" datatype="html">
         <source>Code and Text</source>
@@ -3155,6 +3163,46 @@
       <trans-unit id="hour" datatype="html">
         <source>Hour</source>
         <target>Jam</target>
+      </trans-unit>
+      <trans-unit id="default_value" datatype="html">
+        <source>Default value</source>
+        <target>nilai default</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute\attribute.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_value" datatype="html">
+        <source>New value</source>
+        <target>nilai baru</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values" datatype="html">
+        <source>Default values</source>
+        <target>nilai dasar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values_empty_msg" datatype="html">
+        <source>You don’t have any values defined for this list yet. Type the value name in the box above to add.</source>
+        <target>Anda tidak memiliki nilai yang ditetapkan untuk daftar ini. Ketik nama nilai dalam kotak di atas untuk menambahkan.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="value" datatype="html">
+        <source>value</source>
+        <target>nilai</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
       </trans-unit>
     </body>
   </file>

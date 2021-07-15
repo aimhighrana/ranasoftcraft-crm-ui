@@ -40,7 +40,7 @@
                             <mat-button-toggle [value]="ATTRIBUTE_DATA_TYPE.LIST">List</mat-button-toggle>
                         </mat-button-toggle-group>
                         <div class="f-col-spacer-half"></div>
-                        <lib-text-line *ngIf="formField('type').value===ATTRIBUTE_DATA_TYPE.LIST" type="base" textColor="link" class="cursor" (click)="openDefaultValueSideSheet()">Default value ({{defaultValueCount}})</lib-text-line>
+                        <lib-text-line *ngIf="formField('type').value===ATTRIBUTE_DATA_TYPE.LIST" type="base" textColor="link" class="cursor" (click)="openDefaultValueSideSheet()"><span i18n="@@default_value">Default value</span> ({{defaultValueCount}})</lib-text-line>
                     </div>
                     <div class="f-row-spacer-half"></div>
                 </div>
