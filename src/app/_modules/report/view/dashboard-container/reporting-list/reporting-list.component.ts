@@ -605,8 +605,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       else {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
-      this.filteredList[ind] = JSON.parse(JSON.stringify(this.localFilterCriteria[ind]));
-      this.filteredList[ind].conditionFieldText = selectedText;
+      if(this.localFilterCriteria[ind]){
+        this.filteredList[ind] = JSON.parse(JSON.stringify(this.localFilterCriteria[ind]));
+        this.filteredList[ind].conditionFieldText = selectedText;
+      }
     } else if (ind === -1 && formControlType !== FormControlType.MULTI_SELECT) {
       let selectedText;
       let conditionOperator;
