@@ -5,7 +5,6 @@ div.root {
   width: 668px;
 
   .breadcrum-toolbar {
-    
     padding: 8px 15px;
     margin-bottom: 20px;
 
@@ -23,6 +22,7 @@ div.root {
   .lib-search {
     width: 100%;
   }
+
   .sidesheetcontent-listing {
     height: calc(100% - 52px);
     overflow: auto;
@@ -33,7 +33,7 @@ div.root {
       .cursor {
         cursor: pointer;
       }
-      
+
       .colunm-box {
         box-sizing: border-box;
         min-height: 48px;
@@ -47,6 +47,7 @@ div.root {
             visibility: visible;
           }
         }
+
         .col {
           display: flex;
           flex: 1 0 auto;
@@ -82,7 +83,6 @@ div.root {
           }
         }
       }
-
     }
   }
 }
