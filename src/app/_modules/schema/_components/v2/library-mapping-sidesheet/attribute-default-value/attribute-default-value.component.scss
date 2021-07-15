@@ -36,7 +36,7 @@ div.root {
 
       .colunm-box {
         box-sizing: border-box;
-        min-height: 48px;
+        min-height: 61px;
 
         .action {
           visibility: hidden;
@@ -69,6 +69,19 @@ div.root {
             flex: 4;
           }
 
+          &.val-input-field {
+            .lib-input {
+              display: none;
+            }
+            &.editable {
+              .lib-input {
+                display: initial;
+              }
+              .lib-text-line {
+                display: none;
+              }
+            }
+          }
           &.mat-item-center {
             justify-content: center;
           }

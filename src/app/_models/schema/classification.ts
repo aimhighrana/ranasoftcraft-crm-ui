@@ -32,6 +32,11 @@ export enum AttributeDataType {
 export interface AttributeDefaultValue {
     code: string;
     shortValue: string;
+    // UI fields
+    codeTemp?: string;
+    codeEditable?: boolean;
+    shortValueTemp?: string;
+    shortValueEditable?: boolean;
 }
 
 /* export interface Modifier {

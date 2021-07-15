@@ -24,7 +24,7 @@ export class AttributeDefaultValueComponent implements OnInit {
     if (!this.nounModifierService.attributeValuesModels) {
       this.nounModifierService.attributeValuesModels = [];
     }
-    this.valueList = this.nounModifierService.attributeValuesModels;
+    this.loadValues();
   }
 
   isValidRow(row: AttributeDefaultValue) {
@@ -33,7 +33,7 @@ export class AttributeDefaultValueComponent implements OnInit {
 
   close() {
     const isAnyInvalidRow = this.valueList.find(row => !this.isValidRow(row));
-    const routerCommands = this.nounModifierService.attributeSheetRoute;
+
     if (isAnyInvalidRow) {
       this.transientService.confirm({
         data: { label: 'Empty entries will not be saved. Click Ok to continue.' },
@@ -42,14 +42,33 @@ export class AttributeDefaultValueComponent implements OnInit {
         backdropClass: 'no-backdrop'
       }, (response) => {
         if (response === 'yes') {
-          this.nounModifierService.attributeValuesModels = this.valueList.filter(this.isValidRow);
-          this.router.navigate(routerCommands, { queryParamsHandling: 'preserve' });
+          this.saveValues();
         }
       });
     } else {
-      this.nounModifierService.attributeValuesModels = this.valueList;
-      this.router.navigate(routerCommands, { queryParamsHandling: 'preserve' });
+      this.saveValues();
     }
+  }
+
+  loadValues() {
+    this.valueList = this.nounModifierService.attributeValuesModels.map(row => ({
+      ...row,
+      codeEditable: false,
+      shortValueEditable: false,
+      codeTemp: row.code,
+      shortValueTemp: row.shortValue
+    }));
+  }
+
+  saveValues() {
+    const routerCommands = this.nounModifierService.attributeSheetRoute;
+    this.nounModifierService.attributeValuesModels = this.valueList
+      .filter(this.isValidRow)
+      .map(row => ({
+        code: row.code,
+        shortValue: row.shortValue
+      }));
+    this.router.navigate(routerCommands, { queryParamsHandling: 'preserve' });
   }
 
   uploadData() {
@@ -64,7 +83,7 @@ export class AttributeDefaultValueComponent implements OnInit {
       code: '',
       shortValue: ''
     };
-    this.valueList.unshift(valueRow);
+    this.valueList.push(valueRow);
   }
 
   copyData(i: number) {
@@ -89,5 +108,18 @@ export class AttributeDefaultValueComponent implements OnInit {
   canDisplayRow(row: AttributeDefaultValue) {
     const searchStr = this.searchStr.toLowerCase();
     return !this.searchStr || row.code.toLowerCase().includes(searchStr) || row.shortValue.toLowerCase().includes(searchStr);
+  }
+
+  editRowValue(row: AttributeDefaultValue, field: string) {
+    if (row[`${field}Editable`]) {
+      return;
+    }
+    row[`${field}Temp`] = row[`${field}`];
+    row[`${field}Editable`] = true;
+  }
+
+  saveRowValue(row: AttributeDefaultValue, field: string) {
+    row[`${field}`] = row[`${field}Temp`];
+    row[`${field}Editable`] = false;
   }
 }
