@@ -178,12 +178,12 @@ describe('CatalogCheckService', () => {
 
 
     // actual service call
-    catalogService.markForDeletion('Diw_15','module1','schema','run').subscribe(actualResponse => {
+    catalogService.markForDeletion('Diw_15','module1','schema','run',false).subscribe(actualResponse => {
       expect(actualResponse).toEqual(mockData);
     });
 
     // mock http call
-    const mockRequest = httpTestingController.expectOne(`${url}`);
+    const mockRequest = httpTestingController.expectOne(`${url}?isForRestore=false`);
     expect(mockRequest.request.method).toEqual('POST');
     expect(mockRequest.request.responseType).toEqual('json');
     mockRequest.flush(mockData);
