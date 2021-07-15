@@ -578,9 +578,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   onFilterApplied(fieldId: string, formControlType, value?: DropDownValue[]) {
     const ind = this.localFilterCriteria.findIndex(item => item.fieldId === fieldId)
     if (ind > -1 && formControlType !== FormControlType.MULTI_SELECT) {
-      let selectedText = ''
+      let selectedText = '';
       if (this.reportingListFilterForm.controls[fieldId].value === '') {
         this.localFilterCriteria.splice(ind, 1);
+        this.filteredList.splice(ind,1);
       } else if (formControlType === FormControlType.NUMBER) {
         this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
         this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
@@ -609,7 +610,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.filteredList[ind] = JSON.parse(JSON.stringify(this.localFilterCriteria[ind]));
         this.filteredList[ind].conditionFieldText = selectedText;
       }
-    } else if (ind === -1 && formControlType !== FormControlType.MULTI_SELECT) {
+    } else if (ind === -1 && formControlType !== FormControlType.MULTI_SELECT && this.reportingListFilterForm.controls[fieldId].value) {
       let selectedText;
       let conditionOperator;
       const selectedDataIndex = this.filteredList.findIndex(item => item.fieldId === fieldId);
