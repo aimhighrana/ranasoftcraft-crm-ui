@@ -119,7 +119,7 @@ describe('LibraryMappingSidesheetComponent', () => {
       localModCode: 'Ball',
       attributeMapData: [{libraryAttributeCode: 'Length', localAttributeCode: 'Length'}]
     }
-
+    component.isMapped = true;
     component.buildMappingForm();
 
     spyOn(nounModifierService, 'getAttributesMapping').withArgs('Bearing', 'Ball').and.returnValue(of(result));
