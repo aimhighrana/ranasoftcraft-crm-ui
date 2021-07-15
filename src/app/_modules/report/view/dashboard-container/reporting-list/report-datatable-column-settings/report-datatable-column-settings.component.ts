@@ -618,7 +618,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       })
 
       this.gvsFields.forEach((item: any) => {
-        item.displayCriteria = this.data.displayCriteria
+        item.displayCriteria = this.data.displayCriteria;
       })
     }
   }
