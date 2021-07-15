@@ -28,6 +28,7 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -210,6 +211,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @ViewChild('tableSearchInput') tableSearchInput: SearchInputComponent;
 
+  /**
+   * Control for the search ...
+   */
+  searchFrmCtrl: FormControl = new FormControl();
+
   currentDatascopePageNo = 0;
 
   constructor(
@@ -355,6 +361,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.userDetails = res;
     }, error => console.error(`Error : ${error.message}`));
 
+    this.searchFrmCtrl.valueChanges.subscribe(val=>{
+      this.inlineSearchSubject.next(val);
+    });
 
   }
 
@@ -826,6 +835,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   resetAppliedFilter() {
     this.filterCriteria.next([]);
     this.preInpVal = '';
+    this.searchFrmCtrl.setValue('');
   }
 
   /**

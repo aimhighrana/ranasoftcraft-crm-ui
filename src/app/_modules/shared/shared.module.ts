@@ -86,6 +86,7 @@ import { StatusBadgeDirective } from './_directives/status-badge.directive';
 import { UDRValueControlComponent } from './_components/udr-value-control/udr-value-control.component';
 import { OverlayLoaderComponent } from './_components/overlay-loader/overlay-loader.component';
 import { OptionFilterComponent } from './_components/lookup/option-filter/option-filter.component';
+import { SelectComponent } from './_components/select/select.component';
 
 @NgModule({
   declarations: [
@@ -135,7 +136,8 @@ import { OptionFilterComponent } from './_components/lookup/option-filter/option
     UDRValueControlComponent,
     StatusBadgeDirective,
     OverlayLoaderComponent,
-    OptionFilterComponent
+    OptionFilterComponent,
+    SelectComponent
   ],
   imports: [
     // ng modules
@@ -285,7 +287,8 @@ import { OptionFilterComponent } from './_components/lookup/option-filter/option
     GenericFieldControlComponent,
     UDRValueControlComponent,
     StatusBadgeDirective,
-    OverlayLoaderComponent
+    OverlayLoaderComponent,
+    SelectComponent
   ],
   providers: [
     TitleCasePipe,
