@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddFilterOutput, DataScopeSidesheet, SchemaVariantReq } from '@models/schema/schema';
-import { FilterCriteria } from '@models/schema/schemadetailstable';
+import { FilterCriteria, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { LoadDropValueReq } from '@models/schema/schemalist';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -236,6 +236,15 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * filter load limit
+   */
+  filterCntLimit = 20;
+  /**
+   * holds unparsed data from metadata fields list api
+   */
+  rawFilterData: MetadataModeleResponse;
+
+  /**
    * Constructor of the class
    */
   constructor(private router: Router,
@@ -271,8 +280,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe((searchString) => {
-      this.searchFilters(this.allFilters, 'allList', searchString);
-      this.searchFilters(this.selectedFilters, 'selectedList', searchString);
+      // filters filter list
+      this.searchFilters('allList', searchString);
+      // filters only selected fields
+      this.searchFilters('selectedList', searchString);
     });
     this.subscriptions.push(filterSearchSub);
 
@@ -511,87 +522,25 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * fetches all available filters
+   * fetches first few filters alomg with selected filters
    */
   getAllFilters() {
     if (this.allFilters.length) {
       return;
     }
-    const selectedFiltersList = [];
+    let selectedFiltersList = [];
     const fieldIdsList = this.selectedFilterCriteria.length ? this.selectedFilterCriteria.map((x) => x.fieldId) : [];
     const schemaDetailsSub = this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(res => {
-      const headers = res.headers;
-      for (const headerField in headers) {
-        if (headers[headerField]) {
-          const field = {...headers[headerField]};
-          field.type = 'header';
-          field.show = true;
-          this.allFilters.push(field);
-          if (fieldIdsList.includes(field.fieldId)) {
-            selectedFiltersList.push(field);
-          }
-        }
-      }
+      this.rawFilterData = res;
 
-      const grids = res.grids;
-      const gridFields = res.gridFields;
-      for (const grid in grids) {
-        if (grids[grid]) {
-          const parentField = {...grids[grid]};
-          parentField.type = 'grid';
-          parentField.child = [];
-          parentField.show = true;
-          const val = parentField;
-          const gridChilds = gridFields[grid] || {};
-          if (Object.keys(gridChilds).length) {
-            for (const gridChild in gridChilds) {
-              if (gridChilds[gridChild]) {
-                const childField = {...gridChilds[gridChild]};
-                childField.type = 'grid';
-                childField.isChild = 1;
-                childField.parentFieldId = val.fieldId;
-                childField.show = true;
-                val.child.push(childField);
-                if (fieldIdsList.includes(childField.fieldId)) {
-                  selectedFiltersList.push(childField);
-                }
-              }
-            }
-          }
-          this.allFilters.push(val);
-        }
-      }
-
-      const hierarchy = res.hierarchy;
-      const hierarchyFields = res.hierarchyFields;
-      hierarchy.forEach((x: any) => {
-        const parentField = {...x};
-        parentField.type = 'hierarchy';
-        parentField.child = [];
-        parentField.show = true;
-        parentField.fieldId = x.heirarchyId;
-        parentField.fieldDescri = x.heirarchyText;
-        const val = parentField;
-        const childs = hierarchyFields[x.heirarchyId];
-        if (Object.keys(childs).length) {
-          for (const key in childs) {
-            if (childs[key]) {
-              const childField = {...childs[key]};
-              childField.type = 'hierarchy';
-              childField.isChild = 1;
-              childField.parentFieldId = val.fieldId;
-              childField.show = true;
-              val.child.push(childField);
-              if (fieldIdsList.includes(childField.fieldId)) {
-                selectedFiltersList.push(childField);
-              }
-            }
-          }
-        }
-        this.allFilters.push(val);
-      });
+      const limit = this.allFilters.length + this.filterCntLimit;
+      const selectedHeaderFields = this.parseHeaderFields(fieldIdsList, limit);
+      const selectedGridFields = this.parseGridFields(fieldIdsList, limit);
+      const selectedHierarchyFields = this.parseHierarchyFields(fieldIdsList, limit);
+      selectedFiltersList = [...selectedHeaderFields, ...selectedGridFields, ...selectedHierarchyFields];
 
       this.filtersDisplayList = this.allFilters;
+      // setting existing values for pre selected filters
       selectedFiltersList.forEach((x) => {
         if (x.isChild) {
           this.selectFilter(x, true, false);
@@ -600,6 +549,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         }
       });
 
+      // opening first selected filter
       if (selectedFiltersList.length) {
         this.selectDynamicFilter(selectedFiltersList[0], true);
       }
@@ -611,37 +561,212 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * parses header filter  fields
+   * @param selectedIds contains list of selected field Ids from api (used only on initial load)
+   * @param limit count limit
+   * @param searchStr search string to filter
+   * @returns returns filter list for provided selected Ids on initial load
+   */
+  parseHeaderFields(selectedIds, limit, searchStr = '') {
+    const selectedFiltersList = [];
+    const headers = this.rawFilterData.headers;
+    const headerKeys = Object.keys(headers);
+    // used to avoid duplicate values in list
+    const existingIds = this.allFilters.map((x) => x.fieldId);
+    const searchString = searchStr.trim() || '';
+    // used to separate selected fields from remaining fields
+    const selectedFiltersIds = this.selectedFilters.map((x) => x.fieldId);
+
+    headerKeys.forEach((headerField) => {
+      if (headers[headerField] && !selectedFiltersIds.includes(headers[headerField].fieldId) && ((selectedIds.includes(headers[headerField].fieldId)) || (!existingIds.includes(headers[headerField].fieldId) && (this.allFilters.length <= limit))) && (headers[headerField].fieldDescri.toLowerCase().includes(searchString.toLowerCase()))) {
+        const field = {...headers[headerField]};
+        field.type = 'header';
+        field.show = true;
+        this.allFilters.push(field);
+        if (selectedIds.includes(field.fieldId)) {
+          selectedFiltersList.push(field);
+        }
+      }
+    });
+
+    return selectedFiltersList;
+  }
+
+  /**
+   * parses grid filter  fields
+   * @param selectedIds contains list of selected field Ids from api (used only on initial load)
+   * @param limit count limit
+   * @param searchStr search string to filter
+   * @returns returns filter list for provided selected Ids on initial load
+   */
+  parseGridFields(selectedIds, limit, searchStr = '') {
+    const selectedFiltersList = [];
+    const grids = this.rawFilterData.grids;
+    const gridFields = this.rawFilterData.gridFields;
+    // used to avoid duplicate values in list
+    const existingIds = this.allFilters.map((x) => x.fieldId);
+    const searchString = searchStr.trim() || '';
+    // used to separate selected fields from remaining fields
+    const selectedFiltersIds = this.selectedFilters.map((x) => x.fieldId);
+    for (const grid in grids) {
+      if (grids[grid]) {
+        const childKeys = Object.keys(gridFields[grid]) || [];
+        let isSelectedChild = false;
+        childKeys.forEach((x) => {
+          const childKey = selectedIds.find((y) => y === x);
+          if (childKey) {
+            isSelectedChild = true;
+          }
+        });
+
+        if (isSelectedChild || (!existingIds.includes(grids[grid].fieldId) && (this.allFilters.length <= limit))) {
+          const isParentSelected = selectedFiltersIds.includes(grids[grid].fieldId);
+          const parentField = {...grids[grid]};
+          parentField.type = 'grid';
+          parentField.child = [];
+          parentField.show = true;
+          const val = parentField;
+          const gridChilds = gridFields[grid] || {};
+          if (Object.keys(gridChilds).length) {
+            for (const gridChild in gridChilds) {
+              if (gridChilds[gridChild]) {
+                // below logic used for checking if this child is selected or not
+                let isChildSelected = false;
+                if (isParentSelected) {
+                  const selectedChildFilterIds = this.selectedFilters.find((x) => x.fieldId === grids[grid].fieldId).child.map((y) => y.fieldId) || [];
+                  isChildSelected = selectedChildFilterIds.includes(gridChilds[gridChild].fieldId);
+                }
+
+                if (gridChilds[gridChild].fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
+                  const childField = {...gridChilds[gridChild]};
+                  childField.type = 'grid';
+                  childField.isChild = 1;
+                  childField.parentFieldId = val.fieldId;
+                  childField.show = isChildSelected ? false : true;
+                  val.child.push(childField);
+                  if (selectedIds.includes(childField.fieldId)) {
+                    selectedFiltersList.push(childField);
+                  }
+                }
+              }
+            }
+          }
+          if (!searchString || (searchString && val.child.length)) {
+            this.allFilters.push(val);
+          }
+        }
+      }
+    }
+
+    return selectedFiltersList;
+  }
+
+  /**
+   * parses hierarchy filter  fields
+   * @param selectedIds contains list of selected field Ids from api (used only on initial load)
+   * @param limit count limit
+   * @param searchStr search string to filter
+   * @returns returns filter list for provided selected Ids on initial load
+   */
+  parseHierarchyFields(selectedIds, limit, searchStr = '') {
+    const selectedFiltersList = [];
+    const hierarchy = this.rawFilterData.hierarchy;
+    const hierarchyFields = this.rawFilterData.hierarchyFields;
+    // used to avoid duplicate values in list
+    const existingIds = this.allFilters.map((x) => x.fieldId);
+    const searchString = searchStr.trim() || '';
+    // used to separate selected fields from remaining fields
+    const selectedFiltersIds = this.selectedFilters.map((x) => x.fieldId);
+    hierarchy.forEach((x: any) => {
+      const childKeys = Object.keys(hierarchyFields[x.heirarchyId]) || [];
+      let isSelectedChild = false;
+      childKeys.forEach((key) => {
+        const childKey = selectedIds.find((y) => y === key);
+        if (childKey) {
+          isSelectedChild = true;
+        }
+      });
+
+      if (isSelectedChild || (!existingIds.includes(x.heirarchyId) && (this.allFilters.length <= limit))) {
+        const isParentSelected = selectedFiltersIds.includes(x.heirarchyId);
+        const parentField = {...x};
+        parentField.type = 'hierarchy';
+        parentField.child = [];
+        parentField.show = true;
+        parentField.fieldId = x.heirarchyId;
+        parentField.fieldDescri = x.heirarchyText;
+        const val = parentField;
+        const childs = hierarchyFields[x.heirarchyId];
+        if (Object.keys(childs).length) {
+          for (const key in childs) {
+            if (childs[key]) {
+              // below logic used for checking if this child is selected or not
+              let isChildSelected = false;
+              if (isParentSelected) {
+                const selectedChildFilterIds = this.selectedFilters.find((filter) => filter.fieldId === x.heirarchyId).child.map((y) => y.fieldId) || [];
+                isChildSelected = selectedChildFilterIds.includes(childs[key].fieldId);
+              }
+
+              if (childs[key].fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
+                const childField = {...childs[key]};
+                childField.type = 'hierarchy';
+                childField.isChild = 1;
+                childField.parentFieldId = val.fieldId;
+                childField.show = isChildSelected ? false : true;
+                val.child.push(childField);
+                if (selectedIds.includes(childField.fieldId)) {
+                  selectedFiltersList.push(childField);
+                }
+              }
+            }
+          }
+        }
+        if (!searchString || (searchString && val.child.length)) {
+          this.allFilters.push(val);
+        }
+      }
+    });
+
+    return selectedFiltersList;
+  }
+
+  /**
    * filters list based on search text
-   * @param parentList parent list that contains all values
-   * @param targetList target list that contains filtererd values
+   * @param targetList target list to be updated
    * @param searchString search string
    */
-  searchFilters(parentList, targetList, searchString) {
-    if (parentList.length) {
-      const res = [];
-      parentList.forEach((field) => {
-        if (field.type === 'header' && field.fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
-          res.push(field);
-        } else {
-          if (field.child && field.child.length) {
-            const childs = field.child.filter((x) => x.fieldDescri.toLowerCase().includes(searchString.toLowerCase()));
-            if (childs.length) {
-              const parent = field;
-              parent.child = childs;
-              res.push(parent);
+  searchFilters(targetList, searchString) {
+    if (targetList === 'selectedList') {
+      if (this.selectedFilters.length) {
+        const res = [];
+        this.selectedFilters.forEach((field) => {
+          if (field.type === 'header' && field.fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
+            res.push(field);
+          } else {
+            if (field.child && field.child.length) {
+              const childs = field.child.filter((x) => x.fieldDescri.toLowerCase().includes(searchString.toLowerCase()));
+              if (childs.length) {
+                const parent = field;
+                parent.child = childs;
+                res.push(parent);
+              } else if (field.fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
+                res.push(field);
+              }
             } else if (field.fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
               res.push(field);
             }
-          } else if (field.fieldDescri.toLowerCase().includes(searchString.toLowerCase())) {
-            res.push(field);
           }
-        }
-      });
-      if (targetList === 'allList') {
-        this.filtersDisplayList = res;
-      } else {
+        });
         this.selectedFiltersDisplayList = res;
       }
+    } else {
+      this.allFilters = [];
+      const limit = this.filterCntLimit;
+      this.parseHeaderFields([], limit, searchString);
+      this.parseGridFields([], limit, searchString);
+      this.parseHierarchyFields([], limit, searchString);
+
+      this.filtersDisplayList = this.allFilters;
     }
   }
 
@@ -690,7 +815,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     }
     this.selectedFiltersDisplayList = this.selectedFilters;
     if (this.searchString) {
-      this.searchFilters(this.selectedFilters, 'selectedList', this.searchString);
+      this.searchFilters('selectedList', this.searchString);
     }
     if (openDynamicFilter) {
       this.selectDynamicFilter(filter);
@@ -720,7 +845,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     }
     this.selectedFiltersDisplayList = this.selectedFilters;
     if (this.searchString) {
-      this.searchFilters(this.selectedFilters, 'selectedList', this.searchString);
+      this.searchFilters('selectedList', this.searchString);
     }
     this.removeFilterCriteria(filter.fieldId);
 
@@ -1079,5 +1204,17 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       this.filterData.dateCriteria = undefined;
       currentFilterCriteria.dateCriteria = null;
     }
+  }
+
+  /**
+   * updates filter list on scroll
+   */
+  updateFiltersList() {
+    const limit = this.allFilters.length + this.filterCntLimit;
+    this.parseHeaderFields([], limit, this.searchString);
+    this.parseGridFields([], limit, this.searchString);
+    this.parseHierarchyFields([], limit, this.searchString);
+
+    this.filtersDisplayList = this.allFilters;
   }
 }

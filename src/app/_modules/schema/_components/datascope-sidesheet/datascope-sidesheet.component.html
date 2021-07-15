@@ -20,11 +20,11 @@
                 <lib-input class="mdo-scheduler-input" [formControl]="variantName" type="text"
                     [value]="variantInfo.variantName" i18n-label="@@name" label="Name"></lib-input>
             </div>
-            <div class="f-row filter-section" *ngIf="allFilters.length">
+            <div class="f-row filter-section">
                 <div class="f-col filter-list">
                     <lib-search placeholder="Search filters" class="lib-search"
                         (valueChange)=(triggerFilterSearch($event))></lib-search>
-                    <div class="f-col filter-scroll">
+                    <div prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateFiltersList()" class="f-col filter-scroll" *ngIf="allFilters.length">
                         <mat-accordion>
                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
                                 *ngFor="let filter of selectedFiltersDisplayList; let i=index; trackBy:filterTrackBy"
