@@ -533,7 +533,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     const schemaDetailsSub = this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(res => {
       this.rawFilterData = res;
 
-      const limit = this.allFilters.length + this.filterCntLimit;
+      const limit = this.filterCntLimit;
       const selectedHeaderFields = this.parseHeaderFields(fieldIdsList, limit);
       const selectedGridFields = this.parseGridFields(fieldIdsList, limit);
       const selectedHierarchyFields = this.parseHierarchyFields(fieldIdsList, limit);

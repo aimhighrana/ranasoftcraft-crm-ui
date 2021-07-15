@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
-import { FilterCriteria, MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { FilterCriteria, Heirarchy, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { LoadDropValueReq, ModuleInfo, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -363,99 +363,87 @@ describe('DatascopeSidesheetComponent', () => {
   })
 
   it('getAllFilters()', async(() => {
-    component.allFilters = ['test'];
-    component.getAllFilters();
-    expect(component.allFilters.length).toEqual(1);
-
-    const val: MetadataModeleResponse = {
-      headers: {
-        HEADER: {
-          fieldId: 'HEADER'
-        }
-      },
-      grids: {
-        GRID: {
-          fieldId: 'GRID'
-        }
-      },
-      gridFields: {
-        GRID: {
-          GRID_CHILD: {
-            fieldId: 'GRID_CHILD'
-          }
-        }
-      },
-      hierarchy: [
-        {
-          objnr: 0,
-          heirarchyId: 'HIERARCHY',
-          heirarchyText: 'Hierarchy Text',
-          fieldId: 'HIERARCHY',
-          structureId: '',
-          tableName: '',
-          objectType: ''
-        }
-      ],
-      hierarchyFields: {
-        HIERARCHY: {
-          HIERARCHY_CHILD: {
-            fieldId: 'HIERARCHY_CHILD'
-          }
-        }
-      }
-    }
-
     component.allFilters = [];
-    spyOn(schemaDetailsService, 'getMetadataFields').and.returnValue(of(val));
+    component.moduleId = '123';
+    component.selectedFilterCriteria = [];
+    const res: MetadataModeleResponse = new MetadataModeleResponse();
+    spyOn(schemaDetailsService, 'getMetadataFields').and.returnValue(of(res));
+    spyOn(component, 'parseHeaderFields').and.returnValue([]);
+    spyOn(component, 'parseGridFields').and.returnValue([]);
+    spyOn(component, 'parseHierarchyFields').and.returnValue([]);
+
     component.getAllFilters();
-    expect(component.allFilters.length).toEqual(3);
+    expect(component.allFilters.length).toEqual(0);
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalled();
+    expect(component.parseHeaderFields).toHaveBeenCalled();
+    expect(component.parseGridFields).toHaveBeenCalled();
+    expect(component.parseHierarchyFields).toHaveBeenCalled();
+
+    component.allFilters = ['123'];
+    expect(component.getAllFilters()).toBeUndefined();
   }));
 
-  it('searchFilters()', async(() => {
-    const list = [
-      {
-        type: 'grid',
-        fieldDescri: 'test',
-        child: [
-          {
-            fieldDescri: 'test'
-          }
-        ]
+  it('parseHeaderFields()', async(() => {
+    component.rawFilterData = new MetadataModeleResponse();
+    component.rawFilterData.headers = {
+      TEST: {
+        fieldId: 'TEST',
+        fieldDescri: 'test'
       }
-    ];
-    component.searchFilters(list, 'allList', 'tes');
-    expect(component.filtersDisplayList.length).toEqual(1);
+    };
 
-    component.filtersDisplayList = [];
-    component.searchFilters([], '', 'tes');
-    expect(component.filtersDisplayList.length).toEqual(0);
-
-    list[0].type = 'header';
-    component.searchFilters(list, 'allList', 'tes');
-    expect(component.filtersDisplayList.length).toEqual(1);
-
-    component.filtersDisplayList = [];
-    const list1 = [
-      {
-        type: 'grid',
-        fieldDescri: 'grid desc'
-      }
-    ];
-    component.searchFilters(list1, '', 'tes');
-    expect(component.filtersDisplayList.length).toEqual(0);
-
-    list[0].type = 'grid';
-    list[0].child[0].fieldDescri = 'grid Desc';
-    component.searchFilters(list, '', 'tes');
-    expect(component.filtersDisplayList.length).toEqual(0);
+    expect(component.parseHeaderFields([], 20)).toEqual([]);
   }));
 
-  it('triggerFilterSearch()', async(() => {
-    component.ngOnInit();
-    component.filterTrackBy(0, 1);
-    component.triggerFilterSearch('test');
+  it('parseGridFields()', async(() => {
+    component.rawFilterData = new MetadataModeleResponse();
+    component.rawFilterData.grids = {
+      TEST: {
+        fieldId: 'TEST',
+        fieldDescri: 'test'
+      }
+    };
+    component.rawFilterData.gridFields = {
+      TEST: {
+        CHLD1: {
+          fieldId: 'CHLD1',
+          fieldDescri: 'Chld 1'
+        }
+      }
+    };
 
-    expect(component.searchString).toEqual('test');
+    expect(component.parseGridFields([], 20)).toEqual([]);
+  }));
+
+  it('parseHierarchyFields()', async(() => {
+    component.rawFilterData = new MetadataModeleResponse();
+    component.rawFilterData.hierarchy = [];
+    component.rawFilterData.hierarchy.push(new Heirarchy());
+    component.rawFilterData.hierarchy[0].heirarchyId = 'TEST';
+    component.rawFilterData.hierarchy[0].heirarchyText = 'test';
+    component.rawFilterData.hierarchyFields = {
+      TEST: {
+        CHLD1: {
+          fieldId: 'CHLD1',
+          fieldDescri: 'Chld 1'
+        }
+      }
+    };
+
+    expect(component.parseHierarchyFields([], 20)).toEqual([]);
+  }));
+
+  it('updateFiltersList()', async(() => {
+    component.allFilters = ['123'];
+    spyOn(component, 'parseHeaderFields');
+    spyOn(component, 'parseGridFields');
+    spyOn(component, 'parseHierarchyFields');
+    component.updateFiltersList();
+
+    expect(component.filtersDisplayList.length).toEqual(1);
+    expect(component.parseHeaderFields).toHaveBeenCalled();
+    expect(component.parseGridFields).toHaveBeenCalled();
+    expect(component.parseHierarchyFields).toHaveBeenCalled();
   }));
 
   it('selectFilter()', async(() => {
