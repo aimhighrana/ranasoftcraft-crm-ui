@@ -127,7 +127,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
             this.allColumnMetaDataFields = res;
             this.getHeaderMetaData()
             this.getListTableMetadata();
-          }, (error)=> {
+          }, (error) => {
             console.log('Something went wrong while getting header meta data', error.message)
           })
           this.subscription.push(sub1);
@@ -346,27 +346,34 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           }
         }
       });
+      const listData: any[] = [];
       if (gvsData.length) {
         gvsData.forEach(gvsdata => {
           Object.keys(gvsdata).forEach(key => {
             obj[key] = gvsdata[key];
           })
-          this.listData.push({ ...obj });
+          listData.push({ ...obj });
         })
       }
-      if (hvysData.length > 1) {
+      if (hvysData.length) {
         hvysData.forEach((hvys, index) => {
-          if (!gvsData.length || (gvsData.length && index < hvysData.length - 1)) {
-            Object.keys(hvys).forEach(key => {
-              obj[key] = hvys[key];
-            })
-            this.listData.push({ ...obj });
+          Object.keys(hvys).forEach(key => {
+            if (listData[index])
+              listData[index][key] = hvys[key];
+            else {
+              obj[key] = hvys[key]
+            }
+          })
+
+          if(!listData[index]) {
+            listData.push({...obj});
           }
         })
-      } else if(hvysData.length && !gvsData.length) {
-        this.listData.push({...obj});
       }
 
+      if(listData.length) {
+        this.listData.push(...listData);
+      }
       if (!gvsData.length && !hvysData.length) {
         this.listData.push({ ...obj });
       }
