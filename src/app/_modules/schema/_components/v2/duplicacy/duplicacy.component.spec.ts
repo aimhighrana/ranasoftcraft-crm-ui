@@ -1,4 +1,4 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { MdoUiLibraryModule, TransientService } from 'mdo-ui-library';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
@@ -15,7 +15,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FieldInputType, FilterCriteria, MetadataModel, MetadataModeleResponse, SchemaTableAction, SchemaTableData, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { DuplicacyDataSource } from './duplicacy-data-source';
 import { DuplicacyComponent } from './duplicacy.component';
 import { Router } from '@angular/router';
@@ -34,7 +33,7 @@ describe('DuplicacyComponent', () => {
   let schemaVariantService: SchemaVariantService;
   let schemaDetailService: SchemaDetailsService;
   let catalogService: CatalogCheckService;
-  let snackBar: MatSnackBar;
+  let snackBar: TransientService;
   let router: Router;
   let sharedService: SharedServiceService;
 
@@ -60,7 +59,7 @@ describe('DuplicacyComponent', () => {
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
     catalogService = fixture.debugElement.injector.get(CatalogCheckService);
-    snackBar = fixture.debugElement.injector.get(MatSnackBar);
+    snackBar = fixture.debugElement.injector.get(TransientService);
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
 
     component.dataSource = new DuplicacyDataSource(catalogService, snackBar);
