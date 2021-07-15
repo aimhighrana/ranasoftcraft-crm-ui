@@ -549,7 +549,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       Object.keys(this.allColumnMetaDataFields.grids).some(item => {
         const index = Object.keys(this.allColumnMetaDataFields.gridFields[item]).indexOf(fldMetaData.fieldId);
         if (index > -1) {
-          returnData = { isGrid: true, parentFieldId: fldMetaData.parentField }
+          returnData = { isGrid: true, parentFieldId: item }
           return true;
         }
         return false;
@@ -581,6 +581,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * @returns the observable that calls the api of meta deta fields
    */
   getMetaDataFields(objectNumber) {
-    return this.schemaDetailsService.getMetadataFields(objectNumber)
+    return this.schemaDetailsService.getMetadataFields(objectNumber);
   }
 }

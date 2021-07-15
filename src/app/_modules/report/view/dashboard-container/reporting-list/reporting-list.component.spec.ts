@@ -15,17 +15,19 @@ import { SimpleChanges } from '@angular/core';
 import { SharedModule } from '@modules/shared/shared.module';
 import { Router } from '@angular/router';
 import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
   let fixture: ComponentFixture<ReportingListComponent>;
   let widgetServiceSpy: WidgetService;
   let router: Router;
+  let schemaDetailsService : SchemaDetailsService
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ReportingListComponent],
       imports: [MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, MatMenuModule, RouterTestingModule, SharedModule],
-      providers: [WidgetService]
+      providers: [WidgetService,SchemaDetailsService]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -36,6 +38,7 @@ describe('ReportingListComponent', () => {
     fixture = TestBed.createComponent(ReportingListComponent);
     component = fixture.componentInstance;
     widgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
   });
 
   it('should create', () => {
@@ -69,7 +72,7 @@ describe('ReportingListComponent', () => {
     component.allColumnMetaDataFields = {} as MetadataModeleResponse;
     const response: ReportingWidget[] = [{ widgetId: 75656, fields: 'test', fieldOrder: 'APPTEST', fieldDesc: 'testing', sno: 65467465, fldMetaData: { picklist: '4' } as MetadataModel, displayCriteria: DisplayCriteria.TEXT }];
     spyOn(widgetServiceSpy, 'getListTableMetadata').withArgs(component.widgetId).and.returnValue(of(response));
-    spyOn(component,'getFieldType').withArgs(response[0].fldMetaData).and.returnValue(of({isHierarchy:false,isGrid:false}));
+    spyOn(component, 'getFieldType').withArgs(response[0].fldMetaData).and.returnValue(of({ isHierarchy: false, isGrid: false }));
     component.getListTableMetadata();
     expect(widgetServiceSpy.getListTableMetadata).toHaveBeenCalledWith(component.widgetId);
     expect(component.getFieldType).toHaveBeenCalledWith(response[0].fldMetaData);
@@ -276,4 +279,51 @@ describe('ReportingListComponent', () => {
     component.getObjectData('Code', 'Value', 'REQUESTOR_DATE');
     expect(component.getObjectData('Code', 'Value', 'REQUESTOR_DATE')).toEqual(undefined);
   }));
+
+  it('getFieldType,get field type for column', async(() => {
+    let fldMetaData = { dataType: '0', parentField: 'ADD_EANDATA' } as MetadataModel;
+    component.allColumnMetaDataFields = {
+      headers: { MARA_NRFHG: { fieldId: 'MARA_NRFHG', fieldDescri: 'Qual.f.FreeGoodsDis' } },
+      grids: { ADD_EANDATA: { fieldId: 'ADD_EANDATA', fieldDescri: 'Additional EAN Grid', dataType: 'CHAR', maxChar: '100' } },
+      gridFields: { ADD_EANDATA: { ADD_EANCAT: { fieldId: 'ADD_EANCAT', fieldDescri: 'EAN category', dataType: 'CHAR', maxChar: '2', mandatory: '0' } } },
+      hierarchy: [{ objnr: 1, heirarchyId: '1', heirarchyText: 'Plant Data', fieldId: 'PLANT', structureId: '0002' }],
+      hierarchyFields: { 1: { ABC_ID: { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator', dataType: 'CHAR', maxChar: '1', mandatory: '0' } } },
+    } as MetadataModeleResponse;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: true, parentFieldId: 'ADD_EANDATA' });
+
+    fldMetaData = { dataType: '0', parentField: 'PLANT' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: true, hierarchyId: '1' });
+
+    fldMetaData = { dataType: '0', parentField: 'ABC' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: false, isGrid: false });
+
+    fldMetaData = { dataType: '0', fieldId : 'ABC_ID' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: true, hierarchyId: '1' });
+
+    fldMetaData = { dataType: '0', fieldId : 'ADD_EANCAT' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: true, parentFieldId: 'ADD_EANDATA' });
+
+    fldMetaData = { dataType: '0', fieldId : 'MARA_NRFHG' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: false, isHierarchy: false });
+  }))
+
+  it('getMetaDataFields(), call api to get meta data fields',async(()=>{
+    const obj = '1005';
+    const res = {
+      headers: { MARA_NRFHG: { fieldId: 'MARA_NRFHG', fieldDescri: 'Qual.f.FreeGoodsDis' } },
+      grids: { ADD_EANDATA: { fieldId: 'ADD_EANDATA', fieldDescri: 'Additional EAN Grid', dataType: 'CHAR', maxChar: '100' } },
+      gridFields: { ADD_EANDATA: { ADD_EANCAT: { fieldId: 'ADD_EANCAT', fieldDescri: 'EAN category', dataType: 'CHAR', maxChar: '2', mandatory: '0' } } },
+      hierarchy: [{ objnr: 1, heirarchyId: '1', heirarchyText: 'Plant Data', fieldId: 'PLANT', structureId: '0002' }],
+      hierarchyFields: { 1: { ABC_ID: { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator', dataType: 'CHAR', maxChar: '1', mandatory: '0' } } },
+    } as MetadataModeleResponse;
+    spyOn(schemaDetailsService, 'getMetadataFields').withArgs(obj).and.returnValue(of(res));
+    component.getMetaDataFields(obj);
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(obj);
+  }))
 });
