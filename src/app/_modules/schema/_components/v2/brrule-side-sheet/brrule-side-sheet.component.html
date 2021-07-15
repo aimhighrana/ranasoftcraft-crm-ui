@@ -168,8 +168,9 @@
                                 [removable]="true"
                                 class="lib-chip" 
                                 (removed)="remove(field,i)">
-                                {{field.fieldDescri}}</lib-chip>
-                                
+                                {{field.fieldDescri}}
+                            </lib-chip>
+
                             <input matInput id="fieldsInput" #fieldsInput class="mat-input" [matAutocomplete]="auto"
                                 formControlName="fields" [matChipInputFor]="chipList1"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
