@@ -73,15 +73,18 @@ div.root {
             .lib-input {
               display: none;
             }
+
             &.editable {
               .lib-input {
                 display: initial;
               }
+
               .lib-text-line {
                 display: none;
               }
             }
           }
+
           &.mat-item-center {
             justify-content: center;
           }
