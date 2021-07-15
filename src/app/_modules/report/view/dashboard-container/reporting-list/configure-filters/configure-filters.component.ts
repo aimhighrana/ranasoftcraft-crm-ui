@@ -492,4 +492,11 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     return Number(val) ? val : '';
   }
 
+  getPreSelectedRangeValue(fieldId) {
+    const data = this.filterCriteria.find(item => item.conditionFieldId === fieldId);
+    if (data) {
+      return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue }
+    }
+  }
+
 }

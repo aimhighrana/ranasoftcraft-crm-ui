@@ -1,5 +1,5 @@
 <div class="f-col lib-input" [id]="formFieldId" [matMenuTriggerFor]="rangeSlider" #trigger="matMenuTrigger">
-    <lib-input [value]="getSelectedRangeValue()" disabled="true">
+    <lib-input [formControl]="appliedValueCtrl" disabled="true">
     </lib-input>
 </div>
 <mat-menu class="filter-mat-menu" #rangeSlider="matMenu">

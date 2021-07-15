@@ -27,8 +27,8 @@ describe('FormRangeSliderComponent', () => {
   });
   it('applyFilter(), filter values', async(() => {
     component.control = new FormControl();
-    component.minValue = '0';
-    component.maxValue = '10';
+    component.minValue = 0;
+    component.maxValue = 10;
 
     const emitEventSpy = spyOn(component.valueChange, 'emit');
     component.applyFilter();
@@ -45,18 +45,6 @@ describe('FormRangeSliderComponent', () => {
     component.control.setValue({ min: 1, max: 10 });
     const result = component.getSelectedRangeValue();
     expect(result).toEqual('1-10');
-
-    component.control.setValue({ min: 0, max: 10 });
-    const result1 = component.getSelectedRangeValue().toString();
-    expect(result1).toEqual('10');
-
-    component.control.setValue({ min: 1, max: 0 });
-    const result2 = component.getSelectedRangeValue().toString();
-    expect(result2).toEqual('1');
-
-    component.control.setValue({ min: 0, max: 0 });
-    const result3 = component.getSelectedRangeValue();
-    expect(result3).toEqual('');
   }));
 
 
@@ -76,13 +64,13 @@ describe('FormRangeSliderComponent', () => {
     expect(component.isInValidInput()).toBeTrue();
 
     component.fltrCtrl.setValue('20-10');
-    component.minValue = '20';
-    component.maxValue = '10';
+    component.minValue = 20;
+    component.maxValue = 10;
     expect(component.isInValidInput()).toBeTrue();
 
     component.fltrCtrl.setValue('10-20');
-    component.minValue = '10';
-    component.maxValue = '20';
+    component.minValue = 10;
+    component.maxValue = 20;
     expect(component.isInValidInput()).toBeFalse();
   })
 

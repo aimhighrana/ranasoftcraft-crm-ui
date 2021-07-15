@@ -75,9 +75,7 @@
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'number'">
                                 <pros-form-range-slider [control]="reportingListFilterForm.get(displayedColumnsId[i])"
                                     placeholder="X-XX" (valueChange)="setFilter($event)"
-                                    [formFieldId]="displayedColumnsId[i]"
-                                    [maxValue]="reportingListFilterForm.controls[displayedColumnsId[i]].value?.max"
-                                    [minValue]="reportingListFilterForm.controls[displayedColumnsId[i]].value?.min">
+                                    [formFieldId]="displayedColumnsId[i]" [preSelectedValue]="getPreSelectedRangeValue(displayedColumnsId[i])">
                                 </pros-form-range-slider>
                             </ng-template>
                             <!-- Single select drop down -->

@@ -581,7 +581,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       let selectedText = '';
       if (this.reportingListFilterForm.controls[fieldId].value === '') {
         this.localFilterCriteria.splice(ind, 1);
-        this.filteredList.splice(ind,1);
+        this.filteredList.splice(ind, 1);
       } else if (formControlType === FormControlType.NUMBER) {
         this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
         this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
@@ -606,7 +606,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       else {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
-      if(this.localFilterCriteria[ind]){
+      if (this.localFilterCriteria[ind]) {
         this.filteredList[ind] = JSON.parse(JSON.stringify(this.localFilterCriteria[ind]));
         this.filteredList[ind].conditionFieldText = selectedText;
       }
@@ -652,10 +652,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
       }
-      this.localFilterCriteria.push({...filterCriteria});
+      this.localFilterCriteria.push({ ...filterCriteria });
       filterCriteria.conditionFieldText = selectedText;
       if (selectedDataIndex > -1) this.filteredList[selectedDataIndex] = filterCriteria;
-      else this.filteredList.push({...filterCriteria});
+      else this.filteredList.push({ ...filterCriteria });
     } else {
       if (value) {
         const selectedData = this.filteredList.find(item => item.fieldId === fieldId);
@@ -669,7 +669,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           filterCriteria.blockType = BlockType.COND;
           filterCriteria.widgetType = WidgetType.TABLE_LIST;
           filterCriteria.conditionOperator = selectedData && selectedData.conditionOperator ? selectedData.conditionOperator : ConditionOperator.EQUAL;
-          this.localFilterCriteria.push({...filterCriteria});
+          this.localFilterCriteria.push({ ...filterCriteria });
           filterCriteria.conditionFieldText = item.TEXT;
           this.filteredList.push(filterCriteria);
         })
@@ -756,5 +756,17 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   getSelectedDateValue(fieldId) {
     if (this.reportingListFilterForm.controls[fieldId].value)
       return this.reportingListFilterForm.controls[fieldId].value;
+  }
+
+  /**
+   *
+   * @param fieldId column id
+   * @returns the selected range slider value
+   */
+  getPreSelectedRangeValue(fieldId) {
+    const data = this.localFilterCriteria.find(item => item.conditionFieldId === fieldId);
+    if (data) {
+      return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue }
+    }
   }
 }
