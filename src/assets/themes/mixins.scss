@@ -1536,6 +1536,14 @@
     }
   }
 
+  pros-attribute-default-value {
+    .colunm-box {
+      &.rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+      }
+    }
+  }
+
   pros-report-datatable-column-settings {
     .checkedall {
       background: mat-color($background-palette, card);
@@ -1578,14 +1586,6 @@
             min-width: 130px;
           }
         }
-      }
-    }
-  }
-
-  pros-attribute-default-value {
-    .colunm-box {
-      &.rule-border-row {
-        border-bottom: 1px solid $color-app-border;
       }
     }
   }
