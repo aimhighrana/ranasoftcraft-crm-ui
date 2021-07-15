@@ -43,11 +43,11 @@ describe('AttributeComponent', () => {
   });
   it('should check if row is valid', () => {
     const row: AttributeDefaultValue = {
-      CODE: 'test',
+      code: 'test',
       shortValue: 'test'
     };
     expect(component.isValidRow(row)).toBeTruthy();
-    delete row.CODE;
+    delete row.code;
     expect(component.isValidRow(row)).toBeFalsy();
   });
   it('should add new empty row', () => {
@@ -62,7 +62,7 @@ describe('AttributeComponent', () => {
   });
   it('should decide if row can be displahyed', () => {
     const row: AttributeDefaultValue = {
-      CODE: 'test',
+      code: 'test',
       shortValue: 'test'
     };
     component.searchStr = '';
@@ -74,7 +74,7 @@ describe('AttributeComponent', () => {
   });
   it('should delete a record from list', async () => {
     const row: AttributeDefaultValue = {
-      CODE: 'test',
+      code: 'test',
       shortValue: 'test'
     };
     component.valueList = [row];
