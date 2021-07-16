@@ -843,6 +843,10 @@
           }
 
           &.mat-menu-item-highlighted {
+            background: transparent;
+          }
+
+          &.selected {
             background: $color-app-hover;
           }
         }
