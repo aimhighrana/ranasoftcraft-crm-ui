@@ -357,4 +357,23 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.searchAttributeVal('test');
     expect(component.searchString).toEqual('test');
   })
+  it('getStatus() should get current status', () => {
+    component.isMapped = true;
+    expect(component.getStatus('test')).toEqual('matched');
+    component.isMapped = false;
+    expect(component.getStatus('test')).toEqual('unmatched');
+    component.classificationCategory = {
+      noun: {
+        status: 'matched'
+      },
+      attrLists: [{
+        targetCtrl: {
+          ATTR_CODE: 'test'
+        },
+        status: 'unmatched'
+      }]
+    } as any;
+    expect(component.getStatus('noun')).toEqual('matched');
+    expect(component.getStatus('test')).toEqual('unmatched');
+  })
 });

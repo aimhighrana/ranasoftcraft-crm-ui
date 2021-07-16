@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AttributeDefaultValue } from '@models/schema/classification';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -7,18 +7,25 @@ import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { AttributeDefaultValueComponent } from './attribute-default-value.component';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { TransientService } from 'mdo-ui-library';
+import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 
 describe('AttributeComponent', () => {
   let component: AttributeDefaultValueComponent;
   let fixture: ComponentFixture<AttributeDefaultValueComponent>;
   let globaldialogService: GlobaldialogService;
+  let nounModifierService: NounModifierService;
+  let transientService: TransientService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AttributeDefaultValueComponent],
       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
-        GlobaldialogService, {
+        GlobaldialogService,
+        NounModifierService,
+        TransientService, {
           provide: ActivatedRoute,
           useValue: { params: of({ nounSno: '1701' }) }
         }]
@@ -29,7 +36,10 @@ describe('AttributeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AttributeDefaultValueComponent);
     component = fixture.componentInstance;
+    router = fixture.debugElement.injector.get(Router);
     globaldialogService = fixture.debugElement.injector.get(GlobaldialogService);
+    nounModifierService = fixture.debugElement.injector.get(NounModifierService);
+    transientService = fixture.debugElement.injector.get(TransientService);
     // fixture.detectChanges();
   });
 
@@ -38,7 +48,13 @@ describe('AttributeComponent', () => {
   });
 
   it('should init component', () => {
+    delete nounModifierService.attributeValuesModels;
     component.ngOnInit();
+    nounModifierService.attributeValuesModels = [{
+      code: '',
+      shortValue: ''
+    }];
+    component.loadValues();
     expect(component.valueList).toBeTruthy();
   });
   it('should check if row is valid', () => {
@@ -93,6 +109,7 @@ describe('AttributeComponent', () => {
     component.saveRowValue(row, 'code');
     expect(row.code).toEqual('test2');
   });
+
   it('editRowValue should edit row value', async () => {
     const row: AttributeDefaultValue = {
       code: 'test',
@@ -102,5 +119,45 @@ describe('AttributeComponent', () => {
     };
     component.editRowValue(row, 'code');
     expect(row.codeTemp).toEqual('test');
+    row.codeEditable = true;
+    expect(component.editRowValue(row, 'code')).toBeUndefined();
+  });
+
+  it('copyData should copy row value', async () => {
+    component.valueList = [{
+      code: 'test',
+      codeTemp: '',
+      codeEditable: false,
+      shortValue: 'test'
+    }];
+    component.copyData(0);
+    expect(component.valueList.length).toEqual(2);
+  });
+  it('saveValues should save all values and close sidesheet', async () => {
+    component.valueList = [{
+      code: 'test',
+      codeTemp: '',
+      codeEditable: false,
+      shortValue: 'test'
+    }];
+    spyOn(router, 'navigate');
+    component.saveValues();
+    expect(router.navigate).toHaveBeenCalled();
+  });
+  it('close should close sidesheet', async () => {
+    component.valueList = [{
+      code: 'A',
+      shortValue: 'A'
+    }];
+    spyOn(component, 'saveValues');
+    component.close();
+    expect(component.saveValues).toHaveBeenCalled();
+    component.valueList = [{
+      code: '',
+      shortValue: ''
+    }];
+    spyOn(transientService, 'confirm').and.callFake((a, b) => b('yes'));
+    component.close();
+    expect(component.saveValues).toHaveBeenCalled();
   });
 });

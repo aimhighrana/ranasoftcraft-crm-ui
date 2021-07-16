@@ -71,13 +71,6 @@ export class AttributeDefaultValueComponent implements OnInit {
     this.router.navigate(routerCommands, { queryParamsHandling: 'preserve' });
   }
 
-  uploadData() {
-    if (document.getElementById('uploadFileCtrl')) {
-      document.getElementById('uploadFileCtrl').click();
-    }
-    return true;
-  }
-
   addValueRow() {
     const valueRow: AttributeDefaultValue = {
       code: '',
