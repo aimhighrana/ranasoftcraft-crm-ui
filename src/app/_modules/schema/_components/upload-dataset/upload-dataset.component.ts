@@ -1157,7 +1157,6 @@ get selectedRunningSchedule () {
   setschemaName(event) {
     const updatedSchemaValue = { ...this.requestForm.controls.core_schema.value };
     updatedSchemaValue.discription = event;
-    console.log(updatedSchemaValue)
     this.requestForm.controls.core_schema.setValue(updatedSchemaValue);
   }
 
@@ -1724,10 +1723,8 @@ get selectedRunningSchedule () {
       .subscribe((response: SchemaScheduler) => {
         if (response) {
           this.currentSchedule = response;
-          this.canEditSchedule = true;
-        } else {
-          this.canEditSchedule = false;
         }
+        this.canEditSchedule = !!this.currentSchedule;
         this.dialogSubscriber.unsubscribe();
       });
   }
