@@ -898,7 +898,7 @@
                                     </div>
                                 </div>
                                 <div class="row-spacer"></div>
-                                <div class="f-col">
+                                <div class="f-col" *ngIf="selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES'">
                                     <lib-checkbox formControlName="showTotal" i18n="@@showTotal" label="Show total count">
                                     </lib-checkbox>
                                 </div>
