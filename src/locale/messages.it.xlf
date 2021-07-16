@@ -3133,12 +3133,12 @@
         <target>Nessuna</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>All'interno di SLA</target>
+        <source>Within time spent limit</source>
+        <target>Entro il limite di tempo trascorso</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>Supera SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>Supera il limite di tempo trascorso</target>
       </trans-unit>
       <trans-unit id="hour" datatype="html">
         <source>Hour</source>

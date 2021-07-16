@@ -3004,12 +3004,12 @@
         <target>ไม่มี</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>ภายใน SLA</target>
+        <source>Within time spent limit</source>
+        <target>ภายในเวลาที่ใช้จำกัด</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>เกิน SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>เกินเวลาที่ใช้ไป</target>
       </trans-unit>
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>

@@ -370,7 +370,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
        else {
         this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
        }
-       if(latestProp.chartType?.key === 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+       if(this.selStyleWid.widgetType === 'TIMESERIES' && this.styleCtrlGrp.get('field').value === 'TIME_TAKEN') {
         if(latestProp.bucketFilter?.key === 'none'){
           this.selStyleWid.chartProperties.bucketFilter = BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
         }
@@ -1345,8 +1345,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   get possibleBucketFilter() {
     const bucketFilter = [
       { key:'none', value: $localize`:@@none:None` },
-      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within SLA` },
-      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds SLA` }
+      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within time spent limit` },
+      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds time spent limit` }
     ];
     return bucketFilter;
   }

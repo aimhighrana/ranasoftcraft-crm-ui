@@ -3145,12 +3145,12 @@
         <target>Tidak ada</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>Dalam SLA</target>
+        <source>Within time spent limit</source>
+        <target>Dalam batas waktu yang dihabiskan</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>Melebihi SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>Melebihi batas waktu yang dihabiskan</target>
       </trans-unit>
       <trans-unit id="hour" datatype="html">
         <source>Hour</source>

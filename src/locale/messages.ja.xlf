@@ -3004,12 +3004,12 @@
         <target>無し</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>SLA内</target>
+        <source>Within time spent limit</source>
+        <target>制限時間内</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>SLAを超える</target>
+        <source>Exceeds time spent limit</source>
+        <target>使用時間の制限を超えています</target>
       </trans-unit>
 
       <trans-unit id="schema_running_msg" datatype="html">

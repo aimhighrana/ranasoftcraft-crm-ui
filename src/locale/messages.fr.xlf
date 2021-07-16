@@ -3003,12 +3003,12 @@
         <target>Rien</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>Dans SLA</target>
+        <source>Within time spent limit</source>
+        <target>Dans la limite du temps passé</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>Dépasse le SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>Dépasse la limite de temps passé</target>
       </trans-unit>
 
       <trans-unit id="schema_running_msg" datatype="html">
