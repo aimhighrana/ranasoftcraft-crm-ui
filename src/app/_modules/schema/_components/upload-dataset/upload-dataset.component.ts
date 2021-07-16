@@ -1055,7 +1055,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.step('next');
   }
 
-  
   /**
    * get all metadata headers
    */
