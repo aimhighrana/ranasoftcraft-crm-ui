@@ -765,11 +765,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param response response from the newly created rule dialog
    * or from the existing rules selection
    */
-  updateCurrentRulesList(response) {
+  updateCurrentRulesList(response: any) {
     if (!response || !response.formData) { return; };
+
     let brObject: CoreSchemaBrInfo;
-    const tempId = (response.tempId) ? response.tempId : null;
-    const brId = (response.brId) ? response.brId : '';
+    const tempId = response.tempId ? response.tempId : '';
+    const brId = response.brId ? response.brId : '';
     let formData = {...response.formData, brId};
 
     // Add transformation schema details from response to formData
@@ -783,16 +784,19 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
     if (this.selectedBusinessRules.length > 0) {
       let index = null;
+
       if(brId){
         index = this.selectedBusinessRules.findIndex(rule => rule.brId === brId);
       } else {
         index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
       }
+
       if (index > -1) {
         this.selectedBusinessRules[index] = { ...brObject };
       } else {
         this.selectedBusinessRules.push(brObject);
       }
+
     } else {
       this.selectedBusinessRules.push(brObject);
     }
@@ -904,7 +908,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: NewBrDialogResponse) => {
-        console.log(response)
         if (response && response.formData) {
           this.updateCurrentRulesList(response);
         }

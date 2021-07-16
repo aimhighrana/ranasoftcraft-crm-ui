@@ -26,6 +26,7 @@ import { Userdetails } from '@models/userdetails';
 import { RuleDependentOn } from '@models/collaborator';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Validators } from '@angular/forms';
+import { NewBusinessRulesComponent } from '../new-business-rules/new-business-rules.component';
 
 
 describe('UploadDatasetComponent', () => {
@@ -106,7 +107,6 @@ describe('UploadDatasetComponent', () => {
   }));
 
   beforeEach(() => {
-
     fixture = TestBed.createComponent(UploadDatasetComponent);
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
@@ -235,7 +235,6 @@ describe('UploadDatasetComponent', () => {
       expect(component.headerForm.value).not.toBeUndefined();
     }).catch((err) => {
       console.log('my error ', err);
-
     });
   }));
 
@@ -1342,17 +1341,40 @@ describe('UploadDatasetComponent', () => {
   it('updateCurrentRulesList() should update current rule list', async () => {
     component.createForm();
     expect(component.updateCurrentRulesList(undefined)).toBeFalsy();
-    component.selectedBusinessRules = [];
+    component.selectedBusinessRules = [
+      {
+        sno: 1299484,
+        brId: '1',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [],
+        tempId: '1',
+      } as CoreSchemaBrInfo
+    ];
     const response = {
       tempId: '1',
       brId: '1',
       formDta: {
-
+        accuracyScore: null,
+        apiKey: "",
+        categoryId: 17052018001,
+        error_message: "Mr is missing",
+        excludeScript: "",
+        fields: "imxjravy212",
+        includeScript: "",
+        regex: "",
+        rule_name: "MR",
+        rule_type: "BR_MANDATORY_FIELDS",
+        sourceFld: "",
+        source_field: "",
+        standard_function: "",
+        targetFld: "",
+        target_field: "",
+        transformationRuleType: null
       }
     };
     component.updateCurrentRulesList(response);
-    expect(component.selectedBusinessRules.length).toEqual(0);
-
+    expect(component.selectedBusinessRules.length).toEqual(1);
   });
 
   it('openExplorer() should clear the error message', async () => {
@@ -1771,4 +1793,97 @@ describe('UploadDatasetComponent', () => {
     }
     done();
   });
+
+  it('selectedRunningSchedule, should schedule toggle value', () => {
+    component.createForm();
+    component.requestForm.controls.runTime.setValue(false);
+    expect(component.selectedRunningSchedule).toEqual('dontRunSchema');
+    component.requestForm.controls.runTime.setValue(true);
+    expect(component.selectedRunningSchedule).toEqual('runSchemaOnce');
+  })
+
+  it('reoderBR, should change selected BR index', () => {
+    component.createForm();
+    const event = []
+    component.selectedBusinessRules = [
+      {
+        sno: 1299484,
+        brId: '22',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        tempId: '1',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        brInfo: 'Test Rule',
+        brExpose: 0,
+        status: '1',
+        categoryId: '21474',
+        standardFunction: '',
+        brWeightage: '10',
+        totalWeightage: 100,
+        transformation: 0,
+        tableName: '',
+        qryScript: '',
+        dependantStatus: 'ALL',
+        plantCode: '0',
+        percentage: 0,
+        schemaId: '',
+        brIdStr: '',
+        udrDto: null,
+        transFormationSchema: null,
+        isCopied: false,
+        duplicacyField: [],
+        duplicacyMaster: []
+      },
+      {
+        sno: 1299483,
+        brId: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        tempId: '1',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        brInfo: 'Test Rule',
+        brExpose: 0,
+        status: '1',
+        categoryId: '21474',
+        standardFunction: '',
+        brWeightage: '10',
+        totalWeightage: 100,
+        transformation: 0,
+        tableName: '',
+        qryScript: '',
+        dependantStatus: 'ALL',
+        plantCode: '0',
+        percentage: 0,
+        schemaId: '',
+        brIdStr: '',
+        udrDto: null,
+        transFormationSchema: null,
+        isCopied: false,
+        duplicacyField: [],
+        duplicacyMaster: []
+      }
+    ];
+
+    component.reoderBR({
+      previousIndex: 0,
+      currentIndex: 1,
+      container: null,
+      distance: null,
+      isPointerOverContainer: null,
+      item: null,
+      previousContainer: null
+    });
+
+    expect(component.selectedBusinessRules[0].brId).toEqual('23');
+  })
 });
