@@ -55,6 +55,10 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
     this.formCtrl = this.formCtrl ? this.formCtrl : new FormControl('');
 
     this.formCtrl.valueChanges.pipe(debounceTime(1000)).subscribe(res => {
+      this.setDropdownValue(res);
+      this.filterAutocompleteOptions(res);
+    });
+    this.dropdownformCtrl.valueChanges.pipe(debounceTime(1000)).subscribe(res => {
       this.filterAutocompleteOptions(res);
     });
 
@@ -155,6 +159,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   getNouns(serachString: string) {
     this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
       this.nounModifierService.getLocalNouns(user.plantCode, '', '', serachString).subscribe(res => {
+        console.log('Get nounse', serachString, res);
         this.data = res;
         this.filteredOptions = of(res);
       });

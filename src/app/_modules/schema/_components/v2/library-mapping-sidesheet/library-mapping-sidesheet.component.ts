@@ -99,7 +99,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
     this.getLocalNouns();
 
-    this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
   }
 
   /**
@@ -207,9 +206,15 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   patchMappingForm(attributesMapping: AttributesMapping) {
-    if (attributesMapping.attributeMapData) {
-      const {localNounCode, localModCode} = attributesMapping;
-      this.mappingForm.patchValue({localNounCode, localModCode});
+   if(this.classificationCategory) {
+     const {noun, modifier, attrLists} = this.classificationCategory;
+     attributesMapping.localModCode = modifier.targetCtrl;
+     attributesMapping.localNounCode = noun.targetCtrl;
+   }
+   const {localNounCode, localModCode} = attributesMapping;
+   this.mappingForm.patchValue({localNounCode, localModCode});
+   console.log('Attribute Mapping', attributesMapping, this.mappingForm.value);
+  if (attributesMapping.attributeMapData) {
       attributesMapping.attributeMapData.forEach(mapData => {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
         if (index !== -1) {
@@ -224,6 +229,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     this.nounModifierService.getLocalNouns(plantCode)
       .subscribe(nouns => {
         this.localNounsList = nouns;
+        this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
       })
   }
 
