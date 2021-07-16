@@ -47,21 +47,20 @@
                     </lib-text-line>
 
                     <div class="mdo-field-input">
-                        <input matInput placeholder="Type to search" #optionsInput [formControl]="dataScopeName"
+                        <input matInput placeholder="Select a data scope" #optionsInput [formControl]="dataScopeName"
                             [matAutocomplete]="auto" (blur)="resetLastScope()" />
                         <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
                             (optionSelected)="selectDataScope()">
                             <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20"
                                 (scrollEnd)="updateDataScopeList()">
-                                <mat-option i18n="@@add_data_scope" (click)="openDataScopeSideSheet()">Add data scope
-                                </mat-option>
-                                <mat-divider></mat-divider>
                                 <mat-option value='0' i18n="@@entire_data_scope">
                                     <div class="f-row">
                                         <lib-text-line type="base">Entire data scope</lib-text-line>
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="secondary">{{entireDataSetCount ? entireDataSetCount : 0}}
                                         </lib-text-line>
+                                        <!-- <span class="f-col-spacer-half"></span>
+                                        <lib-button icon="trash-alt" type="plain" class="option-button"></lib-button> -->
                                     </div>
                                 </mat-option>
                                 <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
@@ -70,7 +69,13 @@
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="secondary">{{variant.dataScopeCount ? variant.dataScopeCount :
                                             0}}</lib-text-line>
+                                        <!-- <span class="f-col-spacer-half"></span>
+                                        <lib-button icon="trash-alt" type="plain" class="option-button"></lib-button> -->
                                     </div>
+                                </mat-option>
+                                <mat-divider></mat-divider>
+                                <mat-option (click)="openDataScopeSideSheet()">
+                                    <lib-text-line type="base" textColor="link" i18n="@@add_data_scope">Add data scope</lib-text-line>
                                 </mat-option>
                             </div>
                         </mat-autocomplete>
@@ -108,7 +113,7 @@
 
                 <ng-template [ngIf]="businessRuleData.length>0">
                     <div class="colunm-listing">
-                        <div class="f-row colunm-box rule-border-row">
+                        <!-- <div class="f-row colunm-box rule-border-row">
                             <div class="col col-x2"></div>
                             <div class="col col-x8">
                                 <lib-text-line type="small" weight="strong" i18n="@@business_rule">Business rule
@@ -129,7 +134,7 @@
                                 <lib-text-line type="small" weight="strong" i18n="@@enabled">Enabled</lib-text-line>
                             </div>
                             <div class="col col-x4 action mat-item-end"></div>
-                        </div>
+                        </div> -->
                         <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
                             <div cdkDrag *ngFor="let businessRule of businessRuleData; let i=index">
                                 <div class="f-row colunm-box rule-border-row">
@@ -279,7 +284,7 @@
 
                 <ng-template [ngIf]="subscriberData.length>0">
                     <div class="colunm-listing">
-                        <div class="f-row colunm-box rule-border-row">
+                        <!-- <div class="f-row colunm-box rule-border-row">
                             <div class="col col-x2"></div>
                             <div class="col col-x8">
                                 <lib-text-line weight="strong" type="small" i18n="@@collaborator">Collaborator
@@ -294,7 +299,7 @@
                             </div>
                             <div class="col mat-item-end">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="f-row colunm-box rule-border-row" *ngFor="let subscriber of subscriberData">
                             <div class="col col-x2">
                                 <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true"

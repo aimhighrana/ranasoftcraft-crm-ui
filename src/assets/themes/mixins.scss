@@ -454,7 +454,7 @@
   .cdk-overlay-container {
     .mat-autocomplete-panel {
       .autodropdown-scroll {
-        max-height: 181px;
+        max-height: 145px;
         overflow: auto;
 
         .sticky-actions {
@@ -480,11 +480,15 @@
 
       mat-option.mat-option {
         font-size: inherit;
-        height: 36px;
+        height: 48px;
 
         &:hover:not(.mat-option-disabled),
         &:focus:not(.mat-option-disabled) {
           background: $color-app-hover;
+        }
+
+        .option-button {
+          width: 36px;
         }
       }
     }
