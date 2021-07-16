@@ -643,7 +643,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             objdt[cordKeys[0]] = singleBucket.key_as_string;
             objdt[cordKeys[1]] = docTotalCount;
             array.push(objdt);
-            if (this.widgetInf.getValue().showTotal) {
+            if (this.widgetInf.getValue().timeSeries.showTotal) {
               if (totalCount.length) {
                 const index = totalCount.findIndex(item => item.x === singleBucket.key_as_string);
                 if (index > -1) {
@@ -671,7 +671,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             objdt[cordKeys[1]] = docTotalCount;
             const array = new Array();
             array.push(objdt);
-            if (this.widgetInf.getValue().showTotal) {
+            if (this.widgetInf.getValue().timeSeries.showTotal) {
               if (totalCount.length) {
                 const index = totalCount.findIndex(item => item.x === singleBucket.key_as_string);
                 if (index > -1) {
@@ -697,7 +697,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       });
     }
 
-    if (this.widgetInf.getValue().showTotal) {
+    if (this.widgetInf.getValue().timeSeries.showTotal) {
       let showTotal = true;
       this.filterCriteria.forEach(filter => {
         if (filter.conditionFieldValue !== 'Total') {
@@ -856,7 +856,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
       this.timeSeriesOption.scales.xAxes.push(scale);
     })
-    if (this.widgetInf.getValue().showTotal) {
+    if (this.widgetInf.getValue().timeSeries.showTotal) {
       if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
         const totalDataSet: ChartDataSets =
         {
@@ -943,7 +943,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         data: [],
         fill: false
       };
-      if (this.widgetInf.getValue().showTotal) {
+      if (this.widgetInf.getValue().timeSeries.showTotal) {
         if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
           finaldata.forEach((item, index) => {
             const scaleAxes = {
@@ -1033,7 +1033,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         data: [],
         fill: false
       };
-      if (this.widgetInf.getValue().showTotal) {
+      if (this.widgetInf.getValue().timeSeries.showTotal) {
         if (this.timeseriesData.timeSeries.chartType === ChartType.BAR) {
           finaldata.forEach((item, index) => {
             const scalexAxes = {
