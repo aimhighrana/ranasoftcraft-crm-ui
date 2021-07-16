@@ -439,11 +439,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   createNewAttributeWidget(ind: number) {
     this.openAttributeSidesheet().subscribe((res) => {
       const row = res[0];
-      const modCode = this.mappingForm.get('localModCode').value;
-      const nnCode = this.mappingForm.get('localNounCode').value;
-      const loadForThisNn = typeof nnCode === 'string' ? nnCode : '';
-      const modeCode =  typeof modCode === 'string' ? modCode : '';
-      this.getLocalAttributes(loadForThisNn, modeCode);
       this.attributeMapData.at(ind).patchValue({localAttributeCode: row.attrCode, localAttributeText: row.attrDesc});
     });
   }
