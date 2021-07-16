@@ -473,8 +473,12 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <lib-radio-group layout="vertical" [value]="selectedRunningSchedule" [options]="runningScheduleList"
-                    (valueChange)="setRunningSchedule($event)"></lib-radio-group>
+                <lib-radio-group 
+                    layout="vertical" 
+                    [value]="selectedRunningSchedule" 
+                    [options]="runningScheduleList"
+                    (valueChange)="setRunningSchedule($event)">
+                </lib-radio-group>
 
                 <mat-divider class="dashed-divider"></mat-divider>
 

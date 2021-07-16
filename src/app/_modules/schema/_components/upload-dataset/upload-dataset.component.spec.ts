@@ -689,13 +689,13 @@ describe('UploadDatasetComponent', () => {
   }));
 
   it('setRunningSchedule(), should set runTime value in request form', async () => {
-    const runId = { value: false };
+    const runId = 'dontRunSchema';
     component.createForm();
     component.setRunningSchedule(runId);
     component.currentSchedule = null;
     expect(component.requestForm.controls.runTime.value).toEqual(false);
 
-    const runid = { value: true };
+    const runid = 'runSchemaOnce';
     component.setRunningSchedule(runid);
     component.currentSchedule = null;
     expect(component.requestForm.controls.runTime.value).toEqual(true);
@@ -703,7 +703,7 @@ describe('UploadDatasetComponent', () => {
     component.currentSchedule = {
       end: null,
       endOn: '1610961949192',
-      isEnable: true,
+      isEnable: false,
       monthOn: null,
       occurrenceVal: 2,
       repeatValue: '2',
@@ -712,14 +712,9 @@ describe('UploadDatasetComponent', () => {
       startOn: '1610961949191',
       weeklyOn: null
     } as SchemaScheduler;
-    component.setRunningSchedule(runId);
-    expect(component.requestForm.controls.runTime.value).toEqual(false);
-    expect(component.currentSchedule.isEnable).toEqual(true);
-
-
     component.setRunningSchedule(runid);
     expect(component.requestForm.controls.runTime.value).toEqual(true);
-    expect(component.currentSchedule.isEnable).toEqual(false);
+    expect(component.currentSchedule.isEnable).toEqual(true);
   })
 
   it('addSubscribers(), should call openDialog', async () => {
