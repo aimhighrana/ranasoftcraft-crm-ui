@@ -373,7 +373,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }
   }
 
-  public loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string, searchAfter?:string): void{
+  public loadAlldropData(fieldId: string, criteria: Criteria[],searchString?: string, searchAfter?: string): void{
     criteria = this.removefilter(this.filterWidget.value.fieldId, criteria);
     const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString,searchAfter).subscribe(returnData=>{
       this.returnData = returnData;
