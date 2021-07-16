@@ -2914,6 +2914,14 @@
         <source>Show legend</source>
         <target>عرض الأسطورة</target>
       </trans-unit>
+      <trans-unit id="showTotal" datatype="html">
+        <source>Show total count</source>
+        <target>إظهار العدد الإجمالي</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">902</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="legendPosition" datatype="html">
         <source>Legend position</source>
         <target>موقف الأسطورة</target>
@@ -3011,12 +3019,12 @@
         <target>لا أحد</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>داخل جيش تحرير السودان</target>
+        <source>Within time spent limit</source>
+        <target>في غضون الوقت الذي يقضيه الحد</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>يتجاوز جيش تحرير السودان</target>
+        <source>Exceeds time spent limit</source>
+        <target>يتجاوز الوقت المستغرق</target>
       </trans-unit>
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>

@@ -2914,6 +2914,14 @@
         <source>Show legend</source>
         <target>범례 표시</target>
       </trans-unit>
+      <trans-unit id="showTotal" datatype="html">
+        <source>Show total count</source>
+        <target>총 개수 표시</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">902</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="legendPosition" datatype="html">
         <source>Legend position</source>
         <target>범례 위치</target>
@@ -3011,12 +3019,12 @@
         <target>없음</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>SLA 내</target>
+        <source>Within time spent limit</source>
+        <target>소요 시간 제한 내</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>SLA 초과</target>
+        <source>Exceeds time spent limit</source>
+        <target>소요 시간 제한 초과</target>
       </trans-unit>
       <trans-unit id="schema_running_msg" datatype="html">
         <source>This schema is running Click here to either track the progress or see result</source>

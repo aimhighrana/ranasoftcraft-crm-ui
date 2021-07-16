@@ -2914,6 +2914,14 @@
         <source>Show legend</source>
         <target>Hiển thị chú giải</target>
       </trans-unit>
+      <trans-unit id="showTotal" datatype="html">
+        <source>Show total count</source>
+        <target>Hiển thị tổng số</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">902</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="legendPosition" datatype="html">
         <source>Legend position</source>
         <target>Vị trí chú giải</target>
@@ -3012,12 +3020,12 @@
         <target>không ai</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>Trong SLA</target>
+        <source>Within time spent limit</source>
+        <target>Trong giới hạn thời gian đã sử dụng</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>Vượt quá SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>Vượt quá giới hạn thời gian sử dụng</target>
       </trans-unit>
 
       <trans-unit id="schema_running_msg" datatype="html">
