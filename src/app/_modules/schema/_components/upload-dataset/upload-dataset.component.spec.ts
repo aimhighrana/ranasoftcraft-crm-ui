@@ -26,7 +26,6 @@ import { Userdetails } from '@models/userdetails';
 import { RuleDependentOn } from '@models/collaborator';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Validators } from '@angular/forms';
-import { NewBusinessRulesComponent } from '../new-business-rules/new-business-rules.component';
 
 
 describe('UploadDatasetComponent', () => {
@@ -1356,20 +1355,20 @@ describe('UploadDatasetComponent', () => {
       brId: '1',
       formDta: {
         accuracyScore: null,
-        apiKey: "",
+        apiKey: '',
         categoryId: 17052018001,
-        error_message: "Mr is missing",
-        excludeScript: "",
-        fields: "imxjravy212",
-        includeScript: "",
-        regex: "",
-        rule_name: "MR",
-        rule_type: "BR_MANDATORY_FIELDS",
-        sourceFld: "",
-        source_field: "",
-        standard_function: "",
-        targetFld: "",
-        target_field: "",
+        error_message: 'Mr is missing',
+        excludeScript: '',
+        fields: 'imxjravy212',
+        includeScript: '',
+        regex: '',
+        rule_name: 'MR',
+        rule_type: 'BR_MANDATORY_FIELDS',
+        sourceFld: '',
+        source_field: '',
+        standard_function: '',
+        targetFld: '',
+        target_field: '',
         transformationRuleType: null
       }
     };
@@ -1804,7 +1803,6 @@ describe('UploadDatasetComponent', () => {
 
   it('reoderBR, should change selected BR index', () => {
     component.createForm();
-    const event = []
     component.selectedBusinessRules = [
       {
         sno: 1299484,
