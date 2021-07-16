@@ -424,6 +424,7 @@ export class ChartProperties {
     hasCustomSLA: boolean;
     slaValue?: string;
     slaType?: object;
+    showTotal: boolean;
 }
 
 export class ButtonArr {
