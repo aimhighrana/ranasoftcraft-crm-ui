@@ -300,6 +300,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
             this.endDateCtrl = new FormControl(new Date(Number(dateFilterBlock.conditionFieldEndValue)));
 
             this.setSelectedQuickDateFilter(dateFilterBlock.blockDesc);
+            this.enableClearIcon = true;
 
             this.filterCriteria.push(criteria);
 
