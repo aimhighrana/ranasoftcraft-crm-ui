@@ -26,6 +26,7 @@ import { Userdetails } from '@models/userdetails';
 import { RuleDependentOn } from '@models/collaborator';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Validators } from '@angular/forms';
+import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 
 
 describe('UploadDatasetComponent', () => {
@@ -37,7 +38,10 @@ describe('UploadDatasetComponent', () => {
   let userService: UserService;
   let usersSpy;
   const mockDialogRef = {
-    close: jasmine.createSpy('close')
+    close: jasmine.createSpy('close'),
+    dialogCloseEmitter: of({
+      data: null
+    })
   };
   const transformationRule = {
     formData: {
@@ -717,9 +721,18 @@ describe('UploadDatasetComponent', () => {
 
   it('addSubscribers(), should call openDialog', async () => {
     component.dialogSubscriber = new Subscription();
-    spyOn(globaldialogService, 'openDialog').and.returnValue(null);
+    component.subscribersList = [];
+    spyOn(globaldialogService, 'openDialog');
+    globaldialogService.dialogCloseEmitter.subscribe((res)=> {
+      expect(res).toEqual({
+        data: null
+      })
+    })
     component.addSubscribers();
-    expect(globaldialogService.openDialog).toHaveBeenCalled();
+    expect(globaldialogService.openDialog).toHaveBeenCalledWith(
+      NewSchemaCollaboratorsComponent,
+      {selectedSubscibersList: component.subscribersList}
+      );
   })
 
   it(`To get FormControl from fromGroup `, async(() => {
@@ -1527,12 +1540,34 @@ describe('UploadDatasetComponent', () => {
     data.fieldId = '';
     expect(component.updateMapFields(data)).toBeUndefined();
   });
+
   it('setModuleValueAndTakeStep() should set module value and take step', async () => {
     component.createForm();
     component.initHeaderForm([]);
     fixture.detectChanges();
     expect(component.setModuleValueAndTakeStep()).toBeUndefined();
+    spyOn(schemadetailsService, 'getMetadataFields').and.returnValue({} as any);
+    spyOn(schemaServiceSpy, 'getSchedule').and.returnValue({} as any);
+    spyOn(schemaServiceSpy, 'getBusinessRulesBySchemaId').and.returnValue({} as any);
+    spyOn(schemadetailsService, 'getCollaboratorDetails').and.returnValue({} as any);
+    spyOn(component, 'getModulesMetaHeaders');
+    spyOn(component, 'getScheduleInfo');
+    spyOn(component, 'getSchemaBrInfo');
+    spyOn(component, 'getSchemaCollaboratorInfo');
+
+    const module = {
+      objectdesc: 'test',
+      objectid: '765675',
+      schemaId: 'test'
+    }
+    component.setModuleValueAndTakeStep(module);
+
+    expect(component.getModulesMetaHeaders).toHaveBeenCalled();
+    expect(component.getScheduleInfo).toHaveBeenCalledWith(module.schemaId);
+    expect(component.getSchemaBrInfo).toHaveBeenCalledWith(module);
+    expect(component.getSchemaCollaboratorInfo).toHaveBeenCalledWith(module.schemaId);
   });
+
   it('removeTempId() should remove temp id', async () => {
     const val: any = {
       coreSchemaBr: [{
@@ -1883,5 +1918,5 @@ describe('UploadDatasetComponent', () => {
     });
 
     expect(component.selectedBusinessRules[0].brId).toEqual('23');
-  })
+  });
 });
