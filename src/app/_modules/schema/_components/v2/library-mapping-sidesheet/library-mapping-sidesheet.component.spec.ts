@@ -195,6 +195,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     const attr = {ATTR_CODE:'', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
     component.buildMappingForm();
     component.addAttributeMappingRow(attr);
+    component.addAttributeMappingRow(null);
     expect(component.attributeMapData.at(0).value.localAttributeCode).toEqual('length');
   });
 
@@ -352,6 +353,8 @@ describe('LibraryMappingSidesheetComponent', () => {
     expect(component.canDisplayAttribute(value)).toBeFalse();
   });
 
-
-
+  it('should trigger Search', () => {
+    component.searchAttributeVal('test');
+    expect(component.searchString).toEqual('test');
+  })
 });
