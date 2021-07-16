@@ -19,6 +19,7 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
   selectedBusinessRuleIds: string[] = [];
   loader = false;
   selectedRuleType: BusinessRules;
+  brsToRemove: CoreSchemaBrInfo[] =[];
 
   /**
    * FetchCount to fetch business rules data..
@@ -50,10 +51,10 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
       this.selectedBusinessRule.push(rule);
       this.selectedBusinessRuleCopy.push(rule);
     }
-    // if (action === this.constants.REMOVE) {
-    //   this.selectedBusinessRule.splice(this.selectedBusinessRule.findIndex((bRule) => bRule.brId === rule.brId), 1);
-    //   this.selectedBusinessRuleCopy.splice(this.selectedBusinessRuleCopy.findIndex((bRule) => bRule.brId === rule.brId), 1);
-    // }
+    if (action === this.constants.REMOVE) {
+      this.selectedBusinessRule.splice(this.selectedBusinessRule.findIndex((bRule) => bRule.brId === rule.brId), 1);
+      this.selectedBusinessRuleCopy.splice(this.selectedBusinessRuleCopy.findIndex((bRule) => bRule.brId === rule.brId), 1);
+    }
   }
 
   // getter for GlobalConstants
