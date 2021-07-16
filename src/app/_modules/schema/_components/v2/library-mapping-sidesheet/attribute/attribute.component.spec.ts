@@ -84,7 +84,6 @@ describe('AttributeComponent', () => {
         sb: 'attribute-sidesheet-route'
       }
     }];
-
     component.buildAttributeForm();
     spyOn(router, 'navigate');
     component.openDefaultValueSideSheet();
