@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { RequestForCatalogCheckData, RECORD_STATUS, RECORD_STATUS_KEY } from '@models/schema/duplicacy';
 import { SchemaTableData } from '@models/schema/schemadetailstable';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TransientService } from 'mdo-ui-library';
 
 
 export class DuplicacyDataSource implements DataSource<SchemaTableData> {
@@ -12,7 +12,7 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
     private dataSourceSubject = new BehaviorSubject<SchemaTableData[]>([]);
 
     constructor(private catalogCheckService: CatalogCheckService,
-        private snackBar: MatSnackBar) {
+        private snackBar: TransientService) {
 
     }
 
@@ -64,11 +64,15 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
                 objnr.fieldId = 'OBJECTNUMBER';
                 objnr.fieldDesc = 'Object Number';
                 objnr.isReviewed = doc.isReviewed ? doc.isReviewed : false;
+
+                // add flg for deletion as well
+                objnr.delFlag = doc.delFlag ? doc.delFlag : false;
+
                 rowData.OBJECTNUMBER = objnr;
 
                 // record status
                 const status: SchemaTableData = new SchemaTableData();
-                status.fieldData = doc.masterRecord === '1' ? RECORD_STATUS.MASTER : doc.DEL_FLAG ? RECORD_STATUS.DELETABLE : RECORD_STATUS.NOT_DELETABLE;
+                status.fieldData = doc.masterRecord === '1' ? RECORD_STATUS.MASTER : doc.delFlag ? RECORD_STATUS.DELETABLE : RECORD_STATUS.NOT_DELETABLE;
                 status.fieldId = RECORD_STATUS_KEY ;
                 status.fieldDesc = 'Status';
                 rowData[RECORD_STATUS_KEY] = status;
