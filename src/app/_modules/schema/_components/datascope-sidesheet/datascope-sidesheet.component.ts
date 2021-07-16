@@ -161,7 +161,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     filterCtrl.selectedValues = [];
 
     event.selectedValues.forEach((value) => {
-      if(value.FIELDNAME === filterCtrl.fieldId) {
+      if(value.fieldId === filterCtrl.fieldId) {
         filterCtrl.values.push(value.CODE);
         filterCtrl.textValues.push(value.TEXT);
         filterCtrl.selectedValues.push(value);
