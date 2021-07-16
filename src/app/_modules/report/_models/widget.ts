@@ -303,7 +303,6 @@ export interface TimeSeriesWidget {
     desc: string;
     timeSeries: WidgetTimeseries;
     isEnableGlobalFilter: boolean;
-    showTotal : boolean;
 }
 export interface WidgetTimeseries {
     widgetId: number;
@@ -329,6 +328,7 @@ export interface WidgetTimeseries {
     bucketFilter: string;
     startDate: string;
     metaData: MetadataModel;
+    showTotal : boolean;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',
@@ -424,6 +424,7 @@ export class ChartProperties {
     hasCustomSLA: boolean;
     slaValue?: string;
     slaType?: object;
+    showTotal: boolean;
 }
 
 export class ButtonArr {
