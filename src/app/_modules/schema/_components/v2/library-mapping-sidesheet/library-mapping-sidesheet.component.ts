@@ -220,6 +220,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   if (attributesMapping.attributeMapData) {
       attributesMapping.attributeMapData.forEach(mapData => {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
+
         if (index !== -1) {
           const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && row.status === 'suggested');
           this.attributeMapData.at(index).patchValue({localAttributeCode: suggestedObj ? suggestedObj.targetCtrl : mapData.localAttributeCode});
