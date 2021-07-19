@@ -413,10 +413,10 @@ describe('ReportDatatableColumnSettingsComponent', () => {
 
   it('searchHeader(), search header', async(() => {
     component.dataSource = [{
-    nodeId : 'node',
-    displayCriteria : null,
-    nodeDesc :'ABC',
-    child : []
+      nodeId: 'node',
+      displayCriteria: null,
+      nodeDesc: 'ABC',
+      child: []
     }]
     component.searchHeader('');
     expect(component.nestedDataSource.length).toEqual(1);
@@ -424,5 +424,53 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     expect(component.nestedDataSource.length).toEqual(1);
     component.searchHeader('def');
     expect(component.nestedDataSource.length).toEqual(0);
+  }))
+
+  it('isChecked(), check the checked property of items', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL'
+        },
+        {
+          fieldId: 'ABC_ID',
+          fieldDescri: 'ABC indicator'
+        }
+      ]
+    }
+
+    let header = { fieldId: 'ABC_ID' } as MetadataModel;
+    component.isChecked(header);
+    expect(component.isChecked(header)).toEqual(true);
+
+    header = { fieldId: 'A_ID' } as MetadataModel;
+    component.isChecked(header);
+    expect(component.isChecked(header)).toEqual(false);
+  }))
+
+  it('selectionChange(),selection change handling of data', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL'
+        },
+        {
+          fieldId: 'ABC_ID',
+          fieldDescri: 'ABC indicator'
+        }
+      ]
+    }
+    let header = { fieldId: 'ABC_ID' } as MetadataModel;
+    component.selectionChange(header);
+    expect(component.data.selectedColumns.length).toEqual(1);
+
+    header = { fieldId: 'ABC_ID1' } as MetadataModel;
+    component.selectionChange(header);
+    expect(component.data.selectedColumns.length).toEqual(2);
+
   }))
 });
