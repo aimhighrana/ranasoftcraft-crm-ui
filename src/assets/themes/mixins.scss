@@ -1109,6 +1109,12 @@
         color: $color-status-error;
       }
 
+      &.text-strike {
+        opacity: 0.4;
+        pointer-events: none;
+        text-decoration: line-through;
+      }
+
       .edit-cell {
         height: 100%;
 
@@ -1532,6 +1538,20 @@
     .colunm-box {
       &.rule-border-row {
         border-bottom: 1px solid $color-app-border;
+      }
+    }
+  }
+
+  pros-attribute-default-value {
+    .colunm-box {
+      &.rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      &.value-row:hover {
+        background: $color-app-border;
       }
     }
   }

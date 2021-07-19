@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import {AttributesDoc, ClassificationMappingRequest, ClassificationMappingResponse, NounModifier} from '@models/schema/noun-modifier';
 import { HttpClient } from '@angular/common/http';
 import { Modifier } from '@models/schema/schemadetailstable';
-import { Attribute, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
+import { Attribute, AttributeDefaultValue, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
 import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 @Injectable({
@@ -14,6 +14,10 @@ import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.servic
 })
 export class NounModifierService {
 
+  attributeValuesModels: Array<AttributeDefaultValue> = [];
+  attributeFormValue;
+  attributeSheetRoute;
+  attributeSaved = new Subject();
   constructor(
     private endpointClassic: EndpointsRuleService,
     private endpointAnalytics: EndpointsAnalyticsService,
@@ -185,5 +189,4 @@ export class NounModifierService {
   public getAttributesMapping(libnounSno, libmodSno): Observable<AttributesMapping> {
     return this.http.post<any>(this.endpointClassic.getFetchAttributesMappingUrl(), null, {params: {libnounSno, libmodSno}});
   }
-
 }

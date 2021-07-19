@@ -193,30 +193,41 @@
 <!--<div class="f-col mdo-field">
                 <lib-text-line class="field-label" type="xsmall" weight="strong" i18n="@@scope">Scope</lib-text-line>
                 <div class="f-row">
-                    <lib-chip-list class="mdo-chip-list">
-                        <ng-container *ngIf="variantInfo">
-                            <ng-template ngFor let-ctrl [ngForOf]="variantInfo.filterCriteria">
-                                <lib-chip label="{{ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown'}}:"
-                                    disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
-                                    (click)="loadDropValues(ctrl)" [removable]="true" type="info">
-                                    {{prepareTextToShow(ctrl)}}</lib-chip>
-                            </ng-template>
-                        </ng-container>
-                        <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addFilterMenu"
+                    <mat-chip-list class="data-allocation-list">
+                        <ng-template ngFor let-ctrl [ngForOf]="variantInfo.filterCriteria">
+                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                <lib-text-line class="selected-text">
+                                    <label>
+                                        {{ ctrl.fldCtrl?.fieldDescri || ctrl.fldCtrl?.fieldDesc || 'Unknown' }}
+                                        :
+                                    </label>
+                                    <span class="info">
+                                        {{ prepareTextToShow(ctrl) }}
+                                    </span>
+                                </lib-text-line>
+                                <mat-icon matChipRemove (click)="removeFilter(ctrl)">
+                                    clear
+                                </mat-icon>
+                            </mat-chip>
+                        </ng-template>
+                        <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu"
                             (click)="reInilize = !reInilize" iconFontType="solid" icon="filter"></lib-chip>
-                        <mat-menu #addFilterMenu="matMenu">
-                            <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)"
-                                [reInilize]="reInilize" [isSearchEnable]="true"
-                                [alreadySelectedValues]="variantInfo.filterCriteria"></pros-add-filter-menu>
-                        </mat-menu>
-                    </lib-chip-list>
+                    </mat-chip-list>
 
                     <mat-menu #appliedfiltermenu="matMenu">
                         <pros-filter-values [moduleId]="moduleId"
                             (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
-                            [isSearchEnable]="true" [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
+                            [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
                             [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []">
                         </pros-filter-values>
+                    </mat-menu>
+
+                    <mat-menu #addfiltermenu="matMenu">
+                        <pros-add-filter-menu [alreadySelectedValues]="variantInfo.filterCriteria"
+                            [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)" [isSearchEnable]="true"
+                            [reInilize]="reInilize">
+                        </pros-add-filter-menu>
                     </mat-menu>
                 </div>
             </div>-->

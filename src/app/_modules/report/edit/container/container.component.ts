@@ -287,7 +287,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       bucketFilter: [{...this.bucketFilter[0]}],
       hasCustomSLA: [false],
       slaValue: [],
-      slaType: [{...this.slaMenu[0]}]
+      slaType: [{...this.slaMenu[0]}],
+      showTotal: [false]
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -370,7 +371,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
        else {
         this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
        }
-       if(latestProp.chartType?.key === 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+       if(this.selStyleWid.widgetType === 'TIMESERIES' && this.styleCtrlGrp.get('field').value === 'TIME_TAKEN') {
         if(latestProp.bucketFilter?.key === 'none'){
           this.selStyleWid.chartProperties.bucketFilter = BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
         }
@@ -669,7 +670,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
             chartType: this.chartType[0], orientation: this.orientation[0], isEnableDatalabels: false,
             datalabelsPosition: this.datalabelsPosition[0], isEnableLegend: false, legendPosition: this.legendPosition[0], xAxisLabel: '', yAxisLabel: '',
             orderWith: this.orderWith[3], scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: this.seriesWith[0], seriesFormat: '', blankValueAlias: '', timeseriesStartDate: this.timeInterval[1],
-            isEnabledBarPerc: false, bucketFilter: null
+            isEnabledBarPerc: false, bucketFilter: null, showTotal: false
           });
         }
         // add default filters
@@ -1223,7 +1224,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top,
           xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.ROW_DESC, scaleFrom: null, scaleTo: null, stepSize: null,
           dataSetSize: null, seriesWith: SeriesWith.day, seriesFormat: null, blankValueAlias: null, timeseriesStartDate: TimeseriesStartDate.D7, isEnabledBarPerc: false,
-          bucketFilter: null, hasCustomSLA: false
+          bucketFilter: null, hasCustomSLA: false, showTotal: false
         };
       }
       this.isSerieswithDisabled = false;
@@ -1345,8 +1346,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   get possibleBucketFilter() {
     const bucketFilter = [
       { key:'none', value: $localize`:@@none:None` },
-      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within SLA` },
-      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds SLA` }
+      { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within time spent limit` },
+      { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds time spent limit` }
     ];
     return bucketFilter;
   }
