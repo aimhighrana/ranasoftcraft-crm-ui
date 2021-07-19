@@ -2,7 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaDetailsService } from './schema-details.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CategoryInfo, ClassificationNounMod, Noun, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, UDRDropdownValue } from '@models/schema/schemadetailstable';
+import { AttributeValue, CategoryInfo, ClassificationHeader, ClassificationNounMod, Noun, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, UDRDropdownValue } from '@models/schema/schemadetailstable';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { HttpResponse } from '@angular/common/http';
 import { Any2tsService } from '@services/any2ts.service';
@@ -22,7 +22,7 @@ describe('SchemaDetailsService', () => {
     'saveNewSchemaUrl', 'getClassificationDataTableUrl', 'generateCrossEntryUri', 'doClassificationCorrectionUri', 'approveClassificationUri', 'rejectClassificationUri',
     'generateMroClassificationDescriptionUri', 'downloadMroExceutionUri', 'getSchemaDataTableColumnInfoUrl', 'getSchemaDetailsBySchemaId', 'getShowMoreSchemaTableDataUrl',
     'getOverviewChartDataUrl', 'getCategoryInfoUrl', 'getSchemaStatusUrl', 'categoryChartData', 'getMetadataFields', 'getClassificationNounMod',
-    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds', 'uploadCsvFileDataUrl', 'getUploadProgressUrl', 'getUDRDropdownValues']);
+    'getSchemaExecutedStatsTrendUri', 'getFindActionsBySchemaAndRoleUrl', 'getSelectedFieldsByNodeIds', 'uploadCsvFileDataUrl', 'getUploadProgressUrl', 'getUDRDropdownValues', 'getClassificationDatatableHeader','getClassificationAttributeValueUrl']);
 
     const mapperSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaDataTableResponse', 'any2OverviewChartData', 'any2CategoryInfo', 'any2SchemaStatus', 'any2CategoryChartData',
       'any2MetadataResponse']);
@@ -712,7 +712,7 @@ describe('SchemaDetailsService', () => {
     });
     // mock http call
     const mockRequst = httpTestingController.expectOne(`${url}?schemaId=${schemaId}&runId=${runId}&isFromMasterLib=true`);
-    expect(mockRequst.request.method).toEqual('PUT');
+    expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.event(new HttpResponse<boolean>({body: response}));
     // verify http
@@ -963,6 +963,47 @@ describe('SchemaDetailsService', () => {
     });
     // mock http call
     const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getClassificationDatatableColumns(): getClassificationDatatableColumns ', async(() => {
+    const url = `classification header `;
+    // mock url
+    endpointServiceSpy.getClassificationDatatableHeader.and.returnValue(url);
+
+    const action: ClassificationHeader[] = [];
+
+    // actual service call
+    schemaDetaService.getClassificationDatatableColumns('3424323', 'MRO_CLS_MASTER_CHECK', 'BEARING', 'BALL').subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?schemaId=3424323&ruleType=MRO_CLS_MASTER_CHECK&nounCode=BEARING&modeCode=BALL`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(action);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+
+  it('getClassificationAttributeValue(): getClassificationAttributeValue ', async(() => {
+    const url = `classification attribute values  `;
+    // mock url
+    endpointServiceSpy.getClassificationAttributeValueUrl.and.returnValue(url);
+
+    const action: AttributeValue[] = [];
+
+    // actual service call
+    schemaDetaService.getClassificationAttributeValue('3424323', '').subscribe(actualResponse => {
+      expect(actualResponse).toEqual(action);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?attrCode=3424323&searchQuery=`);
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(action);

@@ -34,3 +34,45 @@ export class AttributesValuesDoc {
     CODE: string;
     LONG_VALUE: string;
 }
+
+export class ClassificationMappingRequest {
+    modCode: string;
+    modDesc: string;
+    nounCode: string;
+    nounDesc: string;
+    attrList: Array<{
+        attrCode: string;
+        attrDesc: string;
+    }>;
+}
+
+export class AttributeTargetControl {
+    MANDATORY: string;
+    ATTRIBUTE_ID: string;
+    ATTR_DESC: string;
+    ATTR_CODE: string;
+    TEXT_FIELD: string;
+    DROPDOWN_FIELD: string;
+    ATTRIBUTES_VALUES: string;
+    LENGTH: string;
+    DESC_ACTIVE: string;
+    FIELD_TYPE: string;
+}
+export type AttributeStatusType = 'unmatched' | 'suggested' | 'matched';
+export class ClassificationMappingResponse {
+    noun: {
+        source: string;
+        targetCtrl: any;
+        status: AttributeStatusType;
+    };
+    modifier: {
+        source: string;
+        targetCtrl: any;
+        status: AttributeStatusType;
+    };
+    attrLists: Array<{
+        source: string;
+        targetCtrl: any;
+        status: AttributeStatusType;
+    }>;
+};

@@ -59,6 +59,16 @@ describe('HierarchyFilterComponent', () => {
     component.clickedActive(elementWithChild);
     expect(elementWithChild.checked).toEqual(true);
     // expect(component.checkForChild).toHaveBeenCalledWith(!elementWithChild.checked, elementWithChild.child)
+
+    const elementWithoutChild1 = {
+      nodeId : '1005',
+      nodeDesc : 'INDIA',
+      child: null,
+      checked: true
+    }
+    component.selectedNode = ['1005'];
+    component.clickedActive(elementWithoutChild1);
+    expect(component.selectedNode.length).toEqual(0);
   })
 
   it('checkForChild(), should select/deselect child according to the parent', async() => {
@@ -71,10 +81,12 @@ describe('HierarchyFilterComponent', () => {
           checked: true
         }
     ]
+    component.selectedNode = ['1005-001'];
     component.checkForChild(parentState, childArray);
     expect(childArray[0].checked).toEqual(false);
 
     parentState = true;
+    component.selectedNode = [];
     component.checkForChild(parentState, childArray);
     expect(childArray[0].checked).toEqual(true);
   })
@@ -89,5 +101,59 @@ describe('HierarchyFilterComponent', () => {
     }
     component.changeState(data);
     expect(data.expanded).toEqual(true);
+  })
+
+  it('getCheckedAmount(), should return selected/deselected checkbox' , async() =>{
+    const data = {
+      nodeId : '100-001',
+      nodeDesc : 'India',
+      child: [
+        {
+          nodeId : '1005-001',
+          nodeDesc : 'RAJASTHAN',
+          child: [
+            {
+              nodeId : '5-001',
+              nodeDesc : 'JK',
+              child: null,
+              checked: true,
+              expanded: false
+            },
+            {
+              nodeId : '1-001',
+              nodeDesc : 'UP',
+              child: null,
+              checked: true,
+              expanded: false
+            }
+          ],
+          checked: false
+        }
+      ],
+      checked: true,
+      expanded: false
+    }
+
+    component.selectedNode = ['India','UP'];
+    const res = component.getCheckedAmount(data);
+    expect(res).toEqual(true);
+
+    const data1 = {
+      nodeId : '100-001',
+      nodeDesc : 'India',
+      child: [
+        {
+          nodeId : '1005-001',
+          nodeDesc : 'RAJASTHAN',
+          child: null,
+          checked: true
+        }
+      ],
+      checked: false,
+      expanded: false
+    }
+
+    const res1 = component.getCheckedAmount(data1);
+    expect(res1).toEqual(false);
   })
 })

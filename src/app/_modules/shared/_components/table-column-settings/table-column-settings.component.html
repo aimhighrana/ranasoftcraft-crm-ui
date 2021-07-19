@@ -4,16 +4,14 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large" i18n="@@configure_view">Configure view</div>
-                <span class="f-col-spacer-half"></span>
+                <lib-text-line type="leading" i18n="@@configure_view">Configure view</lib-text-line>
                 <span class="f-spacer"></span>
                 <lib-button i18n="@@save" (click)="save(configTabSelectedIndex)" type="major">Save</lib-button>
             </div>
         </div>
     </div>
 
-    <div class="f-col sidesheetcontent-listing" prosInfiniteScroll bufferPercentage="10"
-        (scrollEnd)="keepScrolling()">
+    <div class="f-col sidesheetcontent-listing" prosInfiniteScroll bufferPercentage="10" (scrollEnd)="keepScrolling()">
         <div class="f-col mdo-justify">
             <div *ngIf="isActionConfigAllowed" class="f-col">
                 <ng-container *ngTemplateOutlet="SideSheetTabs;context:{$implicit: true}"></ng-container>
@@ -37,15 +35,22 @@
                         [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
                     <div class="f-row colunm-box">
                         <div class="col"></div>
-                        <div class="col col-x4"><strong i18n="@@Column"> Column </strong></div>
+                        <div class="col col-x4">
+                            <lib-text-line type="small" weight="strong" i18n="@@Column">Column</lib-text-line>
+                        </div>
                         <span class="f-spacer"></span>
-                        <div class="col"><strong i18n="@@Visible"> Visible </strong></div>
+                        <div class="col">
+                            <lib-text-line type="small" weight="strong" i18n="@@Visible">Visible</lib-text-line>
+                        </div>
                         <span class="f-col-spacer-half"></span>
-                        <!-- <div class="col"><strong i18n="@@editable"> Editable </strong></div> -->
+                        <!-- <div class="col">
+                            <lib-text-line type="small" weight="strong" i18n="@@editable">Editable</lib-text-line>
+                        </div> -->
                     </div>
                     <div cdkDropList [cdkDropListData]="fields" (cdkDropListDropped)="drop($event)"
                         #scrollableContainer>
-                        <div *ngFor="let fld of fieldsObs | async; trackBy: fldTrackBy" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
+                        <div *ngFor="let fld of fieldsObs | async; trackBy: fldTrackBy" id="{{ fld.fieldId }}" cdkDrag
+                            class="colunm-list">
                             <div class="f-row colunm-box">
                                 <div class="col">
                                     <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
@@ -53,13 +58,15 @@
                                 </div>
 
                                 <div class="col col-x4">
-                                    <span>{{ fld.metadataCreateModel ? fld.metadataCreateModel.fieldDescri : 'Untitled' }} </span>
+                                    <lib-text-line type="base">{{ fld.metadataCreateModel ?
+                                        fld.metadataCreateModel.fieldDescri : 'Untitled' }}</lib-text-line>
                                 </div>
 
                                 <div class="f-spacer"></div>
 
                                 <div class="col">
-                                    <lib-checkbox (valueChange)="selectionChange($event, fld)" [checked]="isChecked(fld)">
+                                    <lib-checkbox (valueChange)="selectionChange($event, fld)"
+                                        [checked]="isChecked(fld)">
                                     </lib-checkbox>
                                 </div>
                                 <span class="f-col-spacer-half"></span>
@@ -75,8 +82,9 @@
             </div>
         </lib-tab>
         <lib-tab *ngIf="action" label="Actions">
-            <div class="f-col mdo-form-field">
-                <mat-label><strong i18n="@@preview">Preview</strong></mat-label>
+            <div class="f-col mdo-field">
+                <lib-text-line type="xsmall" weight="strong" i18n="@@preview" class="field-label">Preview
+                </lib-text-line>
                 <div class="f-row">
                     <!-- Secondary actions
                         <button mat-fab color="accent" *ngIf="secondaryActions.length"
@@ -144,30 +152,33 @@
             <!-- Action code start here-->
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
-                    <div class="col">&nbsp;</div>
-                    <div class="col col-x8"><strong i18n="@@action">Action</strong></div>
-                    <div class="col col-x4"><strong class="f-row" i18n="@@primary">Primary &nbsp;
-                            <mat-icon libTooltip="Primary" i18n-libTooltip="@@primary" fontSet="mdo-icons-light">
-                                question-circle
-                            </mat-icon>
-                        </strong></div>
-                    <div class="col col-x4">&nbsp;</div>
-                    <div class="col col-x4 text-end"></div>
+                    <div class="col col-x4"></div>
+                    <div class="col col-x8">
+                        <lib-text-line type="small" weight="strong" i18n="@@action">Action</lib-text-line>
+                    </div>
+                    <div class="col col-x4">
+                        <lib-text-line type="small" weight="strong" i18n="@@action">Primary</lib-text-line>
+                        <mat-icon libTooltip="Primary" i18n-libTooltip="@@primary" fontSet="mdo-icons-light" class="mat-head-icon">
+                            question-circle
+                        </mat-icon>
+                    </div>
+                    <div class="col col-x4"></div>
+                    <div class="col mat-item-end"></div>
                 </div>
                 <div *ngIf="false" class="f-row colunm-box rule-border-row">
-                    <div class="col">&nbsp;</div>
+                    <div class="col col-x4"></div>
                     <div class="col col-x8">
-                        <a (click)="addCustomAction()" i18n="@@new_custom_action" class="mat-line info-link">New custom
-                            action</a>
+                        <lib-text-line type="base" textColor="link" (click)="addCustomAction()"
+                            i18n="@@new_custom_action" enableWrap="true"> New custom action</lib-text-line>
                     </div>
                     <div class="col col-x4"></div>
                     <div class="col col-x4"></div>
-                    <div class="col col-x4 text-end"></div>
+                    <div class="col mat-item-end"></div>
                 </div>
                 <div cdkDropList [cdkDropListData]="actionsList" (cdkDropListDropped)="drop($event)">
                     <div *ngFor="let action of actionsList; let index=index" class="f-row colunm-box rule-border-row"
                         cdkDrag>
-                        <div class="col">
+                        <div class="col col-x4">
                             <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
                             </lib-button>
                         </div>
@@ -187,7 +198,7 @@
                         <div class="col col-x4">
                             <lib-checkbox [disabled]="!action.isPrimaryAction && primaryActions.length === 3"
                                 [checked]="action.isPrimaryAction"
-                                (valueChange)="actionChanged(index, 'isPrimaryAction', $event.checked)">
+                                (valueChange)="actionChanged(index, 'isPrimaryAction', $event)">
                             </lib-checkbox>
                         </div>
 
@@ -196,7 +207,8 @@
                                 <lib-button type="plain">{{ getActionViewTypeDesc(action.actionViewType) }}</lib-button>
                             </ng-template>
                             <ng-template #commonAction>
-                                <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down" iconFontType="solid">
+                                <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down"
+                                    iconFontType="solid">
                                     {{ getActionViewTypeDesc(action.actionViewType) }}
                                 </lib-button>
                                 <mat-menu #displayMenu="matMenu" class="navigation-menu">
@@ -211,7 +223,7 @@
                                 </mat-menu>
                             </ng-template>
                         </div>
-                        <div class="col col-x4 text-end">
+                        <div class="col mat-item-end">
                             <!-- <button mat-button [matMenuTriggerFor]="mappingMenu"
                                     *ngIf="action.isCustomAction">
                                     <mat-icon fontSet="mdo-icons" [matBadge]="action.refBrId ? '1' : '?'"

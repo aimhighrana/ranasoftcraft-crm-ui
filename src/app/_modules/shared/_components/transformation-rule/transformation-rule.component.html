@@ -1,15 +1,12 @@
 <!-- transformation rule start -->
 <form [formGroup]="form" class="root">
-        <div class="mdo-form-field">
-            <mat-label>Source field</mat-label>
+        <div class="f-col mdo-field">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Source field</lib-text-line>
             <mat-form-field appearance="outline">
-                <mat-chip-list #sourceChips>
-                    <mat-chip *ngIf="selectedSourceField" [removable]="true"
-                        (removed)="removeSourceField()">
-                        {{selectedSourceField[sourceFieldsObject.labelKey]}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input matInput class="mat-input" #sourceFieldInput [matAutocomplete]="autoSource" formControlName="sourceFld"
+                <mat-chip-list class="f-row field-chip-list" #sourceChips>
+                    <lib-chip *ngIf="selectedSourceField" [removable]="true"
+                    (removed)="removeSourceField()" class="lib-chip">{{selectedSourceField[sourceFieldsObject.labelKey]}}</lib-chip>
+                    <input id="sourceFieldId" matInput class="mat-input" #sourceFieldInput [matAutocomplete]="autoSource" formControlName="sourceFld"
                         [matChipInputFor]="sourceChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-list>
                 <mat-autocomplete #autoSource="matAutocomplete" [displayWith]="displayFnSource.bind(this)"
@@ -19,24 +16,19 @@
                         {{fieldItem[sourceFieldsObject.labelKey]}}
                     </mat-option>
                 </mat-autocomplete>
-
-
             </mat-form-field>
             <mat-error *ngIf="submitted && selectedTargetFields.length === 0">
                 Please select the target fields
             </mat-error>
         </div>
 
-        <div class="mdo-form-field">
-            <mat-label>Target fields</mat-label>
+        <div class="f-col mdo-field">
+            <lib-text-line class="field-label" type="xsmall" weight="strong">Target fields</lib-text-line>
             <mat-form-field appearance="outline">
-                <mat-chip-list #targetChips>
-                    <mat-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
-                        (removed)="removeTargetField(i)">
-                        {{field[targetFieldsObject.labelKey]}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                    <input matInput class="mat-input" #targetFieldInput [matAutocomplete]="autoTarget" formControlName="targetFld"
+                <mat-chip-list class="f-row field-chip-list" #targetChips>
+                    <lib-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
+                    (removed)="removeTargetField(i)" class="lib-chip">{{field[targetFieldsObject.labelKey]}}</lib-chip>
+                    <input matInput id="targetFieldId" class="mat-input" #targetFieldInput [matAutocomplete]="autoTarget" formControlName="targetFld"
                         [matChipInputFor]="targetChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-list>
                 <mat-autocomplete #autoTarget="matAutocomplete" [displayWith]="displayFnTarget.bind(this)"
@@ -46,18 +38,16 @@
                         {{fieldItem[targetFieldsObject.labelKey]}}
                     </mat-option>
                 </mat-autocomplete>
-
-
             </mat-form-field>
             <mat-error *ngIf="submitted && selectedTargetFields.length === 0">
                 Please select the target fields
             </mat-error>
         </div>
 
-        <div class="mdo-form-field">
+        <div class="f-col">
             <lib-input label="Exclude script (Regex)" formControlName="excludeScript" [value]="form.value.excludeScript"></lib-input>
         </div>
-        <div class="mdo-form-field">
+        <div class="f-col">
             <lib-input label="Include script (Regex)" formControlName="includeScript" [value]="form.value.includeScript"></lib-input>
         </div>
 </form>

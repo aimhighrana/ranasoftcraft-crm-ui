@@ -1,9 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
+import { AttributeCoorectionReq, ClassificationHeader, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
 import { ModuleInfo, SchemaListDetails, SchemaNavGrab, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
@@ -256,6 +257,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     */
    innerBreadcurmbtxt = '';
 
+   /**
+    * Column header with metada for MRO_CLS_MASTER_CHECK
+    */
+   colsAndMetadata: ClassificationHeader[] = [];
+
+   /**
+    * Search noun modifier form control
+    */
+   searchNounNavCtrl: FormControl = new FormControl();
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -334,7 +345,9 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           columns.splice(columns.indexOf('row_action'),1);
           this.displayedColumns.next(columns);
         }
-        this.getClassificationNounMod();
+        this.getClassificationNounMod(this.searchNounNavCtrl.value);
+
+
 
       }
     });
@@ -361,9 +374,14 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
      */
      this.sharedServices.getAfterMappingSaved().subscribe(res=>{
        if(res) {
-        this.getClassificationNounMod();
+        this.getClassificationNounMod(this.searchNounNavCtrl.value);
        }
      },err=> console.error(`Error : ${err.message}`));
+
+
+     this.searchNounNavCtrl.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(va=>{
+      this.getClassificationNounMod(va, true);
+     });
   }
 
   ngAfterViewInit(){
@@ -412,7 +430,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   getSchemaDetails() {
     const sub = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
-      this.getClassificationNounMod();
+      this.getClassificationNounMod(this.searchNounNavCtrl.value);
     }, error => console.error(`Error : ${error.message}`));
     this.subsribers.push(sub);
   }
@@ -433,11 +451,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
         this.innerBreadcurmbtxt = `Master library`;
         if(fisrtNoun) {
           const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
-          this.innerBreadcurmbtxt+= ` / ${fisrtNoun?.nounSortDesc}`;
-          if (modifierCode && fisrtNoun.nounCode) {
+          this.innerBreadcurmbtxt+= ` / ${fisrtNoun?.nounDesc}`;
+          if (fisrtNoun.nounCode) {
             this.dataFrm = 'MRO_CLS_MASTER_CHECK';
-            this.innerBreadcurmbtxt+= ` / ${fisrtNoun.modifier[0]?.modText}`;
-            this.applyFilter(fisrtNoun.nounCode, modifierCode, 'MRO_CLS_MASTER_CHECK');
+            this.innerBreadcurmbtxt+= ` / ${fisrtNoun.modifier[0]?.modDesc ? fisrtNoun.modifier[0]?.modDesc : 'Unknown'}`;
+            this.getColumnWithMetadata('MRO_CLS_MASTER_CHECK', fisrtNoun.nounCode, modifierCode);
           }
           else {
             this.activeNounCode = '';
@@ -484,18 +502,19 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           this.tableData = res;
           const actualData = this.transformData(res, brType);
           this.loadedTableTransData = actualData;
-          const columns = Object.keys(actualData[0]);
-
-          const disPlayedCols = this.viewOf.getValue() === 'correction'?
-                                ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
-                                ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
-          columns.forEach(key => {
-            if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
-              disPlayedCols.push(key);
-            }
-            definedColumnsMetadata[key] = actualData[0][key];
-          });
-          this.displayedColumns.next(disPlayedCols);
+          if(this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP' || this.dataFrm === 'unmatched') {
+            const columns = Object.keys(actualData[0]);
+            const disPlayedCols = this.viewOf.getValue() === 'correction'?
+                                  ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
+                                  ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
+            columns.forEach(key => {
+              if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
+                disPlayedCols.push(key);
+              }
+              definedColumnsMetadata[key] = actualData[0][key];
+            });
+            this.displayedColumns.next(disPlayedCols);
+          }
           this.dataSource = new MatTableDataSource<any>(actualData);
         } else {
           this.dataSource = new MatTableDataSource<any>([]);
@@ -647,17 +666,32 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
             case 'ATTRIBUTES':
               const attributest = columns[col] ? columns[col] : [];
-              attributest.forEach(att => {
-                const attrCode = att.ATTR_CODE;
-                const attrDesc = att.ATTR_DESC;
-                const attrVal = att.ATTRIBUTES_VALUES ? att.ATTRIBUTES_VALUES : [];
-                let attrValue = '';
-                if (attrVal[0]) {
-                  attrValue = attrVal[0].SHORT_VALUE;
-                }
+              if(this.dataFrm === 'MRO_CLS_MASTER_CHECK') {
+                this.colsAndMetadata.forEach(c=>{
+                  if(!rowData[c.colId]) {
+                    const attrFrmRow = attributest.find(f => f.ATTR_CODE === c.colId);
+                    const attrVal = attrFrmRow && attrFrmRow.ATTRIBUTES_VALUES ? attrFrmRow.ATTRIBUTES_VALUES : [];
+                    let attrValue = '';
+                    if (attrVal[0]) {
+                      attrValue = attrVal[0].SHORT_VALUE;
+                    }
+                    rowData[c.colId] = { fieldId: c.colId, fieldDesc: c.desc, fieldValue: attrValue,
+                      isEditable: true, fieldType: c.fieldType ,length: c.length , order: c.order, dropdown: c.dropdown, descActive: c.descActive , mandatory: c.mandatory };
+                  }
+                });
+              } else {
+                attributest.forEach(att => {
+                  const attrCode = att.ATTR_CODE;
+                  const attrDesc = att.ATTR_DESC;
+                  const attrVal = att.ATTRIBUTES_VALUES ? att.ATTRIBUTES_VALUES : [];
+                  let attrValue = '';
+                  if (attrVal[0]) {
+                    attrValue = attrVal[0].SHORT_VALUE;
+                  }
 
-                rowData[attrCode] = { fieldId: attrCode, fieldDesc: attrDesc, fieldValue: attrValue, isEditable: true };
-              });
+                  rowData[attrCode] = { fieldId: attrCode, fieldDesc: attrDesc, fieldValue: attrValue, isEditable: true };
+                });
+              }
               break;
 
 
@@ -792,11 +826,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             this.schemaInfo.correctionValue = res.count ? res.count : this.schemaInfo.correctionValue;
 
             // update the api call for mapped data
-            if(this.activeTab !== 'correction' && this.dataFrm === 'unmatched') {
+            if(fldid === 'NOUN_CODE' || fldid === 'MODE_CODE') {
               // refresh the tree
               this.getClassificationNounMod('',true);
+              this.searchNounNavCtrl.setValue('');
               // refresh the table
-              this.applyFilter('', '', 'unmatched');
+              if(this.dataFrm === 'unmatched') {
+                this.applyFilter('', '', 'unmatched');
+              } else {
+                this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm);
+              }
+
             }
 
           }
@@ -835,6 +875,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
         celldataFor = CellDataFor.GSN_ATTRIBUTE;
       }
 
+    let isDropdown = false;
+    // check whether the editable is dropdown or normal value
+    const hasFld = this.colsAndMetadata.find(f => f.colId === fldid);
+    if(hasFld && hasFld.dropdown) {
+      isDropdown = true;
+    }
 
 
     // add the input component to the cell
@@ -848,7 +894,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     componentRef.instance.nounCode = nounCode;
     componentRef.instance.modCode = modCode;
     componentRef.instance.brType = this.dataFrm;
-    componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 ? 'dropdown' : 'inputText';
+    componentRef.instance.attrControl = hasFld;
+    componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 || isDropdown ? 'dropdown' : 'inputText';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));
 
   }
@@ -925,7 +972,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
       if(res) {
         setTimeout(()=>{
-          this.getClassificationNounMod();
+          this.getClassificationNounMod(this.searchNounNavCtrl.value);
           this.applyFilter(nounCode, modCode, this.dataFrm);
         },1000);
         this.schemaInfo.correctionValue = res.count;
@@ -955,6 +1002,25 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     }
     if(!objNrs.length) {
       throw new Error(`Objectnumber is required`);
+    }
+
+    // validate the mandatory value ...
+    const hasError = this._valid(row);
+    if(hasError) {
+      const dataSource = this.dataSource.data;
+      const idx = dataSource.findIndex(d=> d.OBJECTNUMBER.fieldValue === objNrs[0]);
+      if(idx !==-1) {
+        // delete err_msg
+        Object.keys(dataSource[idx]).forEach(k=>{
+          delete dataSource[idx][k].err_msg;
+        });
+
+        Object.keys(hasError).forEach(key=>{
+          dataSource[idx][key].err_msg = hasError[key];
+        });
+      }
+      console.log(dataSource);
+      return false;
     }
 
     this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs, this.dataFrm === 'MRO_CLS_MASTER_CHECK' ? true : false).subscribe(res=>{
@@ -1030,7 +1096,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
 
   columnName(columnId): string {
-    return definedColumnsMetadata[columnId] ? definedColumnsMetadata[columnId].fieldDesc : columnId;
+    if(this.dataFrm === 'MRO_CLS_MASTER_CHECK') {
+      const obj = this.colsAndMetadata.find(f=> f.colId === columnId);
+      return obj && obj.desc ? obj.desc : columnId;
+    } else {
+      return definedColumnsMetadata[columnId] ? definedColumnsMetadata[columnId].fieldDesc : columnId;
+    }
   }
 
   /**
@@ -1050,8 +1121,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   /**
    * open attribute mapping side sheet
    */
-  openAttributeMapping(nounCode: string, modCode: string) {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${nounCode}/${modCode}` } }])
+  openAttributeMapping(nounCode: string, modCode: string, isMapped = false) {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${nounCode}/${modCode}` } }], {
+      queryParams: {
+        isMapped
+      }
+    })
   }
 
   /**
@@ -1207,4 +1282,62 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       console.log(`Error:: ${error.message}`)
     });
   }
+
+  /**
+   * Get the dynamic columns based on selected nounCode & modifierCode
+   * @param ruleType the rule type generally the MRO_CLS_MASTER_CHECK
+   * @param nounCode the selected noun code
+   * @param modCode the selected modifier code
+   */
+  getColumnWithMetadata(ruleType: string, nounCode: string, modCode: string) {
+    this.schemaDetailService.getClassificationDatatableColumns(this.schemaId,ruleType,nounCode, modCode).subscribe(cols=>{
+      this.colsAndMetadata = cols ? cols : [];
+
+      // refresh columns
+      const disPlayedCols = this.viewOf.getValue() === 'correction'? ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER'] : ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER'] ;
+      this.colsAndMetadata.sort((c1,c2)=> c1.order - c2.order);
+      disPlayedCols.push(...this.colsAndMetadata.map(m => m.colId));
+      this.displayedColumns.next(disPlayedCols);
+
+      // get data
+      this.applyFilter(nounCode, modCode, 'MRO_CLS_MASTER_CHECK');
+
+    },err => console.error(`Error : ${err.message}`));
+  }
+
+  /**
+   * Check whether column is mandatory or not
+   * @param colId mostily the atrribute
+   * @returns If the column is mandatory then return true otherwise false
+   */
+  isMandatory(colId: string): boolean {
+    const hasKey = this.colsAndMetadata.find(f=> f.colId === colId);
+    return hasKey && hasKey.mandatory ? true : false;
+  }
+
+  /**
+   * Validate the row before sending for generate desc ...
+   * @param row current row
+   */
+  _valid(row: any): any {
+    const msgs = {};
+    // check bor mandatory
+    const allMandatory = this.colsAndMetadata.filter(f=> f.mandatory);
+    allMandatory.forEach(m=>{
+      if(row[m.colId] && !row[m.colId].fieldValue) {
+        msgs[m.colId] = 'Please enter the value';
+      }
+    });
+
+    // check for numeric
+    const allNumeric = this.colsAndMetadata.filter(f=> f.fieldType === 'NUMERIC');
+    allNumeric.forEach(f=>{
+      if(row[f.colId] && !msgs[f.colId] && !row[f.colId].fieldValue.match('^[0-9]*$')) {
+        msgs[f.colId] = 'Invalid type , Only numeric allowed';
+      }
+    });
+    return Object.keys(msgs).length >0 ? msgs : null;
+  }
+
+
 }

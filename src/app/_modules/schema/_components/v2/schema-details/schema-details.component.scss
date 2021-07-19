@@ -22,9 +22,11 @@ div.root {
 
   .empty-state {
     display: flex;
-    height: 100%;
     align-items: center;
     justify-content: center;
+    z-index: 1;
+    width: 100%;
+    height: calc(100% - 44px);
   }
 
   .listing-container {
@@ -113,14 +115,16 @@ div.root {
             border: none;
           }
 
-          .editable-cell {
-            background-color: #fff;
-          }
+          // .editable-cell {
+          //   background-color: #fff;
+          padding: 0;
+          // }
 
           .mat-header-cell,
           .mat-cell {
             min-width: 170px;
             max-width: 170px;
+            border-bottom-width: 1px;
 
             .collapse-icon {
               padding: 4px;
@@ -143,9 +147,12 @@ div.root {
           }
 
           .mat-column-_row_actions {
-            min-width: 36px;
-            max-width: 200px;
             border-right: none;
+
+            .action-iconbtns {
+              max-width: 200px;
+              min-width: 36px;
+            }
           }
 
           .mat-column-_select_columns,
@@ -175,16 +182,18 @@ div.root {
             }
           }
 
+          .editable-cell {
+            .mdo-form-input {
+              margin-top: 4px;
+            }
+          }
+
           .mat-column-_score_weightage {
             min-width: 120px;
             border-right: none;
 
             .progress-cell {
               width: 120px;
-
-              mat-progress-bar {
-                flex: 1;
-              }
             }
           }
         }

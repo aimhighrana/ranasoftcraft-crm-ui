@@ -1,7 +1,7 @@
 <div class="root">
     <div class="row-spacer"></div>
     <div class="f-row">
-        <mat-chip-list>
+        <lib-chip-list>
             <!---Filter cotainer ...----->
             <lib-chip i18n-label="@@display_in_label" label="Display in:" [matMenuTriggerFor]="display_in" disableRipple="true" type="info">{{selectedUnit}}</lib-chip>
             <mat-menu #display_in="matMenu" class="navigation-menu">
@@ -87,7 +87,7 @@
                     <lib-date-range-picker [dateLimit]="{start: {max: maxDate}, end: {max: maxDate}}" prosClickStopPropagation [hideInput]="true" (valueChange) ="changeDateRange($event)" #rangeDate></lib-date-range-picker>
                 </div>
             </mat-menu>
-        </mat-chip-list>
+        </lib-chip-list>
     </div>
     <div class="row-spacer"></div>
 

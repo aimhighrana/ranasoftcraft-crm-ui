@@ -1,9 +1,9 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
-import { AddFilterOutput } from '@models/schema/schema';
+import { AddFilterOutput, DataScopeSidesheet } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
@@ -101,7 +101,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * formcontrol for schema Name to be passed to child component
    */
-  schemaName: FormControl = new FormControl('');
+  schemaName: FormControl = new FormControl('', Validators.required);
 
   /**
    * formcontrol for data scope
@@ -146,6 +146,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   currentVariantCnt = 0;
 
   dataScopeName: FormControl = new FormControl('Entire data scope');
+
+  /**
+   * Falg for whether schema name enable or not
+   */
+  updateschema = false;
+
+  schemaRunFailureMsg = '';
 
   /**
    * function to format slider thumbs label.
@@ -235,7 +242,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.sharedService.getDataScope().subscribe(res => {
+  this.sharedService.getDataScope().subscribe(res => {
       if(res) {
         this.dataScopeControl.setValue(res);
         this.setDataScopeName(this.dataScopeControl.value);
@@ -245,6 +252,16 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
     this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To fetch all BRs details (will use to show in auto complete)
+
+    this.sharedService.getdatascopeSheetState().subscribe((res: DataScopeSidesheet) => {
+      if (res && res.openedFrom === 'schemaSummary') {
+        if (res.editSheet && res.variantId) {
+          this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${res.variantId}/outer` } }], {queryParamsHandling: 'preserve'});
+        } else if (!res.editSheet && res.listSheet) {
+          this.router.navigate([ { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}`, outer: `outer/schema/data-scope/list/${this.moduleId}/${this.schemaId}/outer` } }], {queryParamsHandling: 'preserve'});
+        }
+      }
+    });
   }
 
   setDataScopeName(variantId) {
@@ -271,6 +288,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       console.log(params);
       this.isFromCheckData = Boolean(params.isCheckData === 'true');
       this.moduleDesc = params.name;
+      this.updateschema = params.updateschema ? params.updateschema : false;
     })
 
 
@@ -552,14 +570,33 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   runSchema() {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
-    schemaExecutionReq.schemaId = this.schemaId;
+    schemaExecutionReq.schemaId = `${this.schemaId}`;
     schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, false).subscribe(data => {
       this.schemaDetails.isInRunning = true;
       this.sharedService.setSchemaRunNotif(true);
+
+      this.close();
+      // Trigger to refresh the list of schemas on the left sidenav so the latest appears on top
+      this.sharedService.refresSchemaListTrigger.next(true);
+      this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
+        duration: 2000
+      });
     }, (error) => {
       console.log('Something went wrong while running schema', error.message);
+      this.setSchemaFailureMsg(error.error.message);
     });
+  }
+
+  /**
+   * sets error message in banner
+   * @param msg error message
+   */
+  setSchemaFailureMsg(msg) {
+    this.schemaRunFailureMsg = msg || 'Something went wrong';
+    setTimeout(() => {
+      this.schemaRunFailureMsg = '';
+    }, 5000);
   }
 
 
@@ -886,29 +923,26 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   saveCheckData() {
     this.submitted = true;
-    // if(!this.schemaName.valid) {
-    //   return;
-    // }
-    // this.updatedSchemaName=this.schemaName.value;
-    // if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
-    //     this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
-    //     this.schemaId === 'new'){
-    //     const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-    //     schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
-    //   schemaReq.moduleId = this.moduleId;
-    //   schemaReq.discription = this.updatedSchemaName ? this.updatedSchemaName : this.schemaDetails.schemaDescription;
-    //   schemaReq.schemaThreshold = this.schemaThresholdControl.value;
+    if(!this.schemaName.valid) {
+      return false;
+    }
 
-    //   this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-    //     console.log('Schema updated successfully.');
-    //     this.prepareData(response);
-    //   },(error) => {
-    //     console.error('Something went wrong while updating schema.', error.message);
-    //   })
-    // }
-    // else {
-      this.prepareData(this.schemaId);
-    // }
+    // save the schema infor
+    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+    schemaReq.moduleId = this.moduleId;
+    schemaReq.schemaId = this.schemaId === 'new' ? '' : `${this.schemaId}`;
+    schemaReq.discription = this.schemaName.value ? this.schemaName.value : this.schemaDetails.schemaDescription;
+    schemaReq.schemaThreshold = this.schemaThresholdControl.value;
+    schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
+    const updateSc = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+          this.schemaId = `${response}`;
+          console.log('Schema updated successfully.');
+          this.prepareData(this.schemaId);
+    },(error) => {
+      console.error('Something went wrong while updating schema.', error.message);
+      this.setSchemaFailureMsg(error.error.message);
+    });
+    this.subscriptions.push(updateSc);
   }
 
 
@@ -918,20 +952,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   prepareData(schemaId) {
 
-    // save the schema infor
-    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-    schemaReq.moduleId = this.moduleId;
-    schemaReq.schemaId = this.schemaId;
-    schemaReq.discription = this.schemaDetails.schemaDescription ? this.schemaDetails.schemaDescription : '';
-    schemaReq.schemaThreshold = this.schemaThresholdControl.value;
-    schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
-    const updateSc = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-          console.log('Schema updated successfully.');
-    },(error) => {
-          console.error('Something went wrong while updating schema.', error.message);
-    });
-    this.subscriptions.push(updateSc);
-
     // update the business rule..
     const forkObj = {};
     let counter=0;
@@ -939,7 +959,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       const coreSchemaBrMap: CoreSchemaBrMap = {brId: br.brIdStr,
         dependantStatus: br.dependantStatus ? br.dependantStatus : RuleDependentOn.ALL,
         order: counter,
-        schemaId: this.schemaId,
+        schemaId: `${this.schemaId}`,
         status: br.status,
         brWeightage: Number(br.brWeightage)
         } as CoreSchemaBrMap;
@@ -951,7 +971,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           const coreSchemaBrMapD: CoreSchemaBrMap = {brId: dep_r.brIdStr,
             dependantStatus: dep_r.dependantStatus ? dep_r.dependantStatus : RuleDependentOn.ALL,
             order: counter,
-            schemaId: this.schemaId,
+            schemaId: `${this.schemaId}`,
             status: dep_r.status,
             brWeightage: Number(dep_r.brWeightage)
             } as CoreSchemaBrMap;
@@ -967,18 +987,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.subscriberData.forEach((subscriber) => {
       subscriber.sno = subscriber.sno ? subscriber.sno : Math.floor(Math.random() * Math.pow(100000, 2));
-      subscriber.schemaId = schemaId;
+      subscriber.schemaId = `${schemaId}`;
     });
     const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
 
     forkJoin({ ...forkObj,subscriberSnos}).subscribe(res => {
       console.log(`Created successful ${res}`);
       this.runSchema();
-      this.close();
-      this.toasterService.open('Schema run triggered successfully, Check Home page for output', 'Okay', {
-        duration: 2000
-      })
-
     }, err=>{
       console.log(`Exception while creating rule map ${err.message}`);
     });
@@ -1100,5 +1115,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public editBuisnessRule(br: CoreSchemaBrInfo) {
     this.router.navigate(['', { outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` , outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}/outer`} }]);
+  }
+
+  openDatascopeListSidesheet() {
+    const state: DataScopeSidesheet = {
+      openedFrom: 'schemaSummary',
+      editSheet: false,
+      listSheet: true
+    };
+    this.sharedService.setdatascopeSheetState(state);
   }
 }

@@ -702,4 +702,14 @@ describe('EndpointsRuleService', () => {
     const serObj = new EndpointsRuleService();
     expect(serObj.getSchemaGlobalCounts()).toContain('/schema/get-global-count');
   }));
+
+  it('getClassificationDatatableHeader() get classification header ', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getClassificationDatatableHeader()).toContain('/schema/get-nounheader-info');
+  }));
+
+  it('getClassificationAttributeValueUrl() get attribute value url  ', async(() => {
+    const serObj = new EndpointsRuleService();
+    expect(serObj.getClassificationAttributeValueUrl()).toContain('/schema/getAttributeValues');
+  }));
 });

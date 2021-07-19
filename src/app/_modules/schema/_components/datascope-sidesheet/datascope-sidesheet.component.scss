@@ -13,21 +13,9 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
     }
-  }
-
-  .cnt-banner {
-    padding: 0 65px;
   }
 
   .sidesheetcontent-listing {
@@ -37,13 +25,8 @@ div.root {
     .mdo-justify {
       margin: 0 16px;
 
-      .mdo-form-field {
-        padding: 8px 0;
-
-        mat-label {
-          font-weight: 500;
-          font-size: 0.8rem;
-        }
+      .field-label {
+        margin-bottom: 6px;
       }
     }
   }

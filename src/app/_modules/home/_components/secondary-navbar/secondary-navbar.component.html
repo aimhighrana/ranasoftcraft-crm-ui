@@ -14,7 +14,7 @@
       </ng-container>
       <ng-template #singleButton>
         <lib-button type="plain" iconFontType="light" icon="plus"
-          *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema"
+          *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list' && activatedPrimaryNav !== 'welcome'); else isSchema"
           (click)="globalCreate()"></lib-button>
       </ng-template>
       <ng-template #isSchema>
@@ -24,7 +24,7 @@
           <lib-search class="menu-search-row" placeholder="Search for module" (valueChange)="filterModulesMenu($event)"
             #searchInput prosClickStopPropagation></lib-search>
           <div class="menu-customdropdown">
-            <button mat-menu-item *ngFor="let module of filteredModulesMenu | async;"
+            <button mat-menu-item [focus]="false" *ngFor="let module of filteredModulesMenu | async;"
               (click)="createNewSchema(module.moduleId)" [disableRipple]="true">
               {{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
             </button>

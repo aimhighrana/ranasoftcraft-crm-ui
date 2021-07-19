@@ -13,7 +13,6 @@ div.root {
       margin-right: 0;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
       }
     }
@@ -30,13 +29,17 @@ div.root {
         margin-bottom: 6px;
       }
 
-      .lib-slider {
-        height: 36px;
-      }
+      .slider-row {
+        flex: 1;
 
-      .lib-divider {
-        margin-bottom: 12px;
-        display: block;
+        .lib-slider {
+          height: 48px;
+          width: 100%;
+        }
+
+        .percentage {
+          width: 36px;
+        }
       }
 
       .mat-error {
@@ -96,6 +99,8 @@ div.root {
               align-items: center;
               display: flex;
               z-index: 1;
+              justify-content: center;
+              text-align: center;
             }
           }
 
@@ -108,6 +113,27 @@ div.root {
         .sub-defined {
           padding-left: 100px;
           margin-top: -17px;
+        }
+      }
+
+      pros-udr-value-control {
+        display: flex;
+        flex: 1;
+      }
+
+      .field-chip-list {
+        flex-wrap: wrap;
+
+        .lib-chip {
+          display: flex;
+          flex-direction: row;
+          width: auto;
+          padding: 2px;
+        }
+
+        .mat-input {
+          width: auto;
+          flex: 1;
         }
       }
     }
@@ -132,7 +158,6 @@ div.root {
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 6px;
     flex-wrap: wrap;
 
     &.col-x4 {
@@ -145,6 +170,10 @@ div.root {
 
     &.mat-item-end {
       justify-content: flex-end;
+    }
+
+    .cursor {
+      cursor: pointer;
     }
   }
 }

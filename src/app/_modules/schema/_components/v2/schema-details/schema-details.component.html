@@ -3,21 +3,26 @@
     <div class="f-row">
         <ng-template [ngIf]="schemaInfo">
             <lib-text-line type="leading">{{ moduleInfo?.moduleDesc || 'Module' }} /
-                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{ variantTotalCnt ? variantTotalCnt : 0 }} records)</lib-text-line>
-           
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{
+                variantTotalCnt ? variantTotalCnt : 0 }} records)</lib-text-line>
+
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
             <mat-menu #menu="matMenu" class="navigation-menu">
-                <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateDataScopeList()">
-                    <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{ totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
+                <div class="datascope-scroll" prosInfiniteScroll bufferPercentage="20"
+                    (scrollEnd)="updateDataScopeList()">
+                    <button mat-menu-item (click)="variantChange('0')" i18n="@@entire_dataset">Entire dataset ({{
+                        totalVariantsCnt ? totalVariantsCnt : 0 }})</button>
                     <div *ngIf="dataScope && dataScope.length">
                         <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                            {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope.dataScopeCount ? scope.dataScopeCount : 0 }})
+                            {{ scope.variantName ? scope.variantName : 'Unknown'}} ({{ scope.dataScopeCount ?
+                            scope.dataScopeCount : 0 }})
                         </button>
                     </div>
                 </div>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="openDataScopeSideSheet()">
-                    <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> <span i18n="@@new_data_scope">New data scope</span>
+                    <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> <span
+                        i18n="@@new_data_scope">New data scope</span>
                 </button>
             </mat-menu>
         </ng-template>
@@ -26,71 +31,96 @@
         <pros-global-count [schemaId]="schemaId"></pros-global-count>
         <span class="col-spacer"></span>
         <lib-button-group>
-            <lib-button class="lib-button" type="plain" iconPosition="before" icon="sliders-h" (click)="openSummarySideSheet()">
+            <lib-button class="lib-button" type="plain" iconPosition="before" icon="sliders-h"
+                (click)="openSummarySideSheet()">
                 Refine
             </lib-button>
-            <lib-button *ngIf="false" type="plain" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
-            <lib-button class="lib-button" type="plain" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
+            <lib-button *ngIf="false" type="plain" icon="chart-line" (click)="openExecutionTrendSideSheet()">
+            </lib-button>
+            <lib-button class="lib-button" type="plain" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h">
+            </lib-button>
         </lib-button-group>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
             <button mat-menu-item i18n="@@export_to_csv" (click)="downloadExecutionDetails()">Export to CSV</button>
             <button mat-menu-item i18n="@@import_from_csv" (click)="uploadCorrectedDataCsv()">Import from CSV</button>
         </mat-menu>
     </div>
-   
-    <input type="file" class="hide-input" (change)="fileChange($event)" multiple="false" id="uploadFileCtrl"/>
+
+    <input type="file" class="hide-input" (change)="fileChange($event)" multiple="false" id="uploadFileCtrl" />
     <ng-template [ngIf]="isFileUploading">
-        <pros-schema-progress [schemaId]="schemaId" [isFileUploading]="isFileUploading" (fileUploaded)="fileUploaded($event)"></pros-schema-progress>
+        <pros-schema-progress [schemaId]="schemaId" [isFileUploading]="isFileUploading"
+            (fileUploaded)="fileUploaded($event)"></pros-schema-progress>
     </ng-template>
     <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId" (runCompleted)="onRunCompleted($event)"></pros-schema-progress>
     </ng-template>
     <ng-template #schemaInfoTemplate>
         <div class="empty-state" *ngIf="!statics || (statics && !statics.totalCnt)">
-            <lib-empty-state primaryText="Nothing to see here" secondaryText="Your data check did not return any results. Please modify your parameters and try again." icon="table" iconSize="200">
+            <lib-empty-state primaryText="Nothing to see here"
+                secondaryText="Your data check did not return any results. Please modify your parameters and try again."
+                icon="table" iconSize="200">
                 <lib-button i18n="@@check_data" type="minor" (click)="openSummarySideSheet()">Refine </lib-button>
             </lib-empty-state>
         </div>
         <div class="f-row filter-container">
-            <lib-search class="lib-search" placeholder="Search..." (valueChange)="inlineSearchSubject.next($event);"></lib-search>
-            <lib-chip class="mdo-filter-matchip" i18n-label="@@errors" label="Errors" disableRipple="true" (click)="changeTabStatus('error')" [selected]="activeTab && activeTab === 'error'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'error') ? 'plain' : 'error'">{{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}</lib-text-line>
+            <lib-search class="lib-search" placeholder="Search..." [formControl]="searchFrmCtrl">
+            </lib-search>
+            <lib-chip class="mdo-filter-matchip" i18n-label="@@errors" label="Errors" disableRipple="true"
+                (click)="changeTabStatus('error')" [selected]="activeTab && activeTab === 'error'" [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'error') ? 'plain' : 'error'">{{ (statics &&
+                    statics.errorCnt) ? statics.errorCnt : 0 }}</lib-text-line>
             </lib-chip>
 
-            <lib-chip i18n-label="@@success" label="Success" class="mdo-filter-matchip" disableRipple="true" (click)="changeTabStatus('success')" [selected]="activeTab && activeTab === 'success'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'success') ? 'plain' : 'success'">{{ (statics && statics.successCnt) ? statics.successCnt : 0 }}</lib-text-line>
+            <lib-chip i18n-label="@@success" label="Success" class="mdo-filter-matchip" disableRipple="true"
+                (click)="changeTabStatus('success')" [selected]="activeTab && activeTab === 'success'"
+                [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'success') ? 'plain' : 'success'">{{ (statics &&
+                    statics.successCnt) ? statics.successCnt : 0 }}</lib-text-line>
             </lib-chip>
 
-            <lib-chip class="mdo-filter-matchip" i18n-label="@@corrections" label="Corrections" disableRipple="true" (click)="changeTabStatus('review')" [selected]="activeTab && activeTab === 'review'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'review') ? 'plain' : 'info'">{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}</lib-text-line>
+            <lib-chip class="mdo-filter-matchip" i18n-label="@@corrections" label="Corrections" disableRipple="true"
+                (click)="changeTabStatus('review')" [selected]="activeTab && activeTab === 'review'"
+                [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'review') ? 'plain' : 'info'">{{ (statics &&
+                    statics.correctedCnt) ? statics.correctedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Outdated -->
-            <lib-chip class="mdo-filter-matchip" label="Outdated" disableRipple="true" (click)="changeTabStatus('outdated')" [selected]="activeTab && activeTab === 'outdated'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics && statics.outdatedCnt) ? statics.outdatedCnt : 0 }}</lib-text-line>
+            <lib-chip class="mdo-filter-matchip" label="Outdated" disableRipple="true"
+                (click)="changeTabStatus('outdated')" [selected]="activeTab && activeTab === 'outdated'"
+                [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'outdated') ? 'plain' : 'secondary'">{{ (statics
+                    && statics.outdatedCnt) ? statics.outdatedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Skipped -->
-            <lib-chip class="mdo-filter-matchip" label="Skipped" disableRipple="true" (click)="changeTabStatus('skipped')" [selected]="activeTab && activeTab === 'skipped'" [selectable]="true">
-                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics && statics.skippedCnt) ? statics.skippedCnt : 0 }}</lib-text-line>
+            <lib-chip class="mdo-filter-matchip" label="Skipped" disableRipple="true"
+                (click)="changeTabStatus('skipped')" [selected]="activeTab && activeTab === 'skipped'"
+                [selectable]="true">
+                <lib-text-line [textColor]="(activeTab && activeTab === 'skipped') ? 'plain' : 'secondary'">{{ (statics
+                    && statics.skippedCnt) ? statics.skippedCnt : 0 }}</lib-text-line>
             </lib-chip>
 
             <!-- Start Chip for business rule dropdown-->
-            <lib-chip class="mdo-filter-matchip" disableRipple="true" label="Business rule :" [matMenuTriggerFor]="buisnessRuleDrop">
+            <lib-chip class="mdo-filter-matchip" disableRipple="true" label="Business rule :"
+                [matMenuTriggerFor]="buisnessRuleDrop">
                 <lib-text-line [textColor]="'plain'">
                     {{ brRuleFilterDesc }}
                 </lib-text-line>
             </lib-chip>
             <mat-menu #buisnessRuleDrop="matMenu">
                 <div class="f-col lib-chip-dropdown">
-                    <lib-search prosClickStopPropagation (valueChange)="searchBusinessRules($event)" placeholder="Search..."></lib-search>
+                    <lib-search prosClickStopPropagation (valueChange)="searchBusinessRules($event)"
+                        placeholder="Search..."></lib-search>
                     <mat-nav-list prosClickStopPropagation>
                         <mat-list-item *ngFor="let ckbox of filterableRulesOb | async;">
-                            <lib-checkbox (valueChange)="addFilterFromBrRule(ckbox, $event)" [checked]="isBrAppliedChecked(ckbox)" [label]="ckbox.brInfo ? ckbox.brInfo : ''">
+                            <lib-checkbox (valueChange)="addFilterFromBrRule(ckbox, $event)"
+                                [checked]="isBrAppliedChecked(ckbox)" [label]="ckbox.brInfo ? ckbox.brInfo : ''">
                             </lib-checkbox>
                         </mat-list-item>
                     </mat-nav-list>
-                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()" class="f-col">Apply</lib-button>
+                    <lib-button type="minor" i18n="@@apply" (afterClick)="applyFilterFromBrRule()" class="f-col">Apply
+                    </lib-button>
                 </div>
             </mat-menu>
             <!-- End Chip for business rule dropdown-->
@@ -125,9 +155,10 @@
                     </ng-template>
                 </ng-template>
             </mat-chip-list>
-            
+
             <!-- Add filter control -->
-            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize" icon="filter"></lib-chip>
+            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"
+                icon="filter"></lib-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
                 <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
@@ -150,36 +181,43 @@
             <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav">
                 <div class="nav-tree" *ngIf="executionTreeHierarchy">
                     <mat-accordion>
-                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation 
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation
                             [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true"
-                            expanded="true"
-                            (click)="loadNodeData(executionTreeHierarchy)"> 
-                            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [class.selected]="activeNode && activeNode.nodeDesc === executionTreeHierarchy.nodeDesc">
+                            expanded="true" (click)="loadNodeData(executionTreeHierarchy)">
+                            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                [class.selected]="activeNode && activeNode.nodeDesc === executionTreeHierarchy.nodeDesc">
                                 <mat-panel-title>
-                                    <lib-text-line type="base" class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</lib-text-line>
+                                    <lib-text-line type="base" class="expand-title">{{ executionTreeHierarchy.nodeDesc
+                                        }}</lib-text-line>
                                     <span class="f-spacer"></span>
-                                    <lib-text-line type="base" textColor="secondary">{{ executionTreeHierarchy.docCount }}</lib-text-line>
+                                    <lib-text-line type="base" textColor="secondary">{{ executionTreeHierarchy.docCount
+                                        }}</lib-text-line>
                                     <span class="f-col-spacer-half"></span>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <div *ngIf="executionTreeHierarchy.childs && executionTreeHierarchy.childs.length">
                                 <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
-                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation 
-                                    expanded="true"
-                                    (click)="loadNodeData(child)"  
-                                    [hideToggle]="(child.childs && child.childs.length) ? false : true">
-                                        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel" [class.selected]="activeNode && activeNode.nodeDesc === child.nodeDesc">
+                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
+                                        prosClickStopPropagation expanded="true" (click)="loadNodeData(child)"
+                                        [hideToggle]="(child.childs && child.childs.length) ? false : true">
+                                        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                            class="undertree-expansion-panel"
+                                            [class.selected]="activeNode && activeNode.nodeDesc === child.nodeDesc">
                                             <mat-panel-title>
-                                                <lib-text-line type="base" class="expand-title">{{ child.nodeDesc }}</lib-text-line>
+                                                <lib-text-line type="base" class="expand-title">{{ child.nodeDesc }}
+                                                </lib-text-line>
                                                 <span class="f-spacer"></span>
-                                                <lib-text-line type="base" textColor="secondary">{{ child.docCount }}</lib-text-line>
+                                                <lib-text-line type="base" textColor="secondary">{{ child.docCount }}
+                                                </lib-text-line>
                                                 <span class="f-col-spacer-half"></span>
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
-                                        <mat-nav-list role="navigation" class="tree-nav-list" *ngIf="child.childs && child.childs.length">
-                                            <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs" prosClickStopPropagation 
+                                        <mat-nav-list role="navigation" class="tree-nav-list"
+                                            *ngIf="child.childs && child.childs.length">
+                                            <mat-list-item class="f-row understep-two"
+                                                *ngFor="let subChild of child.childs" prosClickStopPropagation
                                                 (click)="loadNodeData(subChild)">
-                                                
+
                                                 <div mat-line> {{ subChild.nodeDesc }} </div>
                                                 <span class="f-spacer"></span>
                                                 <div class="default-badge">{{ subChild.docCount }}</div>
@@ -209,7 +247,8 @@
                     <div class="f-row action-iconbtns"
                         *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
                         <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                            <lib-button type="minor" i18n="@@approve" (click)="approveRecords('all')" > Approve </lib-button>
+                            <lib-button type="minor" i18n="@@approve" (click)="approveRecords('all')"> Approve
+                            </lib-button>
                             <lib-button type="minor" i18n="@@reject" (click)="resetRec('','all')">Reject</lib-button>
                         </ng-template>
                         <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
@@ -250,32 +289,30 @@
                                 <td mat-cell *matCellDef="let element">
                                     <lib-avatar>
                                         {{ userDetails ? (userDetails.firstName ?
-                                            userDetails.firstName.substring(0,1).toUpperCase() : '') : '' }}{{
-                                            userDetails ? (
-                                            userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() :
-                                            '') : '' }}
+                                        userDetails.firstName.substring(0,1).toUpperCase() : '') : '' }}{{
+                                        userDetails ? (
+                                        userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() :
+                                        '') : '' }}
                                     </lib-avatar>
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="_score_weightage" sticky>
-                                <th mat-header-cell *matHeaderCellDef> 
+                                <th mat-header-cell *matHeaderCellDef>
                                     <div class="f-row">
                                         <lib-text-line type="base" weight="strong" i18n="@@score">Score</lib-text-line>
                                         &nbsp;
                                         <mat-icon fontSet="mdo-icons-light" class="mat-icon-header">
-                                        question-circle</mat-icon>
-                                    </div> 
+                                            question-circle</mat-icon>
+                                    </div>
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row progress-cell">
-                                        <mat-progress-bar mode="determinate"
-                                            value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }} "
-                                            class="f-col"></mat-progress-bar>
-                                        <span class="f-col-spacer-half"></span>
-                                        <span>
-                                            {{ element['_score_weightage'] ? element['_score_weightage'].fieldData : ''
-                                            }}%
-                                        </span>
+                                        <lib-progress mode="determinate"
+                                            value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }}">
+                                        </lib-progress>
+                                        &nbsp;
+                                        <lib-text-line type="small">{{ element['_score_weightage'] ?
+                                            element['_score_weightage'].fieldData : ''}}%</lib-text-line>
                                     </div>
                                 </td>
                             </ng-container>
@@ -285,7 +322,8 @@
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row action-iconbtns" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                         <!-- Secondary actions -->
-                                        <lib-button  type="minor" icon="more" *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu"></lib-button>
+                                        <lib-button type="minor" icon="more" *ngIf="secondaryActions.length"
+                                            [matMenuTriggerFor]="secondaryActionsMenu"></lib-button>
                                         <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                             <ng-container *ngFor="let sAction of secondaryActions">
                                                 <button mat-menu-item
@@ -328,14 +366,14 @@
                                     <!-- Add class on headercell "coll-visible" -->
                                     <div mat-sort-header>{{moduleInfo?.moduleDesc || 'Object number'}}</div>
                                 </th>
-                                
-                                <td mat-cell *matCellDef="let element">   
+
+                                <td mat-cell *matCellDef="let element">
                                     <!-- add class in mat-cell "vertical-cell" -->
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                                     <!-- Collapse rowspan splites start here -->
                                     <ng-template>
                                         <div class="verticalsub-text">
-                                           <!-- text comes here  -->
+                                            <!-- text comes here  -->
                                         </div>
                                     </ng-template>
                                     <!-- Collapse rowspan splites end here -->
@@ -347,12 +385,16 @@
                                 <th mat-header-cell *matHeaderCellDef style="min-width: 15px; width: 15px;">
                                     <span class="f-spacer"></span>
                                     <!-- Collapse splite start here -->
-                                    <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'open', '___header__collapsible')">chevron-right</mat-icon>
+                                    <mat-icon fontSet="mdo-icons" class="collapse-icon"
+                                        (click)="doColumnsCollapsible($event, 'open', '___header__collapsible')">
+                                        chevron-right</mat-icon>
                                     <!-- Collapse splite end here -->
                                 </th>
-                                <td mat-cell *matCellDef="let element; let rIndex = index;" [attr.rowspan]="dataSource.docValue().length" [style.display]="rIndex === 0 ? '' : 'none'">   
+                                <td mat-cell *matCellDef="let element; let rIndex = index;"
+                                    [attr.rowspan]="dataSource.docValue().length"
+                                    [style.display]="rIndex === 0 ? '' : 'none'">
                                     <div class="verticalsub-text">
-                                        Header 
+                                        Header
                                     </div>
                                 </td>
                             </ng-container>
@@ -363,12 +405,16 @@
                                 <th mat-header-cell *matHeaderCellDef style="min-width: 15px; width: 15px;">
                                     <span class="f-spacer"></span>
                                     <!-- Collapse splite start here -->
-                                    <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'open', '___grid__collapsible')">chevron-right</mat-icon>
+                                    <mat-icon fontSet="mdo-icons" class="collapse-icon"
+                                        (click)="doColumnsCollapsible($event, 'open', '___grid__collapsible')">
+                                        chevron-right</mat-icon>
                                     <!-- Collapse splite end here -->
                                 </th>
-                                <td mat-cell *matCellDef="let element; let rIndex = index;" [attr.rowspan]="dataSource.docValue().length" [style.display]="rIndex === 0 ? '' : 'none'">   
+                                <td mat-cell *matCellDef="let element; let rIndex = index;"
+                                    [attr.rowspan]="dataSource.docValue().length"
+                                    [style.display]="rIndex === 0 ? '' : 'none'">
                                     <div class="verticalsub-text">
-                                        Grid 
+                                        Grid
                                     </div>
                                 </td>
                             </ng-container>
@@ -379,12 +425,16 @@
                                 <th mat-header-cell *matHeaderCellDef style="min-width: 15px; width: 15px;">
                                     <span class="f-spacer"></span>
                                     <!-- Collapse splite start here -->
-                                    <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'open', '___hierarchy__collapsible')">chevron-right</mat-icon>
+                                    <mat-icon fontSet="mdo-icons" class="collapse-icon"
+                                        (click)="doColumnsCollapsible($event, 'open', '___hierarchy__collapsible')">
+                                        chevron-right</mat-icon>
                                     <!-- Collapse splite end here -->
                                 </th>
-                                <td mat-cell *matCellDef="let element; let rIndex = index;" [attr.rowspan]="dataSource.docValue().length" [style.display]="rIndex === 0 ? '' : 'none'">   
+                                <td mat-cell *matCellDef="let element; let rIndex = index;"
+                                    [attr.rowspan]="dataSource.docValue().length"
+                                    [style.display]="rIndex === 0 ? '' : 'none'">
                                     <div class="verticalsub-text">
-                                        Hierarchy 
+                                        Hierarchy
                                     </div>
                                 </td>
                             </ng-container>
@@ -398,7 +448,7 @@
                                     [ngIfElse]="other">
                                     <!-- skip all static columns -->
                                 </ng-template>
-                                
+
                                 <ng-template #other>
                                     <ng-container [matColumnDef]="dynCols">
                                         <!-- [class.schema-header-cell]="isHeaderColumn(dynCols)" -->
@@ -409,16 +459,21 @@
                                             <ng-template [ngIf]="enableIcon(dynCols)">
                                                 <span class="f-spacer"></span>
                                                 <!-- Collapse splite start here -->
-                                                <mat-icon fontSet="mdo-icons" class="collapse-icon" (click)="doColumnsCollapsible($event, 'close', dynCols)">chevron-left</mat-icon>
+                                                <mat-icon fontSet="mdo-icons" class="collapse-icon"
+                                                    (click)="doColumnsCollapsible($event, 'close', dynCols)">
+                                                    chevron-left</mat-icon>
                                                 <!-- Collapse splite end here -->
                                             </ng-template>
                                         </th>
 
                                         <!-- [class.schema-header-cell] = "isHeaderColumn(dynCols)" -->
-                                        <td class="schema-header-cell" mat-cell *matCellDef="let element; let rIndex = index;" [class.editable-cell] = "isFieldEditable(dynCols)"
+                                        <td class="schema-header-cell" mat-cell
+                                            *matCellDef="let element; let rIndex = index;"
+                                            [class.editable-cell]="isFieldEditable(dynCols)"
                                             [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
                                             [class.correction-cell]="element[dynCols] ? element[dynCols].isCorrected: false"
-                                            (click)="editCurrentCell(dynCols,element, rIndex, containerRef)" [class.edit-mode]="isEditEnabled(dynCols,element, rIndex)">
+                                            (click)="editCurrentCell(dynCols,element, rIndex, containerRef)"
+                                            [class.edit-mode]="isEditEnabled(dynCols,element, rIndex)">
                                             <div class="f-col grid-cell-editable">
                                                 <div class="mdo-form-input f-col" style="display: none;"
                                                     id="inpctrl_{{ dynCols + '_' + rIndex }}">
@@ -432,7 +487,8 @@
                                                         [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                                         [ngIfElse]="other">
                                                         <div class="f-col">
-                                                            <span class="correction" id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                            <span class="correction"
+                                                                id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
                                                                 element[dynCols].oldData) : '' }}
                                                             </span>
@@ -441,7 +497,7 @@
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
                                                                 element[dynCols].fieldData) : '' }}
                                                             </span>
-                                                            
+
                                                         </div>
                                                     </ng-template>
                                                     <ng-template #other>
@@ -461,17 +517,20 @@
                                                         </span>
                                                         <span class="error-message">
                                                             {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
-                                                        </span>                                                       
+                                                        </span>
                                                     </div>
                                                 </ng-template>
                                             </div>
+
+
                                         </td>
                                     </ng-container>
                                 </ng-template>
                             </ng-template>
                             <!-- load header for actions-->
                             <ng-container matColumnDef="review_actions_header">
-                                <th mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
+                                <th mat-header-cell *matHeaderCellDef
+                                    [attr.colspan]="displayedFields.getValue().length">
                                     <div class="f-row action-iconbtns">
                                         <lib-button type="minor" (click)="approveRecords('all')">
                                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
