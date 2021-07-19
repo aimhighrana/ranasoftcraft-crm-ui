@@ -16,6 +16,8 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { Router } from '@angular/router';
 import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { UserService } from '@services/user/userservice.service';
+import { Userdetails } from '@models/userdetails';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
@@ -23,11 +25,12 @@ describe('ReportingListComponent', () => {
   let widgetServiceSpy: WidgetService;
   let router: Router;
   let schemaDetailsService : SchemaDetailsService
+  let userService : UserService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ReportingListComponent],
       imports: [MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, MatMenuModule, RouterTestingModule, SharedModule],
-      providers: [WidgetService,SchemaDetailsService]
+      providers: [WidgetService,SchemaDetailsService, UserService]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -39,6 +42,7 @@ describe('ReportingListComponent', () => {
     component = fixture.componentInstance;
     widgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    userService = fixture.debugElement.injector.get(UserService);
   });
 
   it('should create', () => {
@@ -326,4 +330,49 @@ describe('ReportingListComponent', () => {
     component.getMetaDataFields(obj);
     expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(obj);
   }))
+
+  it('getUsetDetails()', async(() => {
+
+    const res = { dateformat: 'mm.dd.yy' } as Userdetails;
+    spyOn(userService, 'getUserDetails').and.returnValue(of(res));
+    component.getUserDetails();
+    expect(component.getUserDetails).toBeTruthy();
+    expect(component.dateFormat).toEqual('MM.dd.yyyy, h:mm:ss a');
+  }));
+
+  it('getUsetDetails(),when date format is dd.MM.yy', async(() => {
+
+    const res = { dateformat: 'dd.MM.yy' } as Userdetails;
+    spyOn(userService, 'getUserDetails').and.returnValue(of(res));
+    component.getUserDetails();
+    expect(component.getUserDetails).toBeTruthy();
+    expect(component.dateFormat).toEqual('dd.MM.yyyy, h:mm:ss a');
+  }));
+
+  it('getUsetDetails(),when date format is dd M, yy', async(() => {
+
+    const res = { dateformat: 'dd M, yy' } as Userdetails;
+    spyOn(userService, 'getUserDetails').and.returnValue(of(res));
+    component.getUserDetails();
+    expect(component.getUserDetails).toBeTruthy();
+    expect(component.dateFormat).toEqual('dd MMM, yyyy, h:mm:ss a');
+  }));
+
+  it('getUsetDetails(),when date format is MM d, yy', async(() => {
+
+    const res = { dateformat: 'MM d, yy' } as Userdetails;
+    spyOn(userService, 'getUserDetails').and.returnValue(of(res));
+    component.getUserDetails();
+    expect(component.getUserDetails).toBeTruthy();
+    expect(component.dateFormat).toEqual('MMMM d, yyyy, h:mm:ss a');
+  }));
+
+
+  it('getUsetDetails(), when date format is dd-MM-YYY', async(() => {
+    const res = { dateformat: 'dd-mm-yyyy' } as Userdetails;
+    spyOn(userService, 'getUserDetails').and.returnValue(of(res));
+    component.getUserDetails();
+    expect(component.getUserDetails).toBeTruthy();
+    expect(component.dateFormat).toEqual(undefined);
+  }));
 });
