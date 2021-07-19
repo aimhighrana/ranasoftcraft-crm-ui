@@ -753,6 +753,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.businessRuleData.forEach((businessRule) => {
       sumOfAllWeightage = Number(businessRule.brWeightage) + sumOfAllWeightage;
+      if (businessRule.dep_rules && businessRule.dep_rules.length) {
+        businessRule.dep_rules.forEach(rule => {
+          sumOfAllWeightage = Number(rule.brWeightage) + sumOfAllWeightage;
+        });
+      }
     })
     freeWeight = 100 - sumOfAllWeightage;
 
