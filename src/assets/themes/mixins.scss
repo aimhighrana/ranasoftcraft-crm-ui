@@ -1639,6 +1639,32 @@
     }
   }
 
+  pros-datascope-sidesheet {
+    mat-list.mat-list {
+      &.date-picker-list {
+        .mat-radio-button {
+          margin-bottom: 0;
+
+          .mat-radio-label {
+            height: 48px;
+          }
+        }
+
+        mat-list-item.mat-list-item {
+          &.selected {
+            background: $color-app-hover;
+          }
+        }
+      }
+    }
+
+    div.root {
+      .filter-list {
+        border-right-color: $color-app-border;
+      }
+    }
+  }
+
   pros-schema-summary-sidesheet,
   pros-schema-info {
     div.root {

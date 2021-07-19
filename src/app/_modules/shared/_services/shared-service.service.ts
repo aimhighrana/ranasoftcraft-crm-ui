@@ -13,10 +13,6 @@ export class SharedServiceService {
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  private afterEditDatascopeSideSheetClose: BehaviorSubject<any> = new BehaviorSubject(null);
-
-  private editDatascopeTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
-
   private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
