@@ -222,12 +222,12 @@
                                                 <div class="f-row slider-row">
                                                     <lib-range-slider minValue="0"
                                                     [maxValue]="availableWeightage(deps.brWeightage)"
-                                                    (valueChange)="updateBr(deps,$event)" class="lib-slider"
+                                                    (valueChange)="updateBr(deps,$event, 'slider', true)" class="lib-slider"
                                                     thumbLabel="false" tickInterval="1"
                                                     [formatLabelFn]="rangeSliderLabelFormat" [value]="deps.brWeightage"
                                                     color="primary"></lib-range-slider>
                                                     &nbsp;
-                                                    <lib-text-line type="base" class="percentage">{{businessRule.brWeightage}}%
+                                                    <lib-text-line type="base" class="percentage">{{deps.brWeightage}}%
                                                     </lib-text-line>
                                                 </div>
                                                 

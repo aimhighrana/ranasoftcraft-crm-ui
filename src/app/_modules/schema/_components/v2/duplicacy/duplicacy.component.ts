@@ -1074,6 +1074,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
     console.log(value);
+
+    let code = value;
+    if(typeof value === 'object') {
+      code = value.CODE;
+      value = value.TEXT;
+    }
+
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
       // DOM control after value change ...
@@ -1096,7 +1103,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
         const request: DoCorrectionRequest = {
           id: objctNumber,
           fldId: fldid,
-          vc: value,
+          vc: code,
+          vt: value,
           oc: oldVal,
           groupIdold: this.groupId,
           groupIdnew: '',

@@ -889,11 +889,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
     let code = value;
+
     if(typeof value === 'object') {
       code = value.CODE;
       value = value.TEXT;
     }
     console.log(value);
+
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
       // DOM control after value change ...
@@ -932,6 +934,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
+            this.getSchemaStatics();
           }
         }, error => {
           this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -1090,6 +1093,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.dataSource.setDocValue([]);
             this.getData();
+            this.getSchemaStatics();
             this.selection.clear();
         }
     }, error=>{
