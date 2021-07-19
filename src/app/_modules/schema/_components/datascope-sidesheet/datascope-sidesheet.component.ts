@@ -1231,7 +1231,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * updates filter list on scroll
+   * updates filter list on scroll...
    */
   updateFiltersList(ev) {
     if (ev && (ev.scrollTop >= ((ev.scrollHeight - ev.offsetHeight)) * 0.9)) {
