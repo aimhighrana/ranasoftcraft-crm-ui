@@ -16,14 +16,14 @@ describe('AttributeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AttributeComponent ],
+      declarations: [AttributeComponent],
       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [{
         provide: ActivatedRoute,
-        useValue: {params : of({nounSno: '1701'})}
+        useValue: { params: of({ nounSno: '1701' }) }
       }]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -57,35 +57,61 @@ describe('AttributeComponent', () => {
   it('close sidesheet', () => {
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }], { queryParamsHandling: 'preserve' })
   });
 
   it(`To get FormControl from fromGroup `, async(() => {
     component.buildAttributeForm()
-    const field=component.formField('attrCode');
+    const field = component.formField('attrCode');
     expect(field).toBeDefined();
-   }));
+  }));
 
-   it('should init component', () => {
+  it('should init component', () => {
     component.ngOnInit();
     expect(component.nounSno).toEqual('1701');
   });
 
+  it('defaultValueCount should show current value', () => {
+    nounModifierService.attributeValuesModels = [{} as any];
+    expect(component.defaultValueCount).toEqual(1);
+    delete nounModifierService.attributeValuesModels;
+    expect(component.defaultValueCount).toEqual(0);
+  });
+
+  it('openDefaultValueSideSheet should open the side sheet', () => {
+    nounModifierService.attributeSheetRoute = ['', {
+      outlets: {
+        sb: 'attribute-sidesheet-route'
+      }
+    }];
+    component.buildAttributeForm();
+    spyOn(router, 'navigate');
+    component.openDefaultValueSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', {
+      outlets: {
+        sb: `attribute-sidesheet-route`,
+        outer: 'outer/schema/attribute-values'
+      }
+    }], {
+      queryParamsHandling: 'preserve',
+      queryParams: { editValues: true }
+    });
+  });
 
   it('should save', () => {
 
-   spyOn(component, 'close');
-   spyOn(nounModifierService, 'addAttribute').and.returnValue(of('success'));
+    spyOn(component, 'close');
+    spyOn(nounModifierService, 'addAttribute').and.returnValue(of('success'));
 
-   component.buildAttributeForm();
-   component.save();
-   expect(component.submitted).toBeTrue();
+    component.buildAttributeForm();
+    component.save();
+    expect(component.submitted).toBeTrue();
 
-   component.setControlValue('attrCode', 'length');
-   component.setControlValue('attrDesc', 'length mm');
-   component.save();
+    component.setControlValue('attrCode', 'length');
+    component.setControlValue('attrDesc', 'length mm');
+    component.save();
 
-   expect(nounModifierService.addAttribute).toHaveBeenCalledTimes(1);
+    expect(nounModifierService.addAttribute).toHaveBeenCalledTimes(1);
 
   })
 

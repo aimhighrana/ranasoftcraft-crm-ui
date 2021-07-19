@@ -63,6 +63,7 @@ export class SchemaTableData {
   errorMsg: string;
   fieldDesc: string;
   isReviewed: boolean;
+  delFlag?: boolean;
 }
 export class SendDataForSchemaTableShowMore {
   constructor(public scrollId: string, public userId: string) {}
