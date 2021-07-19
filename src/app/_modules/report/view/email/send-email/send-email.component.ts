@@ -27,7 +27,7 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   emailRecipients: string[] = [];
 
   /* Form control for recipients */
-  emailTo = new FormControl(' ', { validators: [Validators.email, Validators.required] });
+  emailTo = new FormControl('', { validators: [Validators.email, Validators.required] });
 
   /* List to hold filtered users */
   filteredUsers: Observable<UserMdoModel[]>;
@@ -229,6 +229,14 @@ export class SendEmailComponent implements OnInit,OnDestroy {
 
   /* To check if form is valid */
   public isFormValid(): boolean{
+
+    if(this.emailTo.invalid){
+      this.emailTo.markAsTouched();
+      if(!this.emailTo.value){
+        this.emailTo.setErrors({required:true, email: null})
+      }
+    }
+
     this.emailFormGrp.patchValue({to: this.emailRecipients})
     if (this.emailFormGrp.invalid) {
       (Object).values(this.emailFormGrp.controls).forEach(control => {

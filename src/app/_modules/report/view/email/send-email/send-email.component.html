@@ -18,7 +18,6 @@
             <div class="f-col mdo-justify">
                 <div class="f-col">
                     <lib-banner *ngIf="errorMsg" status="error" [text]="errorMsg"></lib-banner>
-                    <lib-banner *ngIf="emailTo.touched && emailTo.hasError('email')" status="error" [text]="'Email is invalid'"></lib-banner>
                     <lib-banner *ngIf="successMsg" status="success" [text]="successMsg"></lib-banner>
                     <div class="f-col mdo-form-field">
                          <!-- Multiselect -->
@@ -42,6 +41,7 @@
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                 [matChipInputAddOnBlur]="'true'"
                                 (matChipInputTokenEnd)="emailTo.touched && emailTo.hasError('email') ? $event.input.value = '' : addUserManually($event);$event.input.value = ''"
+                                (blur)="emailTo.setErrors({email: null});"
                                 >
                             </mat-chip-list>
                             <mat-autocomplete #auto="matAutocomplete"
@@ -52,6 +52,7 @@
                             </mat-autocomplete>
                         </mat-form-field>
                          <!-- Multiselect -->
+                        <mat-error *ngIf="emailTo.touched && emailTo.hasError('email')">Email is invalid</mat-error>
                         <mat-error i18n="@@email_required" *ngIf="emailTo.touched && emailTo.hasError('required') && emailRecipients.length == 0">Email is required</mat-error>
                         <div mat-line><a class="info-link" (click)=addMyself()>Add myself</a></div>
                     </div>
