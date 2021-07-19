@@ -15,7 +15,7 @@
 export const environment = {
   production: false,
   analyticsUrl: 'http://localhost:8081',
-  apiurl: 'https://dev-classic.masterdataonline.com',
+  apiurl: 'https://mdoqa.masterdataonline.com',
   listurl: 'https://dev-classic.masterdataonline.com',
   coreUrl:'http://localhost:8084',
   syncUrl:'http://localhost:8085',
