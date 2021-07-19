@@ -335,6 +335,7 @@ export class Heirarchy {
   structureId: string;
   tableName: string;
   objectType: string;
+  child? : MetadataModel[];
 }
 
 export class MetadataModeleResponse {
