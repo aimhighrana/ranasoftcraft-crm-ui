@@ -258,6 +258,7 @@
             .mat-select-arrow {
               margin-top: 8px;
               margin-right: 12px;
+              color: $color-text-primary;
             }
           }
         }
@@ -464,10 +465,10 @@
           cursor: pointer;
 
           .option-icon {
-            font-size: 10px;
-            width: 10px;
-            height: 10px;
-            margin-right: 8px;
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
           }
         }
 
@@ -555,84 +556,88 @@
   mat-chip-list {
     outline: none;
 
-    mat-chip.mat-chip {
-      font-weight: normal;
-      min-height: 24px;
-      border-radius: 30px;
-      text-overflow: ellipsis;
-      white-space: pre-line;
-      overflow: hidden;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      padding: 3px 12px;
-      font-size: 0.8rem;
+    .mat-chip-list-wrapper {
+      margin: 0;
 
-      .mat-info-icon {
-        font-size: 12px;
-      }
+      mat-chip.mat-chip {
+        font-weight: normal;
+        min-height: 24px;
+        border-radius: 30px;
+        text-overflow: ellipsis;
+        white-space: pre-line;
+        overflow: hidden;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        padding: 3px 12px;
+        font-size: 0.8rem;
 
-      &.none-stats-chip {
-        border: 1px solid $color-app-border;
-        background-color: mat-color($background-palette, card);
-        white-space: nowrap;
-      }
-
-      &.mdo-filter-matchip {
-        display: flex;
-        height: 35px;
-        width: auto;
-        cursor: pointer;
-        padding: 5px 10px;
-        line-height: 0.9em;
-        border: 1px solid $color-app-border;
-        background-color: mat-color($background-palette, card);
-        margin: 0 4px;
-
-        label {
-          margin: 0 4px;
+        .mat-info-icon {
+          font-size: 12px;
         }
 
-        .info {
-          color: $color-text-link;
-          margin-right: 3px;
+        &.none-stats-chip {
+          border: 1px solid $color-app-border;
+          background-color: mat-color($background-palette, card);
+          white-space: nowrap;
+        }
+
+        &.mdo-filter-matchip {
+          display: flex;
+          height: 35px;
+          width: auto;
+          cursor: pointer;
+          padding: 5px 9px;
+          line-height: 0.9em;
+          border: 1px solid $color-app-border;
+          background-color: mat-color($background-palette, card);
+          margin: 1px 4px;
+
+          label {
+            margin: 0 4px;
+          }
+
+          .info {
+            color: $color-text-link;
+            margin-right: 3px;
+          }
+        }
+
+        &.info-status {
+          background: $color-status-info-accent;
+          color: $color-status-info;
+        }
+
+        &.error-status {
+          background: $color-status-error-accent;
+          color: $color-status-error;
+        }
+
+        &.success-status {
+          background: $color-status-success-accent;
+          color: $color-status-success;
+        }
+
+        &.warning-status {
+          background: $color-status-warning-accent;
+          color: $color-status-warning;
+        }
+
+        &.selected {
+          background: $color-app-selected;
+          border-color: $color-app-selected;
+          color: $color-text-canvas;
+        }
+
+        &.unselected {
+          background: mat-color($background-palette, card);
+          border: 1px solid $color-app-border;
+          color: $color-text-primary;
         }
       }
 
-      &.info-status {
-        background: $color-status-info-accent;
-        color: $color-status-info;
+      mat-chip.mat-chip.mat-standard-chip::after {
+        background: transparent;
       }
-
-      &.error-status {
-        background: $color-status-error-accent;
-        color: $color-status-error;
-      }
-
-      &.success-status {
-        background: $color-status-success-accent;
-        color: $color-status-success;
-      }
-
-      &.warning-status {
-        background: $color-status-warning-accent;
-        color: $color-status-warning;
-      }
-
-      &.selected {
-        background: $color-app-selected;
-        border-color: $color-app-selected;
-        color: $color-text-canvas;
-      }
-
-      &.unselected {
-        background: mat-color($background-palette, card);
-        border: 1px solid $color-app-border;
-        color: $color-text-primary;
-      }
-    }
-
-    mat-chip.mat-chip.mat-standard-chip::after {
-      background: transparent;
     }
   }
 
@@ -766,14 +771,6 @@
     }
   }
 
-  .filter-btn button,
-  .menu-link-btn button {
-    border-color: $color-app-border;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 50%;
-  }
-
   //Mat-Menu
   .cdk-overlay-pane {
     &.display-dialog {
@@ -807,27 +804,14 @@
       }
 
       &.navigation-menu {
+        .menu-search-row {
+          padding: 8px;
+        }
+
         .menu-customdropdown {
           max-height: 360px;
           min-height: auto;
           overflow: auto;
-
-          &.search-module-dropdown {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            overflow-y: auto;
-
-            .lib-button {
-              width: 100%;
-
-              button {
-                width: 100%;
-                text-align: left;
-                margin-left: 5px;
-              }
-            }
-          }
         }
 
         mat-divider.mat-divider {
@@ -883,15 +867,13 @@
           top: -1px;
         }
 
-        .mdo-field-tooltip {
-          margin-bottom: 8px;
-          display: flex;
-          flex-direction: column;
+        .field-label {
+          margin-bottom: 6px;
+        }
 
-          mat-label {
-            font-weight: 500;
-            font-size: 0.8rem;
-          }
+        .field-button {
+          width: 100%;
+          display: flex;
         }
       }
     }
@@ -1087,6 +1069,11 @@
     border: 1px solid  $color-status-error;
   }
 
+  .sidesheetcontent-listing .mandatory {
+    margin: initial 5px;
+    color: $color-status-error;
+  }
+
   //MDO-Table
   .mat-table {
     .mat-row,
@@ -1122,6 +1109,12 @@
         color: $color-status-error;
       }
 
+      &.text-strike {
+        opacity: 0.4;
+        pointer-events: none;
+        text-decoration: line-through;
+      }
+
       .edit-cell {
         height: 100%;
 
@@ -1147,6 +1140,10 @@
 
       .mat-sort-header {
         display: inline-block;
+      }
+
+      .mandatory {
+        color: $color-status-error;
       }
     }
 
@@ -1253,10 +1250,8 @@
   }
 
   pros-duplicacy {
-    .mat-table {
-      .mat-cell.action-buttons-width {
-        min-width: 300px;
-      }
+    .text-correction {
+      color: $color-status-info;
     }
   }
 
@@ -1394,10 +1389,6 @@
     }
   }
 
-  .lib-button.navbar-action .mdo-button.mdo-minor {
-    background: $color-text-canvas;
-  }
-
   pros-primary-navigation {
     mat-sidenav-content.body-sidecontent {
       height: calc(100% - 60px);
@@ -1462,10 +1453,6 @@
     }
   }
 
-  .mat-nav-list .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
-    top: 5px;
-  }
-
   pros-settings {
     .mat-list-item.selected {
       background-color: $color-app-hover;
@@ -1478,13 +1465,7 @@
         box-shadow: $inset-box-shadow;
 
         .nav-tree {
-          .badge {
-            color: $color-text-secondary;
-          }
-
           .mat-list-item {
-            font-size: 14px;
-
             &.selected {
               background-color: $color-app-hover;
             }
@@ -1552,10 +1533,25 @@
     }
   }
 
-  pros-setup-duplicate-rule {
+  pros-setup-duplicate-rule,
+  pros-datascope-list-sidesheet {
     .colunm-box {
       &.rule-border-row {
         border-bottom: 1px solid $color-app-border;
+      }
+    }
+  }
+
+  pros-attribute-default-value {
+    .colunm-box {
+      &.rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      &.value-row:hover {
+        background: $color-app-border;
       }
     }
   }
@@ -1684,56 +1680,6 @@
     }
   }
 
-  pros-new-business-rules {
-    .user-defined-set {
-      &::before {
-        background: $color-app-border;
-      }
-
-      .defined-row {
-        border-color: $color-app-border;
-
-        div.col {
-          &.select-col {
-            background: $color-accent;
-          }
-        }
-      }
-    }
-  }
-
-  pros-brrule-side-sheet,
-  pros-duplicate-datacheck-sidesheet {
-    div.root {
-      .user-defined-set {
-        &::before {
-          background: $color-accent;
-        }
-
-        .defined-row {
-          border-color: $color-app-border;
-
-          div.col {
-            &.select-col {
-              background: $color-accent;
-            }
-
-            button.f-selected-col,
-            .range-slider {
-              background-color: mat-color($background-palette, card);
-            }
-          }
-        }
-      }
-
-      .colunm-box {
-        &.rule-border-row {
-          border-bottom: 1px solid $color-app-border;
-        }
-      }
-    }
-  }
-
   pros-report-list {
     mat-card.root {
       mat-list.mat-list {
@@ -1779,6 +1725,134 @@
 
           .mat-form-field-underline {
             display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .classification-field {
+    &.suggested {
+      mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
+        background: $color-status-info-accent;
+      }
+
+      mat-form-field.mat-form-field.null-cell .info-arrow,
+      mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
+      mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
+        color: $color-status-info;
+      }
+    }
+
+    &.unmatched {
+      mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper {
+        background: $color-status-error-accent;
+      }
+
+      mat-form-field.mat-form-field.null-cell .info-arrow,
+      mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input,
+      mat-form-field.mat-form-field.null-cell .mat-form-field-wrapper .mat-form-field-infix .mat-input::placeholder {
+        color: $color-status-error;
+      }
+    }
+  }
+
+  pros-library-mapping-sidesheet {
+    div.root {
+      .rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+
+        .col {
+          &.error-cell {
+            border-bottom: 1px solid mat-color($primary-palette);
+            background-color: mat-color($background-palette, app-bar);
+          }
+
+          mat-form-field.customfield-dropdown {
+            width: 100%;
+            background: transparent;
+
+            .mat-form-field-wrapper {
+              .mat-form-field-flex {
+                padding-top: 0;
+                background: transparent;
+              }
+
+              .mat-form-field-infix {
+                mat-select.mat-select {
+                  .mat-select-value-text {
+                    color: mat-color($primary-palette);
+                  }
+                }
+              }
+
+              .mat-form-field-underline {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-brrule-side-sheet,
+  pros-new-business-rules {
+    div.root {
+      .user-defined-set {
+        &::before {
+          background: $color-accent;
+        }
+
+        .defined-row {
+          border-color: $color-app-border;
+
+          div.col {
+            &.select-col {
+              background: $color-accent;
+            }
+
+            .mat-select {
+              &.udr-form-select {
+                box-sizing: border-box;
+              }
+
+              // &.ng-touched.ng-invalid {
+              //   border: 1px solid $color-status-error;
+              //   color: $color-status-error;
+              // }
+            }
+
+            .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
+            .udr-select-col.has-error {
+              border: 1px solid  $color-status-error;
+            }
+
+            .udr-option:hover {
+              button.mdo-button:hover {
+                background: transparent;
+
+                .mat-button-focus-overlay {
+                  opacity: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .colunm-box {
+        &.rule-border-row {
+          border-bottom: 1px solid $color-app-border;
+        }
+      }
+
+      .field-chip-list {
+        .lib-chip {
+          button.mdo-filter-pill {
+            height: 28px;
+            margin-top: -1px;
+            font-size: 13px;
           }
         }
       }
@@ -1851,47 +1925,6 @@
     }
   }
 
-  pros-configure-sidesheet,
-  pros-library-mapping-sidesheet,
-  pros-lookup-rule {
-    div.root {
-      .rule-border-row {
-        border-bottom: 1px solid $color-app-border;
-
-        .col {
-          &.error-cell {
-            border-bottom: 1px solid mat-color($primary-palette);
-            background-color: mat-color($background-palette, app-bar);
-          }
-
-          mat-form-field.customfield-dropdown {
-            width: 100%;
-            background: transparent;
-
-            .mat-form-field-wrapper {
-              .mat-form-field-flex {
-                padding-top: 0;
-                background: transparent;
-              }
-
-              .mat-form-field-infix {
-                mat-select.mat-select {
-                  .mat-select-value-text {
-                    color: mat-color($primary-palette);
-                  }
-                }
-              }
-
-              .mat-form-field-underline {
-                display: none;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   pros-system-tray {
     div.root {
       mat-tab-header.mat-tab-header {
@@ -1909,6 +1942,10 @@
           mat-list-item.mat-list-item {
             border-bottom: 1px solid $color-app-border;
 
+            &.mat-list-item:hover {
+              background-color: $color-app-hover;
+            }
+
             .mat-list-item-content {
               min-height: 48px;
               padding: 0;
@@ -1917,25 +1954,18 @@
               .mat-expand-icon {
                 color: $color-text-secondary;
               }
-
-              .mdo-chip-list {
-                .mdo-label {
-                  display: flex;
-                  align-items: center;
-                }
-              }
-
-              mat-card-header.mat-card-header {
-                .mat-card-header-text {
-                  margin: 0;
-                }
-              }
             }
           }
         }
       }
     }
   }
+
+  // pros-table-cell-input {
+  //   mat-form-field.edit-cell {
+  //     background: #;
+  //   }
+  // }
 
   pros-classification-builder {
     div.root {
@@ -1945,8 +1975,13 @@
         .nav-tree {
           mat-nav-list.mat-nav-list.tree-nav-list {
             .understep-two {
+              &.selected,
+              &.mat-list-item:hover {
+                background: $color-app-hover;
+              }
+
               .mat-list-item-content {
-                padding: 0 0 0 64px;
+                padding: 0 16px 0 64px;
               }
             }
           }
@@ -1957,6 +1992,12 @@
           background-color: mat-color($background-palette, card);
         }
       }
+    }
+  }
+
+  pros-global-count {
+    .sum-collection::after {
+      background-color: $color-text-secondary;
     }
   }
 
@@ -2051,11 +2092,6 @@
     }
   }
 
-  .sidesheetcontent-listing .mandatory {
-    margin: initial 5px;
-    color: $color-status-error;
-  }
-
   pros-schema-lists {
     table.mat-table {
       &.table-vertical {
@@ -2065,17 +2101,6 @@
           }
         }
       }
-    }
-  }
-
-  .mat-select.udr-form-select {
-    padding: 7px;
-    box-sizing: border-box;
-    border-radius: 5px;
-
-    &.ng-touched.ng-invalid {
-      border: 1px solid $color-status-error;
-      color: $color-status-error;
     }
   }
 
@@ -2119,6 +2144,29 @@
       justify-content: center;
       align-items: center;
       background-color: $color-text-canvas;
+    }
+  }
+
+  .classification-chip.mdo-filter-matchip {
+    .unmatched {
+      color: $color-status-error;
+    }
+
+    .suggested {
+      color: $color-status-info;
+    }
+  }
+
+  .lib-button.classification-link-question {
+    button {
+      color: $color-status-error;
+    }
+
+    &.mat-badge-medium.mat-badge-overlap.mat-badge-after span.mat-badge-content {
+      background: transparent;
+      color: $color-status-error;
+      right: -5px;
+      top: initial;
     }
   }
 }
@@ -2260,14 +2308,6 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
   margin-bottom: 17px;
 }
 
-// primary menu btns
-.menu-btn {
-  button {
-    width: 100%;
-    text-align: start;
-  }
-}
-
 .date-picker-option .dropdown-option {
   padding: initial;
 }
@@ -2290,7 +2330,3 @@ mat-tooltip-component {
 //     height: calc(100% - 75px);
 //   }
 // }
-
-.br-sidesheet-btn button {
-  width: 60px;
-}

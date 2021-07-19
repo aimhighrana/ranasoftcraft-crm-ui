@@ -21,6 +21,8 @@
         </div>
       </div>
       <mat-divider></mat-divider>
-      <mat-option *ngIf="isExtraLabel" [value]="extraOption" (click)="emitClickEvent()"><span class="info-link">{{extraOptionLabel}}</span></mat-option>
+      <mat-option *ngIf="isExtraLabel" [value]="extraOption" (click)="emitClickEvent()">
+        <lib-text-line type="base" textColor="link">{{extraOptionLabel}}</lib-text-line>
+    </mat-option>
     </mat-autocomplete>
   </mat-form-field>

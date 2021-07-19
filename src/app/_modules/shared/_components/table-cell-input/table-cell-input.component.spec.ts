@@ -132,7 +132,7 @@ describe('TableCellInputComponent', () => {
     const event = {target: {value: 'Tunisia'}};
 
     component.submitSingleSelectValue(event);
-    expect(component.emitInputBlur).toHaveBeenCalledWith('Tunisia');
+    expect(component.emitInputBlur).toHaveBeenCalledWith({ TEXT: 'Tunisia', CODE: 'Tunisia' });
 
     event.target.value = 'India';
     component.value = 'Asia';

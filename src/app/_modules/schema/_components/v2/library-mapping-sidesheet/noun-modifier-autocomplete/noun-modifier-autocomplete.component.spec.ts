@@ -114,9 +114,9 @@ describe('NounModifierAutocompleteComponent', () => {
     expect(component.displayDroptext(object)).toEqual('Ball desc');
 
     component.requestFor = RequestFor.attribute;
-    expect(component.displayDroptext(object)).toEqual('Length');
-    object.ATTR_CODE = null;
     expect(component.displayDroptext(object)).toEqual('Length mm');
+    object.ATTR_DESC = null;
+    expect(component.displayDroptext(object)).toEqual('Length');
 
   });
 

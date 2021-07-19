@@ -5,7 +5,6 @@
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <lib-text-line type="leading">Create new noun</lib-text-line>
-                <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button type="major" (click)="save()">Save</lib-button>
             </div>
@@ -15,7 +14,7 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <form [formGroup]="nounForm">
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounCode')" [placeholder]="'Noun code'"
                          [label]="'Noun code'"></pros-form-input>
                     <mat-error *ngIf="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required">
@@ -23,25 +22,25 @@
                     </mat-error>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounText')" [placeholder]="'Noun text'"
                     [label]="'Noun text'">
                     </pros-form-input>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounNumCode')" [placeholder]="'Noun numeric code'"
                     [label]="'Noun numeric code'">
                     </pros-form-input>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <pros-form-input [type]="'text'" [control]="formField('nounModeSep')" [placeholder]="'Noun modifier separator'"
                     [label]="'Noun modifier separator'">
                     </pros-form-input>
                 </div>
     
-                <div class="mdo-form-field">
+                <div class="mdo-field">
                     <lib-slide-toggle theme="primary" labelPosition="after" formControlName="shortDescActive" label="Short description active"></lib-slide-toggle>
                     <div class="row-spacer"></div>
                     <lib-slide-toggle theme="primary" labelPosition="after" formControlName="active" label="Noun active"></lib-slide-toggle>

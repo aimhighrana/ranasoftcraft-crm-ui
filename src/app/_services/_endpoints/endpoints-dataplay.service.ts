@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 export class EndpointsDataplayService {
 
   apiUrl = environment.dataPlalyUri;
+  classicUrl = environment.apiurl;
 
   constructor() { }
 
@@ -27,7 +28,13 @@ export class EndpointsDataplayService {
   /**
    * URI for get all available attributes  ..from local library
    */
-  public getAvailableAttributeUri(): string {
+   public getAvailableAttributeUri(): string {
     return `${this.apiUrl}/mro/attribute`;
+  }
+  /**
+   * URI for get classification mapping fields  ..from local library
+   */
+  public getClassificationMappingUrl(): string {
+    return `${this.classicUrl}/rule/schema/get-classification-mapping-data`;
   }
 }

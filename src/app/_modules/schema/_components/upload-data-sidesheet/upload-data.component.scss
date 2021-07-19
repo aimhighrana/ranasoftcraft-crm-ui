@@ -12,16 +12,7 @@ div.root {
       align-items: center;
 
       .breadcrum-head {
-        align-items: center;
         width: 100%;
-        min-height: 36px;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
       }
     }
   }
@@ -53,15 +44,6 @@ div.root {
 
       .empty-state {
         align-items: center;
-
-        .label-text {
-          z-index: 1;
-          margin: 12px 0 24px;
-        }
-
-        button.mat-flat-button {
-          z-index: 1;
-        }
       }
     }
   }

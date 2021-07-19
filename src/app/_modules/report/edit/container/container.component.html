@@ -337,7 +337,7 @@
                                                         [displayWith]="displayProperties">
                                                         <mat-option i18n="@@noDate">No date</mat-option>
                                                         <mat-option
-                                                            *ngFor="let opt of getValue(filterType,styleCtrlGrp.get('filterType'))"
+                                                            *ngFor="let opt of getValue(dateSelectionType,styleCtrlGrp.get('dateSelectionType'))"
                                                             [value]="opt">
                                                             {{opt.value}}
                                                         </mat-option>
@@ -896,6 +896,11 @@
                                             </mat-autocomplete>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row-spacer"></div>
+                                <div class="f-col" *ngIf="selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES'">
+                                    <lib-checkbox formControlName="showTotal" i18n="@@showTotal" label="Show total count">
+                                    </lib-checkbox>
                                 </div>
                             </div>
                         </mat-expansion-panel>

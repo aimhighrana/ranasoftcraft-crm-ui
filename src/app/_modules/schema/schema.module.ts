@@ -40,11 +40,13 @@ import { ExecutionResultComponent } from './_components/v2/statics/execution-res
 import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
 import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/attribute/attribute.component';
+import { AttributeDefaultValueComponent } from './_components/v2/library-mapping-sidesheet/attribute-default-value/attribute-default-value.component';
 import { NounModifierAutocompleteComponent } from './_components/v2/library-mapping-sidesheet/noun-modifier-autocomplete/noun-modifier-autocomplete.component';
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
 import { DownloadExecutionDataComponent } from './_components/v2/download-execution-data/download-execution-data.component';
 import { GlobalCountComponent } from './_components/v2/_builder/global-count/global-count.component';
+import { DatascopeListSidesheetComponent } from './_components/datascope-list-sidesheet/datascope-list-sidesheet.component';
 
 @NgModule({
   declarations: [
@@ -90,11 +92,13 @@ import { GlobalCountComponent } from './_components/v2/_builder/global-count/glo
     NounComponent,
     ModifierComponent,
     AttributeComponent,
+    AttributeDefaultValueComponent,
     NounModifierAutocompleteComponent,
     ExecutionTrendSidesheetComponent,
     SchemaProgressComponent,
     DownloadExecutionDataComponent,
-    GlobalCountComponent
+    GlobalCountComponent,
+    DatascopeListSidesheetComponent
   ],
   imports: [
     CommonModule,

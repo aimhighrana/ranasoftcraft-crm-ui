@@ -14,23 +14,17 @@ div.root {
 
       .breadcrum-head {
         width: 100%;
+
+        .leading-text {
+          flex: 11;
+        }
       }
     }
-  }
-
-  .cnt-banner {
-    padding: 0 65px;
   }
 
   .sidesheetcontent-listing {
     height: calc(100% - 52px);
     overflow: auto;
-
-    .message {
-      display: flex;
-      padding: 8px;
-      align-items: center;
-    }
 
     .mdo-justify {
       margin: 0 16px;
@@ -40,13 +34,8 @@ div.root {
 
         mat-icon.mat-icon {
           width: 12px;
-          font-size: 12px;
-          height: 14px;
+          font-size: 10px;
         }
-      }
-
-      .panel-title {
-        font-weight: 500;
       }
     }
   }
@@ -61,8 +50,12 @@ div.root {
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 6px;
+    margin: 0 2px;
     flex-wrap: wrap;
+
+    &.col-x2 {
+      flex: 2;
+    }
 
     &.col-x4 {
       flex: 4;
@@ -83,19 +76,34 @@ div.root {
     &.mat-item-end {
       justify-content: flex-end;
     }
+
+    &.action {
+      width: 72px;
+      flex: initial;
+    }
+
+    .mat-head-icon {
+      width: 12px;
+      font-size: 10px;
+    }
+
+    .cursor {
+      cursor: pointer;
+    }
   }
 }
 
-.lib-slider {
-  height: 40px;
+.slider-row {
   flex: 1;
-  display: inline-table;
-}
 
-.colunm-box .col.br-action {
-  max-width: 72px;
-  min-width: 72px;
-  margin-right: initial;
+  .lib-slider {
+    height: 48px;
+    width: 100%;
+  }
+
+  .percentage {
+    width: 36px;
+  }
 }
 
 @media (min-width: 1024px) {

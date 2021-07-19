@@ -269,11 +269,11 @@ describe('NounModifierService', () => {
 
     spyOn(endpointClassic, 'getSaveAttributesMappingUrl').and.returnValue('getSaveAttributesMappingUrl');
 
-    service.saveAttributesMapping(request).subscribe(actualReponse => {
+    service.saveAttributesMapping(request,'8733747').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}`);
+    const mockRequest = httpTestingController.expectOne(`${url}?schemaId=8733747`);
     expect(mockRequest.request.method).toEqual('POST');
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();
