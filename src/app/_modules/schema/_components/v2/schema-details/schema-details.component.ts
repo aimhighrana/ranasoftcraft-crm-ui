@@ -223,7 +223,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   inlineSearchSubject: Subject<string> = new Subject();
 
-  widthOfSchemaNav = 236;
+  widthOfSchemaNav = 247;
   boxPosition: { left: number, top: number };
   public mousePosition: { x: number, y: number };
   public status: SchemaNavGrab = SchemaNavGrab.OFF;
