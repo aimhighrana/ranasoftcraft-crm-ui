@@ -470,7 +470,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
 
     header = { fieldId: 'ABC_ID1' } as MetadataModel;
     component.selectionChange(header);
-    expect(component.data.selectedColumns.length).toEqual(2);
+    expect(component.data.selectedColumns.length).toEqual(2)
 
   }))
 });
