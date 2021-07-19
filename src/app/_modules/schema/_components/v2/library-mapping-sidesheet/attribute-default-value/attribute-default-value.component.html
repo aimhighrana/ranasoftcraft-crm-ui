@@ -18,7 +18,7 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <ng-container *ngIf="!valueList.length">
-                <lib-input placeholder="Type value name to add" (keyup.enter)="addFirstItem()" [(value)]="searchStr">
+                <lib-input i18n-placeholder="type_value_to_add" placeholder="Type value name to add" (keyup.enter)="addFirstItem()" [(value)]="searchStr">
                 </lib-input>
                 <lib-empty-state icon="table" iconSize="120" i18n-primaryText="@@nothing_to_see_here"
                     primaryText="Nothing to see here"
