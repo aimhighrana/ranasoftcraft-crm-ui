@@ -217,7 +217,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.reportingListWidget.next(returnData);
       }
     }, (error) => {
-      console.log('Something went wrong while getting table meta data', error.message)
+      console.log('Something went wrong while getting table meta data', error.message);
     });
     this.subscription.push(sub);
   }
