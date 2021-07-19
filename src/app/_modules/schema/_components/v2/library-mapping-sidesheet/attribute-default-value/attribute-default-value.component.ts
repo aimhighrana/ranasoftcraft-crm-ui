@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AttributeDefaultValue } from '@models/schema/classification';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -16,6 +16,8 @@ export class AttributeDefaultValueComponent implements OnInit {
   searchStr = '';
 
   constructor(private router: Router,
+    private changeDetector: ChangeDetectorRef,
+    private elementRef: ElementRef,
     private globalDialogService: GlobaldialogService,
     private nounModifierService: NounModifierService,
     private transientService: TransientService) { }
@@ -91,6 +93,9 @@ export class AttributeDefaultValueComponent implements OnInit {
       if (response === 'yes') {
         this.valueList.splice(i, 1);
       }
+      if (!this.valueList.length) {
+        this.searchStr = '';
+      }
     });
   }
 
@@ -114,5 +119,24 @@ export class AttributeDefaultValueComponent implements OnInit {
   saveRowValue(row: AttributeDefaultValue, field: string) {
     row[`${field}`] = row[`${field}Temp`];
     row[`${field}Editable`] = false;
+  }
+
+  addFirstItem() {
+    const value = this.searchStr;
+    if (!value) {
+      return;
+    }
+    const row: AttributeDefaultValue = {
+      shortValue: value,
+      code: value,
+      codeEditable: true,
+      shortValueEditable: true,
+      codeTemp: value,
+      shortValueTemp: value
+    };
+    this.searchStr = '';
+    this.valueList.push(row);
+    this.changeDetector.detectChanges();
+    this.elementRef.nativeElement.querySelector('#attr-val-0').focus();
   }
 }
