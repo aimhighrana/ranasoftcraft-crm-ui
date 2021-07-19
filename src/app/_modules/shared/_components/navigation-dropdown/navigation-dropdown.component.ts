@@ -11,6 +11,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
   styleUrls: ['./navigation-dropdown.component.scss']
 })
 export class NavigationDropdownComponent implements OnInit, OnChanges, OnDestroy {
+  selectedModuleId: string;
   /**
    * Reference to the search input component for schema
    */
@@ -124,6 +125,14 @@ export class NavigationDropdownComponent implements OnInit, OnChanges, OnDestroy
     this.data.schemadesc = schema ? schema.schemaDescription : null;
     this.selectedModule.emit(this.data);
   }
+
+  /**
+   * save currently selected module id
+   * @param moduleId module Id
+   */
+  selected(moduleId: string) {
+    this.selectedModuleId = moduleId;
+    }
 
   /**
    * filter modules based on searchTerm

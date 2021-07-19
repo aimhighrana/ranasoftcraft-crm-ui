@@ -11,6 +11,9 @@
     <ng-container *ngFor="let module of filteredModulesList;let i=index; trackBy:moduleTrackBy">
         <button mat-menu-item [focus]="false" [matMenuTriggerFor]="schemaMenu"
             (mouseenter)="schemaList(module.moduleId);"
+            (click)="selected(module.moduleId);"
+            (menuClosed)="selectedModuleId=''"
+            [ngClass]="{'selected': module.moduleId=== selectedModuleId}"
             [disableRipple]="true">
             {{ module.moduleDesc || 'UNTITLED'}}
         </button>
