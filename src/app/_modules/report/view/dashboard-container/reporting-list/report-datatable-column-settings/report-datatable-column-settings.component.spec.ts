@@ -231,7 +231,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     expect(component.nestedDataSource.length).toEqual(2);
 
     component.data = {
-      selectedColumns: [{ fieldId: '\'GS_TO_DATE\'', fieldDescri: 'GS To DATE',displayCriteria : DisplayCriteria.TEXT}, { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator',displayCriteria : DisplayCriteria.TEXT}, { fieldId: '\'ADD_EANCAT\'', fieldDescri: 'EAN category',displayCriteria : DisplayCriteria.TEXT}]
+      selectedColumns: [{ fieldId: '\'GS_TO_DATE\'', fieldDescri: 'GS To DATE', displayCriteria: DisplayCriteria.TEXT }, { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator', displayCriteria: DisplayCriteria.TEXT }, { fieldId: '\'ADD_EANCAT\'', fieldDescri: 'EAN category', displayCriteria: DisplayCriteria.TEXT }]
     };
     component.getAllMetaDataFields(obj);
     expect(component.headers.length).toEqual(7);
@@ -404,10 +404,25 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     expect(component.headers[1].displayCriteria).toEqual(DisplayCriteria.TEXT);
   }));
 
-  it('change displayCriteria(), change display criteria',async(()=>{
-    component.dataSource = [{nodeId:'ADD_EANDATA', nodeDesc:'Additional EAN Grid', child:[{fieldId : 'ADD_EANNO'} as MetadataModel]}]
-    const data = { fieldId : 'ADD_EANNO', displayCriteria : 'CODE'}
+  it('change displayCriteria(), change display criteria', async(() => {
+    component.dataSource = [{ nodeId: 'ADD_EANDATA', nodeDesc: 'Additional EAN Grid', child: [{ fieldId: 'ADD_EANNO' } as MetadataModel] }]
+    const data = { fieldId: 'ADD_EANNO', displayCriteria: 'CODE' }
     component.changeDisplayCriteria(data);
     expect(component.dataSource[0].child[0].displayCriteria).toEqual('CODE');
   }));
+
+  it('searchHeader(), search header', async(() => {
+    component.dataSource = [{
+    nodeId : 'node',
+    displayCriteria : null,
+    nodeDesc :'ABC',
+    child : []
+    }]
+    component.searchHeader('');
+    expect(component.nestedDataSource.length).toEqual(1);
+    component.searchHeader('abc');
+    expect(component.nestedDataSource.length).toEqual(1);
+    component.searchHeader('def');
+    expect(component.nestedDataSource.length).toEqual(0);
+  }))
 });
