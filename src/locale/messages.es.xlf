@@ -609,6 +609,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">351</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
         <source>Type inside the search box to find fields</source>
@@ -1861,6 +1865,10 @@
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="codeAndText" datatype="html">
         <source>Code and Text</source>
@@ -2910,6 +2918,14 @@
         <source>Show legend</source>
         <target>Mostrar leyenda</target>
       </trans-unit>
+      <trans-unit id="showTotal" datatype="html">
+        <source>Show total count</source>
+        <target>Mostrar recuento total</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">902</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="legendPosition" datatype="html">
         <source>Legend position</source>
         <target>Posición de la leyenda</target>
@@ -3007,12 +3023,12 @@
         <target>Ninguna</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>Dentro de SLA</target>
+        <source>Within time spent limit</source>
+        <target>Dentro del límite de tiempo invertido</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>Supera el SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>Excede el límite de tiempo empleado</target>
       </trans-unit>
 
       <trans-unit id="schema_running_msg" datatype="html">
@@ -3145,6 +3161,46 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
           <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_value" datatype="html">
+        <source>Default value</source>
+        <target>valor por defecto</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute\attribute.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_value" datatype="html">
+        <source>New value</source>
+        <target>nuevo valor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values" datatype="html">
+        <source>Default values</source>
+        <target>valores predeterminados</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values_empty_msg" datatype="html">
+        <source>You don’t have any values defined for this list yet. Type the value name in the box above to add.</source>
+        <target>Usted no tiene ningún valor definido para esta lista. Escriba el nombre de valor en el cuadro anterior para agregar.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="value" datatype="html">
+        <source>value</source>
+        <target>valor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
     </body>

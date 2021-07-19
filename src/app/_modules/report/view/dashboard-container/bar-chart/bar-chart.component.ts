@@ -924,14 +924,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     buckets.forEach(bucket=>{
     const key = bucket.key;
     const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-    const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
+    const val = hits._source? hits._source.hdvs?(hits._source.hdvs[fldid] ?
       ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
       (hits._source.staticFields && hits._source.staticFields[fldid]) ?
-      ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
+      ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null: null;
 
       const fieldCode: FieldCodeText = {
-        c: val[0].c,
-        t:val[0].t,
+        c: val? val[0].c: null,
+        t: val? val[0].t: null,
         p:''
       }
       fieldCodeText.push(fieldCode);

@@ -506,7 +506,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   isDropdownType(column: string): boolean {
     const val = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
-    const hasFld = val.filter(fil => fil.fields === column)[0];
+    const hasFld = val.filter(fil => fil.fields === column)[0]
     return hasFld ? (hasFld.fldMetaData ? ((hasFld.fldMetaData.picklist === '1' || hasFld.fldMetaData.picklist === '30' || hasFld.fldMetaData.picklist === '37') ? true : false) : false) : false;
   }
 

@@ -565,6 +565,8 @@ export class BrruleSideSheetComponent implements OnInit {
         startWith(''),
         map(keyword => {
           if (keyword) {
+            console.log(keyword);
+
             keyword = keyword.toLowerCase();
             const filterData = [];
             this.allGridAndHirarchyData.forEach(item => {
@@ -704,7 +706,7 @@ export class BrruleSideSheetComponent implements OnInit {
         includeScript: new FormControl(''),
         udrTreeData: new FormControl(),
         weightage: new FormControl(0, [Validators.required]),
-        categoryId: new FormControl(''),
+        categoryId: new FormControl(null),
         transformationRuleType: new FormControl(''),
         source_field: new FormControl(''),
         target_field: new FormControl(''),
@@ -797,13 +799,13 @@ export class BrruleSideSheetComponent implements OnInit {
     controlKeys.map((key) => {
       const index = requiredKeys.findIndex(reqKey => reqKey === key);
       if (index === -1) {
-        this.form.get(key).setValidators(null);
-        this.form.get(key).clearValidators();
+        this.form.controls[key].setValidators(null);
+        this.form.controls[key].clearValidators();
+        this.form.controls[key].updateValueAndValidity();
         if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && key !== 'transformationRuleType') {
-          this.form.get(key).setValue('');
+          this.form.controls[key].setValue(null);
         }
       } else {
-        // this.form.get(key).setValidators([Validators.required]);
         this.form.controls[key].setValidators([Validators.required]);
         this.form.controls[key].updateValueAndValidity();
       }
@@ -874,11 +876,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (patchList && patchList.length > 0) {
       patchList.map((key) => {
         if (dataToPatch[key]) {
-          if (key === 'categoryId') {
-            this.form.controls[key].setValue(`${dataToPatch[key]}`);
-          } else {
-            this.form.controls[key].setValue(dataToPatch[key]);
-          }
+          this.form.controls[key].setValue(dataToPatch[key]);
         }
       });
     }
@@ -1342,7 +1340,6 @@ export class BrruleSideSheetComponent implements OnInit {
         if (control.invalid)
           control.markAsTouched();
       });
-    this.submitted = true;
 
     let brType: string = this.form.value ? this.form.value.rule_type : '';
     brType = brType ? brType : this.coreSchemaBrInfo.brType;
@@ -1350,7 +1347,10 @@ export class BrruleSideSheetComponent implements OnInit {
     if(this.isOnlyForTrans) {
       brType = BusinessRuleType.BR_TRANSFORMATION;
     }
+
     if (!this.form.valid) {
+      console.log(this.form.controls);
+
       this.form.markAllAsTouched();
       this.showValidationError('Please fill the required fields.');
       if (brType!=='BR_CUSTOM_SCRIPT') {

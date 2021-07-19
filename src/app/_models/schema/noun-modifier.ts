@@ -62,17 +62,17 @@ export type AttributeStatusType = 'unmatched' | 'suggested' | 'matched';
 export class ClassificationMappingResponse {
     noun: {
         source: string;
-        targetCtrl: AttributeTargetControl;
+        targetCtrl: any;
         status: AttributeStatusType;
     };
     modifier: {
         source: string;
-        targetCtrl: AttributeTargetControl;
+        targetCtrl: any;
         status: AttributeStatusType;
     };
     attrLists: Array<{
         source: string;
-        targetCtrl: AttributeTargetControl;
+        targetCtrl: any;
         status: AttributeStatusType;
     }>;
 };
