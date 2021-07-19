@@ -105,6 +105,12 @@ describe('DatascopeSidesheetComponent', () => {
     expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
   }));
 
+  it('getModuleInfo(), api failure', async(() => {
+    spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValue(throwError('error'));
+    component.variantId = 'new';
+    expect(component.getModuleInfo()).toBeUndefined();
+  }));
+
   it('getModuleInfo()', async(() => {
     const val: ModuleInfo[] = [];
     spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValues(of(val), throwError('error'));
@@ -353,13 +359,24 @@ describe('DatascopeSidesheetComponent', () => {
 
     component.variantInfo.variantId = 'new';
 
-    spyOn(schemaService, 'saveUpdateDataScope').withArgs(component.variantInfo).and.returnValue(of({}));
+    spyOn(schemaService, 'saveUpdateDataScope').withArgs(component.variantInfo).and.returnValues(of({}), throwError({ message: 'api error'}));
     component.saveVarient();
     expect(schemaService.saveUpdateDataScope).toHaveBeenCalledWith(component.variantInfo);
 
     component.variantInfo.variantId = '22568584';
     component.saveVarient();
     expect(schemaService.saveUpdateDataScope).toHaveBeenCalledWith(component.variantInfo);
+  })
+
+  it('saveVarient(), api fail case', async() => {
+    component.variantName = new FormControl('USA DS');
+    component.schemaId = '123458';
+
+    component.variantInfo.variantId = 'new';
+
+    spyOn(schemaService, 'saveUpdateDataScope').and.returnValue(throwError({ message: 'api error'}));
+    component.saveVarient();
+    expect(schemaService.saveUpdateDataScope).toHaveBeenCalled();
   })
 
   it('getAllFilters()', async(() => {
@@ -371,6 +388,12 @@ describe('DatascopeSidesheetComponent', () => {
     spyOn(component, 'parseHeaderFields').and.returnValue([]);
     spyOn(component, 'parseGridFields').and.returnValue([]);
     spyOn(component, 'parseHierarchyFields').and.returnValue([]);
+
+    component.selectedFilterCriteria = [
+      {
+        fieldId: '123'
+      }
+    ];
 
     component.getAllFilters();
     expect(component.allFilters.length).toEqual(0);
@@ -438,12 +461,15 @@ describe('DatascopeSidesheetComponent', () => {
     spyOn(component, 'parseHeaderFields');
     spyOn(component, 'parseGridFields');
     spyOn(component, 'parseHierarchyFields');
-    component.updateFiltersList();
 
-    expect(component.filtersDisplayList.length).toEqual(1);
-    expect(component.parseHeaderFields).toHaveBeenCalled();
-    expect(component.parseGridFields).toHaveBeenCalled();
-    expect(component.parseHierarchyFields).toHaveBeenCalled();
+    const ev = {
+      scrollTop: 100,
+      scrollHeight: 500,
+      offsetHeight: 400
+    };
+    component.updateFiltersList(ev);
+
+    expect(component.filtersDisplayList.length).toEqual(0);
   }));
 
   it('selectFilter()', async(() => {
@@ -731,5 +757,16 @@ describe('DatascopeSidesheetComponent', () => {
     component.selectDynamicFilter(filter, true);
     expect(component.filterControlType).toEqual('dropdown_multi');
     expect(component.getFilterValues).toHaveBeenCalled();
+  }));
+
+  it('updateDatePickerType()', async(() => {
+    expect(component.updateDatePickerType('daily')).toBeUndefined();
+  }));
+
+  it('datePickerOptionsList()', async(() => {
+    component.currentPickerType = 'Day';
+    const list = component.datePickerOptionsList;
+
+    expect(list.length).toBeGreaterThan(0);
   }));
 });

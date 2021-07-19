@@ -24,7 +24,7 @@
                 <div class="f-col filter-list">
                     <lib-search placeholder="Search filters" class="lib-search"
                         (valueChange)=(triggerFilterSearch($event))></lib-search>
-                    <div prosInfiniteScroll bufferPercentage="20" (scrollEnd)="updateFiltersList()" class="f-col filter-scroll" *ngIf="allFilters.length">
+                    <div #filterScrollEl (scroll)="updateFiltersList(filterScrollEl)" class="f-col filter-scroll" *ngIf="allFilters.length">
                         <mat-accordion>
                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
                                 *ngFor="let filter of selectedFiltersDisplayList; let i=index; trackBy:filterTrackBy"

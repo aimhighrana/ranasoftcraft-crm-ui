@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddFilterOutput, DataScopeSidesheet, SchemaVariantReq } from '@models/schema/schema';
@@ -14,6 +14,7 @@ import { TransientService } from 'mdo-ui-library';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as moment from 'moment';
+import { debounce } from 'lodash';
 
 @Component({
   selector: 'pros-datascope-sidesheet',
@@ -21,6 +22,52 @@ import * as moment from 'moment';
   styleUrls: ['./datascope-sidesheet.component.scss']
 })
 export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
+
+  /**
+   * holds date picker options list
+   */
+  get datePickerOptionsList() {
+    const list = [];
+
+    if (this.currentPickerType === 'Day') {
+      list.push(
+        {
+          key: 'yesterday',
+          value: 'Yesterday'
+        }
+      );
+    } else {
+      list.push(
+        {
+          key: `Last_${this.currentPickerType}`,
+          value: `Last ${this.currentPickerType.toLowerCase()}`
+        }
+      );
+    }
+
+    for (let i=2; i<=6; i++) {
+      list.push(
+        {
+          key: `Last_${i}_${this.currentPickerType}`,
+          value: `Last ${i} ${this.currentPickerType.toLowerCase()}s`
+        }
+      );
+    }
+
+    return list;
+  }
+
+  /**
+   * Constructor of the class
+   */
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private schemaService: SchemaService,
+              private sharedService: SharedServiceService,
+              private schemaVariantService: SchemaVariantService,
+              private schemaDetailService: SchemaDetailsService,
+              private toasterService: TransientService,
+              private userService: UserService) { }
   /**
    * To hold schema ID of variant
    */
@@ -202,40 +249,6 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   currentPickerType = 'Day';
 
   /**
-   * holds date picker options list
-   */
-  get datePickerOptionsList() {
-    const list = [];
-
-    if (this.currentPickerType === 'Day') {
-      list.push(
-        {
-          key: 'yesterday',
-          value: 'Yesterday'
-        }
-      );
-    } else {
-      list.push(
-        {
-          key: `Last_${this.currentPickerType}`,
-          value: `Last ${this.currentPickerType.toLowerCase()}`
-        }
-      );
-    }
-
-    for (let i=2; i<=6; i++) {
-      list.push(
-        {
-          key: `Last_${i}_${this.currentPickerType}`,
-          value: `Last ${i} ${this.currentPickerType.toLowerCase()}s`
-        }
-      );
-    }
-
-    return list;
-  }
-
-  /**
    * filter load limit
    */
   filterCntLimit = 20;
@@ -244,17 +257,17 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    */
   rawFilterData: MetadataModeleResponse;
 
-  /**
-   * Constructor of the class
-   */
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private schemaService: SchemaService,
-              private sharedService: SharedServiceService,
-              private schemaVariantService: SchemaVariantService,
-              private schemaDetailService: SchemaDetailsService,
-              private toasterService: TransientService,
-              private userService: UserService) { }
+  @ViewChild('filterScrollEl') filterScrollEl: ElementRef<HTMLElement>;
+
+  delayedCallForFilter = debounce((searchText: string) => {
+    const limit = this.allFilters.length + this.filterCntLimit;
+    const selectedFiltersIds = this.selectedFilters.map((x) => x.fieldId);
+    this.parseHeaderFields(selectedFiltersIds, limit, searchText);
+    this.parseGridFields(selectedFiltersIds, limit, searchText);
+    this.parseHierarchyFields(selectedFiltersIds, limit, searchText);
+
+    this.filtersDisplayList = this.allFilters;
+  }, 500)
 
 
   /**
@@ -651,7 +664,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
               }
             }
           }
-          if (!searchString || (searchString && val.child.length)) {
+          if (val.child.length) {
             this.allFilters.push(val);
           }
         }
@@ -721,7 +734,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
             }
           }
         }
-        if (!searchString || (searchString && val.child.length)) {
+        if (val.child.length) {
           this.allFilters.push(val);
         }
       }
@@ -831,23 +844,43 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   removeField(filter, isChild = false) {
     const currentField = this.filtersDisplayList.find((x) => x.fieldId === (isChild ? filter.parentFieldId : filter.fieldId));
     if (isChild) {
-      const child = currentField.child.find((x) => x.fieldId === filter.fieldId);
-      currentField.show = true;
-      child.show = true;
       const selectedParent = this.selectedFilters.find((x) => x.fieldId === filter.parentFieldId);
+      if (currentField) {
+        currentField.show = true;
+        let child = currentField.child.find((x) => x.fieldId === filter.fieldId);
+        if (child) {
+          child.show = true;
+        } else {
+          child = selectedParent.child.find((x) => x.fieldId === filter.fieldId);
+          child.show = true;
+          currentField.child.push(child);
+        }
+      } else {
+        selectedParent.child.find((x) => x.fieldId === filter.fieldId).show = true;
+        this.filtersDisplayList.unshift(JSON.parse(JSON.stringify(selectedParent)));
+      }
+
       selectedParent.child = selectedParent.child.filter((x) => x.fieldId !== filter.fieldId);
       if (!selectedParent.child.length) {
         this.selectedFilters = this.selectedFilters.filter((x) => x.fieldId !== filter.parentFieldId);
       }
     } else {
       this.selectedFilters = this.selectedFilters.filter((x) => x.fieldId !== filter.fieldId);
-      currentField.show = true;
+
+      if (currentField) {
+        currentField.show = true;
+      } else {
+        filter.show = true;
+        this.filtersDisplayList.unshift(filter);
+      }
     }
     this.selectedFiltersDisplayList = this.selectedFilters;
     if (this.searchString) {
       this.searchFilters('selectedList', this.searchString);
     }
-    this.removeFilterCriteria(filter.fieldId);
+
+    this.selectedFilterCriteria = this.selectedFilterCriteria.filter((x) => x.fieldId !== filter.fieldId);
+    this.filterCriteriaSub.next('true');
 
     if (this.currentFilter && this.currentFilter.fieldId === filter.fieldId) {
       this.clearValues();
@@ -920,15 +953,6 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     };
 
     this.selectedFilterCriteria.push(filterCtrl);
-    this.filterCriteriaSub.next('true');
-  }
-
-  /**
-   * removed removed filter from filter criteria list
-   * @param fieldId filter id
-   */
-  removeFilterCriteria(fieldId) {
-    this.selectedFilterCriteria = this.selectedFilterCriteria.filter((x) => x.fieldId !== fieldId);
     this.filterCriteriaSub.next('true');
   }
 
@@ -1209,12 +1233,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   /**
    * updates filter list on scroll
    */
-  updateFiltersList() {
-    const limit = this.allFilters.length + this.filterCntLimit;
-    this.parseHeaderFields([], limit, this.searchString);
-    this.parseGridFields([], limit, this.searchString);
-    this.parseHierarchyFields([], limit, this.searchString);
-
-    this.filtersDisplayList = this.allFilters;
+  updateFiltersList(ev) {
+    if (ev && (ev.scrollTop >= ((ev.scrollHeight - ev.offsetHeight)) * 0.9)) {
+      this.delayedCallForFilter(this.searchString);
+    }
   }
 }
