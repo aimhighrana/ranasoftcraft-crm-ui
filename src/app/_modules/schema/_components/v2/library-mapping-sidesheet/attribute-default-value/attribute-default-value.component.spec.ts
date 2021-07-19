@@ -66,11 +66,20 @@ describe('AttributeComponent', () => {
     delete row.code;
     expect(component.isValidRow(row)).toBeFalsy();
   });
+
   it('should add new empty row', () => {
     component.valueList = [];
     component.addValueRow();
     expect(component.valueList.length).toEqual(1);
   });
+
+  it('addFirstItem should add new row', () => {
+    component.valueList = [];
+    component.searchStr = 'test';
+    component.addFirstItem();
+    expect(component.valueList.length).toEqual(1);
+  });
+
   it('should search using searchstring', () => {
     component.searchStr = '';
     component.doSearch('test');

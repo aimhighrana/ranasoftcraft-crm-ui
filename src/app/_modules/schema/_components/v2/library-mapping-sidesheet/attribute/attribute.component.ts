@@ -79,12 +79,12 @@ export class AttributeComponent implements OnInit {
    */
   save() {
     this.submitted = true;
-    if (this.attributeForm.invalid) {
+    if (this.attributeForm.invalid || this.attributeForm.value.type === this.ATTRIBUTE_DATA_TYPE.LIST && this.nounModifierService.attributeValuesModels?.length) {
       (Object).values(this.attributeForm.controls).forEach(control => {
         if (control.invalid)
           control.markAsTouched();
       });
-      this.snackBar.open('Please enter the missing fields !', 'close', { duration: 3000 });
+      this.snackBar.open('Please enter the missing fields!', 'close', { duration: 3000 });
       return;
     }
 

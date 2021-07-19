@@ -3220,6 +3220,14 @@
           <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="type_value_to_add" datatype="html">
+        <source>Type value name to add</source>
+        <target>Nhập tên giá trị để thêm</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
