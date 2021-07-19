@@ -1,4 +1,4 @@
-<pros-search-input (value)="getLocationData(topLocation, fieldId, $event, searchFunc)"></pros-search-input>
+<lib-search [formControl]="searchControl"></lib-search>
 <mat-tree #tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="mdo-location-tree">
     <mat-tree-node *matTreeNodeDef="let data">
         <li class="mat-tree-node">

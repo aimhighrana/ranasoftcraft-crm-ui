@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTree, MatTreeNestedDataSource } from '@angular/material/tree';
 import { WidgetService } from '@services/widgets/widget.service';
 import { UserService } from '@services/user/userservice.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 export class TreeModel {
   nodeId: string;
@@ -19,7 +21,7 @@ export class TreeModel {
   styleUrls: ['./hierarchy-filter.component.scss']
 })
 
-export class HierarchyFilterComponent implements OnInit, OnChanges {
+export class HierarchyFilterComponent implements OnInit, OnChanges, OnDestroy {
 
 
   @ViewChild('tree') tree: MatTree<any>;
@@ -31,6 +33,7 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
   totalChild = 0;
   nestedTreeControl: NestedTreeControl<TreeModel>;
   nestedDataSource: MatTreeNestedDataSource<TreeModel>;
+  searchControl: FormControl = new FormControl('');
 
   @Input() fieldId = '';
   @Input() topLocation = '';
@@ -47,6 +50,7 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
    * To store selected node
    */
   selectedNode: string[] = [];
+  subscriptions: Subscription[] = [];
 
   /**
    * Constructor of the class
@@ -69,11 +73,20 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
     }
   }
 
-  /***
-   * ANGULAR HOOK
-   */
   ngOnInit() {
-    this.getLocationData(this.topLocation, this.fieldId, this.searchString, this.searchFunc)
+    this.getLocationData(this.topLocation, this.fieldId, this.searchString, this.searchFunc);
+    const searchControlSub = this.searchControl.valueChanges
+      .pipe(debounceTime(1000))
+      .subscribe(value => {
+        this.getLocationData(this.topLocation, this.fieldId, value, this.searchFunc);
+      });
+    this.subscriptions.push(searchControlSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
   }
 
   /**
@@ -84,8 +97,8 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
    * @param searchFunc .
    */
   public getLocationData(topLocation, fieldId, searchString, searchFunc) {
-    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
-      this.widgetService.getLocationHirerachy(topLocation, fieldId, searchString, searchFunc, user.plantCode).subscribe(data => {
+    const getUserDetails = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      const getLocationHirerachy = this.widgetService.getLocationHirerachy(topLocation, fieldId, searchString, searchFunc, user.plantCode).subscribe(data => {
         data.map(d => {
           d.checked = false;
           d.expanded = false;
@@ -93,7 +106,9 @@ export class HierarchyFilterComponent implements OnInit, OnChanges {
         });
         this.nestedDataSource.data = data;
       });
+      this.subscriptions.push(getLocationHirerachy);
     });
+    this.subscriptions.push(getUserDetails);
   }
 
   /** Checks if datasource for material tree has any child groups */
