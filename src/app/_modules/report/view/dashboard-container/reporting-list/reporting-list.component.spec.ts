@@ -18,19 +18,21 @@ import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadeta
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
+import { SharedServiceService } from '@shared/_services/shared-service.service';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
   let fixture: ComponentFixture<ReportingListComponent>;
   let widgetServiceSpy: WidgetService;
   let router: Router;
-  let schemaDetailsService : SchemaDetailsService
-  let userService : UserService;
+  let schemaDetailsService: SchemaDetailsService
+  let userService: UserService;
+  let sharedService: SharedServiceService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ReportingListComponent],
       imports: [MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, MatMenuModule, RouterTestingModule, SharedModule],
-      providers: [WidgetService,SchemaDetailsService, UserService]
+      providers: [WidgetService, SchemaDetailsService, UserService, SharedServiceService]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -43,6 +45,7 @@ describe('ReportingListComponent', () => {
     widgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
     userService = fixture.debugElement.injector.get(UserService);
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
   });
 
   it('should create', () => {
@@ -304,20 +307,20 @@ describe('ReportingListComponent', () => {
     component.getFieldType(fldMetaData);
     expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: false, isGrid: false });
 
-    fldMetaData = { dataType: '0', fieldId : 'ABC_ID' } as MetadataModel;
+    fldMetaData = { dataType: '0', fieldId: 'ABC_ID' } as MetadataModel;
     component.getFieldType(fldMetaData);
     expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: true, hierarchyId: '1' });
 
-    fldMetaData = { dataType: '0', fieldId : 'ADD_EANCAT' } as MetadataModel;
+    fldMetaData = { dataType: '0', fieldId: 'ADD_EANCAT' } as MetadataModel;
     component.getFieldType(fldMetaData);
     expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: true, parentFieldId: 'ADD_EANDATA' });
 
-    fldMetaData = { dataType: '0', fieldId : 'MARA_NRFHG' } as MetadataModel;
+    fldMetaData = { dataType: '0', fieldId: 'MARA_NRFHG' } as MetadataModel;
     component.getFieldType(fldMetaData);
     expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: false, isHierarchy: false });
   }))
 
-  it('getMetaDataFields(), call api to get meta data fields',async(()=>{
+  it('getMetaDataFields(), call api to get meta data fields', async(() => {
     const obj = '1005';
     const res = {
       headers: { MARA_NRFHG: { fieldId: 'MARA_NRFHG', fieldDescri: 'Qual.f.FreeGoodsDis' } },
@@ -375,4 +378,16 @@ describe('ReportingListComponent', () => {
     expect(component.getUserDetails).toBeTruthy();
     expect(component.dateFormat).toEqual(undefined);
   }));
+
+  it('ngOnInit(), ngOnInit method called', async(() => {
+    spyOn(component, 'getUserDetails');
+    const response = { isRefresh: true }
+    spyOn(sharedService, 'getReportDataTableSetting').and.returnValue(of(response));
+    const res: WidgetHeader = new WidgetHeader();
+    res.pageDefaultSize = 25;
+    res.displayCriteria = DisplayCriteria.TEXT;
+    spyOn(widgetServiceSpy,'getHeaderMetaData').and.returnValue(of(res));
+    component.widgetHeader = {} as WidgetHeader;
+    expect(component.ngOnInit).toBeTruthy();
+  }))
 });
