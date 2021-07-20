@@ -15,6 +15,7 @@ import { BlockType } from '@modules/admin/_components/module/business-rules/user
 import { SharedModule } from '@modules/shared/shared.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 
 
 describe('BrruleSideSheetComponent', () => {
@@ -935,6 +936,20 @@ describe('BrruleSideSheetComponent', () => {
     component.apiRules = apisRules;
     expect(component.displayApisRuleFn('8767757')).toEqual('Api 1');
     expect(component.displayApisRuleFn('87668778')).toBeUndefined();
+
+  }));
+
+  it('selectSingle(), select single test', async(()=>{
+    component.buildCommonDataForm();
+
+    // mock data
+    const preDefinedRegex: Regex[] = [{FUNC_CODE:'www',FUNC_NAME:'Test',FUNC_TYPE:'h'}];
+    component.preDefinedRegex = preDefinedRegex;
+
+    component.selectSingle(component.form, 'standard_function',{option:{value:'h'}});
+    expect(component.form.controls.regex.value).toEqual('www');
+    component.selectSingle(component.form, 'rule_type',{option:{value:'h'}});
+
 
   }));
 
