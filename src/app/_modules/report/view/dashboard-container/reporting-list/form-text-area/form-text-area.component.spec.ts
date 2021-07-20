@@ -68,10 +68,4 @@ describe('FormTextAreaComponent', () => {
     expect(emitEventSpy).toHaveBeenCalled();
     expect(component.isApplied).toEqual(true);
   }));
-
-  it('clearSelectedFilter(), should clear column filter', async () => {
-    const emitEventSpy = spyOn(component.valueChange, 'emit');
-    component.clearFilter(true);
-    expect(emitEventSpy).toHaveBeenCalled();
-  })
 });

@@ -92,15 +92,4 @@ export class FormRadioButtonGroupComponent implements OnInit {
     this.isBtnClickedEvnt.next(selectedValue.key);
     this.valueChange.emit(response);
   }
-
-  clearSelectedFilter() {
-    this.control.reset();
-    this.fltrCtrl.reset();
-    const response = {
-      formFieldId: this.formFieldId,
-      value: null
-    }
-    this.valueChange.emit(response);
-    this.appliedFltrCtrl.reset();
-  }
 }

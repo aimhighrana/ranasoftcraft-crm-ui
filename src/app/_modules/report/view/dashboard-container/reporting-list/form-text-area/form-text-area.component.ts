@@ -83,20 +83,4 @@ export class FormTextAreaComponent implements OnInit,OnChanges {
     }
     this.valueChange.emit(response);
   }
-
-
-  /**
-   * method call when filter clear for one column
-   */
-  clearFilter(isGlobalClear) {
-    this.textCtrl.reset();
-    if(isGlobalClear) {
-      this.control.reset();
-      const response = {
-        formFieldId: this.formFieldId,
-        value: this.control.value
-      }
-      this.valueChange.emit(response);
-    }
-  }
 }

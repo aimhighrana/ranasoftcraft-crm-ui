@@ -180,12 +180,4 @@ describe('FormMultiSelectComponent', () => {
     component.ngOnDestroy();
     expect(component.ngOnDestroy).toBeTruthy();
   });
-
-  it('clearSelectedFilter(), should clear column filter', async () => {
-    const emitEventSpy = spyOn(component.valueChange, 'emit');
-    component.clearSelectedFilter();
-    expect(emitEventSpy).toHaveBeenCalled();
-    expect(component.selectedMultiSelectData.length).toEqual(0);
-  })
-
 });

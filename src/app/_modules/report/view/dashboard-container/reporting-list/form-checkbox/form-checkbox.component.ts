@@ -81,13 +81,4 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
       return true;
     }
   }
-
-  clearSelectedFilter() {
-    const response = {
-      formFieldId: this.formFieldId,
-      value: null
-    }
-    this.control.setValue(null);
-    this.valueChange.emit(response);
-  }
 }

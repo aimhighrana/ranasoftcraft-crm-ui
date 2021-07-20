@@ -1,5 +1,5 @@
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReportingListComponent } from './reporting-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -127,6 +127,7 @@ describe('ReportingListComponent', () => {
     const response: WidgetHeader = new WidgetHeader();
     response.pageDefaultSize = 25;
     response.displayCriteria = DisplayCriteria.TEXT;
+    spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
     component.widgetHeader = response;
     component.getHeaderMetaData();
     expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
@@ -139,6 +140,7 @@ describe('ReportingListComponent', () => {
     component.widgetId = 75656;
     const response: WidgetHeader = new WidgetHeader();
     component.widgetHeader = response;
+    spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
     component.getHeaderMetaData();
     expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
     expect(component.pageSizeOption).toEqual([100, 200, 300, 400]);
@@ -707,12 +709,4 @@ describe('ReportingListComponent', () => {
     component.widgetHeader = {} as WidgetHeader;
     expect(component.ngOnInit).toBeTruthy();
   }))
-
-  it('clearSelectedFilter(), should clear column filter', async()=>{
-    component.filterCriteria = [];
-    component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
-    component.reportingListFilterForm.controls.MATL_GROUP.setValue({min:10,max:20});
-    component.clearSelectedFilter('MATL_GROUP');
-    expect(component.reportingListFilterForm.controls.MATL_GROUP.value).toBe(null);
-  })
 });

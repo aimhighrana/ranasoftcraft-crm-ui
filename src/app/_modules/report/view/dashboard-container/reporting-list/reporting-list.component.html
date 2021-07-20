@@ -68,8 +68,6 @@
                                     <lib-input [formControlName]="displayedColumnsId[i]"
                                         [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]">
                                     </lib-input>
-                                    <lib-button class="clear" icon="times" type="plain"
-                                        (click)="clearSelectedFilter(displayedColumnsId[i])" *ngIf="reportingListFilterForm.get(displayedColumnsId[i]).value"></lib-button>
                                 </div>
                             </ng-template>
 
