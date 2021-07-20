@@ -132,8 +132,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     } else {
       this.nounModifierService.getClassificationMappingData(request).subscribe((resp: any) => {
         this.classificationCategory = resp;
-        const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
-        frmAray.clear();
+        if(this.mappingForm) {
+         const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
+         frmAray.clear();
+        }
         this.gsnAttributes.forEach((row) => {
           const status = this.isMapped? 'matched' : 'unmatched';
           row.status = this.classificationCategory.attrLists.find(x => x.targetCtrl?.ATTR_CODE === row.ATTR_CODE)?.status.toLowerCase() || status;
