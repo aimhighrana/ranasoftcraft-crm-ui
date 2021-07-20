@@ -215,6 +215,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
        attributesMapping.localNounCode = noun.targetCtrl;
      }
    }
+
    const {localNounCode, localModCode} = attributesMapping;
    this.mappingForm.patchValue({localNounCode, localModCode});
   if (attributesMapping.attributeMapData) {
