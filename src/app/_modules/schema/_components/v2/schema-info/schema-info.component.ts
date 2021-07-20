@@ -198,6 +198,15 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/list/${this.moduleId}/${this.schemaId}/sb`, outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/${response.variantId}/outer` } }], {queryParamsHandling: 'preserve'});
       }
     });
+
+    this.sharedService.getAfterVariantDeleted().subscribe((res) => {
+      if (res) {
+        this.variantDetails = this.variantDetails.filter((x) => x.variantId !== res);
+        if (this.dataScopeControl.value === res) {
+          this.setDataScopeName('0');
+        }
+      }
+    });
   }
 
   /**
