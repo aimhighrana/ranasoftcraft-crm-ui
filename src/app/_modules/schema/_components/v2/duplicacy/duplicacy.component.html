@@ -228,37 +228,33 @@
                                                 icon="ellipsis-h"></lib-button>
                                             <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                                 <ng-container *ngFor="let sAction of secondaryActions">
-                                                    <ng-template [ngIf]="sAction.actionText != 'Delete'">
-                                                        <button mat-menu-item *ngIf="hasActionPermission(sAction)"
-                                                            (click)="doAction(sAction, element)">
-                                                            <mat-icon fontSet="mdo-icons"
-                                                                *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                                {{ sAction.actionIconLigature }}
-                                                            </mat-icon>
-                                                            <ng-template
-                                                                [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
-                                                                {{ sAction.actionText }}
-                                                            </ng-template>
-                                                        </button>
-                                                    </ng-template>                                                    
+                                                    <button mat-menu-item *ngIf="hasActionPermission(sAction)"
+                                                        (click)="doAction(sAction, element)">
+                                                        <mat-icon fontSet="mdo-icons"
+                                                            *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                            {{ sAction.actionIconLigature }}
+                                                        </mat-icon>
+                                                        <ng-template
+                                                            [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                                            {{ sAction.actionText }}
+                                                        </ng-template>
+                                                    </button>                                                   
                                                 </ng-container>
                                             </mat-menu>
                                             <!-- Primary actions -->
                                             <ng-container *ngFor="let pAction of primaryActions">
-                                                <ng-template [ngIf]="pAction.actionText != 'Delete'">
-                                                    <button mat-flat-button color="accent"
-                                                        *ngIf="hasActionPermission(pAction)"
-                                                        (click)="doAction(pAction, element)" class="action-button">
-                                                        <mat-icon fontSet="mdo-icons"
-                                                            *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                            {{ pAction.actionIconLigature }}
-                                                        </mat-icon>
-                                                        <ng-template
-                                                            [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                            {{ pAction.actionText }}
-                                                        </ng-template>
-                                                    </button>
-                                                </ng-template>                                                
+                                                <button mat-flat-button color="accent"
+                                                    *ngIf="hasActionPermission(pAction)"
+                                                    (click)="doAction(pAction, element)" class="action-button">
+                                                    <mat-icon fontSet="mdo-icons"
+                                                        *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                        {{ pAction.actionIconLigature }}
+                                                    </mat-icon>
+                                                    <ng-template
+                                                        [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                        {{ pAction.actionText }}
+                                                    </ng-template>
+                                                </button>                                              
                                             </ng-container>
                                             
                                         </ng-template>
