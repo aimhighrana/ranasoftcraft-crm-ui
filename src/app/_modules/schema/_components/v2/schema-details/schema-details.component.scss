@@ -70,7 +70,6 @@ div.root {
 
             mat-nav-list {
               mat-list-item {
-                font-size: 0.9rem;
                 height: 48px;
               }
             }
@@ -115,10 +114,10 @@ div.root {
             border: none;
           }
 
-          // .editable-cell {
-          //   background-color: #fff;
-          padding: 0;
-          // }
+          .edit-mode {
+            border-width: 1px;
+            border-style: solid;
+          }
 
           .mat-header-cell,
           .mat-cell {
@@ -179,12 +178,6 @@ div.root {
               align-items: center;
               justify-content: flex-start;
               padding-top: 32px;
-            }
-          }
-
-          .editable-cell {
-            .mdo-form-input {
-              margin-top: 4px;
             }
           }
 
