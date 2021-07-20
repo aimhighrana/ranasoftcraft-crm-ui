@@ -147,6 +147,7 @@ export class DatascopeListSidesheetComponent implements OnInit, OnDestroy {
         if (res) {
           this.variantsList = this.variantsList.filter((x) => x.variantId !== variantId);
           this.toasterService.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
+          this.sharedService.setAfterVariantDeleted(variantId);
         }
       }, error => {
         console.log('Error while deleting schema variant', error.message)

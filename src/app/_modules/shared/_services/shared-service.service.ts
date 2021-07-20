@@ -86,6 +86,8 @@ export class SharedServiceService {
 
   private datascopeSheetState: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  private afterVariantDeleted: BehaviorSubject<any> = new BehaviorSubject(null);
+
   constructor() {}
 
   public setChooseColumnData(data: any) {
@@ -297,6 +299,14 @@ export class SharedServiceService {
 
   public getdatascopeSheetState() {
     return this.datascopeSheetState.asObservable();
+  }
+
+  public setAfterVariantDeleted(id: string) {
+    return this.afterVariantDeleted.next(id);
+  }
+
+  public getAfterVariantDeleted() {
+    return this.afterVariantDeleted.asObservable();
   }
 
 }
