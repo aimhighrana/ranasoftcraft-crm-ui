@@ -1,5 +1,5 @@
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-import { async, ComponentFixture, fakeAsync ,TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 
 import { ReportingListComponent } from './reporting-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -58,7 +58,7 @@ describe('ReportingListComponent', () => {
         fieldOrder: '1',
         fieldDesc: 'first field 1',
         sno: 1,
-        fldMetaData: { fieldId: 'MATL_GROUP'} as MetadataModel,
+        fldMetaData: { fieldId: 'MATL_GROUP' } as MetadataModel,
         displayCriteria: DisplayCriteria.CODE
       }
     ];
@@ -339,10 +339,10 @@ describe('ReportingListComponent', () => {
     component.tableColumnMetaData[0].fldMetaData = { picklist: '2', dataType: 'DTMS' } as MetadataModel;
     expect(component.getFormFieldType('MATL_GROUP')).toEqual(FormControlType.DATE_TIME);
 
-    component.tableColumnMetaData[0].fldMetaData = { picklist: '1', isCheckList: 'true'} as MetadataModel;
+    component.tableColumnMetaData[0].fldMetaData = { picklist: '1', isCheckList: 'true' } as MetadataModel;
     expect(component.getFormFieldType('MATL_GROUP')).toEqual(FormControlType.MULTI_SELECT);
 
-    component.tableColumnMetaData[0].fldMetaData = { picklist: '1', isCheckList: 'false'} as MetadataModel;
+    component.tableColumnMetaData[0].fldMetaData = { picklist: '1', isCheckList: 'false' } as MetadataModel;
     expect(component.getFormFieldType('MATL_GROUP')).toEqual(FormControlType.DROP_DOWN);
 
     component.tableColumnMetaData[0].fldMetaData = { picklist: '2', dataType: 'TIMS' } as MetadataModel;
@@ -369,10 +369,10 @@ describe('ReportingListComponent', () => {
     component.tableColumnMetaData[0].fldMetaData = { picklist: '0', dataType: 'DEC' } as MetadataModel;
     expect(component.getFormFieldType('MATL_GROUP')).toEqual(FormControlType.NUMBER);
 
-    component.tableColumnMetaData[0].fldMetaData = { picklist: '2'} as MetadataModel;
+    component.tableColumnMetaData[0].fldMetaData = { picklist: '2' } as MetadataModel;
     expect(component.getFormFieldType('MATL_GROUP')).toEqual(FormControlType.CHECKBOX);
 
-    component.tableColumnMetaData[0].fldMetaData = { picklist: '4'} as MetadataModel;
+    component.tableColumnMetaData[0].fldMetaData = { picklist: '4' } as MetadataModel;
     expect(component.getFormFieldType('MATL_GROUP')).toEqual(FormControlType.RADIO);
 
     component.tableColumnMetaData[0].fldMetaData = { picklist: '0', dataType: 'ABCd' } as MetadataModel;
@@ -383,7 +383,7 @@ describe('ReportingListComponent', () => {
   }));
 
 
-  it('configureFilters(), should open configure-filter window', async(()=>{
+  it('configureFilters(), should open configure-filter window', async(() => {
     spyOn(router, 'navigate');
     component.configureFilters();
     expect(component.configureFilters).toBeTruthy();
@@ -391,7 +391,7 @@ describe('ReportingListComponent', () => {
   }));
 
 
-  it('getColumnDisplayCriteria(), should return display type', async(()=>{
+  it('getColumnDisplayCriteria(), should return display type', async(() => {
     component.tableColumnMetaData = [
       {
         widgetId: 1,
@@ -410,18 +410,18 @@ describe('ReportingListComponent', () => {
   }));
 
 
-  it('setFilter(), should set filters', async(()=>{
+  it('setFilter(), should set filters', async(() => {
     component.filterCriteria = [];
     component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
     const event: any = {
       formFieldId: 'MATL_GROUP',
       value: [{
-        CODE:'CODE',
-        TEXT:'TEXT',
-        PLANTCODE:'',
-        LANGU:'',
-        FIELDNAME:'MATL_GROUP',
-        SNO:'1'
+        CODE: 'CODE',
+        TEXT: 'TEXT',
+        PLANTCODE: '',
+        LANGU: '',
+        FIELDNAME: 'MATL_GROUP',
+        SNO: '1'
       } as DropDownValue]
     };
 
@@ -437,18 +437,18 @@ describe('ReportingListComponent', () => {
       }
     ];
 
-    spyOn(component,'onFilterApplied');
+    spyOn(component, 'onFilterApplied');
     component.setFilter(event);
     expect(component.setFilter).toBeTruthy();
 
-    component.tableColumnMetaData[0].fldMetaData = {  picklist: '22', dataType: 'CHAR'} as MetadataModel;
+    component.tableColumnMetaData[0].fldMetaData = { picklist: '22', dataType: 'CHAR' } as MetadataModel;
     component.setFilter(event);
     expect(component.setFilter).toBeTruthy();
     expect(component.onFilterApplied).toHaveBeenCalled();
   }));
 
 
-  it('clearFilter(), should clear filter', async(()=>{
+  it('clearFilter(), should clear filter', async(() => {
     component.selectedMultiSelectData = [
       {
         fieldId: 'MATL_GROUP',
@@ -472,13 +472,13 @@ describe('ReportingListComponent', () => {
       }
     ];
 
-    spyOn(reportServiceSpy,'setFilterCriteria').withArgs([]);
+    spyOn(reportServiceSpy, 'setFilterCriteria').withArgs([]);
     component.clearFilter(true);
     expect(component.selectedMultiSelectData[0].length).toBe(0);
 
   }));
 
-  it('getRangeLimit(), should return range limit', async(()=>{
+  it('getRangeLimit(), should return range limit', async(() => {
     component.tableColumnMetaData = [
       {
         widgetId: 1,
@@ -490,12 +490,12 @@ describe('ReportingListComponent', () => {
         displayCriteria: DisplayCriteria.CODE
       }
     ];
-    const res = component.getRangeLimit('MATL_GROUP','max');
+    const res = component.getRangeLimit('MATL_GROUP', 'max');
     expect(res).toEqual(50);
   }));
 
 
-  it('onFilterApplied()', async(()=>{
+  it('onFilterApplied()', async(() => {
     // const res = { data: { hits: { hits: [{ sourceAsMap: { stat: 'APP', staticFields: { OBJECTID: { fId: 'OBJECTID', ls: 'OBJECTID', vc: [{ c: 'C000164628' }] }, WFID: { fId: 'WFID', ls: 'WFID', vc: [{ c: '130086693666196566' }] }, REQUESTOR_DATE: { fId: 'REQUESTOR_DATE', ls: 'Requested Date', vc: [{ c: '1584440382535' }] }, TIME_TAKEN: { fId: 'TIME_TAKEN', ls: 'Time Taken', vc: [{ c: 97089034 }] }, FORWARDENABLED: { fId: 'FORWARDENABLED', ls: 'FORWARDENABLED', vc: [{ c: 1 }] }, OVERDUE: { fId: 'OVERDUE', ls: 'OVERDUE', vc: [{ c: 'n' }] } }, id: 103048380550997539 }, id: 103048380550997539, sort: [103048380550997539], _score: null }], total: { value: 1, relation: 'eq' }, max_score: null }, took: 4, timed_out: false }, count: 1 };
     // const pageSize = 10;
     // const pageIndex = 0;
@@ -506,7 +506,7 @@ describe('ReportingListComponent', () => {
     component.filterCriteria = [];
     component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
 
-    component.reportingListFilterForm.controls.MATL_GROUP.setValue({min:10,max:20});
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({ min: 10, max: 20 });
 
     component.onFilterApplied('MATL_GROUP', 'number');
     expect(component.onFilterApplied).toBeTruthy();
@@ -514,18 +514,18 @@ describe('ReportingListComponent', () => {
     component.onFilterApplied('MATL_GROUP', 'radio');
     expect(component.onFilterApplied).toBeTruthy();
 
-    component.reportingListFilterForm.controls.MATL_GROUP.setValue({start:new Date(),end: new Date()});
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({ start: new Date(), end: new Date() });
     component.onFilterApplied('MATL_GROUP', 'date');
     expect(component.onFilterApplied).toBeTruthy();
 
     component.onFilterApplied('MATL_GROUP', 'dropdown');
     expect(component.onFilterApplied).toBeTruthy();
 
-    component.reportingListFilterForm.controls.MATL_GROUP.setValue({start:{hours:'2',minutes:23},end:{hours:4, minutes:32}});
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({ start: { hours: '2', minutes: 23 }, end: { hours: 4, minutes: 32 } });
     component.onFilterApplied('MATL_GROUP', 'time');
     expect(component.onFilterApplied).toBeTruthy();
 
-    component.reportingListFilterForm.controls.MATL_GROUP.setValue({start:new Date(),end: new Date()});
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({ start: new Date(), end: new Date() });
     component.onFilterApplied('MATL_GROUP', 'dateTime');
     expect(component.onFilterApplied).toBeTruthy();
 
@@ -561,23 +561,23 @@ describe('ReportingListComponent', () => {
   }));
 
 
-  it('ngOnInit()', async(()=>{
+  it('ngOnInit()', async(() => {
     // component.ngOnInit();
     component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
-    spyOn(reportServiceSpy,'sideSheetStatusChange')
-    .withArgs().and.returnValue(of(true));
-    spyOn(component,'getUserDetails').and.callFake(()=>of([]));
-    spyOn(component,'getHeaderMetaData').and.callFake(()=>of([]))
+    spyOn(reportServiceSpy, 'sideSheetStatusChange')
+      .withArgs().and.returnValue(of(true));
+    spyOn(component, 'getUserDetails').and.callFake(() => of([]));
+    spyOn(component, 'getHeaderMetaData').and.callFake(() => of([]))
     expect(component.ngOnInit).toBeTruthy();
     component.ngOnInit();
   }));
 
 
-  it('getValue()', async(()=>{
+  it('getValue()', async(() => {
     const matl = 'MATL_GROUP';
     const column = 'column';
-    component.dropDownValues[matl] = [{CODE:'test1',TEXT:'text1'}];
-    component.dropDownValues[column] = [{CODE:'test1',TEXT:'text1'}];
+    component.dropDownValues[matl] = [{ CODE: 'test1', TEXT: 'text1' }];
+    component.dropDownValues[column] = [{ CODE: 'test1', TEXT: 'text1' }];
     const res = component.getValue('MATL_GROUP');
     expect(res.length).toEqual(1);
   }));
@@ -603,7 +603,7 @@ describe('ReportingListComponent', () => {
 
   it('getUsetDetails(),when date format is dd M, yy', async(() => {
 
-    const res = { dateformat:  'dd M, yy' } as Userdetails;
+    const res = { dateformat: 'dd M, yy' } as Userdetails;
     spyOn(userService, 'getUserDetails').and.returnValue(of(res));
     component.getUserDetails();
     expect(component.getUserDetails).toBeTruthy();
@@ -612,7 +612,7 @@ describe('ReportingListComponent', () => {
 
   it('getUsetDetails(),when date format is MM d, yy', async(() => {
 
-    const res = { dateformat:  'MM d, yy' } as Userdetails;
+    const res = { dateformat: 'MM d, yy' } as Userdetails;
     spyOn(userService, 'getUserDetails').and.returnValue(of(res));
     component.getUserDetails();
     expect(component.getUserDetails).toBeTruthy();
@@ -707,4 +707,12 @@ describe('ReportingListComponent', () => {
     component.widgetHeader = {} as WidgetHeader;
     expect(component.ngOnInit).toBeTruthy();
   }))
+
+  it('clearSelectedFilter(), should clear column filter', async()=>{
+    component.filterCriteria = [];
+    component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({min:10,max:20});
+    component.clearSelectedFilter('MATL_GROUP');
+    expect(component.reportingListFilterForm.controls.MATL_GROUP.value).toBe(null);
+  })
 });

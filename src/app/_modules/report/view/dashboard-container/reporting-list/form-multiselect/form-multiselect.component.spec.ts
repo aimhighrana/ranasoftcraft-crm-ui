@@ -44,7 +44,7 @@ describe('FormMultiSelectComponent', () => {
     component.formFieldId='MATL_GROUP';
     component.optionList = [];
     component.selectedMultiSelectData = [{ [value.CODE]: null }];
-    component.isTableFilter = true;
+    component.isTableFilter = 'true';
 
     spyOn(component,'displayMultiselectedText');
     spyOn(reportService,'getDropDownValues')
@@ -181,6 +181,11 @@ describe('FormMultiSelectComponent', () => {
     expect(component.ngOnDestroy).toBeTruthy();
   });
 
-
+  it('clearSelectedFilter(), should clear column filter', async () => {
+    const emitEventSpy = spyOn(component.valueChange, 'emit');
+    component.clearSelectedFilter();
+    expect(emitEventSpy).toHaveBeenCalled();
+    expect(component.selectedMultiSelectData.length).toEqual(0);
+  })
 
 });

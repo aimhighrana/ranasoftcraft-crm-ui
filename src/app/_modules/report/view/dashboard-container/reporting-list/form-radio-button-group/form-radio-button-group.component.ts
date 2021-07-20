@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Criteria, DropDownValues } from '@modules/report/_models/widget';
+import { Criteria } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -30,7 +30,7 @@ export class FormRadioButtonGroupComponent implements OnInit {
 
   @Input() displayCriteria: string;
 
-  @Input() isTableFilter: boolean;
+  @Input() isTableFilter: string;
   /**
    * To emit value change of input to parent
    */
@@ -39,10 +39,14 @@ export class FormRadioButtonGroupComponent implements OnInit {
 
   @Input() formFieldId: string;
   @Input() selectedMultiSelectData = [];
-  optionList: DropDownValues[] = [];
+  optionList: any[] = [];
 
   subscription: Subscription[] = [];
   fltrCtrl: FormControl = new FormControl();
+
+  appliedFltrCtrl: FormControl = new FormControl();
+
+  isBtnClickedEvnt: BehaviorSubject<string> = new BehaviorSubject(null);
   /**
    * ANGULAR HOOK
    *
@@ -54,14 +58,23 @@ export class FormRadioButtonGroupComponent implements OnInit {
     this.fltrCtrl.valueChanges.pipe(startWith(''), debounceTime(500)).subscribe(res => {
       this.getDropDownValue(res);
     })
+
+    if (this.control.value) {
+      this.appliedFltrCtrl.setValue(this.control.value.value);
+    }
+    this.isBtnClickedEvnt.subscribe(res => {
+      if (res) {
+        this.appliedFltrCtrl.setValue(res);
+      }
+    })
   }
 
   getDropDownValue(searchText?): string | boolean | void {
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
       this.optionList = res.map(item => {
         return {
-          key: item.CODE,
-          value: this.displayCriteria && this.displayCriteria === 'CODE' ? item.CODE : (this.displayCriteria === 'CODE_TEXT' ? item.CODE + '-' + item.TEXT : item.TEXT)
+          value: item.CODE,
+          key: this.displayCriteria && this.displayCriteria === 'CODE' ? item.CODE : (this.displayCriteria === 'CODE_TEXT' ? item.CODE + '-' + item.TEXT : item.TEXT)
         }
       });
       console.log(this.optionList);
@@ -70,10 +83,24 @@ export class FormRadioButtonGroupComponent implements OnInit {
   }
 
   applyFilter() {
+    const selectedValue = this.optionList.find(item => item.value === this.control.value);
     const response = {
       formFieldId: this.formFieldId,
-      value: { CODE: this.control.value.key, TEXT: this.control.value.value }
+      value: { CODE: selectedValue.value, TEXT: selectedValue.key }
+    }
+    this.control.setValue(selectedValue.key)
+    this.isBtnClickedEvnt.next(selectedValue.key);
+    this.valueChange.emit(response);
+  }
+
+  clearSelectedFilter() {
+    this.control.reset();
+    this.fltrCtrl.reset();
+    const response = {
+      formFieldId: this.formFieldId,
+      value: null
     }
     this.valueChange.emit(response);
+    this.appliedFltrCtrl.reset();
   }
 }

@@ -7,3 +7,12 @@
     padding: 12px;
   }
 }
+
+.checkbox-input {
+  display: flex;
+
+  .clear {
+    position: absolute;
+    right: 10px;
+  }
+}

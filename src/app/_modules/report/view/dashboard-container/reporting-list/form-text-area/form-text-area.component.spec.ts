@@ -1,24 +1,24 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormCheckboxComponent } from './form-checkbox.component';
+import { FormTextAreaComponent } from './form-text-area.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-describe('FormCheckboxComponent', () => {
-  let component: FormCheckboxComponent;
-  let fixture: ComponentFixture<FormCheckboxComponent>;
+describe('FormTextAreaComponent', () => {
+  let component: FormTextAreaComponent;
+  let fixture: ComponentFixture<FormTextAreaComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [FormCheckboxComponent],
+      declarations: [FormTextAreaComponent],
       imports: [AppMaterialModuleForSpec]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormCheckboxComponent);
+    fixture = TestBed.createComponent(FormTextAreaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -47,7 +47,7 @@ describe('FormCheckboxComponent', () => {
         firstChange: false,
         isFirstChange() { return false }
       },
-      controls : {
+      controls: {
         previousValue: false,
         currentValue: true,
         firstChange: false,
@@ -66,17 +66,12 @@ describe('FormCheckboxComponent', () => {
     const emitEventSpy = spyOn(component.valueChange, 'emit');
     component.applyFilter();
     expect(emitEventSpy).toHaveBeenCalled();
+    expect(component.isApplied).toEqual(true);
   }));
 
-  it('ischecked(), is checked method called', async(() => {
-    component.control.setValue(true);
-    component.isChecked();
-    expect(component.isChecked()).toBeTrue();
-  }))
-  it('clearSelectedFilter(), should clear column filter', async()=>{
+  it('clearSelectedFilter(), should clear column filter', async () => {
     const emitEventSpy = spyOn(component.valueChange, 'emit');
-    component.clearSelectedFilter();
+    component.clearFilter(true);
     expect(emitEventSpy).toHaveBeenCalled();
-    expect(component.control.value).toEqual(null);
   })
 });

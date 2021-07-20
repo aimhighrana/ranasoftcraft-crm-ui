@@ -340,7 +340,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
           filteredCriteria.conditionFieldId = item.fieldId;
           filteredCriteria.blockType = BlockType.COND;
           filteredCriteria.conditionOperator = item.conditionOperator;
-          if (formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX) {
+          if (formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX || formFieldType === false) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
           } else if (formFieldType === FormControlType.DROP_DOWN) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
@@ -492,4 +492,18 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     return Number(val) ? val : '';
   }
 
+  getPreSelectedRangeValue(fieldId) {
+    const data = this.filterCriteria.find(item => item.conditionFieldId === fieldId);
+    if (data) {
+      return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue }
+    }
+  }
+
+  clearSelectedFilter(selected){
+    const index = this.filterCriteria.findIndex(item => item.fieldId === selected);
+    if(index > -1){
+      this.filterCriteria[index] = {fieldId: selected};
+    }
+    this.configurationFilterForm.controls[selected].setValue(null);
+  }
 }

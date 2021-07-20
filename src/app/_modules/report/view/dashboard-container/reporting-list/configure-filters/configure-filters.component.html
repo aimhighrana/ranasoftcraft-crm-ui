@@ -23,7 +23,7 @@
                         <lib-text-line type="base" class="text-line">{{ columnDescs[filter.fieldId] }}</lib-text-line>
                         <div class="text-line" *ngIf="filter.conditionFieldValue || filter.conditionFieldStartValue">
                             <ng-template
-                                [ngIf]=" getFormFieldType(filter.fieldId) === 'text' || getFormFieldType(filter.fieldId) === 'textarea' || getFormFieldType(filter.fieldId) === 'checkbox'">
+                                [ngIf]=" getFormFieldType(filter.fieldId) === 'text' || getFormFieldType(filter.fieldId) === 'textarea' || getFormFieldType(filter.fieldId) === 'checkbox' || getFormFieldType(filter.fieldId) === false">
                                 <lib-text-line type="base" textColor="secondary">{{filter.conditionFieldValue}}
                                 </lib-text-line>
                             </ng-template>
@@ -50,12 +50,12 @@
                                 [ngIf]="getFormFieldType(filter.fieldId) === 'multiselectDropdown' || getFormFieldType(filter.fieldId) === 'checkbox' || getFormFieldType(filter.fieldId) === 'dropdown'|| getFormFieldType(filter.fieldId) === 'radio'">
                                 <div class="subline-row">
                                     <span *ngFor="let filt of filterApplied[filter.fieldId]; let i=index "
-                                    class="sub-text-line">
-                                    <lib-text-line type="base" textColor="secondary"> {{filt.TEXT}}</lib-text-line>
-                                    <span *ngIf="i < filter.conditionFieldValue.length-1">,</span>
-                                </span>
+                                        class="sub-text-line">
+                                        <lib-text-line type="base" textColor="secondary"> {{filt.TEXT}}</lib-text-line>
+                                        <span *ngIf="i < filter.conditionFieldValue.length-1">,</span>
+                                    </span>
                                 </div>
-                               
+
                             </ng-template>
                         </div>
                     </mat-list-item>
@@ -103,8 +103,7 @@
 
                 <div class="f-row selectedchips"
                     *ngIf="getFormFieldType(selectedFilter.fieldId) === 'multiselectDropdown' || getFormFieldType(selectedFilter.fieldId) === 'radio' || getFormFieldType(selectedFilter.fieldId) === 'dropdown'">
-                    <div
-                        *ngFor="let selected of filterApplied[this.selectedFilter.fieldId];let i = index">
+                    <div *ngFor="let selected of filterApplied[this.selectedFilter.fieldId];let i = index">
                         <lib-chip [selectable]="true" [removable]="true" class="lib-chip"
                             (removed)="removedSelectedFilter(selected.CODE,i)">
                             {{
@@ -136,7 +135,7 @@
                     <pros-form-single-select [placeholder]="'Enter ' + columnDescs[selectedFilter.fieldId]"
                         [displayCriteria]="selectedFieldMetaData.displayCriteria" (valueChange)="onChange($event.value)"
                         [formFieldId]="selectedFilter.fieldId"
-                        [control]="configurationFilterForm.get(selectedFilter.fieldId)">
+                        [control]="configurationFilterForm.get(selectedFilter.fieldId)" [isTableFilter]="false">
                     </pros-form-single-select>
                 </ng-container>
                 <!-- radio button group -->
@@ -151,24 +150,31 @@
                 <!--input type -->
                 <ng-template
                     [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'text' || getFormFieldType(selectedFilter.fieldId) === false">
-                    <lib-input [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
-                        (change)="onInputValueChange($event.target.value)"
-                        [formControl]="configurationFilterForm.get(selectedFilter.fieldId)">
-                    </lib-input>
+                    <div class="lib-input-div">
+                        <lib-input [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
+                            (change)="onInputValueChange($event.target.value)"
+                            [formControl]="configurationFilterForm.get(selectedFilter.fieldId)">
+                        </lib-input>
+                        <lib-button *ngIf="configurationFilterForm.get(selectedFilter.fieldId).value" class="clear"
+                            icon="times" type="plain" (click)="clearSelectedFilter(selectedFilter.fieldId)">
+                        </lib-button>
+                    </div>
                 </ng-template>
 
                 <!-- For text area -->
                 <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'textarea'">
-                    <lib-textarea [formControl]="configurationFilterForm.get(selectedFilter.fieldId)"
-                        [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"></lib-textarea>
+                    <pros-form-textarea [control]="configurationFilterForm.get(selectedFilter.fieldId)"
+                        [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
+                        (valueChange)="onInputValueChange($event.value)" [formFieldId]="selectedFilter.fieldId"
+                        isTableFilter="false"></pros-form-textarea>
                 </ng-template>
 
                 <!--for slider range picker-->
                 <ng-template [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'number'">
                     <pros-form-range-slider placeholder="X-XX" (valueChange)="rangeTypeValueChange($event)"
-                        [formFieldId]="selectedFilter.fieldId" [minValue]="selectedFilter.conditionFieldStartValue"
-                        [maxValue]="selectedFilter.conditionFieldEndValue"
-                        [control]="configurationFilterForm.get(selectedFilter.fieldId)">
+                        [formFieldId]="selectedFilter.fieldId"
+                        [control]="configurationFilterForm.get(selectedFilter.fieldId)"
+                        [preSelectedValue]="getPreSelectedRangeValue(selectedFilter.fieldId)">
                     </pros-form-range-slider>
                 </ng-template>
 
@@ -205,7 +211,6 @@
                     </div>
                 </ng-template>
             </div>
-
         </div>
     </div>
 </div>

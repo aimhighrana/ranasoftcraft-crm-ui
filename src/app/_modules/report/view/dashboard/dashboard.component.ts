@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   collaboratorDeletePermission: false ;
   collaboratorAdminPermission: false ;
   reportExist = true;
+  isClearBtnClicked = false;
 
   /**
    * If is from msteam then don't need edit and delete ..
@@ -93,6 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   clearFilters() {
     this.emitClearBtnEvent = true;
+    this.isClearBtnClicked = true;
   }
 
   showClearBtnEmit(isTrue: boolean) {

@@ -28,7 +28,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
 
   @Input() displayCriteria: string;
 
-  @Input() isTableFilter = false;
+  @Input() isTableFilter= 'false';
 
   /**
    * To emit value change of input to parent
@@ -93,7 +93,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
     }
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
       this.optionList = res;
-      if (this.isTableFilter && this.selectedMultiSelectData.length) {
+      if (this.isTableFilter === 'true' && this.selectedMultiSelectData.length) {
         this.selectedMultiSelectData.forEach(item => {
           const value = Object.values(item)[0];
           if (value === null) {
@@ -192,7 +192,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
       const value = Object.values(item)[0];
       const code = Object.keys(item)[0];
       const previousText = textWrapper.innerHTML;
-      if (inputWrapper.offsetWidth - textWrapper.offsetWidth > 50) {
+      if (inputWrapper.offsetWidth - textWrapper.offsetWidth > 80) {
         if (this.displayCriteria === DisplayCriteria.CODE) {
           textWrapper.innerHTML = textWrapper.innerHTML + code + ';';
         } else if (this.displayCriteria === DisplayCriteria.CODE_TEXT) {
@@ -235,5 +235,13 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
       selectedDataList.push(data);
     })
     return selectedDataList;
+  }
+  clearSelectedFilter(){
+    const response = {
+      formFieldId: this.formFieldId,
+      value: []
+    }
+    this.selectedMultiSelectData = [];
+    this.valueChange.emit(response);
   }
 }
