@@ -498,4 +498,154 @@ describe('EndpointService', () => {
     expect(serObj.getAllDataScopeUrl('schema1', 'type1')).toContain('schema/variants/schema1/type1');
   }));
 
+  it('getMetadataFields(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getMetadataFields('123')).toContain('schema/metadata-fileds/123');
+  }));
+
+  it('getBusinessRulesInfoByModuleIdUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getBusinessRulesInfoByModuleIdUrl()).toContain('schema/get-business-rules');
+  }));
+
+  it('getAllBusinessRulesUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getAllBusinessRulesUrl()).toContain('schema/get-all-business-rules');
+  }));
+
+  it('getBusinessRulesInfoBySchemaIdUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getBusinessRulesInfoBySchemaIdUrl('321')).toContain('schema/get-business-rules/321');
+  }));
+
+  it('getCategoriesInfo(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getCategoriesInfo()).toContain('schema/category-list');
+  }));
+
+  it('getFieldMetadatByFldUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getFieldMetadatByFldUrl('321')).toContain('report/fields-description/321');
+  }));
+
+  it('getFieldMetadatByFldUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getFieldMetadatByFldUrl('321')).toContain('report/fields-description/321');
+  }));
+
+  it('widgetDataUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.widgetDataUrl()).toContain('widgetData');
+  }));
+
+  it('getStackBarChartMetaData(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getStackBarChartMetaData('widgetId')).toContain('report/widget/stack-barChart/metadata/widgetId');
+  }));
+
+  it('getFiltertMetaData(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getFiltertMetaData('widgetId')).toContain('report/widget/filter/metadata/widgetId');
+  }));
+
+  it('getBarChartMetaData(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getBarChartMetaData('widgetId')).toContain('report/widget/bar-chart/metadata/widgetId');
+  }));
+
+  it('getCountMetadata(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getCountMetadata('widgetId')).toContain('report/widget/count/metadata/widgetId');
+  }));
+
+  it('getHeaderMetaData(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getHeaderMetaData('widgetId')).toContain('report/widget/header/metadata/widgetId');
+  }));
+
+  it('getimageMetadata(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getimageMetadata('widgetId')).toContain('report/widget/image/metadata/widgetId');
+  }));
+
+  it('getHTMLMetadata(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getHTMLMetadata('widgetId')).toContain('report/widget/html-editor/metadata/widgetId');
+  }));
+
+  it('getFilterDynamicListsUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getFilterDynamicListsUrl()).toContain('tasklist/filterList');
+  }));
+
+  it('getTasksUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getTasksUrl()).toContain('tasklist/taskListData');
+  }));
+
+  it('getReportListUrlForMsTeams(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getReportListUrlForMsTeams()).toContain('report');
+  }));
+
+  it('getPermissionUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getPermissionUrl()).toContain('admin/permission/collaborators');
+  }));
+
+  it('returnCollaboratorsPermisisonUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.returnCollaboratorsPermisisonUrl('reportId')).toContain('admin/permission/collaborators/permission/reportId');
+  }));
+
+  it('dropDownValuesUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.dropDownValuesUrl('fieldId')).toContain('schema/drop-values/fieldId');
+  }));
+
+  it('getChangeLogDetails(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getChangeLogDetails()).toContain('changeAuditLog/getChangeLogDetails');
+  }));
+
+  it('getFieldOptionsUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getFieldOptionsUrl()).toContain('restWorkflow/admin_dropdown_list_dropdown_data');
+  }));
+
+  it('getloadWfDefinitionUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getloadWfDefinitionUrl()).toContain('restWorkflow/loadWorkFlowPathStep');
+  }));
+
+  it('getSchemaInfoByModuleIdUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaInfoByModuleIdUrl('moduleId')).toContain('schema/schema-info/moduleId');
+  }));
+
+  it('getSchemaWithVariantsUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaWithVariantsUrl()).toContain('schema/list-variants');
+  }));
+
+  it('getLayoutMetadata(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getLayoutMetadata('widgetId', 'objectNumber', 'layoutId'))
+    .toContain('report/layout-metadata/widgetId/objectNumber/layoutId');
+  }));
+
+  it('saveNewSchemaUrl(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.saveNewSchemaUrl('objectId', false, 'variantId', 'fileSno'))
+    .toContain('schemamodule/create-schema?objectId=objectId&runNow=false&variantId=variantId&fileSno=fileSno');
+  }));
+
+  it('getlayoutData(), should return the corresponding endpoint', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getlayoutData('widgetId', 'objectNumber'))
+    .toContain('report/layout-data/widgetId/objectNumber');
+  }));
+
+
+
 });
