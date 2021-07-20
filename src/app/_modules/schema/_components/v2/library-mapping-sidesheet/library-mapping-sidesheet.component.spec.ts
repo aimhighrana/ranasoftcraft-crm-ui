@@ -8,7 +8,7 @@ import { Userdetails } from '@models/userdetails';
 import { SharedModule } from '@modules/shared/shared.module';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { UserService } from '@services/user/userservice.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { LibraryMappingSidesheetComponent } from './library-mapping-sidesheet.component';
@@ -102,12 +102,20 @@ describe('LibraryMappingSidesheetComponent', () => {
       {ATTR_DESC: 'length',  ATTR_CODE: 'length'} as AttributesDoc
     ]
 
-    spyOn(nounModifierService, 'getLocalAttribute').withArgs('Bearing', 'Ball','0').and.returnValue(of(result));
+    const localAttrSpy = spyOn(nounModifierService, 'getLocalAttribute').withArgs('Bearing', 'Ball','0').and.returnValue(of(result));
 
     component.getLocalAttributes('Bearing','Ball');
 
+    localAttrSpy.and.returnValue(throwError({ message: 'error' }));
+    component.getLocalAttributes('Bearing','Ball');
     expect(nounModifierService.getLocalAttribute).toHaveBeenCalledWith('Bearing', 'Ball', '0');
     expect(component.LocalAttributesList).toEqual(result);
+  });
+
+  it('createNewAttributeWidget should open attribute side sheet', () => {
+    spyOn(component, 'openAttributeSidesheet').and.returnValue(of([]) as any);
+    component.createNewAttributeWidget(0);
+    expect(component.openAttributeSidesheet).toHaveBeenCalled();
   });
 
   it('should get already saved mapping', () => {
@@ -228,6 +236,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     const attr = {ATTR_CODE:'', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
     component.buildMappingForm();
     component.addAttributeMappingRow(attr);
+    component.isMapped = true;
     component.addAttributeMappingRow(null);
     expect(component.attributeMapData.at(0).value.localAttributeCode).toEqual('length');
   });
