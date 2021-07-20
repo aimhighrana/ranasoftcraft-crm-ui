@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { Subscription } from 'rxjs';
@@ -64,7 +65,10 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
    * Constructor of class
    * @param schemaService: Instace of schema service
    */
-  constructor(private schemaService: SchemaService, private schemaDetailsService: SchemaDetailsService) { }
+  constructor(
+      private schemaService: SchemaService,
+      private schemaDetailsService: SchemaDetailsService,
+      private sharedService: SharedServiceService) { }
 
   /**
    * ANGULAR HOOK
@@ -99,6 +103,7 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
         this.schemaProgress = response;
         if (response?.percentage >= 100) {
           this.runCompleted.emit(response);
+          this.sharedService.refresSchemaListTrigger.next(true);
         }
       }, (error) => {
         console.log(`Something went wrong while getting schema execution progress, ${error.message}`);
@@ -157,6 +162,7 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
     this.isInLoading = true;
     const sub = this.schemaService.cancleSchema(this.schemaId).subscribe(res=>{
       this.runCompleted.emit(res);
+      this.sharedService.refresSchemaListTrigger.next(true);
       this.isInLoading = false;
     }, err=>{
       this.isInLoading = false;
