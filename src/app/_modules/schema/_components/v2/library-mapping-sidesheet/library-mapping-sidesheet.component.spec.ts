@@ -177,6 +177,21 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.setFormControlValue('libraryModCode', 'Precision Ball');
     expect(component.mappingForm.value.libraryModCode).toEqual('Precision Ball');
 
+    component.classificationCategory = {
+      noun: {
+        status: 'suggested',
+        source: '',
+        targetCtrl: 'test1'
+      },
+      modifier: {
+        status: 'suggested',
+        source: '',
+        targetCtrl: 'test2'
+      },
+      attrLists: []
+    };
+    component.patchMappingForm(mappingData);
+    expect(component.mappingForm.value.libraryModCode).toEqual('test2');
 
   });
 
