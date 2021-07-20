@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
+                <button mat-menu-item (click)="openDataScopeSideSheet()">[Add data scope] </button>
             </mat-menu>
         </ng-template>
         <div class="f-col-spacer-half"></div>
@@ -238,7 +238,7 @@
                                                             [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
                                                             {{ sAction.actionText }}
                                                         </ng-template>
-                                                    </button>                                                    
+                                                    </button>                                                   
                                                 </ng-container>
                                             </mat-menu>
                                             <!-- Primary actions -->
@@ -254,7 +254,7 @@
                                                         [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
                                                         {{ pAction.actionText }}
                                                     </ng-template>
-                                                </button>                                                
+                                                </button>                                              
                                             </ng-container>
                                             
                                         </ng-template>

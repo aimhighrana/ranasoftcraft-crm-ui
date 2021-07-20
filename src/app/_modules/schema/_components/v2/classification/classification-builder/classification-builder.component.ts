@@ -375,6 +375,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
      this.sharedServices.getAfterMappingSaved().subscribe(res=>{
        if(res) {
         this.getClassificationNounMod(this.searchNounNavCtrl.value);
+        this.getSchemaStatics();
        }
      },err=> console.error(`Error : ${err.message}`));
 
