@@ -183,8 +183,8 @@ export class SchemaService {
     return this.http.get<string[]>(this.endpointService.getBrConditionalOperatorUrl());
   }
 
-  public dropDownValues(fieldId: string, queryString: string): Observable<DropDownValue[]> {
-    return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString } });
+  public dropDownValues(fieldId: string, queryString: string, from='0', size ='20'): Observable<DropDownValue[]> {
+    return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString, from, size } });
   }
 
   public saveUpdateUdrBlock(blocks: UDRBlocksModel[]): Observable<string[]> {

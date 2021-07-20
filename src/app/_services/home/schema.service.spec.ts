@@ -510,7 +510,7 @@ describe('SchemaService', () => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
-    const httpReq = httpTestingController.expectOne(`${url}?queryString=search`);
+    const httpReq = httpTestingController.expectOne(`${url}?queryString=search&from=0&size=20`);
     expect(httpReq.request.method).toEqual('GET');
     httpReq.flush(mockResponse);
     // verify http
