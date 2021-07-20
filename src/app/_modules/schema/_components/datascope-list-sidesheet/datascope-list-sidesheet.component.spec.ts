@@ -8,7 +8,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { DatascopeListSidesheetComponent } from './datascope-list-sidesheet.component';
 
@@ -60,6 +60,16 @@ describe('DatascopeListSidesheetComponent', () => {
     component.getSchemaVariants('123', 'RUNFOR', 0);
     expect(component.variantsList.length).toEqual(1);
     expect(schemaVariantsService.getDataScopesList).toHaveBeenCalled();
+
+    component.getSchemaVariants('123', 'RUNFOR', 1);
+    expect(component.variantsList.length).toEqual(2);
+  }));
+
+  it('getSchemaVariants(), api failure', async(() => {
+    spyOn(schemaVariantsService, 'getDataScopesList').and.returnValue(throwError({message: 'error'}));
+    component.getSchemaVariants('123', '', 0, 10);
+
+    expect(component.variantsList.length).toEqual(0);
   }));
 
   it('updateVariantsList()', async(() => {
@@ -69,6 +79,9 @@ describe('DatascopeListSidesheetComponent', () => {
 
     component.updateVariantsList();
     expect(component.getSchemaVariants).toHaveBeenCalled();
+
+    component.schemaId = undefined;
+    component.updateVariantsList();
   }));
 
   it('editDataScope()', async(() => {
@@ -86,6 +99,28 @@ describe('DatascopeListSidesheetComponent', () => {
 
   it('deleteVariantAfterConfirm()', async(() => {
     spyOn(schemaVariantsService, 'deleteVariant').and.returnValue(of(true));
+    component.deleteVariantAfterConfirm('yes', '123');
+
+    expect(schemaVariantsService.deleteVariant).toHaveBeenCalled();
+
+    component.variantsList = [new VariantDetails()];
+    component.variantsList[0].variantId = '123';
+    component.deleteVariantAfterConfirm('yes', '123')
+    expect(component.variantsList.length).toEqual(0);
+
+    expect(component.deleteVariantAfterConfirm('no', null)).toBeUndefined();
+  }));
+
+  it('deleteVariantAfterConfirm(), api empty response', async(() => {
+    spyOn(schemaVariantsService, 'deleteVariant').and.returnValue(of(false));
+    component.deleteVariantAfterConfirm('yes', '123');
+
+    expect(component.variantsList.length).toEqual(0);
+    expect(schemaVariantsService.deleteVariant).toHaveBeenCalled();
+  }));
+
+  it('deleteVariantAfterConfirm(), api fail case', async(() => {
+    spyOn(schemaVariantsService, 'deleteVariant').and.returnValue(throwError({message: 'error'}));
     component.deleteVariantAfterConfirm('yes', '123');
 
     expect(schemaVariantsService.deleteVariant).toHaveBeenCalled();

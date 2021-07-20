@@ -262,6 +262,15 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.sharedService.getAfterVariantDeleted().subscribe(res => {
+      if (res) {
+        this.variantDetails = this.variantDetails.filter(x => x.variantId !== res);
+        if (this.dataScopeControl.value === res) {
+          this.setDataScopeName('0');
+        }
+      }
+    });
   }
 
   setDataScopeName(variantId) {
@@ -362,7 +371,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   }
 
   updateDataScopeList(page?: number, name?: string) {
-    const scopeName = name || ((this.dataScopeName.value.trim() !== '' && this.dataScopeName.value !== 'Entire data scope') ? this.dataScopeName.value.trim() : null);
+    const datascopeName = this.dataScopeName.value || '';
+    const scopeName = name || ((datascopeName.trim() !== '' && datascopeName !== 'Entire data scope') ? datascopeName.trim() : null);
     const pageNo = (page || page === 0) ? page : (this.variantListPage + 1);
     const body = {
       from: pageNo,
