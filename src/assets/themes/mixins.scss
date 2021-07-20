@@ -956,6 +956,10 @@
     &:hover {
       background: $color-app-hover;
     }
+
+    .mat-button-focus-overlay {
+      background-color: transparent;
+    }
   }
 
   button.mat-fab {
@@ -1082,6 +1086,13 @@
     color: $color-status-error;
   }
 
+  // MDO-Chip Filter Icon
+  .filter-pill {
+    button.mdo-filter-pill {
+      padding: 6px;
+    }
+  }
+
   //MDO-Table
   .mat-table {
     .mat-row,
@@ -1136,6 +1147,7 @@
             background: mat-color($background-palette, card);
             margin-top: 0;
             padding-left: 0;
+            height: 46px;
 
             .mat-form-field-outline {
               display: none;
@@ -1224,7 +1236,7 @@
 
             .mat-input {
               caret-color: $color-text-secondary;
-              padding-top: 4px;
+              padding-top: 3px;
               color: $color-text-primary;
             }
           }
@@ -1317,6 +1329,7 @@
       &.mat-expansion-panel-spacing {
         margin: 0;
         outline: none;
+        border-radius: 0;
       }
 
       .mat-expansion-panel-header {
@@ -1988,12 +2001,6 @@
     }
   }
 
-  // pros-table-cell-input {
-  //   mat-form-field.edit-cell {
-  //     background: #;
-  //   }
-  // }
-
   pros-classification-builder {
     div.root {
       .listset-navigation {
@@ -2018,6 +2025,18 @@
     .state-container {
       .label-text {
         color: $color-text-secondary;
+      }
+    }
+  }
+
+  pros-schema-lists {
+    table.mat-table {
+      &.table-vertical {
+        .mat-row {
+          td.mat-cell {
+            border-bottom-color: $color-app-border;
+          }
+        }
       }
     }
   }
@@ -2063,6 +2082,12 @@
           background-color: mat-color($background-palette, card);
         }
       }
+
+      table.mat-table {
+        .edit-mode {
+          border-color: $color-app-canvas;
+        }
+      }
     }
   }
 
@@ -2080,18 +2105,6 @@
   div.root .summary-sidesheet.sidesheetcontent-listing {
     .lib-input .mdo-field .mdo-field-label {
       font-size: 14px;
-    }
-  }
-
-  pros-schema-lists {
-    table.mat-table {
-      &.table-vertical {
-        .mat-row {
-          td.mat-cell {
-            border-bottom-color: $color-app-border;
-          }
-        }
-      }
     }
   }
 

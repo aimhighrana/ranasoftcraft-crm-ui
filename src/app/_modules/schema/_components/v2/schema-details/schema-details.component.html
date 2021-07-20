@@ -157,7 +157,7 @@
             </mat-chip-list>
 
             <!-- Add filter control -->
-            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"><mat-icon fontSet="mdo-icons">filter</mat-icon></lib-chip>
+            <lib-chip class="mdo-filter-matchip filter-pill" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"><mat-icon fontSet="mdo-icons">filter</mat-icon></lib-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
                 <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
@@ -166,7 +166,7 @@
             </mat-menu>
 
             <!-- More control -->
-            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu">
+            <lib-chip class="mdo-filter-matchip filter-pill" [matMenuTriggerFor]="moreFilterMenu">
                 <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
             </lib-chip>
             <!-- More control MatMenu -->

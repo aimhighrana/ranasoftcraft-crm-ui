@@ -77,12 +77,13 @@
             <mat-divider [vertical]="true" class="mat-divider"></mat-divider>
             <div class="f-col dataset-grid-listing">
                 <div class="f-row">
-                    <mat-chip-list>
+                    
                         <lib-search placeholder="Search..."  [formControl]="searchFrmCtrl" class="lib-search">
                         </lib-search>
                         <!-- Applied filters -->
                         <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                             <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                            <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                     <label>
@@ -112,14 +113,16 @@
                                         (selectedValues)="updateFilterCriteria($event)">
                                     </pros-filter-values>
                                 </mat-menu>
+                            </mat-chip-list>
+                                
                             </ng-template>
                         </ng-template>
 
                         <!-- Add filter control -->
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
+                        <lib-chip class="mdo-filter-matchip filter-pill" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                             (click)="reInilize = !reInilize">
                             <mat-icon fontSet="mdo-icons">filter</mat-icon>
-                        </mat-chip>
+                        </lib-chip>
 
                         <!-- Add filter control MatMenu -->
                         <mat-menu #addfiltermenu="matMenu">
@@ -127,10 +130,10 @@
                                 [reInilize]="reInilize" [alreadySelectedValues]="filterCriteria.getValue()">
                             </pros-add-filter-menu>
                         </mat-menu>
-                    </mat-chip-list>
+                    
             
                     <!-- More control -->
-                    <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu">
+                    <lib-chip class="mdo-filter-matchip filter-pill" [matMenuTriggerFor]="moreFilterMenu">
                         <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                     </lib-chip>
                     <!-- More control MatMenu -->
