@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, ChangeDetectorRef, OnChanges, DoCheck } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, ChangeDetectorRef, OnChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -72,10 +72,10 @@ export class FormRadioButtonGroupComponent implements OnInit,OnChanges {
   }
 
   /**
- * ANGULAR HOOK
- * To detect the changes from parent and update value
- * @param  changes: object contains prev and current value
- */
+   * ANGULAR HOOK
+   * To detect the changes from parent and update value
+   * @param  changes: object contains prev and current value
+   */
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {

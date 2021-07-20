@@ -2,10 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormRadioButtonGroupComponent } from './form-radio-button-group.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { DropDownValues } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
+import { SimpleChanges } from '@angular/core';
 
 describe('FormRadioButtonGroupComponent', () => {
   let component: FormRadioButtonGroupComponent;
@@ -64,4 +65,49 @@ describe('FormRadioButtonGroupComponent', () => {
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
+
+  it('ngOnChanges()', async(() => {
+    component.control = new FormControl();
+    component.control.setValue('test1')
+    component.optionList = [{key:'test1',value:'test1'}];
+    const changes: SimpleChanges = {};
+    component.ngOnChanges(changes);
+    expect(component.ngOnChanges).toBeTruthy();
+    const change1: SimpleChanges = {
+      formFieldId: {
+        previousValue: 'activityCheck',
+        currentValue: 'column',
+        firstChange: false,
+        isFirstChange() { return false }
+      },
+      control : {
+        previousValue : false,
+        currentValue: true,
+        firstChange: false,
+        isFirstChange() { return false }
+      },
+      value : {
+          previousValue: false,
+          currentValue: true,
+          firstChange: false,
+          isFirstChange() { return false }
+      }
+    };
+
+    component.ngOnChanges(change1);
+    expect(component.formFieldId).toEqual('column')
+  }));
+
+  it('applyFilter()', async ()=>{
+    component.formFieldId = 'MATL_GROUP';
+    component.control = new FormControl();
+    component.control.setValue('test1')
+    component.optionList = [{key:'test1',value:'test1'}];
+
+    const emitEventSpy = spyOn(component.valueChange, 'emit');
+    component.applyFilter();
+    expect(component.previousSelectedValue).toEqual('test1');
+    expect(emitEventSpy).toHaveBeenCalled();
+  })
+
 });

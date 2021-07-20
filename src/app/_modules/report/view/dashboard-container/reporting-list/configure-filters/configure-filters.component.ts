@@ -111,7 +111,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       this.selectedFilter = this.filterCriteria[0];
       this.configurationFilterForm.addControl(this.selectedFilter.fieldId, new FormControl());
       const type = this.getFormFieldType(this.selectedFilter.fieldId);
-      if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX || type === FormControlType.RADIO) {
+      if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX || type === FormControlType.RADIO || type === false) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue(this.selectedFilter.conditionFieldValue);
       } else if (type === FormControlType.NUMBER) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ min: this.selectedFilter.conditionFieldStartValue, max: this.selectedFilter.conditionFieldEndValue })
@@ -146,7 +146,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     if (!this.configurationFilterForm.controls[filter.fieldId]) {
       this.configurationFilterForm.addControl(filter.fieldId, new FormControl());
       const formFieldType = this.getFormFieldType(filter.fieldId);
-      if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX) && filter.conditionFieldValue) {
+      if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX || formFieldType === false) && filter.conditionFieldValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue(filter.conditionFieldValue);
       } else if ((formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME) && filter.conditionFieldStartValue && filter.conditionFieldEndValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue({ start: new Date(Number(filter.conditionFieldStartValue)), end: new Date(Number(filter.conditionFieldEndValue)) });

@@ -45,8 +45,8 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
    * that holds the pre selected values of range slider
    */
   @Input() preSelectedValue: any;
-  minValue: number = 0;
-  maxValue: number = 0;
+  minValue = 0;
+  maxValue = 0;
   highValue = 10000000;
   lowerValue = 0;
   subscription: Subscription[] = [];

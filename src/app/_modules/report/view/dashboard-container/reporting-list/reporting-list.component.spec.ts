@@ -494,6 +494,7 @@ describe('ReportingListComponent', () => {
     // const soringMap = null;
     // spyOn(widgetServiceSpy, 'getListdata').withArgs(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).and.returnValue(of(res));
     component.filterCriteria = [];
+    const value = {CODE:'test',TEXT:'test'};
     component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
 
     component.reportingListFilterForm.controls.MATL_GROUP.setValue({ min: 10, max: 20 });
@@ -501,7 +502,7 @@ describe('ReportingListComponent', () => {
     component.onFilterApplied('MATL_GROUP', 'number');
     expect(component.onFilterApplied).toBeTruthy();
 
-    component.onFilterApplied('MATL_GROUP', 'radio');
+    component.onFilterApplied('MATL_GROUP', 'radio', value);
     expect(component.onFilterApplied).toBeTruthy();
 
     component.reportingListFilterForm.controls.MATL_GROUP.setValue({ start: new Date(), end: new Date() });
@@ -528,7 +529,7 @@ describe('ReportingListComponent', () => {
     expect(component.onFilterApplied).toBeTruthy();
 
     component.localFilterCriteria = [];
-    component.onFilterApplied('MATL_GROUP', 'radio');
+    component.onFilterApplied('MATL_GROUP', 'radio', value);
     expect(component.onFilterApplied).toBeTruthy();
 
     component.localFilterCriteria = [];
@@ -608,4 +609,54 @@ describe('ReportingListComponent', () => {
     expect(component.getUserDetails).toBeTruthy();
     expect(component.dateFormat).toEqual('MMMM d, yyyy, h:mm:ss a');
   }));
+
+  it('getPreSelectedRangeValue()', async ()=>{
+    component.localFilterCriteria = [
+      {
+        fieldId: 'MATL_GROUP',
+        conditionFieldId: 'MATL_GROUP',
+        conditionFieldValue: null,
+        blockType: BlockType.COND,
+        conditionOperator: ConditionOperator.EQUAL,
+        conditionFieldStartValue: '10',
+        conditionFieldEndValue: '20',
+        udrid: null,
+      }
+    ];
+
+    const res = {max:'20',min:'10'};
+    expect(component.getPreSelectedRangeValue('MATL_GROUP')).toEqual(res);
+  })
+
+  it('getSelectedDateValue()', async () =>{
+    component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({ start: new Date(), end: new Date() });
+
+    const result = component.reportingListFilterForm.controls.MATL_GROUP.value;
+    expect(component.getSelectedDateValue('MATL_GROUP')).toEqual(result);
+  })
+
+  it('getSelectedTimeValue()', async () =>{
+    component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
+    component.reportingListFilterForm.controls.MATL_GROUP.setValue({ start: { hours: '2', minutes: 23 }, end: { hours: 4, minutes: 32 } });
+
+    const result = component.reportingListFilterForm.controls.MATL_GROUP.value;
+    expect(component.getSelectedTimeValue('MATL_GROUP')).toEqual(result);
+  })
+
+  it('getPreSelectedDropdownValue()', async ()=>{
+    component.localFilterCriteria = [
+      {
+        fieldId: 'MATL_GROUP',
+        conditionFieldId: 'MATL_GROUP',
+        conditionFieldValue: 'test',
+        blockType: BlockType.COND,
+        conditionOperator: ConditionOperator.EQUAL,
+        conditionFieldStartValue: null,
+        conditionFieldEndValue: null,
+        udrid: null,
+      }
+    ];
+    expect(component.getPreSelectedDropdownValue('MATL_GROUP')).toEqual('test');
+  })
 });

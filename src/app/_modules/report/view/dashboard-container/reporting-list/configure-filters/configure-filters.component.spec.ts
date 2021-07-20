@@ -729,4 +729,30 @@ describe('ConfigureFiltersComponent', () => {
     component.getSelectedTimeValue()
     expect(component.getSelectedTimeValue()).toBeInstanceOf(Object);
   })
+
+  it('getPreSelectedRangeValue()', async ()=>{
+    component.filterCriteria = [
+      {
+        fieldId: 'MATL_GROUP',
+        conditionFieldId: 'MATL_GROUP',
+        conditionFieldValue: null,
+        blockType: BlockType.COND,
+        conditionOperator: ConditionOperator.EQUAL,
+        conditionFieldStartValue: '10',
+        conditionFieldEndValue: '20',
+        udrid: null,
+      }
+    ];
+
+    const res = {max:'20',min:'10'};
+    expect(component.getPreSelectedRangeValue('MATL_GROUP')).toEqual(res);
+  })
+
+  it('getDateTypeValue()', async ()=>{
+    let fld = '7654345';
+    expect(component.getDateTypeValue(fld)).toEqual(fld);
+
+    fld = 'aftadrtsa';
+    expect(component.getDateTypeValue(fld)).toEqual('');
+  })
 });

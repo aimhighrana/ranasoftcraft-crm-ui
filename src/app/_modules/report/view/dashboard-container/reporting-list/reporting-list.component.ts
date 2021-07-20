@@ -790,6 +790,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const data = this.localFilterCriteria.find(item => item.conditionFieldId === fieldId);
     if (data) {
       return data.conditionFieldValue;
-    } 
+    }
   }
 }

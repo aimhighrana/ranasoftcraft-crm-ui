@@ -47,15 +47,16 @@
                                 </lib-text-line>
                             </ng-template>
                             <ng-template
-                                [ngIf]="getFormFieldType(filter.fieldId) === 'multiselectDropdown' || getFormFieldType(filter.fieldId) === 'checkbox' || getFormFieldType(filter.fieldId) === 'dropdown'|| getFormFieldType(filter.fieldId) === 'radio'">
+                                [ngIf]="getFormFieldType(filter.fieldId) === 'dropdown'|| getFormFieldType(filter.fieldId) === 'radio'">
                                 <div class="subline-row">
-                                    <span *ngFor="let filt of filterApplied[filter.fieldId]; let i=index "
-                                        class="sub-text-line">
-                                        <lib-text-line type="base" textColor="secondary"> {{filt.TEXT}}</lib-text-line>
-                                        <span *ngIf="i < filter.conditionFieldValue.length-1">,</span>
-                                    </span>
+                                    <lib-text-line type="base" textColor="secondary"> {{ filter.conditionFieldText }}  </lib-text-line>
                                 </div>
-
+                            </ng-template>
+                            <ng-template
+                                [ngIf]="getFormFieldType(filter.fieldId) === 'multiselectDropdown'">
+                                <div class="subline-row" *ngIf="filterApplied[filter.fieldId].length">
+                                    <lib-text-line type="base" textColor="secondary"> {{filterApplied[filter.fieldId][0].TEXT}}  <span *ngIf="filter.conditionFieldValue.length > 1"> , +{{filter.conditionFieldValue.length-1}}</span> </lib-text-line>
+                                </div>
                             </ng-template>
                         </div>
                     </mat-list-item>
