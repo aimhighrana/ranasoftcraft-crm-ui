@@ -39,6 +39,7 @@ import { FormMultiselectComponent } from './view/dashboard-container/reporting-l
 import { FormRadioButtonGroupComponent } from './view/dashboard-container/reporting-list/form-radio-button-group/form-radio-button-group.component';
 import { FormRangeSliderComponent } from './view/dashboard-container/reporting-list/form-range-slider/form-range-slider.component';
 import { FormCheckboxComponent } from './view/dashboard-container/reporting-list/form-checkbox/form-checkbox.component';
+import { FormTextAreaComponent } from './view/dashboard-container/reporting-list/form-text-area/form-text-area.component';
 
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -86,7 +87,8 @@ import { ImportComponent } from './view/import/import.component';
     FormCheckboxComponent,
     SendEmailComponent,
     ExportComponent,
-    ImportComponent
+    ImportComponent,
+    FormTextAreaComponent
   ],
   imports: [
     CommonModule,

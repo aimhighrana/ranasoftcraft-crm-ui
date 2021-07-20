@@ -1,8 +1,10 @@
 <ng-template [ngIf]="isTableFilter === 'true'">
-    <div class="f-col lib-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
-        <!-- <div class="mdo-field-input"> -->
-        <lib-input [placeholder]="placeholder" disabled="true" [value]="isApplied ? control.value : ''"></lib-input>
-        <!-- </div> -->
+    <div class="checkbox-input">
+        <div class="f-col lib-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
+            <lib-input [placeholder]="placeholder" disabled="true" [value]="isApplied ? control.value : ''"></lib-input>
+        </div>
+        <lib-button *ngIf="control.value && isApplied" class="clear" icon="times" type="plain"
+            (click)="clearSelectedFilter()"></lib-button>
     </div>
     <mat-menu #datasearch="matMenu">
         <div class="f-col singlepickcheck" prosClickStopPropagation>

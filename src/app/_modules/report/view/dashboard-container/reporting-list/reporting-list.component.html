@@ -68,6 +68,8 @@
                                     <lib-input [formControlName]="displayedColumnsId[i]"
                                         [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]">
                                     </lib-input>
+                                    <lib-button class="clear" icon="times" type="plain"
+                                        (click)="clearSelectedFilter(displayedColumnsId[i])" *ngIf="reportingListFilterForm.get(displayedColumnsId[i]).value"></lib-button>
                                 </div>
                             </ng-template>
 
@@ -75,7 +77,8 @@
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'number'">
                                 <pros-form-range-slider [control]="reportingListFilterForm.get(displayedColumnsId[i])"
                                     placeholder="X-XX" (valueChange)="setFilter($event)"
-                                    [formFieldId]="displayedColumnsId[i]" [preSelectedValue]="getPreSelectedRangeValue(displayedColumnsId[i])">
+                                    [formFieldId]="displayedColumnsId[i]"
+                                    [preSelectedValue]="getPreSelectedRangeValue(displayedColumnsId[i])">
                                 </pros-form-range-slider>
                             </ng-template>
                             <!-- Single select drop down -->
@@ -84,7 +87,8 @@
                                     [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"
                                     [displayCriteria]="getColumnDisplayCriteria(displayedColumnsId[i])"
                                     (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
-                                    [value]="reportingListFilterForm.controls[displayedColumnsId[i]].value">
+                                    [value]="reportingListFilterForm.controls[displayedColumnsId[i]].value"
+                                    isTableFilter="true">
                                 </pros-form-single-select>
                             </ng-template>
 
@@ -119,8 +123,11 @@
 
                             <!-- For text area -->
                             <ng-template [ngIf]="getFormFieldType(displayedColumnsId[i]) === 'textarea'">
-                                    <lib-textarea class="lib-textarea" [formControlName]="displayedColumnsId[i]"
-                                    [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"></lib-textarea>
+                                <pros-form-textarea [control]="reportingListFilterForm.get(displayedColumnsId[i])"
+                                    [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"
+                                    (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
+                                    isTableFilter="true" [title]="columnDescs[displayedColumnsId[i]]">
+                                </pros-form-textarea>
                             </ng-template>
 
                             <!-- For date type -->

@@ -139,4 +139,9 @@ describe('FormSingleSelectComponent', () => {
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
+  it('clearSelectedFilter(), should clear column filter', async()=>{
+    const emitEventSpy = spyOn(component.valueChange, 'emit');
+    component.clearSelectedFilter();
+    expect(emitEventSpy).toHaveBeenCalled();
+  })
 });

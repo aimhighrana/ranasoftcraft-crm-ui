@@ -167,7 +167,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.selectedMultiSelectData = {};
         this.localFilterCriteria.forEach(item => {
           const type = this.getFormFieldType(item.fieldId);
-          if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
+          if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX || type === false) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
           } else if (type === FormControlType.DROP_DOWN) {
             this.reportingListFilterForm.controls[item.fieldId].setValue(item.conditionFieldValue);
@@ -283,9 +283,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.reportingListWidget.next(returnData);
         this.displayedColumnsId.forEach(fieldId => {
           const type = this.getFormFieldType(fieldId)
-          if (type === FormControlType.DROP_DOWN || type === FormControlType.TEXT || type === FormControlType.TEXTAREA) {
+          if (type === FormControlType.DROP_DOWN || type === FormControlType.TEXT || type === FormControlType.TEXTAREA || (fieldId !== 'action' && type === false)) {
             const subRes = this.reportingListFilterForm.controls[fieldId].valueChanges.pipe(debounceTime(1000)).subscribe(res => {
-              if (res !== null && ((type === FormControlType.DROP_DOWN && res === '') || (type === FormControlType.TEXTAREA || type === FormControlType.TEXT))) {
+              if (res !== null && ((type === FormControlType.DROP_DOWN && res === '') || (type === FormControlType.TEXTAREA || type === FormControlType.TEXT || (fieldId !== 'action' && type === false)))) {
                 this.onFilterApplied(fieldId, type);
               }
             })
@@ -579,12 +579,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const ind = this.localFilterCriteria.findIndex(item => item.fieldId === fieldId)
     if (ind > -1 && formControlType !== FormControlType.MULTI_SELECT) {
       let selectedText = '';
-      if (this.reportingListFilterForm.controls[fieldId].value === '') {
+      if (!this.reportingListFilterForm.controls[fieldId].value) {
         this.localFilterCriteria.splice(ind, 1);
         this.filteredList.splice(ind, 1);
       } else if (formControlType === FormControlType.NUMBER) {
-        this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
-        this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
+        if (this.reportingListFilterForm.controls[fieldId].value) {
+          this.localFilterCriteria[ind].conditionFieldEndValue = this.reportingListFilterForm.controls[fieldId].value.max;
+          this.localFilterCriteria[ind].conditionFieldStartValue = this.reportingListFilterForm.controls[fieldId].value.min;
+        }
       } else if (formControlType === FormControlType.DATE) {
         this.localFilterCriteria[ind].conditionFieldStartValue = moment(this.reportingListFilterForm.controls[fieldId].value.start).valueOf().toString();
         this.localFilterCriteria[ind].conditionFieldEndValue = moment(this.reportingListFilterForm.controls[fieldId].value.end).endOf('day').valueOf().toString();
@@ -600,8 +602,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
         selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else if (formControlType === FormControlType.RADIO) {
-        this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
-        selectedText = this.reportingListFilterForm.controls[fieldId].value.value;
+        this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
+        selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       }
       else {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
@@ -646,8 +648,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else if (formControlType === FormControlType.RADIO) {
         filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
-        filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.key;
-        selectedText = this.reportingListFilterForm.controls[fieldId].value.value;
+        filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
+        selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else {
         filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
@@ -660,6 +662,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       if (value) {
         const selectedData = this.filteredList.find(item => item.fieldId === fieldId);
         this.filteredList = this.filteredList.filter(item => item.fieldId !== fieldId);
+        this.localFilterCriteria = this.localFilterCriteria.filter(item => item.fieldId !== fieldId);
         value.forEach(item => {
           const selectedValue = item.CODE;
           const filterCriteria = new Criteria();
@@ -748,11 +751,21 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.onFilterApplied(column, type, value);
   }
 
+  /**
+   *
+   * @param fieldId column id
+   * @returns get selected time value
+   */
   getSelectedTimeValue(fieldId) {
     if (this.reportingListFilterForm.controls[fieldId].value)
       return this.reportingListFilterForm.controls[fieldId].value;
   }
 
+  /**
+   *
+   * @param fieldId column id
+   * @returns get selected date value
+   */
   getSelectedDateValue(fieldId) {
     if (this.reportingListFilterForm.controls[fieldId].value)
       return this.reportingListFilterForm.controls[fieldId].value;
@@ -766,7 +779,16 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   getPreSelectedRangeValue(fieldId) {
     const data = this.localFilterCriteria.find(item => item.conditionFieldId === fieldId);
     if (data) {
-      return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue }
+      return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue };
     }
+  }
+
+  /**
+   * clear filter for column
+   * @param selected id of the column
+   */
+  clearSelectedFilter(selected) {
+    this.reportingListFilterForm.controls[selected].setValue(null);
+    this.onFilterApplied(selected, this.getFormFieldType(selected));
   }
 }

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormRadioButtonGroupComponent } from './form-radio-button-group.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import {  ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { DropDownValues } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
@@ -15,11 +15,11 @@ describe('FormRadioButtonGroupComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormRadioButtonGroupComponent],
-      imports: [AppMaterialModuleForSpec,ReactiveFormsModule],
-      providers :[ReportService]
+      imports: [AppMaterialModuleForSpec, ReactiveFormsModule],
+      providers: [ReportService]
     })
       .compileComponents();
-      reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;
+    reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;
   }));
 
   beforeEach(() => {
@@ -31,17 +31,6 @@ describe('FormRadioButtonGroupComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('applyFilter(), filter values', async(() => {
-    component.control.setValue({ ['CODE']: 'TEXT' });
-    component.formFieldId = 'column';
-
-    const emitEventSpy = spyOn(component.valueChange, 'emit');
-    component.applyFilter();
-    expect(emitEventSpy).toHaveBeenCalled();
-  }));
-
-
 
   it('getDropDownValue(), should return dropdown values', async(() => {
     const returnData: DropDownValues[] = [{
@@ -75,5 +64,11 @@ describe('FormRadioButtonGroupComponent', () => {
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
+
+  it('clearSelectedFilter(), should clear column filter', async () => {
+    const emitEventSpy = spyOn(component.valueChange, 'emit');
+    component.clearSelectedFilter();
+    expect(emitEventSpy).toHaveBeenCalled();
+  })
 
 });

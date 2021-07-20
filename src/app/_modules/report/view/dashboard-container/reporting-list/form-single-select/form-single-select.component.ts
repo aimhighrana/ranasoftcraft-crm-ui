@@ -45,6 +45,8 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
 
   @Input() displayCriteria: string;
 
+  @Input() isTableFilter : string;
+
   optionList: DropDownValues[];
 
   subscription: Subscription[] = [];
@@ -122,4 +124,12 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
     }
   }
 
+  clearSelectedFilter() {
+    const response = {
+      formFieldId: this.formFieldId,
+      value: null
+    }
+    this.control.reset();
+    this.valueChange.emit(response);
+  }
 }

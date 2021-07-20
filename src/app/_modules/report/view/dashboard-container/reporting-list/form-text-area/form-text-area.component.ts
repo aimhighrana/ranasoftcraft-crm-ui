@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
-  selector: 'pros-form-checkbox',
-  templateUrl: './form-checkbox.component.html',
-  styleUrls: ['./form-checkbox.component.scss'],
+  selector: 'pros-form-textarea',
+  templateUrl: './form-text-area.component.html',
+  styleUrls: ['./form-text-area.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FormCheckboxComponent implements OnInit,OnChanges {
+export class FormTextAreaComponent implements OnInit,OnChanges {
 
   constructor() { }
 
@@ -33,9 +34,11 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
 
   @Input() formFieldId: string;
 
-  @Input() label : string;
+  @Input() title : string;
 
   isApplied : boolean;
+
+  textCtrl : FormControl = new FormControl();
 
 
   /**
@@ -45,6 +48,11 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
   ngOnInit(): void {
     if (!this.control) {
       this.control = new FormControl();
+    }
+    if(this.isTableFilter === 'false') {
+      this.control.valueChanges.pipe(debounceTime(500)).subscribe(value=>{
+        this.applyFilter(value);
+      })
     }
   }
 
@@ -64,30 +72,31 @@ export class FormCheckboxComponent implements OnInit,OnChanges {
   /**
    * apply filter and emit the output event
    */
-  applyFilter(event?) {
+  applyFilter(value?) {
     if(this.isTableFilter === 'false') {
-      this.control.setValue(event);
+      this.control.setValue(value);
     }
     this.isApplied = true;
     const response = {
       formFieldId: this.formFieldId,
-      value: this.control.value
+      value
     }
     this.valueChange.emit(response);
   }
 
-  isChecked() {
-    if(this.control.value) {
-      return true;
-    }
-  }
 
-  clearSelectedFilter() {
-    const response = {
-      formFieldId: this.formFieldId,
-      value: null
+  /**
+   * method call when filter clear for one column
+   */
+  clearFilter(isGlobalClear) {
+    this.textCtrl.reset();
+    if(isGlobalClear) {
+      this.control.reset();
+      const response = {
+        formFieldId: this.formFieldId,
+        value: this.control.value
+      }
+      this.valueChange.emit(response);
     }
-    this.control.setValue(null);
-    this.valueChange.emit(response);
   }
 }

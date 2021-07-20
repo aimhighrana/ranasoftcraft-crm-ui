@@ -8,3 +8,12 @@
     overflow: auto;
   }
 }
+
+.clear {
+  position: absolute;
+  right: 0;
+}
+
+.multiselect-input {
+  display: flex;
+}

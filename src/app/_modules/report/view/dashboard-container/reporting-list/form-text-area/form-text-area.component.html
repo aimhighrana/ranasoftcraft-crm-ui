@@ -1,0 +1,23 @@
+<div *ngIf="isTableFilter === 'true'">
+    <div class="f-col lib-input" [id]="formFieldId">
+        <lib-input [formControl]="control" [matMenuTriggerFor]="rangeSlider"
+            #trigger="matMenuTrigger" disabled="true">
+        </lib-input>
+        <lib-button type="plain" icon="times" iconFontType="light" class="clear" (click)="clearFilter(true)"
+            *ngIf="this.control.value"></lib-button>
+    </div>
+    <mat-menu class="filter-mat-menu" #rangeSlider="matMenu">
+        <div class="f-col description" prosClickStopPropagation>
+            <div class="f-row  menu-spacing">
+                <lib-text-line type="base" weight="strong">{{title}}</lib-text-line>
+                <span class="f-spacer"></span>
+            </div>
+            <lib-textarea [placeholder]="placeholder" class="textarea" [rows]="3" [formControl]="textCtrl"></lib-textarea>
+            <div class="filter-button-wrapper">
+                <lib-button type="minor" (click)="applyFilter(textCtrl.value);trigger.closeMenu();" i18n="@@apply">
+                    Apply</lib-button>
+            </div>
+        </div>
+    </mat-menu>
+</div>
+<lib-textarea [placeholder]="placeholder" class="textarea" [rows]="3" *ngIf="isTableFilter === 'false'" [formControl]="control"></lib-textarea>
