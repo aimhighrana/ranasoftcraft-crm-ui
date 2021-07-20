@@ -111,13 +111,13 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       this.selectedFilter = this.filterCriteria[0];
       this.configurationFilterForm.addControl(this.selectedFilter.fieldId, new FormControl());
       const type = this.getFormFieldType(this.selectedFilter.fieldId);
-      if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX) {
+      if (type === FormControlType.TEXT || type === FormControlType.TEXTAREA || type === FormControlType.CHECKBOX || type === FormControlType.RADIO) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue(this.selectedFilter.conditionFieldValue);
       } else if (type === FormControlType.NUMBER) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ min: this.selectedFilter.conditionFieldStartValue, max: this.selectedFilter.conditionFieldEndValue })
-      } else if ((type === FormControlType.DATE || type === FormControlType.DATE_TIME) && this.selectedFilter.conditionFieldStartValue && this.selectedFilter.conditionFieldEndValue ) {
+      } else if ((type === FormControlType.DATE || type === FormControlType.DATE_TIME) && this.selectedFilter.conditionFieldStartValue && this.selectedFilter.conditionFieldEndValue) {
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ end: new Date(Number(this.selectedFilter.conditionFieldEndValue)), start: new Date(Number(this.selectedFilter.conditionFieldStartValue)) });
-      } else if (type === FormControlType.TIME && this.selectedFilter.conditionFieldStartValue && this.selectedFilter.conditionFieldEndValue ) {
+      } else if (type === FormControlType.TIME && this.selectedFilter.conditionFieldStartValue && this.selectedFilter.conditionFieldEndValue) {
         const startTime = new Date(this.selectedFilter.conditionFieldStartValue);
         const endTime = new Date(this.selectedFilter.conditionFieldEndValue);
         this.configurationFilterForm.controls[this.selectedFilter.fieldId].setValue({ start: { hours: startTime.getHours(), minutes: startTime.getMinutes() }, end: { hours: endTime.getHours(), minutes: endTime.getMinutes() } })
@@ -342,7 +342,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
           filteredCriteria.conditionOperator = item.conditionOperator;
           if (formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX || formFieldType === false) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
-          } else if (formFieldType === FormControlType.DROP_DOWN) {
+          } else if (formFieldType === FormControlType.DROP_DOWN || formFieldType === FormControlType.RADIO) {
             filteredCriteria.conditionFieldValue = item.conditionFieldValue;
             filteredCriteria.conditionFieldText = item.conditionFieldText;
           } else if (formFieldType === FormControlType.DATE || formFieldType === FormControlType.DATE_TIME || formFieldType === FormControlType.NUMBER) {

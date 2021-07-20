@@ -11,7 +11,7 @@ import { debounceTime, startWith } from 'rxjs/operators';
   styleUrls: ['./form-multiselect.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
+export class FormMultiselectComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private reportService: ReportService) { }
 
@@ -28,7 +28,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
 
   @Input() displayCriteria: string;
 
-  @Input() isTableFilter= 'false';
+  @Input() isTableFilter = 'false';
 
   /**
    * To emit value change of input to parent
@@ -59,11 +59,11 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
     })
   }
 
- /**
-  * ANGULAR HOOK
-  * To detect the changes from parent and update value
-  * @param  changes: object contains prev and current value
-  */
+  /**
+   * ANGULAR HOOK
+   * To detect the changes from parent and update value
+   * @param  changes: object contains prev and current value
+   */
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.value && changes.value.previousValue !== changes.value.currentValue) {
@@ -76,8 +76,9 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
             this.selectedMultiSelectData.push({ [item.CODE]: item.TEXT })
           }
         })
-      } else{
-        this.displayMultiselectedText();
+      } else {
+        if (this.isTableFilter === 'true')
+          this.displayMultiselectedText();
       }
     }
 
@@ -88,7 +89,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
    * @param searchText string to search
    */
   getDropDownValue(searchText?) {
-    if(!this.formFieldId) {
+    if (!this.formFieldId) {
       return;
     }
     const sub = this.reportService.getDropDownValues(this.formFieldId, searchText).subscribe(res => {
@@ -112,7 +113,9 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
    * apply filter and emit the output event
    */
   applyFilter() {
-    this.displayMultiselectedText();
+    if (this.isTableFilter === 'true') {
+      this.displayMultiselectedText();
+    }
     const selectedDataList = this.getSelectedData();
     const response = {
       formFieldId: this.formFieldId,
@@ -121,12 +124,12 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
     this.valueChange.emit(response);
   }
 
-/**
- * Method to handle when values are selected from multi select drop down
- * @param fieldId field id of the column
- * @param key key of the selected option
- * @param value value of the selected option
- */
+  /**
+   * Method to handle when values are selected from multi select drop down
+   * @param fieldId field id of the column
+   * @param key key of the selected option
+   * @param value value of the selected option
+   */
   selectionChangeHandler(key: string, value: string) {
     if (this.selectedMultiSelectData) {
       const index = this.selectedMultiSelectData.findIndex(item => {
@@ -209,7 +212,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
     })
     additionalLength = this.selectedMultiSelectData.length - selectedValues.length;
     const additionalCount = document.getElementById('additional-' + this.formFieldId);
-    if(additionalCount) {
+    if (additionalCount) {
       additionalCount.innerHTML = '';
     }
     if (additionalLength) {

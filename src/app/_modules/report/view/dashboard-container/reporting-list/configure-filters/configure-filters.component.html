@@ -21,15 +21,15 @@
                         [ngClass]="selectedFilter.fieldId === filter.fieldId ? 'selected': ''"
                         (click)="onClickOnListItem(filter,i)" class="list-item">
                         <lib-text-line type="base" class="text-line">{{ columnDescs[filter.fieldId] }}</lib-text-line>
-                        <div class="text-line" *ngIf="filter.conditionFieldValue || filter.conditionFieldStartValue">
+                        <div class="text-line" *ngIf="filter.conditionFieldValue || filter.conditionFieldStartValue || filter.conditionFieldEndValue">
                             <ng-template
                                 [ngIf]=" getFormFieldType(filter.fieldId) === 'text' || getFormFieldType(filter.fieldId) === 'textarea' || getFormFieldType(filter.fieldId) === 'checkbox' || getFormFieldType(filter.fieldId) === false">
                                 <lib-text-line type="base" textColor="secondary">{{filter.conditionFieldValue}}
                                 </lib-text-line>
-                            </ng-template>
+                            </ng-template>         
                             <ng-template [ngIf]="getFormFieldType(filter.fieldId) === 'number'">
-                                <lib-text-line type="base" textColor="secondary">{{filter.conditionFieldStartValue}} -
-                                    {{filter.conditionFieldEndValue}}</lib-text-line>
+                                <lib-text-line type="base" textColor="secondary" *ngIf="!filter.conditionFieldStartValue">0 - {{filter.conditionFieldEndValue}}</lib-text-line>
+                                <lib-text-line type="base" textColor="secondary" *ngIf="filter.conditionFieldStartValue">{{filter.conditionFieldStartValue}} - {{filter.conditionFieldEndValue}}</lib-text-line>
                             </ng-template>
                             <ng-template [ngIf]="getFormFieldType(filter.fieldId) === 'time'">
                                 <lib-text-line type="base" textColor="secondary">
@@ -143,7 +143,8 @@
                     <pros-form-radio-button-group [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
                         [displayCriteria]="selectedFieldMetaData.displayCriteria" (valueChange)="onChange($event.value)"
                         [formFieldId]="selectedFilter.fieldId"
-                        [control]="configurationFilterForm.get(selectedFilter.fieldId)">
+                        [control]="configurationFilterForm.get(selectedFilter.fieldId)"
+                        isTableFilter="false">
                     </pros-form-radio-button-group>
                 </ng-template>
 

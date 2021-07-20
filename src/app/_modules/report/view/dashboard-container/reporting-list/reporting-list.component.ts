@@ -664,7 +664,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * @param formControlType type of form control
    * @param value selected values
    */
-  onFilterApplied(fieldId: string, formControlType, value?: DropDownValue[]) {
+  onFilterApplied(fieldId: string, formControlType, value?: any) {
     const ind = this.localFilterCriteria.findIndex(item => item.fieldId === fieldId)
     if (ind > -1 && formControlType !== FormControlType.MULTI_SELECT) {
       let selectedText = '';
@@ -691,8 +691,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
         selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else if (formControlType === FormControlType.RADIO) {
-        this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
-        selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
+        this.localFilterCriteria[ind].conditionFieldValue = value.CODE;
+        selectedText = value.TEXT;
       }
       else {
         this.localFilterCriteria[ind].conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
@@ -737,8 +737,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
       } else if (formControlType === FormControlType.RADIO) {
         filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
-        filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value.CODE;
-        selectedText = this.reportingListFilterForm.controls[fieldId].value.TEXT;
+        filterCriteria.conditionFieldValue = value.CODE;
+        selectedText = value.TEXT;
       } else {
         filterCriteria.conditionOperator = conditionOperator ? conditionOperator : ConditionOperator.EQUAL;
         filterCriteria.conditionFieldValue = this.reportingListFilterForm.controls[fieldId].value;
@@ -911,7 +911,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const column = event.formFieldId;
     const value = event.value;
     const type = this.getFormFieldType(column);
-    if (type !== FormControlType.MULTI_SELECT) {
+    if(type === FormControlType.RADIO) {
+      this.reportingListFilterForm.controls[column].setValue(value.CODE);
+    }
+    else if (type !== FormControlType.MULTI_SELECT) {
       this.reportingListFilterForm.controls[column].setValue(value);
     }
     else {
@@ -957,5 +960,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     if (data) {
       return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue };
     }
+  }
+
+  getPreSelectedDropdownValue(fieldId) {
+    const data = this.localFilterCriteria.find(item => item.conditionFieldId === fieldId);
+    if (data) {
+      return data.conditionFieldValue;
+    } 
   }
 }
