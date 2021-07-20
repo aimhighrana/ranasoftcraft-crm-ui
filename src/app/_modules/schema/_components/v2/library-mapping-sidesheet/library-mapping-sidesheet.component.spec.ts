@@ -166,7 +166,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.addAttributeMappingRow(attr);
 
     const mappingData = {libraryNounCode: 'Bearing', libraryModCode: 'Ball', localNounCode: 'Bearing', localModCode: 'Ball',
-      attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}]};
+      attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}, {libraryAttributeCode: 'color', localAttributeCode: 'color'}]};
 
     component.patchMappingForm({} as AttributesMapping);
     expect(component.attributeMapData.at(0).value.localAttributeCode).toBeFalsy();
@@ -179,6 +179,20 @@ describe('LibraryMappingSidesheetComponent', () => {
 
     component.classificationCategory = {
       noun: {
+        status: null,
+        source: '',
+        targetCtrl: 'test1'
+      },
+      modifier: {
+        status: null,
+        source: '',
+        targetCtrl: 'test2'
+      },
+      attrLists: []
+    };
+    component.patchMappingForm(mappingData);
+    component.classificationCategory = {
+      noun: {
         status: 'suggested',
         source: '',
         targetCtrl: 'test1'
@@ -188,10 +202,14 @@ describe('LibraryMappingSidesheetComponent', () => {
         source: '',
         targetCtrl: 'test2'
       },
-      attrLists: []
+      attrLists: [{
+        source: 'length',
+        targetCtrl: 'test3',
+        status: 'suggested'
+      }]
     };
     component.patchMappingForm(mappingData);
-    expect(component.mappingForm.value.libraryModCode).toEqual('test2');
+    expect(component.mappingForm.value.localModCode).toEqual('test2');
 
   });
 
