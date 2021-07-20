@@ -9,7 +9,7 @@
             <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
         </button>
         <mat-menu #check="matMenu" class="navigation-menu">
-            <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
+            <button mat-menu-item (click)="openDataScopeSideSheet()">[Add data scope]</button>
             <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
             <ng-container *ngIf="dataScope && dataScope.length">
                 <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
