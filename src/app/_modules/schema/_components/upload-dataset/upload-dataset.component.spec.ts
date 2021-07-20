@@ -26,6 +26,7 @@ import { Userdetails } from '@models/userdetails';
 import { RuleDependentOn } from '@models/collaborator';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Validators } from '@angular/forms';
+import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 
 
 describe('UploadDatasetComponent', () => {
@@ -37,7 +38,10 @@ describe('UploadDatasetComponent', () => {
   let userService: UserService;
   let usersSpy;
   const mockDialogRef = {
-    close: jasmine.createSpy('close')
+    close: jasmine.createSpy('close'),
+    dialogCloseEmitter: of({
+      data: null
+    })
   };
   const transformationRule = {
     formData: {
@@ -106,7 +110,6 @@ describe('UploadDatasetComponent', () => {
   }));
 
   beforeEach(() => {
-
     fixture = TestBed.createComponent(UploadDatasetComponent);
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
@@ -235,7 +238,6 @@ describe('UploadDatasetComponent', () => {
       expect(component.headerForm.value).not.toBeUndefined();
     }).catch((err) => {
       console.log('my error ', err);
-
     });
   }));
 
@@ -689,13 +691,13 @@ describe('UploadDatasetComponent', () => {
   }));
 
   it('setRunningSchedule(), should set runTime value in request form', async () => {
-    const runId = { value: false };
+    const runId = 'dontRunSchema';
     component.createForm();
     component.setRunningSchedule(runId);
     component.currentSchedule = null;
     expect(component.requestForm.controls.runTime.value).toEqual(false);
 
-    const runid = { value: true };
+    const runid = 'runSchemaOnce';
     component.setRunningSchedule(runid);
     component.currentSchedule = null;
     expect(component.requestForm.controls.runTime.value).toEqual(true);
@@ -703,7 +705,7 @@ describe('UploadDatasetComponent', () => {
     component.currentSchedule = {
       end: null,
       endOn: '1610961949192',
-      isEnable: true,
+      isEnable: false,
       monthOn: null,
       occurrenceVal: 2,
       repeatValue: '2',
@@ -712,21 +714,25 @@ describe('UploadDatasetComponent', () => {
       startOn: '1610961949191',
       weeklyOn: null
     } as SchemaScheduler;
-    component.setRunningSchedule(runId);
-    expect(component.requestForm.controls.runTime.value).toEqual(false);
-    expect(component.currentSchedule.isEnable).toEqual(true);
-
-
     component.setRunningSchedule(runid);
     expect(component.requestForm.controls.runTime.value).toEqual(true);
-    expect(component.currentSchedule.isEnable).toEqual(false);
+    expect(component.currentSchedule.isEnable).toEqual(true);
   })
 
   it('addSubscribers(), should call openDialog', async () => {
     component.dialogSubscriber = new Subscription();
-    spyOn(globaldialogService, 'openDialog').and.returnValue(null);
+    component.subscribersList = [];
+    spyOn(globaldialogService, 'openDialog');
+    globaldialogService.dialogCloseEmitter.subscribe((res)=> {
+      expect(res).toEqual({
+        data: null
+      })
+    })
     component.addSubscribers();
-    expect(globaldialogService.openDialog).toHaveBeenCalled();
+    expect(globaldialogService.openDialog).toHaveBeenCalledWith(
+      NewSchemaCollaboratorsComponent,
+      {selectedSubscibersList: component.subscribersList}
+      );
   })
 
   it(`To get FormControl from fromGroup `, async(() => {
@@ -1347,17 +1353,40 @@ describe('UploadDatasetComponent', () => {
   it('updateCurrentRulesList() should update current rule list', async () => {
     component.createForm();
     expect(component.updateCurrentRulesList(undefined)).toBeFalsy();
-    component.selectedBusinessRules = [];
+    component.selectedBusinessRules = [
+      {
+        sno: 1299484,
+        brId: '1',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [],
+        tempId: '1',
+      } as CoreSchemaBrInfo
+    ];
     const response = {
       tempId: '1',
       brId: '1',
       formDta: {
-
+        accuracyScore: null,
+        apiKey: '',
+        categoryId: 17052018001,
+        error_message: 'Mr is missing',
+        excludeScript: '',
+        fields: 'imxjravy212',
+        includeScript: '',
+        regex: '',
+        rule_name: 'MR',
+        rule_type: 'BR_MANDATORY_FIELDS',
+        sourceFld: '',
+        source_field: '',
+        standard_function: '',
+        targetFld: '',
+        target_field: '',
+        transformationRuleType: null
       }
     };
     component.updateCurrentRulesList(response);
-    expect(component.selectedBusinessRules.length).toEqual(0);
-
+    expect(component.selectedBusinessRules.length).toEqual(1);
   });
 
   it('openExplorer() should clear the error message', async () => {
@@ -1511,12 +1540,34 @@ describe('UploadDatasetComponent', () => {
     data.fieldId = '';
     expect(component.updateMapFields(data)).toBeUndefined();
   });
+
   it('setModuleValueAndTakeStep() should set module value and take step', async () => {
     component.createForm();
     component.initHeaderForm([]);
     fixture.detectChanges();
     expect(component.setModuleValueAndTakeStep()).toBeUndefined();
+    spyOn(schemadetailsService, 'getMetadataFields').and.returnValue({} as any);
+    spyOn(schemaServiceSpy, 'getSchedule').and.returnValue({} as any);
+    spyOn(schemaServiceSpy, 'getBusinessRulesBySchemaId').and.returnValue({} as any);
+    spyOn(schemadetailsService, 'getCollaboratorDetails').and.returnValue({} as any);
+    spyOn(component, 'getModulesMetaHeaders');
+    spyOn(component, 'getScheduleInfo');
+    spyOn(component, 'getSchemaBrInfo');
+    spyOn(component, 'getSchemaCollaboratorInfo');
+
+    const module = {
+      objectdesc: 'test',
+      objectid: '765675',
+      schemaId: 'test'
+    }
+    component.setModuleValueAndTakeStep(module);
+
+    expect(component.getModulesMetaHeaders).toHaveBeenCalled();
+    expect(component.getScheduleInfo).toHaveBeenCalledWith(module.schemaId);
+    expect(component.getSchemaBrInfo).toHaveBeenCalledWith(module);
+    expect(component.getSchemaCollaboratorInfo).toHaveBeenCalledWith(module.schemaId);
   });
+
   it('removeTempId() should remove temp id', async () => {
     const val: any = {
       coreSchemaBr: [{
@@ -1775,5 +1826,97 @@ describe('UploadDatasetComponent', () => {
       return;
     }
     done();
+  });
+
+  it('selectedRunningSchedule, should schedule toggle value', () => {
+    component.createForm();
+    component.requestForm.controls.runTime.setValue(false);
+    expect(component.selectedRunningSchedule).toEqual('dontRunSchema');
+    component.requestForm.controls.runTime.setValue(true);
+    expect(component.selectedRunningSchedule).toEqual('runSchemaOnce');
+  })
+
+  it('reoderBR, should change selected BR index', () => {
+    component.createForm();
+    component.selectedBusinessRules = [
+      {
+        sno: 1299484,
+        brId: '22',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        tempId: '1',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        brInfo: 'Test Rule',
+        brExpose: 0,
+        status: '1',
+        categoryId: '21474',
+        standardFunction: '',
+        brWeightage: '10',
+        totalWeightage: 100,
+        transformation: 0,
+        tableName: '',
+        qryScript: '',
+        dependantStatus: 'ALL',
+        plantCode: '0',
+        percentage: 0,
+        schemaId: '',
+        brIdStr: '',
+        udrDto: null,
+        transFormationSchema: null,
+        isCopied: false,
+        duplicacyField: [],
+        duplicacyMaster: []
+      },
+      {
+        sno: 1299483,
+        brId: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        tempId: '1',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        brInfo: 'Test Rule',
+        brExpose: 0,
+        status: '1',
+        categoryId: '21474',
+        standardFunction: '',
+        brWeightage: '10',
+        totalWeightage: 100,
+        transformation: 0,
+        tableName: '',
+        qryScript: '',
+        dependantStatus: 'ALL',
+        plantCode: '0',
+        percentage: 0,
+        schemaId: '',
+        brIdStr: '',
+        udrDto: null,
+        transFormationSchema: null,
+        isCopied: false,
+        duplicacyField: [],
+        duplicacyMaster: []
+      }
+    ];
+
+    component.reoderBR({
+      previousIndex: 0,
+      currentIndex: 1,
+      container: null,
+      distance: null,
+      isPointerOverContainer: null,
+      item: null,
+      previousContainer: null
+    });
+
+    expect(component.selectedBusinessRules[0].brId).toEqual('23');
   });
 });
