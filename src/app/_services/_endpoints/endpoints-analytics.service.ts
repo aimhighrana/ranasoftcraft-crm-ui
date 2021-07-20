@@ -9,7 +9,7 @@ export class EndpointsAnalyticsService {
 
   constructor() { }
 
-  apiUrl = environment.apiurl + '/analytics';
+  apiUrl = environment.analyticsUrl + '/analytics';
 
   public reportDashboardUrl(reportId: number) {
     return `${this.apiUrl}/report/report-info/${reportId}`;

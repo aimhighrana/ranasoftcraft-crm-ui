@@ -9,7 +9,7 @@ import { SetupDuplicateRuleComponent } from './duplicate-rule-config/setup-dupli
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
-import { BusinessRuleType, CoreSchemaBrInfo, TransformationMappingResponse, TransformationMappingTabResponse, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { ApiRulesInfo, BusinessRuleType, CoreSchemaBrInfo, TransformationMappingResponse, TransformationMappingTabResponse, TransformationModel, TransformationRuleType, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -706,7 +706,7 @@ describe('BrruleSideSheetComponent', () => {
     spyOn(schemaServiceSpy, 'createBusinessRule').and.returnValue(of(new CoreSchemaBrInfo()));
     component.save();
 
-    component.form.patchValue({rule_type: BusinessRuleType.BR_MANDATORY_FIELDS,fields:'region', rule_name: 'new br', error_message: 'required', weightage: 25},
+    component.form.patchValue({rule_type: BusinessRuleType.BR_MANDATORY_FIELDS,fields:'region', rule_name: 'new br', error_message: 'required', weightage: 25, apiSno:'876785875'},
     {emitEvent: false});
     component.save();
 
@@ -908,6 +908,33 @@ describe('BrruleSideSheetComponent', () => {
     mockData[0].brIdStr = '86876875757';
     component.addTransRules(mockData);
     expect(component.attachedTransRules.error.length).toEqual(2);
+
+  }));
+
+  it('getApisRule(), get the all apis .. ', async(()=>{
+
+    // mock data
+    const apisRules: ApiRulesInfo[] = [{
+      description:'Api 1', sno:'8767757'
+    }];
+
+    spyOn(schemaServiceSpy,'getApisRule').withArgs(component.moduleId,'',0,10,'76775').and.returnValue(of(apisRules));
+
+    component.getApisRule('','76775');
+
+    expect(schemaServiceSpy.getApisRule).toHaveBeenCalledWith(component.moduleId,'',0,10,'76775');
+    expect(component.apiRules.length).toEqual(1);
+
+  }));
+
+  it('displayApisRuleFn(), display api desc for api rules', async(()=>{
+    // mock data
+    const apisRules: ApiRulesInfo[] = [{
+      description:'Api 1', sno:'8767757'
+    }];
+    component.apiRules = apisRules;
+    expect(component.displayApisRuleFn('8767757')).toEqual('Api 1');
+    expect(component.displayApisRuleFn('87668778')).toBeUndefined();
 
   }));
 

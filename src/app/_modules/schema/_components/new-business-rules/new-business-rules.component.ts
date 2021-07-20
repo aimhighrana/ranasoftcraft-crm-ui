@@ -367,7 +367,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         } else {
             // setting missing rule as default rule
-            this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
+            // this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
             this.searchRuleTypeStr = this.form.controls.rule_type.value;
         }
 

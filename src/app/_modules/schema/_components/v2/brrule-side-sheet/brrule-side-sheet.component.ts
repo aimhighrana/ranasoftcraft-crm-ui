@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel, TransformationMappingResponse, TransformationMappingTabResponse, TransformationRuleMapped } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel, TransformationMappingResponse, TransformationMappingTabResponse, TransformationRuleMapped, ApiRulesInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CategoryInfo, FieldConfiguration, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
-import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -379,12 +379,18 @@ export class BrruleSideSheetComponent implements OnInit {
 
    transformationRules: CoreSchemaBrInfo[] = [];
 
+   /**
+    * Hold all the api rules
+    */
+   apiRules: ApiRulesInfo[] = [];
+
+
   /**
    * Search the trans rule from map lib..
    */
   delayedCallWithTransLib = debounce((searchText: string) => {
     this.getTransRules(searchText);
-  }, 400)
+  }, 400);
 
   /**
    * function to format slider thumbs label.
@@ -450,7 +456,8 @@ export class BrruleSideSheetComponent implements OnInit {
           });
         } else {
           this.getFieldsByModuleId();
-          this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
+          // not required missing rule bydefault...
+          // this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
           this.activatedRouter.queryParams.subscribe(q=>{
             if(q.r && q.r === 'BR_TRANSFORMATION') {
               this.form.controls.transformationRuleType.setValue(this.transformationType.REGEX);
@@ -494,13 +501,20 @@ export class BrruleSideSheetComponent implements OnInit {
       }
     });
 
+
+    this.form.controls.apiSno.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(res=>{
+      if(typeof res ==='string') {
+        this.getApisRule(res);
+      }
+    });
+
   }
 
   /**
    * Removes untested rule types
    */
   filterRuleTypes() {
-    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK','BR_TRANSFORMATION', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK', 'MRO_MANU_PRT_NUM_IDENTI'];
+    const testedTypes = ['BR_METADATA_RULE', 'BR_MANDATORY_FIELDS', 'BR_REGEX_RULE', 'BR_CUSTOM_SCRIPT', 'BR_DUPLICATE_CHECK','BR_TRANSFORMATION','BR_API_RULE', 'MRO_MANU_PRT_NUM_LOOKUP', 'MRO_CLS_MASTER_CHECK', 'MRO_MANU_PRT_NUM_IDENTI'];
     this.businessRuleTypes = this.businessRuleTypes.filter((x) => testedTypes.includes(x.ruleType));
   }
 
@@ -549,6 +563,11 @@ export class BrruleSideSheetComponent implements OnInit {
         if(businessRuleInfo.isTransformationApplied) {
           this.getMappedTransformationRules();
           this.getTransRules();
+        }
+
+        // set the api rule
+        if(this.coreSchemaBrInfo.brType === BusinessRuleType.BR_API_RULE) {
+          this.getApisRule('', this.coreSchemaBrInfo.apiSno);
         }
 
 
@@ -711,7 +730,8 @@ export class BrruleSideSheetComponent implements OnInit {
         source_field: new FormControl(''),
         target_field: new FormControl(''),
         accuracyScore: new FormControl(0),
-        sourceFieldSearchStr: new FormControl('')
+        sourceFieldSearchStr: new FormControl(''),
+        apiSno: new FormControl('', [Validators.required])
       };
 
       this.currentControls = controls;
@@ -722,6 +742,10 @@ export class BrruleSideSheetComponent implements OnInit {
         .pipe(distinctUntilChanged())
         .subscribe((selectedRule) => {
           this.applyValidatorsByRuleType(selectedRule);
+          // call get the apis rule if the selected rule type is API
+          if(selectedRule === BusinessRuleType.BR_API_RULE) {
+            this.getApisRule('');
+          }
         });
       this.form.controls.transformationRuleType.valueChanges
         .pipe(distinctUntilChanged())
@@ -792,6 +816,10 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
     }
 
+    if (selectedRule === BusinessRuleType.BR_API_RULE) {
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields','apiSno'];
+    }
+
     if(this.form?.get('rule_type').value === BusinessRuleType.BR_CUSTOM_SCRIPT && requiredKeys.indexOf('categoryId') > -1) {
       requiredKeys.splice(requiredKeys.indexOf('categoryId'), 1);
     }
@@ -829,6 +857,7 @@ export class BrruleSideSheetComponent implements OnInit {
       regex: br.regex,
       fields: br.fields,
       apiKey: br.apiKey,
+      apiSno: br.apiSno,
       sourceFld: '',
       targetFld: '',
       excludeScript: '',
@@ -871,6 +900,10 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if(br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey', 'accuracyScore', 'source_field'];
+    }
+
+    if (br.brType === BusinessRuleType.BR_API_RULE) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId','apiSno'];
     }
 
     if (patchList && patchList.length > 0) {
@@ -1506,6 +1539,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.brInfo = this.form.value.rule_name;
       request.fields = this.form.value.fields;
       request.apiKey = this.form.value.apiKey;
+      request.apiSno = this.form.value.apiSno;
       request.regex = this.form.value.regex;
       request.standardFunction = this.form.value.standard_function;
       request.schemaId = this.schemaId;
@@ -2048,6 +2082,24 @@ export class BrruleSideSheetComponent implements OnInit {
         }
       })
     }
+  }
+
+
+  /**
+   * Search the rules based on searchStrig and moduleId
+   * @param searchString search the rules by text ....
+   */
+  getApisRule(searchString: string,prefer?: string) {
+    this.schemaService.getApisRule(this.moduleId, searchString, 0, 10, prefer).subscribe(res=>{
+      this.apiRules = res ? res: [];
+    }, err=> console.error(`Error : ${err.message}`));
+  }
+
+  /**
+   * function to display rule desc in mat auto complete
+   */
+   displayApisRuleFn(value?: string) {
+    return value ? this.apiRules.find(rule => rule.sno === value)?.description : '';
   }
 
 }

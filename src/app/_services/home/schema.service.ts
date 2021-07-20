@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import {
@@ -23,6 +23,7 @@ import {
   Category,
   DuplicateRuleModel,
   TransformationMappingResponse,
+  ApiRulesInfo,
 } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
@@ -487,5 +488,20 @@ export class SchemaService {
    */
   public getSchemaGlobalCounts(schemaId: string): Observable<GlobalCounts> {
     return this.http.get<GlobalCounts>(this.endpointService.getSchemaGlobalCounts(), { params: { schemaId: schemaId || '' } });
+  }
+
+  /**
+   * Get the all apis rules based on moduleid and searchString ...
+   * @param moduleId rules based on this moduleid
+   * @param searchString filter based on this search string ...
+   * @param from the page  from
+   * @param size the page size
+   * @returns will return the ApiRulesInfo[]
+   */
+  public getApisRule(moduleId: string, searchString: string, from: any, size: any, prefer: string): Observable<ApiRulesInfo[]> {
+    searchString = searchString ? searchString : '';
+    prefer = prefer ? prefer : '';
+    // return of([{sno:'26387648732',description:'Api 1'},{sno:'86284762',description:'Api 2'},{sno:'26387648732',description:'Api 3'},{sno:'86386886',description:'Api 4'},{sno:'9878968768',description:'Api 5'},{sno:'11828686868',description:'Api 6'}]);
+    return this.http.get<ApiRulesInfo[]>(this.endpointClassic.getApisRulesUrl(),{params:{moduleId, searchString, from, size, prefer}});
   }
 }
