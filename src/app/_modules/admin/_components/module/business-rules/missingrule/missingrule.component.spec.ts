@@ -1,10 +1,10 @@
 import { MissingruleComponent } from './missingrule.component';
 import { of } from 'rxjs';
 import { CoreSchemaBrInfo, BusinessRuleType } from '../business-rules.modal';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,6 +24,9 @@ class SchemaSerStub {
 describe('MissingruleComponent', () => {
   let component;
   let service;
+  let fixture: ComponentFixture<MissingruleComponent>;
+  let fb: FormBuilder;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -34,15 +37,18 @@ describe('MissingruleComponent', () => {
       declarations: [MissingruleComponent],
       providers: [
         SchemaService,
-        MatSnackBar
+        MatSnackBar,
+        FormBuilder
       ]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
+    fixture = TestBed.createComponent(MissingruleComponent);
     service = new SchemaSerStub();
     component = new MissingruleComponent(service, null, null, null);
+    fb = new FormBuilder();
   });
 
   it('ngOnChanges(), should call reset when reset filter', ()=>{
@@ -65,7 +71,7 @@ describe('MissingruleComponent', () => {
   });
 
   it('checking remove()', () => {
-    component.groupDetailss = ['1234']
+    component.groupDetailss = ['1234'];
     component.remove('1234');
     expect(component.groupDetailss.length).toEqual(0);
   })
@@ -124,7 +130,7 @@ describe('MissingruleComponent', () => {
     })
 
     component.fillDetailsData();
-    expect(component.gridsData).toEqual(undefined);
+    expect(component.gridsData).toEqual([]);
   })
 
   it('testing saveBrInfo ', () => {
@@ -174,4 +180,53 @@ describe('MissingruleComponent', () => {
     component.add(event1);
     expect(component.add).toBeTruthy();
   });
+
+  it('openPanel should set a default value for selectedFields', () => {
+    spyOn(fb, 'group');
+    component._formBuilder = new FormBuilder();
+    fixture.detectChanges();
+    component.fillDataForm = component._formBuilder.group({
+      selectFields: [''],
+      description:['']
+    })
+    component.fillDataForm.get('selectFields').setValue('test');
+    component.openPanel();
+    expect(component.fillDataForm.get('selectFields').value).toEqual('');
+  });
+
+  it('ngOnInit should initialize fillDataForm', () => {
+    spyOn(service, 'getFillDataDropdownData').and.returnValue(of(null));
+    spyOn(fb, 'group');
+    component._formBuilder = new FormBuilder();
+    component.finalList = [
+      { key: 'test', value: [{fieldDescri: 'test', fieldId: '123'}, {fieldDescri: 'test2', fieldId: '456'}], length: 2 },
+      { key: 'test2', value: [{fieldDescri: 'test', fieldId: '123'}, {fieldDescri: 'test2', fieldId: '456'}], length: 2 }
+    ];
+
+    component.moduleId = null;
+    component.ngOnInit();
+
+    expect(component.fillDataForm.get('selectFields').value).toEqual('');
+    expect(component.fillDataForm.get('description').value).toEqual('');
+  });
+
+
+  it('splitObjKeyValuePair, should split key value pair', () => {
+    component.splitObjKeyValuePair(
+      [
+        {
+          kkey: 'one',
+          value: 1
+        },
+        {
+          kkey: 'two',
+          value: 2
+        },
+      ],
+      false
+    );
+
+    expect(component.finalList.length).toEqual(2);
+    expect(component.fillDetailsFinalDropdownList).toBeDefined();
+  })
 });

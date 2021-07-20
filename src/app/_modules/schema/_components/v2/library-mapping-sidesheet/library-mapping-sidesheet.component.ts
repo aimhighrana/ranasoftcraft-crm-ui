@@ -208,13 +208,14 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   patchMappingForm(attributesMapping: AttributesMapping) {
    if(this.classificationCategory) {
      const {noun, modifier} = this.classificationCategory;
-     if(modifier.status === 'suggested') {
+     if(modifier.status?.toLowerCase() === 'suggested') {
        attributesMapping.localModCode = modifier.targetCtrl;
      }
-     if(noun.status === 'suggested') {
+     if(noun.status?.toLowerCase() === 'suggested') {
        attributesMapping.localNounCode = noun.targetCtrl;
      }
    }
+
    const {localNounCode, localModCode} = attributesMapping;
    this.mappingForm.patchValue({localNounCode, localModCode});
   if (attributesMapping.attributeMapData) {
@@ -222,7 +223,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
 
         if (index !== -1) {
-          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && row.status === 'suggested');
+          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && row.status?.toLowerCase() === 'suggested');
           this.attributeMapData.at(index).patchValue({localAttributeCode: suggestedObj ? suggestedObj.targetCtrl : mapData.localAttributeCode});
         }
       })
