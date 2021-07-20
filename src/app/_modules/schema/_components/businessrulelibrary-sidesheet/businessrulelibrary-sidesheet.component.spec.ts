@@ -201,7 +201,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   }));
 
   it('getRuleDesc(), should return rule description', async(() => {
-    expect(component.getRuleDesc('BR_API_RULE')).toEqual('API Rule');
+    expect(component.getRuleDesc('BR_API_RULE')).toEqual('Custom validation');
     expect(component.getRuleDesc('testRule')).toBeFalsy();
   }));
 

@@ -60,6 +60,7 @@ export class CoreSchemaBrInfo {
     source_field? : string;
     target_field? : string;
     accuracyScore? : number;
+    apiSno?: string;
 }
 
 export enum BusinessRuleType {
@@ -79,15 +80,15 @@ export enum BusinessRuleType {
 }
 
 export const RULE_TYPES = [
-    { ruleDesc: 'API Rule', ruleId: '', ruleType: BusinessRuleType.BR_API_RULE, isImplemented: false },
+    { ruleDesc: 'Missing Rule', ruleId: '', ruleType: BusinessRuleType.BR_MANDATORY_FIELDS, isImplemented: true },
+    { ruleDesc: 'Metadata Rule', ruleId: '', ruleType: BusinessRuleType.BR_METADATA_RULE, isImplemented: true },
+    { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
+    { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
+    { ruleDesc: 'Custom validation', ruleId: '', ruleType: BusinessRuleType.BR_API_RULE, isImplemented: true },
     { ruleDesc: 'Basic', ruleId: '', ruleType: null, isImplemented: false },
     { ruleDesc: 'Dependency Rule', ruleId: '', ruleType: BusinessRuleType.BR_DEPENDANCY_RULE, isImplemented: false },
     { ruleDesc: 'Duplicate Rule', ruleId: '', ruleType: BusinessRuleType.BR_DUPLICATE_RULE, isImplemented: true },
     { ruleDesc: 'External Validation Rule', ruleId: '', ruleType: BusinessRuleType.BR_EXTERNALVALIDATION_RULE, isImplemented: false },
-    { ruleDesc: 'Metadata Rule', ruleId: '', ruleType: BusinessRuleType.BR_METADATA_RULE, isImplemented: true },
-    { ruleDesc: 'Missing Rule', ruleId: '', ruleType: BusinessRuleType.BR_MANDATORY_FIELDS, isImplemented: true },
-    { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
-    { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
     { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION, isImplemented: true },
     { ruleDesc: 'MDO Classification Master Check', ruleId: '', ruleType: BusinessRuleType.MRO_CLS_MASTER_CHECK, isImplemented: true },
     { ruleDesc: 'Manufacturer Part Number Lookup', ruleId: '', ruleType: BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP, isImplemented: true },
@@ -223,4 +224,9 @@ export class TransformationRuleMapped {
     isEnabled: boolean;
     isConfigured: boolean;
     transformationRule: string;
+}
+
+export class ApiRulesInfo {
+    sno: string;
+    description: string;
 }

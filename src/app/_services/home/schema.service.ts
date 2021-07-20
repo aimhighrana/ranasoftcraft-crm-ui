@@ -23,6 +23,7 @@ import {
   Category,
   DuplicateRuleModel,
   TransformationMappingResponse,
+  ApiRulesInfo,
 } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap, ModuleInfo } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
@@ -487,5 +488,19 @@ export class SchemaService {
    */
   public getSchemaGlobalCounts(schemaId: string): Observable<GlobalCounts> {
     return this.http.get<GlobalCounts>(this.endpointService.getSchemaGlobalCounts(), { params: { schemaId: schemaId || '' } });
+  }
+
+  /**
+   * Get the all apis rules based on moduleid and searchString ...
+   * @param moduleId rules based on this moduleid
+   * @param searchString filter based on this search string ...
+   * @param from the page  from
+   * @param size the page size
+   * @returns will return the ApiRulesInfo[]
+   */
+  public getApisRule(moduleId: string, searchString: string, from: any, size: any, prefer: string): Observable<ApiRulesInfo[]> {
+    searchString = searchString ? searchString : '';
+    prefer = prefer ? prefer : '';
+    return this.http.get<ApiRulesInfo[]>(this.endpointClassic.getApisRulesUrl(),{params:{moduleId, searchString, from, size, prefer}});
   }
 }
