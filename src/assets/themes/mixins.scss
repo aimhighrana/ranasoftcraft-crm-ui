@@ -885,24 +885,24 @@
         }
       }
 
-      .multipickradio {
-        .mat-radio-button {
-          width: 100%;
+      // .multipickradio {
+      //   .mat-radio-button {
+      //     width: 100%;
 
-          .mat-radio-label {
-            margin-right: 0;
-          }
+      //     .mat-radio-label {
+      //       margin-right: 0;
+      //     }
 
-          .mat-radio-label-content {
-            &.mat-radio-label-before {
-              text-overflow: ellipsis;
-              overflow: hidden;
-              white-space: nowrap;
-              width: 100%;
-            }
-          }
-        }
-      }
+      //     .mat-radio-label-content {
+      //       &.mat-radio-label-before {
+      //         text-overflow: ellipsis;
+      //         overflow: hidden;
+      //         white-space: nowrap;
+      //         width: 100%;
+      //       }
+      //     }
+      //   }
+      // }
     }
   }
 
