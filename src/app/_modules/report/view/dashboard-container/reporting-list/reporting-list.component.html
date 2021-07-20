@@ -115,7 +115,7 @@
                                     [placeholder]="'Enter '+columnDescs[displayedColumnsId[i]]"
                                     [displayCriteria]="getColumnDisplayCriteria(displayedColumnsId[i])"
                                     (valueChange)="setFilter($event)" [formFieldId]="displayedColumnsId[i]"
-                                    isTableFilter="true">
+                                    isTableFilter="true"  [value]="getPreSelectedDropdownValue(displayedColumnsId[i])">
                                 </pros-form-radio-button-group>
                             </ng-template>
 

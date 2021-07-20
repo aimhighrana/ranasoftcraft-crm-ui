@@ -785,4 +785,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue };
     }
   }
+
+  getPreSelectedDropdownValue(fieldId) {
+    const data = this.localFilterCriteria.find(item => item.conditionFieldId === fieldId);
+    if (data) {
+      return data.conditionFieldValue;
+    } 
+  }
 }

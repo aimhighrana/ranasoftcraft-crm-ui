@@ -45,8 +45,8 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
    * that holds the pre selected values of range slider
    */
   @Input() preSelectedValue: any;
-  minValue: number;
-  maxValue: number;
+  minValue: number = 0;
+  maxValue: number = 0;
   highValue = 10000000;
   lowerValue = 0;
   subscription: Subscription[] = [];
@@ -85,13 +85,8 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
         } else {
           maxValue = values[0];
         }
-        if (this.control.value && (minValue !== this.control.value.min || maxValue !== this.control.value.max)) {
-          this.control.setValue({ min: minValue, max: maxValue });
-        } else if (!this.control.value && (+minValue >= 0 || +maxValue >= 0)) {
-          this.control.setValue({ min: minValue, max: maxValue });
-        } else if (!+minValue && +maxValue >= 0) {
-          this.control.setValue({ min: 0, max: maxValue })
-        }
+        this.minValue = Number(minValue);
+        this.maxValue = Number(maxValue);
       }
     })
 
@@ -101,7 +96,10 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
     this.isBtnClicked.subscribe(res => {
       if (res) {
         if (this.control.value)
-          this.appliedValueCtrl.setValue(`${this.control.value.min} - ${this.control.value.max}`);
+          if (!isNaN(this.minValue))
+            this.appliedValueCtrl.setValue(`${this.minValue} - ${this.maxValue}`);
+          else
+            this.appliedValueCtrl.setValue(`0-${this.maxValue}`);
         else
           this.appliedValueCtrl.reset();
       }
@@ -125,7 +123,11 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
       else {
         if (!changes.preSelectedValue.previousValue || (changes.preSelectedValue.previousValue.min !== changes.preSelectedValue.currentValue.min || changes.preSelectedValue.previousValue.max !== changes.preSelectedValue.currentValue.max)) {
           this.preSelectedValue = changes.preSelectedValue.currentValue;
-          this.appliedValueCtrl.setValue(`${this.preSelectedValue.min}-${this.preSelectedValue.max}`);
+          if(!isNaN(this.preSelectedValue.min)) {
+            this.appliedValueCtrl.setValue(`${this.preSelectedValue.min}-${this.preSelectedValue.max}`);
+          } else if(this.preSelectedValue.max) {
+            this.appliedValueCtrl.setValue(`0-${this.preSelectedValue.max}`);
+          }
         }
       }
     }
@@ -139,17 +141,10 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
    * method called on apply button emits the value change event on parent class
    */
   applyFilter() {
-    if (this.fltrCtrl.valid && (this.control.value && +this.control.value.min < +this.control.value.max) || (!this.control.value && +this.minValue < +this.maxValue)) {
-      if (!this.control.value && (this.minValue && this.maxValue)) {
-        this.control.setValue({ min: this.minValue, max: this.maxValue });
-      }
+    if (this.fltrCtrl.valid && (this.minValue && this.maxValue && this.minValue < this.maxValue) || (!this.minValue && this.maxValue)) {
       const response = {
         formFieldId: this.formFieldId,
-        value: this.control.value
-      }
-
-      if (this.control.value && !this.control.value.min) {
-        response.value.min = 0;
+        value: { min: this.minValue, max: this.maxValue }
       }
       this.isBtnClicked.next(true);
       this.valueChange.emit(response);
@@ -165,10 +160,10 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
     if (this.control.value) {
       const min = this.control.value.min;
       const max = this.control.value.max;
-      if (+min >= 0 && max) {
+      if (min !== null && min >= 0 && max) {
         return min + '-' + max;
       } else {
-        return min ? min : max ? max : '';
+        return min ? min.toString() : max ? max.toString() : '';
       }
     }
     else return '';
@@ -181,7 +176,7 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
   isInValidInput() {
     if (this.fltrCtrl.hasError('pattern')) {
       return true;
-    } else if (this.control.value && +this.control.value.min > +this.control.value.max) {
+    } else if (this.minValue > this.maxValue) {
       return true;
     } else {
       return false;

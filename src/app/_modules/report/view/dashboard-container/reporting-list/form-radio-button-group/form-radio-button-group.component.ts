@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, ChangeDetectorRef, OnChanges, DoCheck } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Criteria } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
@@ -11,9 +10,9 @@ import { debounceTime, map, startWith } from 'rxjs/operators';
   styleUrls: ['./form-radio-button-group.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FormRadioButtonGroupComponent implements OnInit {
+export class FormRadioButtonGroupComponent implements OnInit,OnChanges {
 
-  constructor(private reportService: ReportService) { }
+  constructor(private reportService: ReportService, private changeDetectorRef : ChangeDetectorRef) { }
 
 
   /**
@@ -26,8 +25,6 @@ export class FormRadioButtonGroupComponent implements OnInit {
    */
   @Input() placeholder: string;
 
-  @Input() filterCriteria: Criteria[] = [];
-
   @Input() displayCriteria: string;
 
   @Input() isTableFilter: string;
@@ -36,9 +33,10 @@ export class FormRadioButtonGroupComponent implements OnInit {
    */
   @Output() valueChange = new EventEmitter<object>();
 
-
   @Input() formFieldId: string;
-  @Input() selectedMultiSelectData = [];
+
+  @Input() value:string;
+
   optionList: any[] = [];
 
   subscription: Subscription[] = [];
@@ -47,6 +45,8 @@ export class FormRadioButtonGroupComponent implements OnInit {
   appliedFltrCtrl: FormControl = new FormControl();
 
   isBtnClickedEvnt: BehaviorSubject<string> = new BehaviorSubject(null);
+
+  previousSelectedValue : string;
   /**
    * ANGULAR HOOK
    *
@@ -61,6 +61,7 @@ export class FormRadioButtonGroupComponent implements OnInit {
 
     if (this.control.value) {
       this.appliedFltrCtrl.setValue(this.control.value.value);
+      this.previousSelectedValue = this.control.value.value;
     }
 
     this.isBtnClickedEvnt.subscribe(res => {
@@ -77,15 +78,20 @@ export class FormRadioButtonGroupComponent implements OnInit {
  */
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('changes=====',changes)
     if (changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
       this.formFieldId = changes.formFieldId.currentValue;
     }
 
     if (changes.control && changes.control.previousValue !== undefined  && changes.control.previousValue.value !== changes.control.currentValue.value) {
       this.control.setValue(changes.controls.currentValue);
+    }
+    if(changes.value && changes.value.previousValue !== changes.value.currentValue) {
       const selectedValue = this.optionList.find(item => item.value === this.control.value);
-      this.appliedFltrCtrl.setValue(selectedValue.key);  
+      if(selectedValue) {
+        this.appliedFltrCtrl.setValue(selectedValue.key);
+      } else {
+        this.appliedFltrCtrl.reset();
+      }
     }
   }
 
@@ -108,8 +114,9 @@ export class FormRadioButtonGroupComponent implements OnInit {
       formFieldId: this.formFieldId,
       value: { CODE: selectedValue.value, TEXT: selectedValue.key }
     }
-    this.control.setValue(selectedValue.value)
+    this.control.setValue(selectedValue.value);
     this.isBtnClickedEvnt.next(selectedValue.key);
+    this.previousSelectedValue = selectedValue.key;
     this.valueChange.emit(response);
   }
 }
