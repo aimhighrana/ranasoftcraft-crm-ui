@@ -792,7 +792,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
     }
   }
-  /** 
+  /**
    *
    * @param codeValue code for particular column of table
    * @param textvalue text for particular column of table
