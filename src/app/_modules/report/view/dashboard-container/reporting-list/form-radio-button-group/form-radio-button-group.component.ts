@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Criteria } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
@@ -62,11 +62,31 @@ export class FormRadioButtonGroupComponent implements OnInit {
     if (this.control.value) {
       this.appliedFltrCtrl.setValue(this.control.value.value);
     }
+
     this.isBtnClickedEvnt.subscribe(res => {
       if (res) {
         this.appliedFltrCtrl.setValue(res);
       }
     })
+  }
+
+  /**
+ * ANGULAR HOOK
+ * To detect the changes from parent and update value
+ * @param  changes: object contains prev and current value
+ */
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('changes=====',changes)
+    if (changes.formFieldId && changes.formFieldId.previousValue !== undefined && changes.formFieldId.previousValue !== changes.formFieldId.currentValue) {
+      this.formFieldId = changes.formFieldId.currentValue;
+    }
+
+    if (changes.control && changes.control.previousValue !== undefined  && changes.control.previousValue.value !== changes.control.currentValue.value) {
+      this.control.setValue(changes.controls.currentValue);
+      const selectedValue = this.optionList.find(item => item.value === this.control.value);
+      this.appliedFltrCtrl.setValue(selectedValue.key);  
+    }
   }
 
   getDropDownValue(searchText?): string | boolean | void {
@@ -88,7 +108,7 @@ export class FormRadioButtonGroupComponent implements OnInit {
       formFieldId: this.formFieldId,
       value: { CODE: selectedValue.value, TEXT: selectedValue.key }
     }
-    this.control.setValue(selectedValue.key)
+    this.control.setValue(selectedValue.value)
     this.isBtnClickedEvnt.next(selectedValue.key);
     this.valueChange.emit(response);
   }
