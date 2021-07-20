@@ -501,7 +501,6 @@ export class SchemaService {
   public getApisRule(moduleId: string, searchString: string, from: any, size: any, prefer: string): Observable<ApiRulesInfo[]> {
     searchString = searchString ? searchString : '';
     prefer = prefer ? prefer : '';
-    // return of([{sno:'26387648732',description:'Api 1'},{sno:'86284762',description:'Api 2'},{sno:'26387648732',description:'Api 3'},{sno:'86386886',description:'Api 4'},{sno:'9878968768',description:'Api 5'},{sno:'11828686868',description:'Api 6'}]);
     return this.http.get<ApiRulesInfo[]>(this.endpointClassic.getApisRulesUrl(),{params:{moduleId, searchString, from, size, prefer}});
   }
 }
