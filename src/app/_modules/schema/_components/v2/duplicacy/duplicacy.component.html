@@ -2,7 +2,7 @@
     <div class="f-row breadcrum-toolbar">
         <ng-template [ngIf]="schemaInfo">
             <lib-text-line type="leading" enableWrap="true">
-                {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                {{ moduleInfo?.moduleDesc || 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{
                 variantTotalCnt ? variantTotalCnt : 0 }} records)
             </lib-text-line>
@@ -269,14 +269,6 @@
                             </mat-cell>
                         </ng-container>
 
-                        <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Object Number
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let element" [class.text-strike]="isDeleted(element)">
-                                {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
-                            </mat-cell>
-                        </ng-container>
-
                         <!-- Status Column -->
                         <ng-container [matColumnDef]="RECORD_STATUS_KEY">
                             <mat-header-cell *matHeaderCellDef mat-sort-header> Status
@@ -293,6 +285,14 @@
                                         </mat-icon>
                                     </mat-chip>
                                 </mat-chip-list>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="OBJECTNUMBER" sticky>
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> {{moduleInfo?.moduleDesc || 'Object number'}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" [class.text-strike]="isDeleted(element)">
+                                {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                             </mat-cell>
                         </ng-container>
 
