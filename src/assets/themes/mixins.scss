@@ -1117,7 +1117,12 @@
         color: $color-status-error;
       }
 
-      &.text-strike {
+      &.edit-mode {
+        background-color: mat-color($background-palette, card);
+        border-color: $color-app-canvas;
+      }
+
+      .text-strike {
         opacity: 0.4;
         pointer-events: none;
         text-decoration: line-through;
@@ -1129,6 +1134,8 @@
         .mat-form-field-wrapper {
           .mat-form-field-flex {
             background: mat-color($background-palette, card);
+            margin-top: 0;
+            padding-left: 0;
 
             .mat-form-field-outline {
               display: none;
@@ -1136,7 +1143,7 @@
           }
 
           .mat-form-field-infix {
-            min-height: 47px;
+            min-height: 44px;
           }
         }
       }
@@ -1700,20 +1707,6 @@
     }
   }
 
-  pros-diw-tiles {
-    mat-card.root {
-      mat-list.mat-list {
-        mat-list-item.mat-list-item {
-          border-color: $color-app-border;
-
-          .mat-list-item-content {
-            padding: 0;
-          }
-        }
-      }
-    }
-  }
-
   pros-report-list {
     mat-card.root {
       mat-list.mat-list {
@@ -2006,21 +1999,6 @@
       .listset-navigation {
         border-right-color: $color-app-border;
 
-        .nav-tree {
-          mat-nav-list.mat-nav-list.tree-nav-list {
-            .understep-two {
-              &.selected,
-              &.mat-list-item:hover {
-                background: $color-app-hover;
-              }
-
-              .mat-list-item-content {
-                padding: 0 16px 0 64px;
-              }
-            }
-          }
-        }
-
         .split-panel-mark {
           box-shadow: $box-shadow;
           background-color: mat-color($background-palette, card);
@@ -2046,14 +2024,6 @@
 
   pros-schema-details {
     div.root {
-      .counts {
-        color: $color-text-secondary;
-
-        &::after {
-          background: $color-text-secondary;
-        }
-      }
-
       mat-tab-group.mat-tab-group {
         mat-tab-body.mat-tab-body {
           .mat-tab-body-content {
@@ -2067,37 +2037,24 @@
           border-right-color: $color-app-border;
 
           .nav-tree {
-            mat-nav-list.mat-nav-list.tree-nav-list {
-              .understep-two {
-                .mat-list-item-content {
-                  padding: 0 0 0 86px;
-
-                  button.mat-button {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 3px;
+            mat-accordion {
+              .mat-expansion-panel {
+                .mat-expansion-panel-header {
+                  &.selected {
+                    background: $color-app-hover;
                   }
                 }
               }
             }
 
-            .error-badge {
-              color: $color-status-error;
-            }
-
-            .success-badge {
-              color: $color-status-success;
-            }
-
-            .warning-badge {
-              color: $color-status-warning;
+            .mat-nav-list.tree-nav-list {
+              .understep-two {
+                .mat-list-item-content {
+                  padding: 0 0 0 86px;
+                }
+              }
             }
           }
-        }
-
-        .default-badge,
-        .vertical-text {
-          color: $color-text-secondary;
         }
 
         .collapse-icon,

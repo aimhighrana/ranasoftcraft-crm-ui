@@ -1,17 +1,23 @@
 <div *ngIf="moduleData" class="root">
-    <div class="f-row breadcrum-toolbar">
-        <lib-text-line type="leading">
-            {{ moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
-        </lib-text-line>
-        <span class="f-spacer"></span>
-        <lib-button type="plain" (click)="openUploadSideSheet()" iconPosition="before" icon="arrow-from-bottom"> Upload
-            data </lib-button>
+    <div class="f-col breadcrum-toolbar">
+        <div class="f-row">
+            <lib-text-line type="leading">
+                {{ moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
+            </lib-text-line>
+            <span class="f-spacer"></span>
+            <lib-button type="plain" (click)="openUploadSideSheet()" iconPosition="before" icon="arrow-from-bottom">
+                Upload data </lib-button>
+        </div>
+        <div class="row-spacer"></div>
+        <lib-banner status="info" [text]="datasetCountMsg"></lib-banner>
     </div>
+
     <table mat-table [dataSource]="moduleData.schemaLists" class="table-vertical">
         <ng-container matColumnDef="schema">
             <th mat-header-cell *matHeaderCellDef> Schema </th>
             <td mat-cell *matCellDef="let element">
-                <lib-text-line (click)="openSchemaInfo(element.schemaId)" type="base" textColor="link" enableWrap="true" class="cursor">
+                <lib-text-line (click)="openSchemaInfo(element.schemaId)" type="base" textColor="link" enableWrap="true"
+                    class="cursor">
                     {{element.schemaDescription? element.schemaDescription:
                     'Untitled'}}</lib-text-line>
             </td>
@@ -37,7 +43,6 @@
                 </mat-menu>
             </td>
         </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

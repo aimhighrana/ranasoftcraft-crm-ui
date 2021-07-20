@@ -157,8 +157,7 @@
             </mat-chip-list>
 
             <!-- Add filter control -->
-            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"
-                icon="filter"></lib-chip>
+            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"><mat-icon fontSet="mdo-icons">filter</mat-icon></lib-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
                 <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
@@ -167,7 +166,9 @@
             </mat-menu>
 
             <!-- More control -->
-            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu" icon="ellipsis-h"></lib-chip>
+            <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu">
+                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
+            </lib-chip>
             <!-- More control MatMenu -->
             <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
                 <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->
@@ -183,7 +184,7 @@
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" prosClickStopPropagation
                             [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true"
-                            expanded="true" (click)="loadNodeData(executionTreeHierarchy)">
+                            [expanded]="true" (click)="loadNodeData(executionTreeHierarchy)">
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
                                 [class.selected]="activeNode && activeNode.nodeDesc === executionTreeHierarchy.nodeDesc">
                                 <mat-panel-title>
@@ -198,7 +199,7 @@
                             <div *ngIf="executionTreeHierarchy.childs && executionTreeHierarchy.childs.length">
                                 <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
                                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
-                                        prosClickStopPropagation expanded="true" (click)="loadNodeData(child)"
+                                        prosClickStopPropagation [expanded]="true" (click)="loadNodeData(child)"
                                         [hideToggle]="(child.childs && child.childs.length) ? false : true">
                                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
                                             class="undertree-expansion-panel"
@@ -220,7 +221,7 @@
 
                                                 <div mat-line> {{ subChild.nodeDesc }} </div>
                                                 <span class="f-spacer"></span>
-                                                <div class="default-badge">{{ subChild.docCount }}</div>
+                                                <lib-text-line typw="base" textColor="secondary">{{ subChild.docCount }}</lib-text-line>
                                             </mat-list-item>
                                         </mat-nav-list>
                                     </mat-expansion-panel>
@@ -515,7 +516,7 @@
                                                             element[dynCols].fieldData) :
                                                             '' }}
                                                         </span>
-                                                        <span class="error-message">
+                                                        <span class="error-message" *ngIf="!isEditEnabled(dynCols,element, rIndex)">
                                                             {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
                                                         </span>
                                                     </div>

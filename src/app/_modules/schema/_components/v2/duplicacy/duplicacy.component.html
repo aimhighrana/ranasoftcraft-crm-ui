@@ -58,7 +58,7 @@
                 </lib-text-line>
             </lib-chip>
 
-            <lib-chip label="Corections" class="mdo-filter-matchip" disableRipple="true"
+            <lib-chip label="Corrections" class="mdo-filter-matchip" disableRipple="true"
                 (click)="changeTabStatus('review')" [selected]="activeTab && activeTab === 'review'"
                 [selectable]="true">
                 <lib-text-line [textColor]="(activeTab && activeTab === 'review') ? 'plain' : 'info'">{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}
@@ -118,7 +118,7 @@
                         <!-- Add filter control -->
                         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                             (click)="reInilize = !reInilize">
-                            <mat-icon fontSet="mdo-icons-light">filter</mat-icon>
+                            <mat-icon fontSet="mdo-icons">filter</mat-icon>
                         </mat-chip>
 
                         <!-- Add filter control MatMenu -->
@@ -130,7 +130,9 @@
                     </mat-chip-list>
             
                     <!-- More control -->
-                    <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu" icon="ellipsis-h"></lib-chip>
+                    <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu">
+                        <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
+                    </lib-chip>
                     <!-- More control MatMenu -->
                     <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
                         <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->
