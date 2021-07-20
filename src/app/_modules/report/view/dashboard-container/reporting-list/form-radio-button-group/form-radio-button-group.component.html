@@ -1,10 +1,7 @@
-<div class="radio-input">
-    <div class="f-col lib-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
-        <lib-input disabled="true" *ngIf="isTableFilter === 'true'" [formControl]="appliedFltrCtrl"></lib-input>
-        <lib-search [formControl]="appliedFltrCtrl" [placeholder]="placeholder" *ngIf="isTableFilter === 'false'"></lib-search>
-    </div>
-    <lib-button *ngIf="control.value && isTableFilter === 'true'" class="clear" icon="times" type="plain" (click)="clearSelectedFilter()">
-    </lib-button>
+<div class="radio-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
+    <lib-input disabled="true" *ngIf="isTableFilter === 'true'" [formControl]="appliedFltrCtrl"></lib-input>
+    <lib-search [formControl]="appliedFltrCtrl" [placeholder]="placeholder" *ngIf="isTableFilter === 'false'">
+    </lib-search>
 </div>
 <mat-menu #datasearch="matMenu">
     <div class="f-col multipickradio" prosClickStopPropagation>

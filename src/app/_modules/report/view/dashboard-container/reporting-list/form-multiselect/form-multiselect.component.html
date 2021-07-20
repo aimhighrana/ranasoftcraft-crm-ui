@@ -1,15 +1,13 @@
-<div class="f-col mdo-field multiselect-input" [id]="formFieldId" >
-    <div [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
-        <div class="mdo-field-input" *ngIf="isTableFilter === 'true'">
-            <span [id]="'input-'+formFieldId" *ngIf="selectedMultiSelectData && selectedMultiSelectData.length"></span>
-            <span [id]="'additional-'+formFieldId"
-                *ngIf="selectedMultiSelectData && selectedMultiSelectData.length > 1"></span>
-        </div>
-        <div class="dropdown-search-wrapper" *ngIf="isTableFilter === 'false'">
-            <lib-search [formControl]="control" placeholder="search..."></lib-search>
-        </div>
+<div class="f-col mdo-field multiselect-input" [id]="formFieldId" [matMenuTriggerFor]="datasearch"
+    #trigger="matMenuTrigger">
+    <div class="mdo-field-input" *ngIf="isTableFilter === 'true'">
+        <span [id]="'input-'+formFieldId" *ngIf="selectedMultiSelectData && selectedMultiSelectData.length"></span>
+        <span [id]="'additional-'+formFieldId"
+            *ngIf="selectedMultiSelectData && selectedMultiSelectData.length > 1"></span>
     </div>
-    <lib-button class="clear" icon="times" type="plain" (click)="clearSelectedFilter()" *ngIf="isTableFilter === 'true' && selectedMultiSelectData && selectedMultiSelectData.length"></lib-button>
+    <div class="dropdown-search-wrapper" *ngIf="isTableFilter === 'false'">
+        <lib-search [formControl]="control" placeholder="search..."></lib-search>
+    </div>
 </div>
 <mat-menu #datasearch="matMenu">
     <div class="f-col multipickcheck" prosClickStopPropagation>

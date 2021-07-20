@@ -1,7 +1,6 @@
-<div class="f-col lib-input" [id]="formFieldId" >
-    <lib-input [formControl]="appliedValueCtrl" disabled="true"  [matMenuTriggerFor]="rangeSlider" #trigger="matMenuTrigger">
+<div class="f-col lib-input" [id]="formFieldId" [matMenuTriggerFor]="rangeSlider" #trigger="matMenuTrigger">
+    <lib-input [formControl]="appliedValueCtrl" disabled="true">
     </lib-input>
-    <lib-button type="plain" icon="times" iconFontType="light"  class="clear" (click)="clearFilter(true)" *ngIf="this.appliedValueCtrl.value"></lib-button>
 </div>
 <mat-menu class="filter-mat-menu" #rangeSlider="matMenu">
 
@@ -10,7 +9,6 @@
             <lib-input [value]="getSelectedRangeValue()" [placeholder]="placeholder" [formControl]="fltrCtrl"
                 [hasError]="isInValidInput()">
             </lib-input>
-            <lib-button type="plain" icon="times" iconFontType="light"  class="clear" (click)="clearFilter(false)" *ngIf="this.control.value && (this.control.value.min || this.control.value.max)"></lib-button>
             </div>
         <div class="selectrange">
             <lib-text-line type="small" weight="strong">Select range</lib-text-line>

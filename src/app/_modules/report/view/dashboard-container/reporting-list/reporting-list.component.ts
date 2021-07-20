@@ -782,13 +782,4 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue };
     }
   }
-
-  /**
-   * clear filter for column
-   * @param selected id of the column
-   */
-  clearSelectedFilter(selected) {
-    this.reportingListFilterForm.controls[selected].setValue(null);
-    this.onFilterApplied(selected, this.getFormFieldType(selected));
-  }
 }

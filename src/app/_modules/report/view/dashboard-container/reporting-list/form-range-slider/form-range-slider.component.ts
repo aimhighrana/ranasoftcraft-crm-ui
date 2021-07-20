@@ -187,22 +187,4 @@ export class FormRangeSliderComponent implements OnInit, OnChanges {
       return false;
     }
   }
-
-  /**
-   * clear filter on that field
-   * @param isSelectedItem it holds boolean value that descibes clear filter input text
-   */
-  clearFilter(isSelectedItem) {
-    this.control.reset();
-    this.minValue = 0;
-    this.maxValue = 0;
-    if (isSelectedItem) {
-      this.isBtnClicked.next(true);
-      const response = {
-        formFieldId: this.formFieldId,
-        value: this.control.value
-      }
-      this.valueChange.emit(response);
-    }
-  }
 }

@@ -2,8 +2,6 @@
     <div class="mdo-field-input">
         <input matInput placeholder="Type to search" #optionsInput [formControl]="control" [matAutocomplete]="auto"
             [placeholder]="placeholder" matTooltip="" matTooltipPosition="right" />
-        <lib-button *ngIf="control.value && isTableFilter === 'true'" class="close-button" icon="times" type="plain"
-            (click)="clearSelectedFilter()" ></lib-button>
         <mat-autocomplete class="mdo-autocomplete" (optionSelected)="selectSingleDropDownValue()"
             #auto="matAutocomplete" [displayWith]="getDisplayText.bind(this)">
             <mat-option class="mdo-option" *ngFor="let opt of this.optionList" [value]="opt"

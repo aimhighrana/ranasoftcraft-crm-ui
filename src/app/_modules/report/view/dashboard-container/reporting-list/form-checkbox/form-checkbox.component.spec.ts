@@ -73,10 +73,4 @@ describe('FormCheckboxComponent', () => {
     component.isChecked();
     expect(component.isChecked()).toBeTrue();
   }))
-  it('clearSelectedFilter(), should clear column filter', async()=>{
-    const emitEventSpy = spyOn(component.valueChange, 'emit');
-    component.clearSelectedFilter();
-    expect(emitEventSpy).toHaveBeenCalled();
-    expect(component.control.value).toEqual(null);
-  })
 });

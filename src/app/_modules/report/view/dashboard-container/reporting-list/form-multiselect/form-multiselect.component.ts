@@ -192,7 +192,7 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
       const value = Object.values(item)[0];
       const code = Object.keys(item)[0];
       const previousText = textWrapper.innerHTML;
-      if (inputWrapper.offsetWidth - textWrapper.offsetWidth > 80) {
+      if (inputWrapper.offsetWidth - textWrapper.offsetWidth > 50) {
         if (this.displayCriteria === DisplayCriteria.CODE) {
           textWrapper.innerHTML = textWrapper.innerHTML + code + ';';
         } else if (this.displayCriteria === DisplayCriteria.CODE_TEXT) {
@@ -235,13 +235,5 @@ export class FormMultiselectComponent implements OnInit,OnChanges,OnDestroy {
       selectedDataList.push(data);
     })
     return selectedDataList;
-  }
-  clearSelectedFilter(){
-    const response = {
-      formFieldId: this.formFieldId,
-      value: []
-    }
-    this.selectedMultiSelectData = [];
-    this.valueChange.emit(response);
   }
 }

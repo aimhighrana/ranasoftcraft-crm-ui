@@ -729,12 +729,4 @@ describe('ConfigureFiltersComponent', () => {
     component.getSelectedTimeValue()
     expect(component.getSelectedTimeValue()).toBeInstanceOf(Object);
   })
-
-  it('clearSelectedFilter(), should clear column filter', async()=>{
-    component.filterCriteria = [{ fieldId : 'MATL_GROUP'}];
-    component.configurationFilterForm.addControl('MATL_GROUP', new FormControl());
-    component.configurationFilterForm.controls.MATL_GROUP.setValue({min:10,max:20});
-    component.clearSelectedFilter('MATL_GROUP');
-    expect(component.configurationFilterForm.controls.MATL_GROUP.value).toBe(null);
-  })
 });

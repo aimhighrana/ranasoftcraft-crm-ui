@@ -498,12 +498,4 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       return { min: data.conditionFieldStartValue, max: data.conditionFieldEndValue }
     }
   }
-
-  clearSelectedFilter(selected){
-    const index = this.filterCriteria.findIndex(item => item.fieldId === selected);
-    if(index > -1){
-      this.filterCriteria[index] = {fieldId: selected};
-    }
-    this.configurationFilterForm.controls[selected].setValue(null);
-  }
 }

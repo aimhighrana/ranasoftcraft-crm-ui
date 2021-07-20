@@ -123,13 +123,4 @@ export class FormSingleSelectComponent implements OnInit, OnChanges {
       return '';
     }
   }
-
-  clearSelectedFilter() {
-    const response = {
-      formFieldId: this.formFieldId,
-      value: null
-    }
-    this.control.reset();
-    this.valueChange.emit(response);
-  }
 }

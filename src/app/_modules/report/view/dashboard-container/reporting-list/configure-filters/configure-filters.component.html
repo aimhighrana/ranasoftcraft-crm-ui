@@ -150,15 +150,10 @@
                 <!--input type -->
                 <ng-template
                     [ngIf]="getFormFieldType(selectedFilter.fieldId) === 'text' || getFormFieldType(selectedFilter.fieldId) === false">
-                    <div class="lib-input-div">
                         <lib-input [placeholder]="'Enter '+columnDescs[selectedFilter.fieldId]"
                             (change)="onInputValueChange($event.target.value)"
                             [formControl]="configurationFilterForm.get(selectedFilter.fieldId)">
                         </lib-input>
-                        <lib-button *ngIf="configurationFilterForm.get(selectedFilter.fieldId).value" class="clear"
-                            icon="times" type="plain" (click)="clearSelectedFilter(selectedFilter.fieldId)">
-                        </lib-button>
-                    </div>
                 </ng-template>
 
                 <!-- For text area -->

@@ -608,12 +608,4 @@ describe('ReportingListComponent', () => {
     expect(component.getUserDetails).toBeTruthy();
     expect(component.dateFormat).toEqual('MMMM d, yyyy, h:mm:ss a');
   }));
-
-  it('clearSelectedFilter(), should clear column filter', async()=>{
-    component.filterCriteria = [];
-    component.reportingListFilterForm.addControl('MATL_GROUP', new FormControl());
-    component.reportingListFilterForm.controls.MATL_GROUP.setValue({min:10,max:20});
-    component.clearSelectedFilter('MATL_GROUP');
-    expect(component.reportingListFilterForm.controls.MATL_GROUP.value).toBe(null);
-  })
 });
