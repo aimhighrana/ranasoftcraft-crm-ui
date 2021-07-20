@@ -18,8 +18,8 @@ export class CatalogCheckService {
     return this.http.post<any>(this.endpointService.masterRecordChangeUrl(), request);
   }
 
-  markForDeletion(objctNumber, moduleId, schemaId, runId) {
-    return this.http.post<any>(this.endpointService.markForDeletionUrl(objctNumber, moduleId, schemaId, runId), null);
+  markForDeletion(objctNumber, moduleId, schemaId, runId, isForRestore: any) {
+    return this.http.post<any>(this.endpointService.markForDeletionUrl(objctNumber, moduleId, schemaId, runId), null,{params:{isForRestore}});
   }
 
   getAllGroupIds(params) : Observable<any> {

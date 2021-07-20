@@ -1,5 +1,5 @@
 import { MdoUiLibraryModule } from 'mdo-ui-library';
-import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReportingListComponent } from './reporting-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -14,25 +14,29 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SimpleChanges } from '@angular/core';
 import { SharedModule } from '@modules/shared/shared.module';
 import { Router } from '@angular/router';
-import { MetadataModel } from '@models/schema/schemadetailstable';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
+import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { UserService } from '@services/user/userservice.service';
+import { SharedServiceService } from '@shared/_services/shared-service.service';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
   let fixture: ComponentFixture<ReportingListComponent>;
   let widgetServiceSpy: WidgetService;
   let reportServiceSpy: ReportService;
-  let userService: UserService;
   let router: Router;
+  let schemaDetailsService: SchemaDetailsService
+  let userService: UserService;
+  let sharedService: SharedServiceService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ReportingListComponent],
       imports: [MdoUiLibraryModule, AppMaterialModuleForSpec, HttpClientTestingModule, MatMenuModule, RouterTestingModule, SharedModule],
-      providers: [WidgetService, ReportService, UserService]
+      providers: [WidgetService, SchemaDetailsService,ReportService, UserService, SharedServiceService]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -107,6 +111,9 @@ describe('ReportingListComponent', () => {
         udrid: null,
       }
     ];
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    userService = fixture.debugElement.injector.get(UserService);
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
   });
 
   it('should create', () => {
@@ -121,6 +128,7 @@ describe('ReportingListComponent', () => {
     response.pageDefaultSize = 25;
     response.displayCriteria = DisplayCriteria.TEXT;
     spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
+    component.widgetHeader = response;
     component.getHeaderMetaData();
     expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
     expect(component.pageSizeOption).toEqual([25, 100, 200, 300, 400]);
@@ -131,6 +139,7 @@ describe('ReportingListComponent', () => {
   it('getHeaderMetaData, return header data', async(() => {
     component.widgetId = 75656;
     const response: WidgetHeader = new WidgetHeader();
+    component.widgetHeader = response;
     spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
     component.getHeaderMetaData();
     expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
@@ -139,12 +148,15 @@ describe('ReportingListComponent', () => {
     expect(component.pageSize).toEqual(100);
   }));
 
-  it('getListTableMetadata, return table data', fakeAsync(() => {
+  it('getListTableMetadata, return table data', async(() => {
     component.widgetId = 75656;
-    const response: ReportingWidget[] = [{ widgetId: 75656, fields: 'test', fieldOrder: 'APPTEST', fieldDesc: 'testing', sno: 65467465, fldMetaData: { picklist: '0', dataType: 'CHAR' } as MetadataModel, displayCriteria: DisplayCriteria.TEXT }];
+    component.allColumnMetaDataFields = {} as MetadataModeleResponse;
+    const response: ReportingWidget[] = [{ widgetId: 75656, fields: 'test', fieldOrder: 'APPTEST', fieldDesc: 'testing', sno: 65467465, fldMetaData: { picklist: '4' } as MetadataModel, displayCriteria: DisplayCriteria.TEXT }];
     spyOn(widgetServiceSpy, 'getListTableMetadata').withArgs(component.widgetId).and.returnValue(of(response));
+    spyOn(component, 'getFieldType').withArgs(response[0].fldMetaData).and.returnValue(of({ isHierarchy: false, isGrid: false }));
     component.getListTableMetadata();
     expect(widgetServiceSpy.getListTableMetadata).toHaveBeenCalledWith(component.widgetId);
+    expect(component.getFieldType).toHaveBeenCalledWith(response[0].fldMetaData);
     expect(component.displayedColumnsId.length).toEqual(2);
   }));
 
@@ -206,14 +218,14 @@ describe('ReportingListComponent', () => {
   }));
 
   it('getListdata(), should return the data of field', async(() => {
-    const res = { data: { hits: { hits: [{ sourceAsMap: { stat: 'APP', staticFields: { OBJECTID: { fId: 'OBJECTID', ls: 'OBJECTID', vc: [{ c: 103048380550997540 }] }, MASSPROCESSING_ID: { vc: [{ c: '130086' }] }, WFID: { fId: 'WFID', ls: 'WFID', vc: [{ c: '130086693666196566' }] }, REQUESTOR_DATE: { fId: 'REQUESTOR_DATE', ls: 'Requested Date', vc: [{ c: '1584440382535' }] }, TIME_TAKEN: { fId: 'TIME_TAKEN', ls: 'Time Taken', vc: [{ c: 97089034 }] }, FORWARDENABLED: { fId: 'FORWARDENABLED', ls: 'FORWARDENABLED', vc: [{ c: 1 }] }, OVERDUE: { fId: 'OVERDUE', ls: 'OVERDUE', vc: [{ c: 'n' }] } }, id: 103048380550997539 }, id: 103048380550997539, sort: [103048380550997539], _score: null }], total: { value: 1, relation: 'eq' }, max_score: null }, took: 4, timed_out: false }, count: 1 };
+    const res = { data: { hits: { hits: [{ sourceAsMap: { stat: 'APP', staticFields: { OBJECTID: { fId: 'OBJECTID', ls: 'OBJECTID', vc: [{ c: 'C000164628' }] }, WFID: { fId: 'WFID', ls: 'WFID', vc: [{ c: '130086693666196566' }] }, REQUESTOR_DATE: { fId: 'REQUESTOR_DATE', ls: 'Requested Date', vc: [{ c: '1584440382535' }] }, TIME_TAKEN: { fId: 'TIME_TAKEN', ls: 'Time Taken', vc: [{ c: 97089034 }] }, FORWARDENABLED: { fId: 'FORWARDENABLED', ls: 'FORWARDENABLED', vc: [{ c: 1 }] }, OVERDUE: { fId: 'OVERDUE', ls: 'OVERDUE', vc: [{ c: 'n' }] } }, id: 103048380550997539 }, id: 103048380550997539, sort: [103048380550997539], _score: null }], total: { value: 1, relation: 'eq' }, max_score: null }, took: 4, timed_out: false }, count: 1 };
     const pageSize = 10;
     const pageIndex = 0;
     const widgetId = 1612965351574;
     const criteria = [];
     const soringMap = null;
     component.tableColumnMetaData = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1', fieldId: 'REQUESTOR_DATE' } as MetadataModel, displayCriteria: DisplayCriteria.TEXT } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
-    component.displayedColumnsId = ['stat', 'REQUESTOR_DATE', 'WFID', 'objectNumber', 'OVERDUE', 'FORWARDENABLED', 'TIME_TAKEN'];
+    component.displayedColumnsId = ['REQUESTOR_DATE', 'WFID', 'objectNumber', 'OVERDUE', 'FORWARDENABLED', 'TIME_TAKEN'];
     const reportingW = [{ fields: 'REQUESTOR_DATE', fldMetaData: { dataType: 'DTMS', picklist: '1' } } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { dataType: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { dataType: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { dataType: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { dataType: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { dataType: '0' } } as ReportingWidget];
     component.reportingListWidget.next(reportingW);
     component.widgetHeader = { displayCriteria: DisplayCriteria.CODE } as WidgetHeader;
@@ -659,4 +671,93 @@ describe('ReportingListComponent', () => {
     ];
     expect(component.getPreSelectedDropdownValue('MATL_GROUP')).toEqual('test');
   })
+  it('getObjectData(), get display data according to its display criteria', async(() => {
+    component.tableColumnMetaData = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1', fieldId: 'REQUESTOR_DATE' } as MetadataModel, displayCriteria: DisplayCriteria.TEXT } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
+    component.getObjectData('Code', 'Value', 'REQUESTOR_DATE');
+    expect(component.getObjectData('Code', 'Value', 'REQUESTOR_DATE')).toEqual('Value');
+
+    const reportingW = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { dataType: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { dataType: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { dataType: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { dataType: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { dataType: '0' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW);
+    component.tableColumnMetaData = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1', fieldId: 'REQUESTOR_DATE' } as MetadataModel, displayCriteria: DisplayCriteria.CODE_TEXT } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
+    component.getObjectData('Code', 'Value', 'REQUESTOR_DATE');
+    expect(component.getObjectData('Code', 'Value', 'REQUESTOR_DATE')).toEqual('Code -- Value');
+
+    // const reportingW = [{ fields: 'REQUESTOR_DATE', fldMetaData: {picklist: '1' } } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'WFID', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'TIME_TAKEN', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'FORWARDENABLED', fldMetaData: { dataType: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { dataType: '0' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW);
+    component.tableColumnMetaData = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1', fieldId: 'REQUESTOR_DATE' } as MetadataModel, displayCriteria: DisplayCriteria.CODE_TEXT } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
+    component.getObjectData('Code', null, 'REQUESTOR_DATE');
+    expect(component.getObjectData('Code', null, 'REQUESTOR_DATE')).toEqual('Code -- Code');
+
+    component.reportingListWidget.next(reportingW);
+    component.tableColumnMetaData = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1', fieldId: 'REQUESTOR_DATE' } as MetadataModel, displayCriteria: DisplayCriteria.CODE_TEXT } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
+    component.getObjectData('Code', null, 'REQUESTOR_DATE');
+    expect(component.getObjectData(null, null, 'REQUESTOR_DATE')).toEqual('');
+
+    component.tableColumnMetaData = null;
+    component.getObjectData('Code', null, 'REQUESTOR_DATE');
+    expect(component.getObjectData(null, null, 'REQUESTOR_DATE')).toEqual(undefined);
+
+    component.tableColumnMetaData = [{ fields: 'REQUESTOR_DATE', fldMetaData: { picklist: '1', fieldId: 'REQUESTOR_DATE' } as MetadataModel } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'WFID', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'TIME_TAKEN', fldMetaData: { picklist: '0' } } as ReportingWidget, { fields: 'FORWARDENABLED', fldMetaData: { picklist: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { picklist: '0' } } as ReportingWidget];
+    component.getObjectData('Code', 'Value', 'REQUESTOR_DATE');
+    expect(component.getObjectData('Code', 'Value', 'REQUESTOR_DATE')).toEqual(undefined);
+  }));
+
+  it('getFieldType,get field type for column', async(() => {
+    let fldMetaData = { dataType: '0', parentField: 'ADD_EANDATA' } as MetadataModel;
+    component.allColumnMetaDataFields = {
+      headers: { MARA_NRFHG: { fieldId: 'MARA_NRFHG', fieldDescri: 'Qual.f.FreeGoodsDis' } },
+      grids: { ADD_EANDATA: { fieldId: 'ADD_EANDATA', fieldDescri: 'Additional EAN Grid', dataType: 'CHAR', maxChar: '100' } },
+      gridFields: { ADD_EANDATA: { ADD_EANCAT: { fieldId: 'ADD_EANCAT', fieldDescri: 'EAN category', dataType: 'CHAR', maxChar: '2', mandatory: '0' } } },
+      hierarchy: [{ objnr: 1, heirarchyId: '1', heirarchyText: 'Plant Data', fieldId: 'PLANT', structureId: '0002' }],
+      hierarchyFields: { 1: { ABC_ID: { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator', dataType: 'CHAR', maxChar: '1', mandatory: '0' } } },
+    } as MetadataModeleResponse;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: true, parentFieldId: 'ADD_EANDATA' });
+
+    fldMetaData = { dataType: '0', parentField: 'PLANT' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: true, hierarchyId: '1' });
+
+    fldMetaData = { dataType: '0', parentField: 'ABC' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: false, isGrid: false });
+
+    fldMetaData = { dataType: '0', fieldId: 'ABC_ID' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isHierarchy: true, hierarchyId: '1' });
+
+    fldMetaData = { dataType: '0', fieldId: 'ADD_EANCAT' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: true, parentFieldId: 'ADD_EANDATA' });
+
+    fldMetaData = { dataType: '0', fieldId: 'MARA_NRFHG' } as MetadataModel;
+    component.getFieldType(fldMetaData);
+    expect(component.getFieldType(fldMetaData)).toEqual({ isGrid: false, isHierarchy: false });
+  }))
+
+  it('getMetaDataFields(), call api to get meta data fields', async(() => {
+    const obj = '1005';
+    const res = {
+      headers: { MARA_NRFHG: { fieldId: 'MARA_NRFHG', fieldDescri: 'Qual.f.FreeGoodsDis' } },
+      grids: { ADD_EANDATA: { fieldId: 'ADD_EANDATA', fieldDescri: 'Additional EAN Grid', dataType: 'CHAR', maxChar: '100' } },
+      gridFields: { ADD_EANDATA: { ADD_EANCAT: { fieldId: 'ADD_EANCAT', fieldDescri: 'EAN category', dataType: 'CHAR', maxChar: '2', mandatory: '0' } } },
+      hierarchy: [{ objnr: 1, heirarchyId: '1', heirarchyText: 'Plant Data', fieldId: 'PLANT', structureId: '0002' }],
+      hierarchyFields: { 1: { ABC_ID: { fieldId: 'ABC_ID', fieldDescri: 'ABC Indicator', dataType: 'CHAR', maxChar: '1', mandatory: '0' } } },
+    } as MetadataModeleResponse;
+    spyOn(schemaDetailsService, 'getMetadataFields').withArgs(obj).and.returnValue(of(res));
+    component.getMetaDataFields(obj);
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(obj);
+  }))
+
+  it('ngOnInit(), ngOnInit method called', async(() => {
+    spyOn(component, 'getUserDetails');
+    const response = { isRefresh: true }
+    spyOn(sharedService, 'getReportDataTableSetting').and.returnValue(of(response));
+    const res: WidgetHeader = new WidgetHeader();
+    res.pageDefaultSize = 25;
+    res.displayCriteria = DisplayCriteria.TEXT;
+    spyOn(widgetServiceSpy,'getHeaderMetaData').and.returnValue(of(res));
+    component.widgetHeader = {} as WidgetHeader;
+    expect(component.ngOnInit).toBeTruthy();
+  }))
 });

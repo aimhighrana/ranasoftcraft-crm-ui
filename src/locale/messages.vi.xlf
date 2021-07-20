@@ -601,6 +601,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">351</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
         <source>Type inside the search box to find fields</source>
@@ -1877,6 +1881,10 @@
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="codeAndText" datatype="html">
         <source>Code and Text</source>
@@ -2926,6 +2934,14 @@
         <source>Show legend</source>
         <target>Hiển thị chú giải</target>
       </trans-unit>
+      <trans-unit id="showTotal" datatype="html">
+        <source>Show total count</source>
+        <target>Hiển thị tổng số</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\edit\container\container.component.html</context>
+          <context context-type="linenumber">902</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="legendPosition" datatype="html">
         <source>Legend position</source>
         <target>Vị trí chú giải</target>
@@ -3024,12 +3040,12 @@
         <target>không ai</target>
       </trans-unit>
       <trans-unit id="withinSLA" datatype="html">
-        <source>Within SLA</source>
-        <target>Trong SLA</target>
+        <source>Within time spent limit</source>
+        <target>Trong giới hạn thời gian đã sử dụng</target>
       </trans-unit>
       <trans-unit id="exceedsSLA" datatype="html">
-        <source>Exceeds SLA</source>
-        <target>Vượt quá SLA</target>
+        <source>Exceeds time spent limit</source>
+        <target>Vượt quá giới hạn thời gian sử dụng</target>
       </trans-unit>
 
       <trans-unit id="schema_running_msg" datatype="html">
@@ -3162,6 +3178,54 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
           <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_value" datatype="html">
+        <source>Default value</source>
+        <target>giá trị mặc định</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute\attribute.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_value" datatype="html">
+        <source>New value</source>
+        <target>giá trị mới</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values" datatype="html">
+        <source>Default values</source>
+        <target>giá trị mặc định</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values_empty_msg" datatype="html">
+        <source>You don’t have any values defined for this list yet. Type the value name in the box above to add.</source>
+        <target>Bạn không có bất kỳ giá trị được định nghĩa cho danh sách này được nêu ra. Gõ tên giá trị vào ô bên trên để thêm.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="value" datatype="html">
+        <source>value</source>
+        <target>giá trị</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_value_to_add" datatype="html">
+        <source>Type value name to add</source>
+        <target>Nhập tên giá trị để thêm</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
     </body>

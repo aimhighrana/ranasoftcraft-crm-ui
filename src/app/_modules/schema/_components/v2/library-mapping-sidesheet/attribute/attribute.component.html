@@ -24,7 +24,7 @@
                     </mat-error>
                 </div>
                 <div class="mdo-field">
-                    <pros-form-input [type]="'text'" [control]="formField('attrCode')" 
+                    <pros-form-input [type]="'text'" [control]="formField('attrDesc')" 
                     [placeholder]="'Description'" [label]="'Description'"></pros-form-input>
                     <mat-error
                         *ngIf="submitted && attributeForm.controls.attrDesc.errors && attributeForm.controls.attrDesc.errors.required">
@@ -40,7 +40,7 @@
                             <mat-button-toggle [value]="ATTRIBUTE_DATA_TYPE.LIST">List</mat-button-toggle>
                         </mat-button-toggle-group>
                         <div class="f-col-spacer-half"></div>
-                        <lib-text-line type="base" textColor="link" class="cursor">Default value (4)</lib-text-line>
+                        <lib-text-line *ngIf="formField('type').value===ATTRIBUTE_DATA_TYPE.LIST" type="base" textColor="link" class="cursor" (click)="openDefaultValueSideSheet()"><span i18n="@@default_value">Default value</span> ({{defaultValueCount}})</lib-text-line>
                     </div>
                     <div class="f-row-spacer-half"></div>
                 </div>

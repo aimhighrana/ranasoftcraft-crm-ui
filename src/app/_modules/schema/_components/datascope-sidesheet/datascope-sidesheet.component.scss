@@ -2,7 +2,7 @@ div.root {
   user-select: none;
   height: 100%;
   overflow: hidden;
-  width: 668px;
+  width: 850px;
 
   .breadcrum-toolbar {
     padding: 8px 16px;
@@ -19,14 +19,71 @@ div.root {
   }
 
   .sidesheetcontent-listing {
-    height: calc(100% - 103px);
-    overflow: auto;
+    height: calc(100% - 52px);
+    overflow: hidden;
 
     .mdo-justify {
       margin: 0 16px;
+      height: 100%;
+      overflow: hidden;
 
       .field-label {
         margin-bottom: 6px;
+      }
+
+      .filter-section {
+        align-items: flex-start;
+        height: 100%;
+        overflow: auto;
+
+        .filter-list {
+          width: 240px;
+          height: 100%;
+          border-right-width: 1px;
+          border-right-style: solid;
+
+          .lib-search {
+            margin: 0 8px 8px 0;
+          }
+
+          .filter-scroll {
+            height: calc(100% - 36px);
+            overflow: auto;
+            padding-right: 12px;
+
+            .mat-panel-title {
+              display: flex;
+              align-items: center;
+              width: 100%;
+              margin: 0 0 0 8px;
+            }
+          }
+        }
+
+        .lib-checkbox {
+          margin-bottom: 12px;
+        }
+
+        .dynamic-container {
+          flex: 1;
+          padding-left: 12px;
+
+          .mdo-chip-list {
+            margin-bottom: 16px;
+          }
+
+          .date-picker-section {
+            align-items: flex-start;
+
+            .date-picker-list {
+              width: 49%;
+            }
+          }
+        }
+
+        .hide {
+          display: none;
+        }
       }
     }
   }

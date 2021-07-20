@@ -454,7 +454,7 @@
   .cdk-overlay-container {
     .mat-autocomplete-panel {
       .autodropdown-scroll {
-        max-height: 181px;
+        max-height: 145px;
         overflow: auto;
 
         .sticky-actions {
@@ -480,11 +480,15 @@
 
       mat-option.mat-option {
         font-size: inherit;
-        height: 36px;
+        height: 48px;
 
         &:hover:not(.mat-option-disabled),
         &:focus:not(.mat-option-disabled) {
           background: $color-app-hover;
+        }
+
+        .option-button {
+          width: 36px;
         }
       }
     }
@@ -586,11 +590,11 @@
           height: 35px;
           width: auto;
           cursor: pointer;
-          padding: 5px 10px;
+          padding: 5px 9px;
           line-height: 0.9em;
           border: 1px solid $color-app-border;
           background-color: mat-color($background-palette, card);
-          margin: 0 4px;
+          margin: 1px 4px;
 
           label {
             margin: 0 4px;
@@ -843,6 +847,10 @@
           }
 
           &.mat-menu-item-highlighted {
+            background: transparent;
+          }
+
+          &.selected {
             background: $color-app-hover;
           }
         }
@@ -1126,6 +1134,12 @@
         // background: $color-status-error-accent;
         border-bottom: 1px solid $color-status-error;
         color: $color-status-error;
+      }
+
+      &.text-strike {
+        opacity: 0.4;
+        pointer-events: none;
+        text-decoration: line-through;
       }
 
       .edit-cell {
@@ -1594,6 +1608,20 @@
     }
   }
 
+  pros-attribute-default-value {
+    .colunm-box {
+      &.rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      &.value-row:hover {
+        background: $color-app-border;
+      }
+    }
+  }
+
   pros-report-datatable-column-settings {
     .checkedall {
       background: mat-color($background-palette, card);
@@ -1665,6 +1693,32 @@
         .mat-list-item-content {
           padding: 0;
         }
+      }
+    }
+  }
+
+  pros-datascope-sidesheet {
+    mat-list.mat-list {
+      &.date-picker-list {
+        .mat-radio-button {
+          margin-bottom: 0;
+
+          .mat-radio-label {
+            height: 48px;
+          }
+        }
+
+        mat-list-item.mat-list-item {
+          &.selected {
+            background: $color-app-hover;
+          }
+        }
+      }
+    }
+
+    div.root {
+      .filter-list {
+        border-right-color: $color-app-border;
       }
     }
   }

@@ -2,7 +2,7 @@
     <div class="f-row breadcrum-toolbar">
         <ng-template [ngIf]="schemaInfo">
             <lib-text-line type="leading" enableWrap="true">
-                {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                {{ moduleInfo?.moduleDesc || 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}} ({{
                 variantTotalCnt ? variantTotalCnt : 0 }} records)
             </lib-text-line>
@@ -78,7 +78,7 @@
             <div class="f-col dataset-grid-listing">
                 <div class="f-row">
                     <mat-chip-list>
-                        <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" class="lib-search">
+                        <lib-search placeholder="Search..."  [formControl]="searchFrmCtrl" class="lib-search">
                         </lib-search>
                         <!-- Applied filters -->
                         <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
@@ -128,6 +128,14 @@
                             </pros-add-filter-menu>
                         </mat-menu>
                     </mat-chip-list>
+            
+                    <!-- More control -->
+                    <lib-chip class="mdo-filter-matchip" [matMenuTriggerFor]="moreFilterMenu" icon="ellipsis-h"></lib-chip>
+                    <!-- More control MatMenu -->
+                    <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
+                        <!-- <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button> -->
+                        <button mat-menu-item i18n="@@reset" (click)="resetAppliedFilter()">Reset</button>
+                    </mat-menu>
                 </div>
 
                 <div class="f-row-spacer-half"></div>
@@ -174,9 +182,8 @@
                                 <lib-button type="plain" (click)="openTableColumnSettings()" icon="cog">
                                 </lib-button>
                             </mat-header-cell>
-                            <mat-cell *matCellDef="let element" [class.action-buttons-width]="activeTab === 'review'"
-                                class="no-text-decoration">
-                                <div class="f-row">
+                            <mat-cell *matCellDef="let element" [class.action-buttons-width]="activeTab === 'review'">
+                                <div class="f-row action-iconbtns">
                                     <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
                                         <lib-button-group>
                                             <lib-button icon="ellipsis-h" type="minor"
@@ -202,7 +209,7 @@
 
                                             <lib-button type="minor"
                                                 *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE)"
-                                                icon="redo-alt"></lib-button>
+                                                icon="redo-alt" (click)="markForDeletion(element, true)"></lib-button>
                                             <lib-button type="minor"
                                                 *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)"
                                                 (click)="markForDeletion(element)" icon="trash-alt">
@@ -212,7 +219,6 @@
 
                                     <ng-template #review>
                                         <!-- Secondary actions -->
-
                                         <ng-template
                                             [ngIf]="!element['OBJECTNUMBER'].isReviewed && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
                                             <lib-button *ngIf="secondaryActions.length"
@@ -220,45 +226,46 @@
                                                 icon="ellipsis-h"></lib-button>
                                             <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                                 <ng-container *ngFor="let sAction of secondaryActions">
-                                                    <button mat-menu-item *ngIf="hasActionPermission(sAction)"
-                                                        (click)="doAction(sAction, element)">
-                                                        <mat-icon fontSet="mdo-icons"
-                                                            *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                            {{ sAction.actionIconLigature }}
-                                                        </mat-icon>
-                                                        <ng-template
-                                                            [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
-                                                            {{ sAction.actionText }}
-                                                        </ng-template>
-                                                    </button>
+                                                    <ng-template [ngIf]="sAction.actionText != 'Delete'">
+                                                        <button mat-menu-item *ngIf="hasActionPermission(sAction)"
+                                                            (click)="doAction(sAction, element)">
+                                                            <mat-icon fontSet="mdo-icons"
+                                                                *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                                {{ sAction.actionIconLigature }}
+                                                            </mat-icon>
+                                                            <ng-template
+                                                                [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                                                {{ sAction.actionText }}
+                                                            </ng-template>
+                                                        </button>
+                                                    </ng-template>                                                    
                                                 </ng-container>
                                             </mat-menu>
                                             <!-- Primary actions -->
                                             <ng-container *ngFor="let pAction of primaryActions">
-                                                <button mat-flat-button color="accent"
-                                                    *ngIf="hasActionPermission(pAction)"
-                                                    (click)="doAction(pAction, element)" class="action-button">
-                                                    <mat-icon fontSet="mdo-icons"
-                                                        *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                        {{ pAction.actionIconLigature }}
-                                                    </mat-icon>
-                                                    <ng-template
-                                                        [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                        {{ pAction.actionText }}
-                                                    </ng-template>
-                                                </button>
+                                                <ng-template [ngIf]="pAction.actionText != 'Delete'">
+                                                    <button mat-flat-button color="accent"
+                                                        *ngIf="hasActionPermission(pAction)"
+                                                        (click)="doAction(pAction, element)" class="action-button">
+                                                        <mat-icon fontSet="mdo-icons"
+                                                            *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                            {{ pAction.actionIconLigature }}
+                                                        </mat-icon>
+                                                        <ng-template
+                                                            [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                            {{ pAction.actionText }}
+                                                        </ng-template>
+                                                    </button>
+                                                </ng-template>                                                
                                             </ng-container>
+                                            
                                         </ng-template>
+                                        <lib-button type="minor"
+                                            *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE)"
+                                            icon="redo-alt" (click)="markForDeletion(element, true)">
+                                        </lib-button>
                                     </ng-template>
                                 </div>
-                            </mat-cell>
-                        </ng-container>
-
-                        <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                            <mat-header-cell *matHeaderCellDef mat-sort-header> Object Number
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                             </mat-cell>
                         </ng-container>
 
@@ -281,6 +288,14 @@
                             </mat-cell>
                         </ng-container>
 
+                        <ng-container matColumnDef="OBJECTNUMBER" sticky>
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> {{moduleInfo?.moduleDesc || 'Object number'}}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" [class.text-strike]="isDeleted(element)">
+                                {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
+                            </mat-cell>
+                        </ng-container>
+
                         <ng-template ngFor let-dynCol [ngForOf]="displayedFields | async">
                             <ng-template [ngIf]="isStaticColumn(dynCol)" [ngIfElse]="dynamic">
                             </ng-template>
@@ -295,7 +310,7 @@
                                         </mat-cell> -->
 
                                     <mat-cell *matCellDef="let element; let rIndex = index;"
-                                        [class.error-cell]="element[dynCol] ? element[dynCol].isInError : false"
+                                        [class.error-cell]="element[dynCol] ? element[dynCol].isInError : false" [class.text-strike]="isDeleted(element)"
                                         (click)="editCurrentCell(dynCol,element, rIndex, containerRef)">
                                         <div class="f-col grid-cell-editable">
                                             <div class="mdo-form-input f-col" style="display: none;"

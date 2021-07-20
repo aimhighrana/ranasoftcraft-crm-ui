@@ -885,6 +885,8 @@ describe('SchemaDetailsComponent', () => {
     spyOn(schemaDetailService,'resetCorrectionRecords').withArgs(component.schemaId, component.schemaInfo.runId,  ['MAT001'])
       .and.returnValues(of(apiResponse), of(apiResponse), throwError({message: 'api error'}));
 
+    spyOn(component, 'getSchemaStatics');
+
     component.resetRec(row, 'inline');
     expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId,  ['MAT001']);
 

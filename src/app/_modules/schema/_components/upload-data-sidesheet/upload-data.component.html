@@ -4,11 +4,11 @@
     <div class="col-spacer"></div>
     <div class="f-col mdo-constrained-right">
       <div class="f-row breadcrum-head">
-        <div class="display-heading-large">{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') :
-          'Untitled'}}</div>
+        <lib-text-line type="leading" enableWrap="true">{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') :
+          'Untitled'}}</lib-text-line>
         <div class="f-spacer"></div>
-        <a class="info-link" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null; isInprocess = false;">Choose
-          another file</a>
+        <lib-text-line type="base" textColor="link" class="cursor" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null; isInprocess = false;">Choose
+          another file</lib-text-line>
         <span class="f-col-spacer-half"></span>
         <lib-button type="major" i18n="@@upload" *ngIf="currentStep>0" [disabled]="isInprocess"
           (click)="uploadFileData(stepper)">Upload</lib-button>
@@ -49,8 +49,8 @@
           </lib-banner>
           <div class="f-col upload-col" *ngIf="isUploaded && currentStep>0">
             <div class="f-col empty-state">
-              <div class="empty-heading">Uploading...</div>
-              <p class="label-text">You will receive an email once the upload is done. You can close this window.</p>
+              <lib-text-line type="base" weight="strong">Uploading...</lib-text-line>
+              <lib-text-line type="base">You will receive an email once the upload is done. You can close this window.</lib-text-line>
             </div>
           </div>
           <div class="field-grid">

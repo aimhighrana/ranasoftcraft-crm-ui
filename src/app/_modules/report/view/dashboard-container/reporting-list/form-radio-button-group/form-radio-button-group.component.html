@@ -1,4 +1,4 @@
-<div class="radio-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
+<div class="lib-input" [matMenuTriggerFor]="datasearch" #trigger="matMenuTrigger">
     <lib-input disabled="true" *ngIf="isTableFilter === 'true'" [formControl]="appliedFltrCtrl"></lib-input>
     <lib-search [formControl]="appliedFltrCtrl" [placeholder]="placeholder" *ngIf="isTableFilter === 'false'">
     </lib-search>

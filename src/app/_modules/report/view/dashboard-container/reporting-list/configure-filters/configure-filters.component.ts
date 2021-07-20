@@ -145,6 +145,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
     }
     if (!this.configurationFilterForm.controls[filter.fieldId]) {
       this.configurationFilterForm.addControl(filter.fieldId, new FormControl());
+    }
       const formFieldType = this.getFormFieldType(filter.fieldId);
       if ((formFieldType === FormControlType.TEXT || formFieldType === FormControlType.TEXTAREA || formFieldType === FormControlType.CHECKBOX || formFieldType === false) && filter.conditionFieldValue) {
         this.configurationFilterForm.controls[filter.fieldId].setValue(filter.conditionFieldValue);
@@ -157,7 +158,6 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       } else if (formFieldType === FormControlType.NUMBER) {
         this.configurationFilterForm.controls[filter.fieldId].setValue({ min: filter.conditionFieldStartValue, max: filter.conditionFieldEndValue });
       }
-    }
   }
 
   /**
@@ -319,6 +319,7 @@ export class ConfigureFiltersComponent implements OnInit, OnDestroy {
       if (i > -1) {
         const conditionFieldIndex = this.filterCriteria[i].conditionFieldValue.indexOf(code);
         this.filterCriteria[i].conditionFieldValue.splice(conditionFieldIndex, 1);
+        this.filterCriteria[i].conditionFieldText.splice(conditionFieldIndex,1);
       }
     } else {
       const filteredIndex = this.filterCriteria.findIndex(item => item.fieldId === this.selectedFilter.fieldId && item.conditionFieldValue === code);

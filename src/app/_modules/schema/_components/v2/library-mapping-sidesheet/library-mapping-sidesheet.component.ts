@@ -8,6 +8,7 @@ import { NounModifierService } from '@services/home/schema/noun-modifier.service
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserService } from '@services/user/userservice.service';
 import { TransientService } from 'mdo-ui-library';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 interface Status {
@@ -98,17 +99,13 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
     this.getLocalNouns();
 
-    this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
   }
 
   /**
    * fetch already saved mappings
    */
   getAttributesMapping() {
-    this.nounModifierService.getAttributesMapping(this.libraryNounCode, this.libraryModifierCode)
-      .subscribe(resp => {
-        this.patchMappingForm(resp);
-      });
+
     const data = this.mappingForm.value;
     const request: ClassificationMappingRequest = {
       nounCode: data.libraryNounCode,
@@ -128,8 +125,12 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         row.status = 'matched';
         this.addAttributeMappingRow(row);
       });
+      this.nounModifierService.getAttributesMapping(this.libraryNounCode, this.libraryModifierCode)
+      .subscribe(resp => {
+        this.patchMappingForm(resp);
+      });
     } else {
-      this.nounModifierService.getClassificationMappingData(request).subscribe((resp) => {
+      this.nounModifierService.getClassificationMappingData(request).subscribe((resp: any) => {
         this.classificationCategory = resp;
         const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
         frmAray.clear();
@@ -141,6 +142,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         this.statas.forEach((stat) => {
           stat.count = this.attributeMapData.value.filter(row => row.status === stat.code).length
           + [resp.modifier.status, resp.noun.status].filter(status => status.toLowerCase() === stat.code).length;
+        });
+        this.nounModifierService.getAttributesMapping(this.libraryNounCode, this.libraryModifierCode)
+        .subscribe(response => {
+          this.patchMappingForm(response);
         });
       });
     }
@@ -169,7 +174,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * Build attribute mapping form
    */
   buildMappingForm() {
-
     this.mappingForm = this.formBuilder.group({
       libraryNounCode: [this.libraryNounCode || ''],
       localNounCode: [''],
@@ -202,15 +206,24 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   patchMappingForm(attributesMapping: AttributesMapping) {
-    if (attributesMapping.attributeMapData) {
-      const {localNounCode, localModCode} = attributesMapping;
-      this.mappingForm.patchValue({localNounCode, localModCode});
-      console.log(this.mappingForm.value);
-
+   if(this.classificationCategory) {
+     const {noun, modifier} = this.classificationCategory;
+     if(modifier.status === 'suggested') {
+       attributesMapping.localModCode = modifier.targetCtrl;
+     }
+     if(noun.status === 'suggested') {
+       attributesMapping.localNounCode = noun.targetCtrl;
+     }
+   }
+   const {localNounCode, localModCode} = attributesMapping;
+   this.mappingForm.patchValue({localNounCode, localModCode});
+  if (attributesMapping.attributeMapData) {
       attributesMapping.attributeMapData.forEach(mapData => {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
+
         if (index !== -1) {
-          this.attributeMapData.at(index).patchValue({localAttributeCode: mapData.localAttributeCode});
+          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && row.status === 'suggested');
+          this.attributeMapData.at(index).patchValue({localAttributeCode: suggestedObj ? suggestedObj.targetCtrl : mapData.localAttributeCode});
         }
       })
     }
@@ -221,6 +234,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     this.nounModifierService.getLocalNouns(plantCode)
       .subscribe(nouns => {
         this.localNounsList = nouns;
+        this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
       })
   }
 
@@ -269,7 +283,6 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         status: [attr && attr.status ? attr.status : status]
       })
     );
-
   }
 
   save() {
@@ -347,18 +360,28 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openNounSidesheet() {
     // need material group
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}]);
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` }}], {
+      queryParamsHandling: 'preserve'
+    });
   }
 
   openModifierSidesheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}]);
+    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}], {
+      queryParamsHandling: 'preserve'
+    });
   }
 
   openAttributeSidesheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}` }}]);
+    const routerCommand = ['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
+    outer: `outer/schema/attribute/${this.selectedNounCode}` }}];
+    this.nounModifierService.attributeSheetRoute = routerCommand;
+    this.router.navigate(routerCommand, {
+      queryParamsHandling: 'preserve'
+    });
+    this.nounModifierService.attributeSaved= new Subject();
+    return this.nounModifierService.attributeSaved;
   }
 
   close() {
@@ -410,10 +433,13 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.openNounSidesheet();
     } else if(f === 'modifier') {
       this.openModifierSidesheet();
-    } else if(f === 'attribute') {
-      this.openAttributeSidesheet();
     }
   }
 
-
+  createNewAttributeWidget(ind: number) {
+    this.openAttributeSidesheet().subscribe((res) => {
+      const row = res[0];
+      this.attributeMapData.at(ind).patchValue({localAttributeCode: row.attrCode, localAttributeText: row.attrDesc});
+    });
+  }
 }

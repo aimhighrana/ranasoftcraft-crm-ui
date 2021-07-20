@@ -51,7 +51,7 @@
     <ng-template #schemaInfoTemplate>
         <div class="f-col mat-tab-container">
             <div class="f-row filter-container">
-                <lib-search class="lib-search" placeholder="Search..."></lib-search>
+                <lib-search class="lib-search" [formControl]="searchNounNavCtrl" placeholder="Search..."></lib-search>
 
                 <lib-chip label="All" class="mdo-filter-matchip" disableRipple="true" [selectable]="true" [selected]="!activeTab  || activeTab !== 'correction'"
                     (click)="viewOf.next('')">

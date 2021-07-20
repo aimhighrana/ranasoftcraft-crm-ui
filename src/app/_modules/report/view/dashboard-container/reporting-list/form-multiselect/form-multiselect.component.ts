@@ -53,7 +53,7 @@ export class FormMultiselectComponent implements OnInit, OnChanges, OnDestroy {
       this.control = new FormControl();
     }
     this.control.valueChanges.pipe(startWith(''), debounceTime(500)).subscribe(res => {
-      if (typeof (res) === 'string') {
+      if (typeof (res) === 'string' || res === null) {
         this.getDropDownValue(res);
       }
     })

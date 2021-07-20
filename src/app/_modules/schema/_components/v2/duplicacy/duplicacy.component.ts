@@ -7,7 +7,6 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, ModuleInfo } from '@models/schema/schemalist';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -28,6 +27,8 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { FormControl } from '@angular/forms';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -210,6 +211,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @ViewChild('tableSearchInput') tableSearchInput: SearchInputComponent;
 
+  /**
+   * Control for the search ...
+   */
+  searchFrmCtrl: FormControl = new FormControl();
+
   currentDatascopePageNo = 0;
 
   constructor(
@@ -219,7 +225,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
     private endpointservice: EndpointsClassicService,
-    private snackBar: MatSnackBar,
+    private snackBar: TransientService,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
@@ -355,6 +361,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.userDetails = res;
     }, error => console.error(`Error : ${error.message}`));
 
+    this.searchFrmCtrl.valueChanges.subscribe(val=>{
+      this.inlineSearchSubject.next(val);
+    });
 
   }
 
@@ -826,6 +835,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   resetAppliedFilter() {
     this.filterCriteria.next([]);
     this.preInpVal = '';
+    this.searchFrmCtrl.setValue('');
   }
 
   /**
@@ -889,17 +899,21 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * mark record for deletion
    * @param row record to be marked for deletion
+   * @param forReset flg to identify whether for
    */
-  markForDeletion(row) {
+  markForDeletion(row,forReset?: boolean) {
     const objectNumber = row.OBJECTNUMBER.fieldData;
-    if (!objectNumber || row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE) {
+    // || row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE
+    if (!objectNumber) {
       return;
     }
-    this.catalogService.markForDeletion(objectNumber, this.moduleId, this.schemaId, this.schemaInfo.runId)
+    this.catalogService.markForDeletion(objectNumber, this.moduleId, this.schemaId, this.schemaInfo.runId, forReset ? forReset : false)
       .subscribe(resp => {
-        this.snackBar.open('Successfully marked for deletion !', 'close', { duration: 1500 });
-        row[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.DELETABLE;
-        console.log(resp);
+
+        // get the schema statics..
+        this.getSchemaStatics();
+        // get the table data ...
+        this.getData();
       }, error => {
         console.log(error);
       });
@@ -1060,6 +1074,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
     console.log(value);
+
+    let code = value;
+    if(typeof value === 'object') {
+      code = value.CODE;
+      value = value.TEXT;
+    }
+
     if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
       // DOM control after value change ...
@@ -1082,7 +1103,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
         const request: DoCorrectionRequest = {
           id: objctNumber,
           fldId: fldid,
-          vc: value,
+          vc: code,
+          vt: value,
           oc: oldVal,
           groupIdold: this.groupId,
           groupIdnew: '',
@@ -1237,6 +1259,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     return true;
 
+  }
+
+  /**
+   * Check where delFlag is true or false for this row ...
+   * @param row the current row ...
+   */
+  isDeleted(row: any): boolean {
+    return row.OBJECTNUMBER.delFlag ? row.OBJECTNUMBER.delFlag : false;
   }
 
 }

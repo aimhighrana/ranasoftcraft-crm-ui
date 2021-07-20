@@ -40,7 +40,7 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
   dataSource = new TableDataSource<GroupDetails>();
   totalCount: number;
-  startColumns = ['check', 'settings', 'avatar', 'groupName'];
+  startColumns = ['check', 'avatar', 'groupName'];
   displayedFields = new BehaviorSubject<string[]>(this.startColumns);
   fieldsMetadataList: any;
 
