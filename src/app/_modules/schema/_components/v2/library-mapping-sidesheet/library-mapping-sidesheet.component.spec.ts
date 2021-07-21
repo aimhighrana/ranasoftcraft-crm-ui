@@ -278,7 +278,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.setFormControlValue('localNounCode', 'Bearing');
     component.openAttributeSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${component.selectedNounCode}` }}], {queryParamsHandling: 'preserve'})
+    outer: `outer/schema/attribute/${component.selectedNounCode}/${component.selectedModifierCode}` }}], {queryParamsHandling: 'preserve'})
   });
 
   it('should filterAsStatus', () => {

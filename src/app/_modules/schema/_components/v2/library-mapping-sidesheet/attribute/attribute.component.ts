@@ -21,6 +21,8 @@ export class AttributeComponent implements OnInit {
 
   nounSno: string;
 
+  modifierCode: string;
+
   get defaultValueCount() {
     return this.nounModifierService.attributeValuesModels?.length || 0;
   }
@@ -38,6 +40,7 @@ export class AttributeComponent implements OnInit {
 
     this.activatedRoute.params.subscribe(params => {
       this.nounSno = params.nounSno;
+      this.modifierCode = params.modifierCode ? params.modifierCode : '';
     });
 
   }
@@ -94,7 +97,7 @@ export class AttributeComponent implements OnInit {
     };
     const request: Attribute[] = [attribute];
 
-    this.nounModifierService.addAttribute(request, this.nounSno)
+    this.nounModifierService.addAttribute(request, this.nounSno, this.modifierCode)
       .subscribe(resp => {
         this.nounModifierService.attributeSaved.next(resp);
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });

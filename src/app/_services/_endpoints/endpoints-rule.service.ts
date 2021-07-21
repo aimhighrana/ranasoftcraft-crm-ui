@@ -503,8 +503,8 @@ export class EndpointsRuleService {
     return this.origin + '/schema/metadata/create-noun';
   }
 
-  public getCreateAttributeUrl(nounSno: string): string {
-    return this.origin + `/schema/metadata/add-attributes/${nounSno}`;
+  public getCreateAttributeUrl(): string {
+    return this.origin + `/schema/metadata/add-attributes`;
   }
 
   public getSaveAttributesMappingUrl(): string {

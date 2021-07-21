@@ -361,6 +361,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     return this.mappingForm.get('localNounCode').value ? this.mappingForm.get('localNounCode').value : '';
   }
 
+  get selectedModifierCode() {
+    return this.mappingForm.get('localModCode').value ? this.mappingForm.get('localModCode').value : '';
+  }
+
   openNounSidesheet() {
     // need material group
     this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
@@ -378,7 +382,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openAttributeSidesheet() {
     const routerCommand = ['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}` }}];
+    outer: `outer/schema/attribute/${this.selectedNounCode}/${this.selectedModifierCode}` }}];
     this.nounModifierService.attributeSheetRoute = routerCommand;
     this.router.navigate(routerCommand, {
       queryParamsHandling: 'preserve'

@@ -327,11 +327,11 @@
                                                     [ngIf]="element[dynCol].oldData !== element[dynCol].fieldData"
                                                     [ngIfElse]="other">
                                                     <div class="f-col">
-                                                        <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                        <lib-text-line type="base" class="correction" id="viewctrl_{{ dynCol + '_' + rIndex }}">
                                                             {{ element[dynCol] ? formatCellData(dynCol,
                                                                 element[dynCol].fieldData) : '' }}
                                                         </lib-text-line>
-                                                        <lib-text-line type="base" textColor="info" class="text-correction">
+                                                        <lib-text-line type="base" textColor="info" class="text-correction" class="correction line-cut">
                                                             {{ element[dynCol] ? formatCellData(dynCol,
                                                                 element[dynCol].oldData) : '' }}
                                                         </lib-text-line>

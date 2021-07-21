@@ -244,11 +244,11 @@ describe('NounModifierService', () => {
 
     spyOn(endpointClassic, 'getCreateAttributeUrl').and.returnValue('getCreateAttributeUrl');
 
-    service.addAttribute(request, '1701').subscribe(actualReponse => {
+    service.addAttribute(request, '1701','222').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}`);
+    const mockRequest = httpTestingController.expectOne(`${url}?nounCode=1701&modCode=222`);
     expect(mockRequest.request.method).toEqual('POST');
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();

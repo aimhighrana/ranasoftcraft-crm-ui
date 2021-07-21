@@ -488,15 +488,14 @@
                                                         [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                                         [ngIfElse]="other">
                                                         <div class="f-col">
-                                                            <span class="correction"
-                                                                id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                            <span class="correction" id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
-                                                                element[dynCols].oldData) : '' }}
+                                                                element[dynCols].fieldData) : '' }}
                                                             </span>
 
                                                             <span class="correction line-cut">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
-                                                                element[dynCols].fieldData) : '' }}
+                                                                element[dynCols].oldData) : '' }}
                                                             </span>
 
                                                         </div>

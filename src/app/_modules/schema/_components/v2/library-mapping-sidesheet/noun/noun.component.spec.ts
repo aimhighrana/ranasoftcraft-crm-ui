@@ -76,6 +76,9 @@ describe('NounComponent', () => {
     expect(component.submitted).toBeTrue();
 
     component.setControlValue('nounCode', 'Bearing');
+    component.setControlValue('nounText', 'Text');
+    component.setControlValue('nounModeSep', ',');
+    component.setControlValue('matlGroup', 'Hello');
     component.save();
 
     component.setControlValue('shortDescActive', true);
