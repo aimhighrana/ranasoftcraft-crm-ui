@@ -18,14 +18,14 @@
 
             <form [formGroup]="nounForm">
                 <div class="mdo-field">
-                    <lib-input [type]="'text'" [formControl]="formField('nounCode')" [isRequired]="true" [placeholder]="'Noun code'"
+                    <lib-input [type]="'text'" formControlName="formField('nounCode')" [isRequired]="true" [placeholder]="'Noun code'"
                          [label]="'Noun code'"                         
                          [hint]="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required ? 'Please enter noun code' : ''"
                          [hasError]="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required"></lib-input>                   
                 </div>
     
                 <div class="mdo-field">
-                    <lib-input [type]="'text'" [formControl]="formField('nounText')" [isRequired]="true" [placeholder]="'Noun text'"
+                    <lib-input [type]="'text'" formControlName="formField('nounText')" [isRequired]="true" [placeholder]="'Noun text'"
                     [label]="'Noun text'"
                     [hint]="submitted && nounForm.controls.nounText.errors && nounForm.controls.nounText.errors.required ? 'Please enter noun text' : ''"
                     [hasError]="submitted && nounForm.controls.nounText.errors && nounForm.controls.nounText.errors.required">
@@ -33,13 +33,13 @@
                 </div>
     
                 <div class="mdo-field">
-                    <lib-input [type]="'text'" [formControl]="formField('nounNumCode')" [placeholder]="'Noun numeric code'"
+                    <lib-input [type]="'text'" formControlName="formField('nounNumCode')" [placeholder]="'Noun numeric code'"
                     [label]="'Noun numeric code'">
                     </lib-input>
                 </div>
     
                 <div class="mdo-field">
-                    <lib-input [type]="'text'" [formControl]="formField('nounModeSep')" [isRequired]="true" [placeholder]="'Noun modifier separator'"
+                    <lib-input [type]="'text'" formControlName="formField('nounModeSep')" [isRequired]="true" [placeholder]="'Noun modifier separator'"
                     [label]="'Noun modifier separator'"
                     [hint]="submitted && nounForm.controls.nounModeSep.errors && nounForm.controls.nounModeSep.errors.required ? 'Please enter noun modifier separator' : ''"
                     [hasError]="submitted && nounForm.controls.nounModeSep.errors && nounForm.controls.nounModeSep.errors.required">

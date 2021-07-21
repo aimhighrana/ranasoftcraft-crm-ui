@@ -55,6 +55,10 @@ describe('LibraryMappingSidesheetComponent', () => {
     userDetails = fixture.debugElement.injector.get(UserService);
   });
 
+  // afterEach(() => {
+  //   fixture.destroy();
+  // });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
