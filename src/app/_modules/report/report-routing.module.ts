@@ -10,6 +10,7 @@ import { ExportReportDatatableComponent } from './view/dashboard-container/repor
 import { SendEmailComponent } from './view/email/send-email/send-email.component';
 import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
 import { ImportLogComponent } from './import-log/import-log.component';
+import { ConfigureFiltersComponent } from './view/dashboard-container/reporting-list/configure-filters/configure-filters.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'send-email/:reportId', component: SendEmailComponent },
   { path: 'email-template', component: EmailTemplateComponent },
   { path: 'import-log/:reportId', component: ImportLogComponent },
-  { path: '**', component: PageNotFoundComponent }
+  { path: 'configure-filters/:widgetId', component: ConfigureFiltersComponent },
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({

@@ -33,6 +33,13 @@ import { DuplicateReportComponent } from './view/duplicate-report/duplicate-repo
 import { SendEmailComponent } from './view/email/send-email/send-email.component';
 import { EmailTemplateComponent } from './view/email/email-template/email-template.component';
 import { ImportLogComponent } from './import-log/import-log.component';
+import { ConfigureFiltersComponent } from './view/dashboard-container/reporting-list/configure-filters/configure-filters.component'
+import { FormSingleSelectComponent } from './view/dashboard-container/reporting-list/form-single-select/form-single-select.component';
+import { FormMultiselectComponent } from './view/dashboard-container/reporting-list/form-multiselect/form-multiselect.component';
+import { FormRadioButtonGroupComponent } from './view/dashboard-container/reporting-list/form-radio-button-group/form-radio-button-group.component';
+import { FormRangeSliderComponent } from './view/dashboard-container/reporting-list/form-range-slider/form-range-slider.component';
+import { FormCheckboxComponent } from './view/dashboard-container/reporting-list/form-checkbox/form-checkbox.component';
+import { FormTextAreaComponent } from './view/dashboard-container/reporting-list/form-text-area/form-text-area.component';
 
 import * as Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -69,11 +76,19 @@ import { ImportComponent } from './view/import/import.component';
     ReportDatatableColumnSettingsComponent,
     HierarchyFilterComponent,
     DuplicateReportComponent,
-    SendEmailComponent,
+    ImportLogComponent,
+    ConfigureFiltersComponent,
+    FormSingleSelectComponent,
+    FormMultiselectComponent,
+    FormRadioButtonGroupComponent,
+    FormRangeSliderComponent,
     EmailTemplateComponent,
     ImportLogComponent,
+    FormCheckboxComponent,
+    SendEmailComponent,
     ExportComponent,
-    ImportComponent
+    ImportComponent,
+    FormTextAreaComponent
   ],
   imports: [
     CommonModule,

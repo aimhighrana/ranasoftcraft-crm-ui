@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
+import { Observable, Subject } from 'rxjs';
+import { Criteria, DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq, ReportingWidget } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@models/collaborator';
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
@@ -15,6 +15,9 @@ import { ImportLogs } from '../_models/import-log';
   providedIn: 'root'
 })
 export class ReportService {
+  filterCriteria: Criteria[] = [];
+  tableColumnMetaData: ReportingWidget[] = [];
+  isSideSheetClose: Subject<boolean> = new Subject();
   selectedTemplate: BehaviorSubject<EmailTemplateBody> = new BehaviorSubject(null);
 
   constructor(
@@ -94,6 +97,33 @@ export class ReportService {
 
   public getCustomDatasetFields(objectId: string): Observable<any> {
     return this.http.get<any>(this.endpointAnalyticService.getCustomDatasetFieldsUrl(objectId));
+  }
+
+  public getDropDownValues(fieldId, searchText?): Observable<any> {
+    if (searchText)
+      return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString: searchText } });
+    else
+      return this.http.get<any>(this.endpointService.dropDownValuesUrl(fieldId));
+  }
+
+  public setFilterCriteria(filterCriteria: Criteria[]) {
+    this.filterCriteria = filterCriteria;
+  }
+
+  public getFilterCriteria(): Criteria[] {
+    return this.filterCriteria;
+  }
+
+  public setColumnMetaData(metaData: ReportingWidget[]) {
+    this.tableColumnMetaData = metaData;
+  }
+
+  public getColumnMetaData(): ReportingWidget[] {
+    return this.tableColumnMetaData;
+  }
+
+  public sideSheetStatusChange() {
+    return this.isSideSheetClose.asObservable();
   }
 
   public shareReport(request: EmailRequestBody, reportId: string): Observable<EmailResponseBody[]> {

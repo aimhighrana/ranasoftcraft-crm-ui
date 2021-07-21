@@ -884,6 +884,25 @@
           display: flex;
         }
       }
+
+      // .multipickradio {
+      //   .mat-radio-button {
+      //     width: 100%;
+
+      //     .mat-radio-label {
+      //       margin-right: 0;
+      //     }
+
+      //     .mat-radio-label-content {
+      //       &.mat-radio-label-before {
+      //         text-overflow: ellipsis;
+      //         overflow: hidden;
+      //         white-space: nowrap;
+      //         width: 100%;
+      //       }
+      //     }
+      //   }
+      // }
     }
   }
 
@@ -1078,7 +1097,7 @@
 
   .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
   .udr-select-col.has-error {
-    border: 1px solid  $color-status-error;
+    border: 1px solid $color-status-error;
   }
 
   .sidesheetcontent-listing .mandatory {
@@ -1522,6 +1541,45 @@
         &.selected:hover,
         &.selected:focus {
           background-color: $color-app-hover;
+        }
+      }
+    }
+  }
+
+  pros-configure-filters {
+    .mat-list-base .mat-list-item .mat-list-item-content {
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: hidden;
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 0 12px;
+    }
+
+    .selected {
+      background-color: $color-app-hover;
+    }
+  }
+
+  pros-welcome-mdo,
+  pros-schema-lists {
+    pros-svg-icon.welcome-logo {
+      .logo-primary {
+        fill: mat-color($primary-palette);
+      }
+    }
+
+    mat-list.mat-list {
+      mat-list-item.mat-list-item {
+        .mat-list-item-content {
+          padding: 0;
+
+          .short-line {
+            color: $color-text-secondary;
+          }
         }
       }
     }

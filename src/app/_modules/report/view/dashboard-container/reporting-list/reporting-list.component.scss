@@ -31,10 +31,20 @@ mat-card.widget {
       }
     }
 
+    .lib-input {
+      height: 36px;
+    }
+
     mat-paginator {
       position: absolute;
       bottom: 0;
       right: 0;
     }
   }
+}
+
+.clear {
+  position: absolute;
+  right: 0;
+  top: 9px;
 }

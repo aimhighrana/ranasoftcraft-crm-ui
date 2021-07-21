@@ -781,6 +781,10 @@
           <context context-type="sourcefile">src\app\_modules\shared\_components\filter-values\filter-values.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
+          <context context-type="linenumber">118</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_filter_value" datatype="html">
         <source>type filter value</source>
@@ -2474,7 +2478,23 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="import_report" datatype="html">
+      <trans-unit id="resetFilters" datatype="html">
+        <source>Reset all filters</source>
+        <target>모든 필터 재설정</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="configureFilters" datatype="html">
+        <source>Configure filters</source>
+        <target>필터 구성</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+       <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>보고서 가져 오기</target>
         <context-group purpose="location">

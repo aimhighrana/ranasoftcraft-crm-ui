@@ -492,7 +492,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       // check file type
       let type = '';
       try {
-        type = target.files[0].name.split('.')[1];
+        type = `${target.files[0].name}`.split('.')[1];
       } catch (ex) {
         console.error(ex);
       }
