@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SchemaService } from '@services/home/schema.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -13,6 +15,7 @@ describe('NounComponent', () => {
   let fixture: ComponentFixture<NounComponent>;
   let router: Router;
   let nounModifierService: NounModifierService;
+  let schemaService: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,6 +35,7 @@ describe('NounComponent', () => {
 
     router = fixture.debugElement.injector.get(Router);
     nounModifierService = fixture.debugElement.injector.get(NounModifierService);
+    schemaService = fixture.debugElement.injector.get(SchemaService);
     // fixture.detectChanges();
   });
 
@@ -56,8 +60,10 @@ describe('NounComponent', () => {
    }));
 
    it('should init component', () => {
+     spyOn(component,'getDropValue');
      component.ngOnInit();
      expect(component.moduleId).toEqual('1005');
+     expect(component.getDropValue).toHaveBeenCalled();
    });
 
    it('should setControlValue', () => {
@@ -76,6 +82,9 @@ describe('NounComponent', () => {
     expect(component.submitted).toBeTrue();
 
     component.setControlValue('nounCode', 'Bearing');
+    component.setControlValue('nounText', 'Text');
+    component.setControlValue('nounModeSep', ',');
+    component.setControlValue('matlGroup', 'Hello');
     component.save();
 
     component.setControlValue('shortDescActive', true);
@@ -84,7 +93,19 @@ describe('NounComponent', () => {
 
     expect(nounModifierService.createNounModifier).toHaveBeenCalledTimes(2);
 
-   })
+   });
+
+
+   it('getDropValue(), should call api and get the values', async(()=>{
+    // mock data
+    const dropVal: DropDownValue [] = [{CODE:'t',TEXT:'t'} as DropDownValue];
+
+    spyOn(schemaService,'dropDownValues').withArgs('MATL_GROUP','').and.returnValue(of(dropVal));
+
+    component.getDropValue('');
+    expect(schemaService.dropDownValues).toHaveBeenCalledWith('MATL_GROUP','');
+
+   }));
 
 
 

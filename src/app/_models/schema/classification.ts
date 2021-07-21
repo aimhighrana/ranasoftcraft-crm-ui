@@ -24,9 +24,9 @@ export interface Attribute {
 }
 
 export enum AttributeDataType {
-    TEXT = '0',
-    NUMBER = '1',
-    LIST = '2'
+    TEXT = 'TEXT',
+    NUMBER = 'NUMBER',
+    LIST = 'PICKLIST'
 }
 
 export interface AttributeDefaultValue {
@@ -68,6 +68,7 @@ export interface CreateNounModRequest {
     active: string;
     plantCode: string;
     objectType: string;
+    matlGroup?: string;
 }
 
 export interface AttributesMapping {

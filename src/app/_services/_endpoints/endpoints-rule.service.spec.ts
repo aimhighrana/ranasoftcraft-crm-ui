@@ -519,7 +519,7 @@ describe('EndpointsRuleService', () => {
 
   it('getCreateAttributeUrl(), should return create-attribute url', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.getCreateAttributeUrl('17021')).toContain('add-attributes/17021');
+    expect(serObj.getCreateAttributeUrl()).toContain('add-attributes');
   }));
 
   it('getSaveAttributesMappingUrl(),should return save-mappings url', async(() => {

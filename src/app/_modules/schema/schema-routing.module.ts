@@ -43,7 +43,7 @@ const routes: Routes = [
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'attribute-mapping/:moduleId/:schemaId/:nounCode/:modCode', component: LibraryMappingSidesheetComponent },
-  { path: 'attribute/:nounSno', component: AttributeComponent },
+  { path: 'attribute/:nounSno/:modifierCode', component: AttributeComponent },
   { path: 'attribute-values', component: AttributeDefaultValueComponent },
   { path: 'noun/:moduleId/:matlGroup', component: NounComponent },
   { path: 'modifier/:moduleId/:matlGroup/:nounCode', component: ModifierComponent },
