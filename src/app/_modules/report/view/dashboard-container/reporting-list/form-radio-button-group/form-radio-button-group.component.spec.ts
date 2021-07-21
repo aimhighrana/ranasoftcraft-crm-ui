@@ -2,11 +2,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormRadioButtonGroupComponent } from './form-radio-button-group.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ReportService } from '@modules/report/_service/report.service';
 import { DropDownValues } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
 import { SimpleChanges } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('FormRadioButtonGroupComponent', () => {
   let component: FormRadioButtonGroupComponent;
@@ -16,7 +18,7 @@ describe('FormRadioButtonGroupComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormRadioButtonGroupComponent],
-      imports: [AppMaterialModuleForSpec, ReactiveFormsModule],
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, MdoUiLibraryModule],
       providers: [ReportService]
     })
       .compileComponents();

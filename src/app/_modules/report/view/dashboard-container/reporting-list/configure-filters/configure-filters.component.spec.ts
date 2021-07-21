@@ -13,6 +13,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from '@services/user/userservice.service';
 import { of } from 'rxjs';
 import { Userdetails } from '@models/userdetails';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ConfigureFiltersComponent', () => {
   let component: ConfigureFiltersComponent;
@@ -24,7 +25,7 @@ describe('ConfigureFiltersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ConfigureFiltersComponent],
-      imports: [RouterTestingModule, AppMaterialModuleForSpec, MdoUiLibraryModule],
+      imports: [RouterTestingModule, AppMaterialModuleForSpec, MdoUiLibraryModule, HttpClientTestingModule],
       providers: [ReportService, UserService]
     })
       .compileComponents();

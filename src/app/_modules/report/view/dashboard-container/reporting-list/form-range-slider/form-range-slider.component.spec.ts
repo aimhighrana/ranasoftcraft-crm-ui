@@ -3,6 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormRangeSliderComponent } from './form-range-slider.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormControl } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('FormRangeSliderComponent', () => {
   let component: FormRangeSliderComponent;
@@ -11,7 +13,7 @@ describe('FormRangeSliderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormRangeSliderComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, MdoUiLibraryModule]
     })
       .compileComponents();
   }));

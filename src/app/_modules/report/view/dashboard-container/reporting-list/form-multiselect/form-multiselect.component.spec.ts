@@ -6,6 +6,8 @@ import { DropDownValues } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { SimpleChanges } from '@angular/core';
 import { of } from 'rxjs';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('FormMultiSelectComponent', () => {
   let component: FormMultiselectComponent;
@@ -15,7 +17,7 @@ describe('FormMultiSelectComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormMultiselectComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, MdoUiLibraryModule, HttpClientTestingModule]
     })
       .compileComponents();
       reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;

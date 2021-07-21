@@ -6,6 +6,8 @@ import { SimpleChanges } from '@angular/core';
 import { ReportService } from '@modules/report/_service/report.service';
 import { DropDownValues } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('FormSingleSelectComponent', () => {
   let component: FormSingleSelectComponent;
@@ -15,7 +17,7 @@ describe('FormSingleSelectComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormSingleSelectComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, MdoUiLibraryModule]
     })
       .compileComponents();
     reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;

@@ -4,6 +4,7 @@ import { FormCheckboxComponent } from './form-checkbox.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 describe('FormCheckboxComponent', () => {
   let component: FormCheckboxComponent;
@@ -12,7 +13,7 @@ describe('FormCheckboxComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormCheckboxComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, MdoUiLibraryModule]
     })
       .compileComponents();
   }));
