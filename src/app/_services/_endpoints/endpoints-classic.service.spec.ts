@@ -944,4 +944,10 @@ describe('EndpointsClassicService', () => {
     const url = serviceObj.getTemplateById('12345');
     expect(url).toContain(`report/share/email/12345/template`);
   });
+
+  it('getApisRulesUrl(), should get the url for api rules ', async() => {
+    const serviceObj = new EndpointsClassicService();
+    const url = serviceObj.getApisRulesUrl();
+    expect(url).toContain(`schema/get-custom-apis`);
+  });
 });

@@ -6,6 +6,7 @@ import { HttpTestingController, HttpClientTestingModule } from '@angular/common/
 import { Any2tsService } from '../any2ts.service';
 import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import {
+  ApiRulesInfo,
   Category,
   CoreSchemaBrInfo,
   CreateUpdateSchema,
@@ -68,7 +69,7 @@ describe('SchemaService', () => {
       'cancleSchemaUri',
       'transformationRules',
       'getMappedTransformationRulesUrl',
-      'getSchemaGlobalCounts',
+      'getSchemaGlobalCounts'
     ]);
     const any2Spy = jasmine.createSpyObj('Any2tsService', [
       'any2SchemaGroupResponse',
@@ -82,6 +83,7 @@ describe('SchemaService', () => {
       'getAllObjecttypeUrl',
       'scheduleSchemaCount',
       'downloadExecutionDetailsByNodesUrl',
+      'getApisRulesUrl'
     ]);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -510,7 +512,7 @@ describe('SchemaService', () => {
       expect(actualData).toEqual(mockResponse);
     });
     // mocking http
-    const httpReq = httpTestingController.expectOne(`${url}?queryString=search`);
+    const httpReq = httpTestingController.expectOne(`${url}?queryString=search&from=0&size=20`);
     expect(httpReq.request.method).toEqual('GET');
     httpReq.flush(mockResponse);
     // verify http
@@ -884,4 +886,24 @@ describe('SchemaService', () => {
     mockRequest.flush(response);
     httpTestingController.verify();
   });
+
+  it('should getApisRule', () => {
+    const url = 'getApisRule test';
+
+    const apisRules: ApiRulesInfo[] = [{
+      description:'Api 1', sno:'8767757'
+    }];
+
+    endpointClassicServiceSpy.getApisRulesUrl.and.returnValue(url);
+
+    schemaService.getApisRule('72735','',0,10,'756756').subscribe((result) => {
+      expect(result).toEqual(apisRules);
+    });
+
+    const mockRequest = httpTestingController.expectOne(`${url}?moduleId=72735&searchString=&from=0&size=10&prefer=756756`);
+    expect(mockRequest.request.method).toEqual('GET');
+    mockRequest.flush(apisRules);
+    httpTestingController.verify();
+  });
+
 });

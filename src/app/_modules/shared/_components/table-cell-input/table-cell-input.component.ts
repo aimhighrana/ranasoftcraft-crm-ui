@@ -42,6 +42,9 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
 
     if ((this.inputType === this.FIELD_TYPE.SINGLE_SELECT) || (this.inputType === this.FIELD_TYPE.MULTI_SELECT)) {
       this.prepareDropdownOptions();
+      this.searchControl.valueChanges.pipe(distinctUntilChanged(), debounceTime(400)).subscribe(v=>{
+        this.prepareDropdownOptions(v);
+      });
     } else if (this.inputType === this.FIELD_TYPE.DATE){
       this.dateControl.setValue(this.prepareDateFormat());
     }
@@ -94,12 +97,7 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
   prepareDropdownOptions(searchString?: string) {
     this.schemaService.dropDownValues(this.fieldId, searchString ? searchString : '').subscribe((data) => {
       this.selectFieldOptions = data;
-
       this.filterdOptionsObs = of(data);
-
-      this.searchControl.valueChanges.pipe(distinctUntilChanged(), debounceTime(400)).subscribe(v=>{
-        this.prepareDropdownOptions(v);
-      });
     })
   }
 

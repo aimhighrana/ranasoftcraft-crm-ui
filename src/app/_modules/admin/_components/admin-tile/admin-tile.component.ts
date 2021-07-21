@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'pros-admin-tile',
   templateUrl: './admin-tile.component.html',
   styleUrls: ['./admin-tile.component.scss']
 })
-export class AdminTileComponent implements OnInit {
+export class AdminTileComponent {
 
   @Input()
   icon: string;
@@ -38,10 +38,6 @@ export class AdminTileComponent implements OnInit {
     } else {
       return this.link2;
     }
-  }
-  constructor() {}
-
-  ngOnInit() {
   }
 
 }

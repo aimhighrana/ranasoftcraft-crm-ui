@@ -169,7 +169,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
     arrowIcon = 'chevron-left';
 
-    widthOfSchemaNav = 236;
+    widthOfSchemaNav = 260;
     boxPosition: { left: number, top: number };
     public mousePosition: { x: number, y: number };
     public status: SchemaNavGrab = SchemaNavGrab.OFF;
@@ -375,6 +375,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
      this.sharedServices.getAfterMappingSaved().subscribe(res=>{
        if(res) {
         this.getClassificationNounMod(this.searchNounNavCtrl.value);
+        this.getSchemaStatics();
        }
      },err=> console.error(`Error : ${err.message}`));
 

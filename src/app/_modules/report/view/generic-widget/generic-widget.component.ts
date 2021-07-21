@@ -58,7 +58,7 @@ export abstract class GenericWidgetComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     if (this.displayHeading && this.displayHeading.nativeElement) {
       const checkExist = setInterval(() => {
-        if (this?.displayHeading?.nativeElement?.offsetWidth) {
+        if (this.displayHeading.nativeElement && this.displayHeading.nativeElement.offsetWidth) {
            clearInterval(checkExist);
            this.showHeadingTooltip();
         }

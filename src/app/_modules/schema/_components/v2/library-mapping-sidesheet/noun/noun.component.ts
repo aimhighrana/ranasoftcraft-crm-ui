@@ -92,8 +92,8 @@ export class NounComponent implements OnInit {
           this.close();
         },
         error => {
-          this.snackBar.open('Successfully created !', 'close', { duration: 3000 });
-          console.log(error);
+          this.snackBar.open('Error occured while creating!', 'close', { duration: 3000 });
+          console.log('Error occured while creating noun!', error);
         })
 
   }

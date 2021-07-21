@@ -788,4 +788,12 @@ export class EndpointsClassicService {
   public getTemplateById(_id: string): string {
     return `${this.apiUrl}/report/share/email/${_id}/template`;
   }
+
+  /**
+   * Get the APIs rule url
+   * @returns Will return the url
+   */
+  public getApisRulesUrl(): string {
+    return `${this.apiUrl}/schema/get-custom-apis`;
+  }
 }

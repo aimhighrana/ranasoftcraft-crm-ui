@@ -8,7 +8,7 @@ import { Userdetails } from '@models/userdetails';
 import { SharedModule } from '@modules/shared/shared.module';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { UserService } from '@services/user/userservice.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { LibraryMappingSidesheetComponent } from './library-mapping-sidesheet.component';
@@ -102,12 +102,20 @@ describe('LibraryMappingSidesheetComponent', () => {
       {ATTR_DESC: 'length',  ATTR_CODE: 'length'} as AttributesDoc
     ]
 
-    spyOn(nounModifierService, 'getLocalAttribute').withArgs('Bearing', 'Ball','0').and.returnValue(of(result));
+    const localAttrSpy = spyOn(nounModifierService, 'getLocalAttribute').withArgs('Bearing', 'Ball','0').and.returnValue(of(result));
 
     component.getLocalAttributes('Bearing','Ball');
 
+    localAttrSpy.and.returnValue(throwError({ message: 'error' }));
+    component.getLocalAttributes('Bearing','Ball');
     expect(nounModifierService.getLocalAttribute).toHaveBeenCalledWith('Bearing', 'Ball', '0');
     expect(component.LocalAttributesList).toEqual(result);
+  });
+
+  it('createNewAttributeWidget should open attribute side sheet', () => {
+    spyOn(component, 'openAttributeSidesheet').and.returnValue(of([]) as any);
+    component.createNewAttributeWidget(0);
+    expect(component.openAttributeSidesheet).toHaveBeenCalled();
   });
 
   it('should get already saved mapping', () => {
@@ -119,7 +127,7 @@ describe('LibraryMappingSidesheetComponent', () => {
       localModCode: 'Ball',
       attributeMapData: [{libraryAttributeCode: 'Length', localAttributeCode: 'Length'}]
     }
-
+    component.isMapped = true;
     component.buildMappingForm();
 
     spyOn(nounModifierService, 'getAttributesMapping').withArgs('Bearing', 'Ball').and.returnValue(of(result));
@@ -136,7 +144,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     spyOn(router, 'navigate');
     component.openNounSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/noun/${component.moduleId}/${component.mgroup}` }}])
+    outer: `outer/schema/noun/${component.moduleId}/${component.mgroup}` }}], {queryParamsHandling: 'preserve'})
   });
 
 
@@ -166,7 +174,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.addAttributeMappingRow(attr);
 
     const mappingData = {libraryNounCode: 'Bearing', libraryModCode: 'Ball', localNounCode: 'Bearing', localModCode: 'Ball',
-      attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}]};
+      attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}, {libraryAttributeCode: 'color', localAttributeCode: 'color'}]};
 
     component.patchMappingForm({} as AttributesMapping);
     expect(component.attributeMapData.at(0).value.localAttributeCode).toBeFalsy();
@@ -177,6 +185,39 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.setFormControlValue('libraryModCode', 'Precision Ball');
     expect(component.mappingForm.value.libraryModCode).toEqual('Precision Ball');
 
+    component.classificationCategory = {
+      noun: {
+        status: null,
+        source: '',
+        targetCtrl: 'test1'
+      },
+      modifier: {
+        status: null,
+        source: '',
+        targetCtrl: 'test2'
+      },
+      attrLists: []
+    };
+    component.patchMappingForm(mappingData);
+    component.classificationCategory = {
+      noun: {
+        status: 'suggested',
+        source: '',
+        targetCtrl: 'test1'
+      },
+      modifier: {
+        status: 'suggested',
+        source: '',
+        targetCtrl: 'test2'
+      },
+      attrLists: [{
+        source: 'length',
+        targetCtrl: 'test3',
+        status: 'suggested'
+      }]
+    };
+    component.patchMappingForm(mappingData);
+    expect(component.mappingForm.value.localModCode).toEqual('test2');
 
   });
 
@@ -195,6 +236,8 @@ describe('LibraryMappingSidesheetComponent', () => {
     const attr = {ATTR_CODE:'', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
     component.buildMappingForm();
     component.addAttributeMappingRow(attr);
+    component.isMapped = true;
+    component.addAttributeMappingRow(null);
     expect(component.attributeMapData.at(0).value.localAttributeCode).toEqual('length');
   });
 
@@ -226,7 +269,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.buildMappingForm();
     component.openModifierSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` }}])
+    outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` }}], {queryParamsHandling: 'preserve'})
   });
 
   it('should openAttributeSidesheet', () => {
@@ -235,7 +278,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.setFormControlValue('localNounCode', 'Bearing');
     component.openAttributeSidesheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/attribute-mapping/${component.moduleId}/${component.schemaId}/${component.libraryNounCode}/${component.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${component.selectedNounCode}` }}])
+    outer: `outer/schema/attribute/${component.selectedNounCode}` }}], {queryParamsHandling: 'preserve'})
   });
 
   it('should filterAsStatus', () => {
@@ -267,16 +310,13 @@ describe('LibraryMappingSidesheetComponent', () => {
   it('should createNewWidgetFor', () => {
     spyOn(component, 'openNounSidesheet');
     spyOn(component, 'openModifierSidesheet');
-    spyOn(component, 'openAttributeSidesheet');
 
     component.createNewWidgetFor('noun');
     component.createNewWidgetFor('modifier');
-    component.createNewWidgetFor('attribute');
     component.createNewWidgetFor('other');
 
     expect(component.openNounSidesheet).toHaveBeenCalledTimes(1);
     expect(component.openModifierSidesheet).toHaveBeenCalledTimes(1);
-    expect(component.openAttributeSidesheet).toHaveBeenCalledTimes(1);
   })
 
   it('should search the attribute', () => {
@@ -355,6 +395,27 @@ describe('LibraryMappingSidesheetComponent', () => {
     expect(component.canDisplayAttribute(value)).toBeFalse();
   });
 
-
-
+  it('should trigger Search', () => {
+    component.searchAttributeVal('test');
+    expect(component.searchString).toEqual('test');
+  })
+  it('getStatus() should get current status', () => {
+    component.isMapped = true;
+    expect(component.getStatus('test')).toEqual('matched');
+    component.isMapped = false;
+    expect(component.getStatus('test')).toEqual('unmatched');
+    component.classificationCategory = {
+      noun: {
+        status: 'matched'
+      },
+      attrLists: [{
+        targetCtrl: {
+          ATTR_CODE: 'test'
+        },
+        status: 'unmatched'
+      }]
+    } as any;
+    expect(component.getStatus('noun')).toEqual('matched');
+    expect(component.getStatus('test')).toEqual('unmatched');
+  })
 });

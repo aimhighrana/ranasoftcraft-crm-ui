@@ -1438,6 +1438,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       default:
         break;
     }
-    obj.Count = objData.y ? objData.y + '\t' : objData + '\t';
+    obj.Count = objData.y ? objData.y + '\t' : objData + '\t'
   }
 }

@@ -322,11 +322,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   ];
 
   runningScheduleList = [{
-    key: 'dontRunSchema',
-    value: 'Do not run the schema now'
+    value: 'dontRunSchema',
+    key: 'Do not run the schema now'
   }, {
-    key: 'runSchemaOnce',
-    value: 'Run the schema once now'
+    value: 'runSchemaOnce',
+    key: 'Run the schema once now'
   }]
   /**
    * Track the click event
@@ -340,9 +340,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.editableFieldIds = [];
     }
   }
-get selectedRunningSchedule () {
-  return this.runningScheduleList.find(x => this.requestForm.value.runTime === x.value);
-}
+
+  get selectedRunningSchedule () {
+    return this.requestForm.value.runTime? 'runSchemaOnce': 'dontRunSchema';
+  }
+
   /**
    * Constructor of class
    * @param _formBuilder form builder object
@@ -442,6 +444,11 @@ get selectedRunningSchedule () {
       schemaId: new FormControl()
     });
     this.schemaCategory = new FormControl('DATAQUALITY_VIEW');
+    this.requestForm.valueChanges.subscribe((formData) => {
+      if(this.currentSchedule && formData.runTime) {
+        this.currentSchedule.isEnable = formData.runTime;
+      }
+    })
   }
 
   /**
@@ -485,7 +492,7 @@ get selectedRunningSchedule () {
       // check file type
       let type = '';
       try {
-        type = target.files[0].name.split('.')[1];
+        type = `${target.files[0].name}`.split('.')[1];
       } catch (ex) {
         console.error(ex);
       }
@@ -495,6 +502,7 @@ get selectedRunningSchedule () {
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
+          (evt.target as any).value = '';
           this.showValidationError('File size too large , upload less then 10 MB');
           return false;
         }
@@ -542,6 +550,7 @@ get selectedRunningSchedule () {
         this.uploadFileData();
       } else {
         this.uploadedFile = null;
+        (evt.target as any).value = '';
         this.showValidationError('Unsupported file format, allowed file formats are .xlsx, .xls and .csv')
       }
     }
@@ -758,11 +767,12 @@ get selectedRunningSchedule () {
    * @param response response from the newly created rule dialog
    * or from the existing rules selection
    */
-  updateCurrentRulesList(response) {
+  updateCurrentRulesList(response: any) {
     if (!response || !response.formData) { return; };
+
     let brObject: CoreSchemaBrInfo;
-    const tempId = (response.tempId) ? response.tempId : null;
-    const brId = (response.brId) ? response.brId : '';
+    const tempId = response.tempId ? response.tempId : '';
+    const brId = response.brId ? response.brId : '';
     let formData = {...response.formData, brId};
 
     // Add transformation schema details from response to formData
@@ -776,16 +786,19 @@ get selectedRunningSchedule () {
 
     if (this.selectedBusinessRules.length > 0) {
       let index = null;
+
       if(brId){
         index = this.selectedBusinessRules.findIndex(rule => rule.brId === brId);
       } else {
         index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
       }
+
       if (index > -1) {
         this.selectedBusinessRules[index] = { ...brObject };
       } else {
         this.selectedBusinessRules.push(brObject);
       }
+
     } else {
       this.selectedBusinessRules.push(brObject);
     }
@@ -897,7 +910,6 @@ get selectedRunningSchedule () {
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: NewBrDialogResponse) => {
-        console.log(response)
         if (response && response.formData) {
           this.updateCurrentRulesList(response);
         }
@@ -1157,7 +1169,6 @@ get selectedRunningSchedule () {
   setschemaName(event) {
     const updatedSchemaValue = { ...this.requestForm.controls.core_schema.value };
     updatedSchemaValue.discription = event;
-    console.log(updatedSchemaValue)
     this.requestForm.controls.core_schema.setValue(updatedSchemaValue);
   }
 
@@ -1180,11 +1191,8 @@ get selectedRunningSchedule () {
    * function to set the value of scheduling
    * @param runId the value of scheduling
    */
-  setRunningSchedule(runId) {
-    if(this.currentSchedule) {
-      this.currentSchedule.isEnable = !runId.value;
-    }
-    this.requestForm.controls.runTime.setValue(runId.value);
+  setRunningSchedule(runId: string) {
+    this.requestForm.controls.runTime.setValue((runId === 'runSchemaOnce'));
   }
 
   /**
@@ -1368,12 +1376,14 @@ get selectedRunningSchedule () {
    */
   callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
     const formObject = this.removeTempId(this.requestForm.value);
-    const runNow = Boolean(this.runningScheduleList.find(x => x.value === formObject.runTime)?.key === 'runSchemaOnce');
+    const runNow = formObject.runTime;
+
     delete formObject.objectId;
     delete formObject.file;
     delete formObject.fileSerialNo;
     delete formObject.runNow;
     delete formObject.runTime;
+
     formObject[GLOBALCONSTANTS.SCHEMA_SCHEDULER] = this.currentSchedule;
     this.schemaDetailsService.saveNewSchemaDetails(
       objectId,
@@ -1724,10 +1734,8 @@ get selectedRunningSchedule () {
       .subscribe((response: SchemaScheduler) => {
         if (response) {
           this.currentSchedule = response;
-          this.canEditSchedule = true;
-        } else {
-          this.canEditSchedule = false;
         }
+        this.canEditSchedule = !!this.currentSchedule;
         this.dialogSubscriber.unsubscribe();
       });
   }

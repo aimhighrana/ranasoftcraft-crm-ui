@@ -65,13 +65,15 @@
                             </lib-chip>
                             <lib-chip icon="user-check" (click)="remove(selcoll)" removable="true"
                                 *ngIf="selcoll.permissionType === 'ROLE'" matTooltipPosition="right"
-                                matTooltip="{{ selcoll.rolesModel ? selcoll.rolesModel.roleDesc : 'Unknown'}}">&nbsp;
+                                matTooltip="{{ selcoll.rolesModel ? selcoll.rolesModel.roleDesc : 'Unknown'}}">
+                                &nbsp;
                                 <span class="chip-content">{{ selcoll.rolesModel ? selcoll.rolesModel.roleDesc :
                                     'Unknown'}}</span>&nbsp;
                             </lib-chip>
-                            <lib-chip (click)="remove(selcoll)" icon="group" removable="true"
+                            <lib-chip (click)="remove(selcoll)" icon="user-friends" removable="true"
                                 *ngIf="selcoll.permissionType === 'GROUP'" matTooltipPosition="right"
                                 matTooltip="{{ selcoll.groupHeaderModel ? selcoll.groupHeaderModel.description : 'Unknown'}}">
+                                &nbsp;
                                 <span class="chip-content">{{ selcoll.groupHeaderModel ?
                                     selcoll.groupHeaderModel.description : 'Unknown'}}</span>
                             </lib-chip>

@@ -144,7 +144,7 @@
                                             [data]="LocalAttributesList" [requestFor]="'attribute'"
                                             [selectedNoun]="mappingForm.get('localNounCode').value"
                                             [selectedModifier]="mappingForm.get('localModCode').value"
-                                            (clickAddNew)="createNewWidgetFor($event)">
+                                            (clickAddNew)="createNewAttributeWidget(i)">
                                         </pros-noun-modifier-autocomplete>
                                     </div>
                                 </ng-container>

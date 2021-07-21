@@ -13,10 +13,6 @@ export class SharedServiceService {
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  private afterEditDatascopeSideSheetClose: BehaviorSubject<any> = new BehaviorSubject(null);
-
-  private editDatascopeTrigger: BehaviorSubject<any> = new BehaviorSubject(null);
-
   private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -89,6 +85,8 @@ export class SharedServiceService {
   private afterMappingSaved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private datascopeSheetState: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private afterVariantDeleted: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() {}
 
@@ -301,6 +299,14 @@ export class SharedServiceService {
 
   public getdatascopeSheetState() {
     return this.datascopeSheetState.asObservable();
+  }
+
+  public setAfterVariantDeleted(id: string) {
+    return this.afterVariantDeleted.next(id);
+  }
+
+  public getAfterVariantDeleted() {
+    return this.afterVariantDeleted.asObservable();
   }
 
 }

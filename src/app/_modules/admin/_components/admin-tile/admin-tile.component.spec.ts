@@ -30,4 +30,15 @@ describe('AdminTileComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('linker(), should create', () => {
+    component.link = 'test';
+    component.link2 = null;
+    component.count = 0;
+    expect(component.linker()).toEqual('test');
+
+    component.link2 = 'test2';
+    component.count = 2;
+    expect(component.linker()).toEqual('test2');
+  });
 });

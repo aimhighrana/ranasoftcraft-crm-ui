@@ -97,13 +97,12 @@ export class MissingruleComponent implements OnInit, OnChanges {
   //   selectFields: '',
   // })
 
-  private filterGroup(val: string) {
+  filterGroup(val: string) {
     if (typeof val === 'string') {
       return this.finalList
         .map(group => ({ letter: group.key, names: filter(group.value, val), length: group.length }))
         .filter(group => group.names.length > 0);
     }
-
     return this.finalList;
   }
 
@@ -151,6 +150,8 @@ export class MissingruleComponent implements OnInit, OnChanges {
 
 
   fillDetailsData() {
+    if(!this.moduleId) { return; };
+
     this.schemaService.getFillDataDropdownData(this.moduleId).subscribe(res => {
       this.metaDataFieldList.next(this.makeMetadataControle(res as MetadataModeleResponse));
       const response: any = res;

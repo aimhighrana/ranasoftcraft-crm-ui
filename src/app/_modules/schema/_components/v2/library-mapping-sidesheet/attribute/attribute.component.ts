@@ -21,6 +21,10 @@ export class AttributeComponent implements OnInit {
 
   nounSno: string;
 
+  get defaultValueCount() {
+    return this.nounModifierService.attributeValuesModels?.length || 0;
+  }
+
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
@@ -48,14 +52,17 @@ export class AttributeComponent implements OnInit {
       type: [this.ATTRIBUTE_DATA_TYPE.TEXT],
       attFieldLen: [''],
       prefix: ['']
-    })
+    });
+    if(this.nounModifierService.attributeFormValue) {
+      this.attributeForm.patchValue(this.nounModifierService.attributeFormValue);
+    }
   }
 
   /**
    * function to return formField
    */
-    formField(field: string){
-      return this.attributeForm.get(field);
+  formField(field: string) {
+    return this.attributeForm.get(field);
   }
 
   /**
@@ -72,19 +79,24 @@ export class AttributeComponent implements OnInit {
    */
   save() {
     this.submitted = true;
-    if (this.attributeForm.invalid) {
+    if (this.attributeForm.invalid || this.attributeForm.value.type === this.ATTRIBUTE_DATA_TYPE.LIST && !this.nounModifierService.attributeValuesModels?.length) {
       (Object).values(this.attributeForm.controls).forEach(control => {
-        if(control.invalid)
-        control.markAsTouched();
+        if (control.invalid)
+          control.markAsTouched();
       });
-      this.snackBar.open('Please enter the missing fields !', 'close', { duration: 3000 });
+      this.snackBar.open('Please enter the missing fields!', 'close', { duration: 3000 });
       return;
     }
 
-    const request: Attribute[] = [{ ...this.attributeForm.value } as Attribute];
+    const attribute: Attribute = {
+      ...this.attributeForm.value,
+      attributeValuesModels: this.attributeForm.value.type === this.ATTRIBUTE_DATA_TYPE.LIST ? this.nounModifierService.attributeValuesModels : []
+    };
+    const request: Attribute[] = [attribute];
 
     this.nounModifierService.addAttribute(request, this.nounSno)
       .subscribe(resp => {
+        this.nounModifierService.attributeSaved.next(resp);
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });
         this.close();
       },
@@ -94,7 +106,23 @@ export class AttributeComponent implements OnInit {
   }
 
   close() {
-    this.router.navigate([{ outlets: { [`outer`]: null } }]);
+    this.router.navigate([{ outlets: { [`outer`]: null } }], {
+      queryParamsHandling: 'preserve'
+    });
+    this.nounModifierService.attributeValuesModels = [];
+    delete this.nounModifierService.attributeFormValue;
   }
 
+  openDefaultValueSideSheet() {
+    this.nounModifierService.attributeFormValue = this.attributeForm.value;
+    this.router.navigate(['', {
+      outlets: {
+        ...this.nounModifierService.attributeSheetRoute[1].outlets,
+        outer: 'outer/schema/attribute-values'
+      }
+    }], {
+      queryParamsHandling: 'preserve',
+      queryParams: { editValues: true }
+    });
+  }
 }

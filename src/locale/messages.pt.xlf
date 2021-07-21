@@ -381,7 +381,7 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\new-business-rules\new-business-rules.component.html</context>
           <context context-type="linenumber">55</context>
         </context-group>
-         <context-group purpose="location">
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
@@ -601,6 +601,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">351</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
         <source>Type inside the search box to find fields</source>
@@ -776,6 +780,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\filter-values\filter-values.component.html</context>
           <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
+          <context context-type="linenumber">118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="type_filter_value" datatype="html">
@@ -1873,6 +1881,10 @@
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="codeAndText" datatype="html">
         <source>Code and Text</source>
@@ -2362,7 +2374,7 @@
           <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="send_via_email" datatype="html">
+      <trans-unit id="send_via_email" datatype="html">
         <source> Send via email</source>
         <target> Enviar por email </target>
         <context-group purpose="location">
@@ -2434,7 +2446,7 @@
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="importLogs" datatype="html">
+      <trans-unit id="importLogs" datatype="html">
         <source>Import Logs</source>
         <target>Logs de importação</target>
         <context-group purpose="location">
@@ -2450,7 +2462,7 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="status" datatype="html">
+      <trans-unit id="status" datatype="html">
         <source>Status</source>
         <target>Status</target>
         <context-group purpose="location">
@@ -2458,12 +2470,28 @@
           <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
-       <trans-unit id="updated" datatype="html">
+      <trans-unit id="updated" datatype="html">
         <source>Updated</source>
         <target>Atualizado</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\import-log\import-log.component.html</context>
           <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="resetFilters" datatype="html">
+        <source>Reset all filters</source>
+        <target>Redefinir todos os filtros</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="configureFilters" datatype="html">
+        <source>Configure filters</source>
+        <target>Configurar filtros</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\reporting-list.component.html</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
        <trans-unit id="import_report" datatype="html">
@@ -2483,12 +2511,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="upload_mdoreport" datatype="html">
-          <source>Upload a .mdopage report file</source>
+        <source>Upload a .mdopage report file</source>
         <target>Carregar um arquivo de relatório .mdopage</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">11</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="replace_existing" datatype="html">
         <source>Replace existing</source>
@@ -2523,12 +2551,12 @@
         </context-group>
       </trans-unit>
       <trans-unit id="description" datatype="html">
-          <source>Description</source>
+        <source>Description</source>
         <target>Descrição</target>
-          <context-group purpose="location">
-            <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
-            <context context-type="linenumber">19</context>
-          </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\import\import.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="import_date" datatype="html">
         <source>Import date</source>
@@ -3148,6 +3176,54 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\_builder\global-count\global-count.component.html</context>
           <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_value" datatype="html">
+        <source>Default value</source>
+        <target>valor padrão</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute\attribute.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_value" datatype="html">
+        <source>New value</source>
+        <target>novo valor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values" datatype="html">
+        <source>Default values</source>
+        <target>valores padrão</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="default_values_empty_msg" datatype="html">
+        <source>You don’t have any values defined for this list yet. Type the value name in the box above to add.</source>
+        <target>Você não tem quaisquer valores definidos para esta lista ainda. Digite o nome do valor na caixa acima para adicionar.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="value" datatype="html">
+        <source>value</source>
+        <target>valor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_value_to_add" datatype="html">
+        <source>Type value name to add</source>
+        <target>Digite o nome do valor para adicionar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\library-mapping-sidesheet\attribute-default-value\attribute-default-value.component.html</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
     </body>

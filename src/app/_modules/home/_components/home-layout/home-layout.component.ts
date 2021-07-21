@@ -105,7 +105,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
           document.getElementById('secondaryContent').style.marginLeft = '200px';
         } else {
           document.getElementById('secondarySidenav').style.width = '16px';
-          document.getElementById('secondaryContent').style.marginLeft = '73px';
+          document.getElementById('secondaryContent').style.marginLeft = '16px';
         }
       }
     }catch(ex){console.error(`Error while getting state from localstorage .. ${ex}`)}
@@ -154,7 +154,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleSecondarySideBar(hidePrimary: boolean) {
     if (this.secondarySideBarOpened) {
       document.getElementById('secondarySidenav').style.width = '16px';
-      document.getElementById('secondaryContent').style.marginLeft = '73px';
+      document.getElementById('secondaryContent').style.marginLeft = '16px';
       this.secondarySideBarOpened = false;
     } else {
       document.getElementById('secondarySidenav').style.width = '260px';
