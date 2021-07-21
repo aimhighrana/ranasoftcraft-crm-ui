@@ -111,6 +111,7 @@
                                                     <span class="f-spacer"></span>
                                                     <lib-text-line type="base" textColor="success">{{ modifier.doc_count
                                                         ? modifier.doc_count : 0 }}</lib-text-line>
+                                                        <span class="col-spacer"></span>
                                                 </mat-list-item>
                                             </mat-nav-list>
                                         </mat-expansion-panel>
@@ -200,15 +201,17 @@
                     </div> -->
                     <!-- Data Table -->
                     <div class="f-col datasource" (scroll)="onTableScroll($event)">
-                        <div class="f-row action-iconbtns"
+                        <div class="f-row"
                             *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
-                            <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                                <!-- <lib-button type="minor" (click)="generateDesc('',0,'all')">Generate description
-                                </lib-button> -->
-                                <lib-button type="minor" (click)="approveRec('',0,'all')">Approve</lib-button>
-                                <lib-button type="minor" (click)="rejectRec('',0,'all')">Reject</lib-button>
-                            </ng-template>
-                            <lib-button type="minor" (click)="selection.clear()">Unselect</lib-button>
+                            <lib-button-group>
+                                <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
+                                    <!-- <lib-button type="minor" (click)="generateDesc('',0,'all')">Generate description
+                                    </lib-button> -->
+                                    <lib-button type="minor" (click)="approveRec('',0,'all')">Approve</lib-button>
+                                    <lib-button type="minor" (click)="rejectRec('',0,'all')">Reject</lib-button>
+                                </ng-template>
+                                <lib-button type="minor" (click)="selection.clear()">Unselect</lib-button>
+                            </lib-button-group>
                         </div>
                         <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
                             <!-- Checkbox Column -->
