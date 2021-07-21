@@ -809,7 +809,7 @@ describe('BrruleSideSheetComponent', () => {
   it('editTransRule(), edit the business rule and nav to the edit mode', async(()=>{
     spyOn(router,'navigate');
     component.editTransRule({ruleInfo:{brIdStr:'8867678658'} as CoreSchemaBrInfo} as TransformationMappingTabResponse,'success');
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/business-rule/${component.moduleId}/${component.schemaId}/${component.brId}`,
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {
     outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/8867678658/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
   }));
 

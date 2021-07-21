@@ -448,7 +448,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
           // set is trans edit only
           this.activatedRouter.queryParams.subscribe(q=>{
-            if(q.r && q.r === 'BR_TRANSFORMATION') {
+            if(this.activeOutlet === 'outer' && q.r && q.r === 'BR_TRANSFORMATION') {
               this.isOnlyForTrans = true;
             } else {
               this.isOnlyForTrans = false;
@@ -459,7 +459,7 @@ export class BrruleSideSheetComponent implements OnInit {
           // not required missing rule bydefault...
           // this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
           this.activatedRouter.queryParams.subscribe(q=>{
-            if(q.r && q.r === 'BR_TRANSFORMATION') {
+            if(this.activeOutlet === 'outer' && q.r && q.r === 'BR_TRANSFORMATION') {
               this.form.controls.transformationRuleType.setValue(this.transformationType.REGEX);
               // update manually if has only for transformation rule
               setTimeout(()=>{
@@ -1986,8 +1986,8 @@ export class BrruleSideSheetComponent implements OnInit {
    * Create new business rules ...
    */
   openBusinessRuleSideSheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
-    outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+    this.router.navigate(['', { outlets: {outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer` }}],
+      {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
   /**
@@ -2049,8 +2049,8 @@ export class BrruleSideSheetComponent implements OnInit {
    * Edit the exiting transformation....
    */
   editTransRule(br: TransformationMappingTabResponse, tab: string) {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
-    outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+    this.router.navigate(['', { outlets: { outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/outer` }}],
+      {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
   /**
