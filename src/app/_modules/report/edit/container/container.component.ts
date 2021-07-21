@@ -371,7 +371,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
        else {
         this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
        }
-       if(this.selStyleWid.widgetType === 'TIMESERIES' && this.styleCtrlGrp.get('fieldId').value === 'TIME_TAKEN') {
+       if(this.selStyleWid.widgetType === 'TIMESERIES' && this.selStyleWid.field === 'TIME_TAKEN') {
           this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter?.key : BucketFilter.WITHIN_1_DAY;
        } else {
         this.selStyleWid.chartProperties.bucketFilter = null;
@@ -547,7 +547,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.widgetList.push(dropableWidget);
     }
     // update variable for dom control
-    if (dropableWidget.chartProperties?.hasCustomSLA) {
+    if(dropableWidget.chartProperties){
       delete dropableWidget.chartProperties.slaType;
     }
     this.selStyleWid = dropableWidget;
@@ -798,7 +798,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
     }
 
-    if (this.chartPropCtrlGrp.get('chartType').value !== 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+    if (this.selStyleWid.widgetType !== 'TIMESERIES' && this.selStyleWid.field !== 'TIME_TAKEN') {
       this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
       this.selStyleWid.chartProperties.bucketFilter = null;
     }
