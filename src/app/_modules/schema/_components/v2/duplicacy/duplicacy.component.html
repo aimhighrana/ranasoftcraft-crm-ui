@@ -145,12 +145,14 @@
 
                 <div class="f-row-spacer-half"></div>
 
-                <div class="f-row action-iconbtns" *ngIf="tableHeaderActBtn.length && activeTab === 'review'">
-                    <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                        <lib-button type="minor" (click)="approveRecords('global')"> Approve </lib-button>
-                        <lib-button type="minor" (click)="rejectRecords('global')"> Reject </lib-button>
-                    </ng-template>
-                    <lib-button type="minor" (click)="selection.clear()"> Unselect </lib-button>
+                <div class="f-row" *ngIf="tableHeaderActBtn.length && activeTab === 'review'">
+                    <lib-button-group>
+                        <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
+                            <lib-button type="minor" (click)="approveRecords('global')"> Approve </lib-button>
+                            <lib-button type="minor" (click)="rejectRecords('global')"> Reject </lib-button>
+                        </ng-template>
+                        <lib-button type="minor" (click)="selection.clear()"> Unselect </lib-button>   
+                    </lib-button-group> 
                 </div>
 
                 <!-- Data Table -->

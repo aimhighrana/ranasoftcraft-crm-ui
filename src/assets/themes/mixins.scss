@@ -2059,19 +2059,6 @@
     }
   }
 
-  pros-classification-builder {
-    div.root {
-      .listset-navigation {
-        border-right-color: $color-app-border;
-
-        .split-panel-mark {
-          box-shadow: $box-shadow;
-          background-color: mat-color($background-palette, card);
-        }
-      }
-    }
-  }
-
   pros-global-count {
     .sum-collection::after {
       background-color: $color-text-secondary;
@@ -2099,16 +2086,9 @@
     }
   }
 
-  pros-schema-details {
+  pros-schema-details,
+  pros-classification-builder {
     div.root {
-      mat-tab-group.mat-tab-group {
-        mat-tab-body.mat-tab-body {
-          .mat-tab-body-content {
-            overflow: hidden;
-          }
-        }
-      }
-
       .listing-container {
         .listset-navigation {
           border-right-color: $color-app-border;
@@ -2126,6 +2106,10 @@
 
             .mat-nav-list.tree-nav-list {
               .understep-two {
+                &.mat-list-item:hover {
+                  background-color: $color-app-hover;
+                }
+
                 .mat-list-item-content {
                   padding: 0 0 0 86px;
                 }
