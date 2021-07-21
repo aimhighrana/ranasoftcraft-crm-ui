@@ -2490,7 +2490,6 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
-<<<<<<< HEAD
       <trans-unit id="resetFilters" datatype="html">
         <source>Reset all filters</source>
         <target>重置所有過濾器</target>
@@ -2507,8 +2506,6 @@
           <context context-type="linenumber">11</context>
        </context-group>
      </trans-unit>
-=======
->>>>>>> 136cae48a1b800a73251559f85967a872721719d
       <trans-unit id="import_report" datatype="html">
         <source>Import Report</source>
         <target>导入报告</target>
