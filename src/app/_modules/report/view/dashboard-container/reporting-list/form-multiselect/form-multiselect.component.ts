@@ -201,7 +201,7 @@ export class FormMultiselectComponent implements OnInit, OnChanges, OnDestroy {
         } else if (this.displayCriteria === DisplayCriteria.CODE_TEXT) {
           textWrapper.innerHTML = textWrapper.innerHTML + code + '-' + value + ';'
         } else {
-          textWrapper.innerHTML = textWrapper.innerHTML + value + ';'
+          textWrapper.innerHTML = textWrapper.innerHTML + value + ';';
         }
         selectedValues.push(value);
       }
