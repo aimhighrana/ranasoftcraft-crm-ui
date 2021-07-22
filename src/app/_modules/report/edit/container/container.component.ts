@@ -267,7 +267,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       pageDefaultSize: [''],
       isFieldDistinct: [false],
       displayCriteria: [{ ...this.displayCriteria[1] }],
-      isEnableGlobalFilter: [false]
+      isEnableGlobalFilter: [false],
+      applyDistinct : [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -324,6 +325,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.displayCriteria = latestVal.displayCriteria?.key ? latestVal.displayCriteria.key : this.displayCriteria[1];
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
         changedWidget.isEnableGlobalFilter = latestVal.isEnableGlobalFilter;
+        changedWidget.applyDistinct = latestVal.applyDistinct
 
         // hold selected field control
         if (typeof latestVal.field !== 'string') {
@@ -640,7 +642,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           displayCriteria: data.displayCriteria ? selectedDisplayCriteria : { ...this.displayCriteria[1] },
           objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
-          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
+          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false,
+          applyDistinct : data.applyDistinct ? data.applyDistinct : false
         });
 
 
