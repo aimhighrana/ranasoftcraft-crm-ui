@@ -59,7 +59,6 @@ describe('HierarchyFilterComponent', () => {
     component.clickedActive(elementWithChild);
     expect(elementWithChild.checked).toEqual(true);
     // expect(component.checkForChild).toHaveBeenCalledWith(!elementWithChild.checked, elementWithChild.child)
-
     const elementWithoutChild1 = {
       nodeId : '1005',
       nodeDesc : 'INDIA',
@@ -137,7 +136,6 @@ describe('HierarchyFilterComponent', () => {
     component.selectedNode = ['India','UP'];
     const res = component.getCheckedAmount(data);
     expect(res).toEqual(true);
-
     const data1 = {
       nodeId : '100-001',
       nodeDesc : 'India',
@@ -152,7 +150,6 @@ describe('HierarchyFilterComponent', () => {
       checked: false,
       expanded: false
     }
-
     const res1 = component.getCheckedAmount(data1);
     expect(res1).toEqual(false);
   })
