@@ -178,29 +178,31 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       } else {
         if(val && typeof val === 'string' && val.trim() !== '') {
           const groups = Array.from(this.fields.filter(fil =>fil.isGroup));
-          const matchedData: Metadata[] = [];
-          groups.forEach(grp=>{
-            const changeAble = {isGroup:grp.isGroup, fieldId: grp.fieldId,childs: grp.childs,fieldDescri: grp.fieldDescri, fldCtrl: grp.fldCtrl};
-            const chld: Metadata[] = [];
-            changeAble.childs.forEach(child=>{
-                if(child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
-                  chld.push(child);
-                }
-              });
-              if(chld.length) {
-                changeAble.childs = chld;
-                matchedData.push(changeAble);
-              }
-          });
-          this.fieldsObs = of(matchedData);
+          this.fieldsObs = this.filtered(groups, val);
         } else {
           this.fieldsObs = of(this.fields);
-          if(typeof val === 'string' && val.trim() === '') {
+          if (typeof val === 'string' && val.trim() === '') {
             this.selected(null);
           }
         }
       }
     })
+  }
+
+  filtered(array: Metadata[], text: string): Observable<Metadata[]> {
+    const getChildren = (result, object) => {
+      const re = new RegExp(text, 'gi');
+      if (object.fieldDescri.match(re)) {
+        result.push(object);
+        return result;
+      }
+      if (Array.isArray(object.childs)) {
+        const children = object.childs.reduce(getChildren, []);
+        if (children.length) result.push({ ...object, childs: children });
+      }
+      return result;
+    };
+    return of(array.reduce(getChildren, []));
   }
 
   /**

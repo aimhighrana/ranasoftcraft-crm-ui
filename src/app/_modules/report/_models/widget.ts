@@ -36,6 +36,7 @@ export class Widget {
     isFieldDistinct: boolean;
     displayCriteria: DisplayCriteria;
     isEnableGlobalFilter: boolean;
+    applyDistinct : boolean;
 }
 
 export interface DateFilterCtrl {
