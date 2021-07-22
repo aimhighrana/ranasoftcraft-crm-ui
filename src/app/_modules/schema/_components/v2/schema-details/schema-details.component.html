@@ -31,13 +31,13 @@
         <pros-global-count [schemaId]="schemaId"></pros-global-count>
         <span class="col-spacer"></span>
         <lib-button-group>
-            <lib-button class="lib-button" type="plain" iconPosition="before" icon="sliders-h"
+            <lib-button type="plain" iconPosition="before" icon="sliders-h"
                 (click)="openSummarySideSheet()">
                 Refine
             </lib-button>
             <lib-button *ngIf="false" type="plain" icon="chart-line" (click)="openExecutionTrendSideSheet()">
             </lib-button>
-            <lib-button class="lib-button" type="plain" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h">
+            <lib-button type="plain" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h">
             </lib-button>
         </lib-button-group>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -218,10 +218,10 @@
                                             <mat-list-item class="f-row understep-two"
                                                 *ngFor="let subChild of child.childs" prosClickStopPropagation
                                                 (click)="loadNodeData(subChild)">
-
-                                                <div mat-line> {{ subChild.nodeDesc }} </div>
+                                                <lib-text-line type="base">{{ subChild.nodeDesc }}</lib-text-line>
                                                 <span class="f-spacer"></span>
                                                 <lib-text-line typw="base" textColor="secondary">{{ subChild.docCount }}</lib-text-line>
+                                                <span class="f-col-spacer-half"></span>
                                             </mat-list-item>
                                         </mat-nav-list>
                                     </mat-expansion-panel>
@@ -236,7 +236,6 @@
                 </div> -->
             </div>
 
-
             <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">
                 <lib-text-line type="leading">{{ activeNode.nodeDesc || 'Header' }}</lib-text-line>
                 <!-- if have data then render table -->
@@ -245,14 +244,16 @@
                     </pros-table-loading>
                 </ng-template>
                 <ng-template #showdata>
-                    <div class="f-row action-iconbtns"
+                    <span class="f-row-spacer-half"></span>
+                    <div class="f-row"
                         *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
-                        <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                            <lib-button type="minor" i18n="@@approve" (click)="approveRecords('all')"> Approve
-                            </lib-button>
-                            <lib-button type="minor" i18n="@@reject" (click)="resetRec('','all')">Reject</lib-button>
-                        </ng-template>
-                        <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
+                        <lib-button-group>
+                            <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
+                                <lib-button type="minor" i18n="@@approve" (click)="approveRecords('all')">Approve</lib-button>
+                                <lib-button type="minor" i18n="@@reject" (click)="resetRec('','all')">Reject</lib-button>
+                            </ng-template>
+                            <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
+                        </lib-button-group>
                     </div>
                     <div class="schema-details-table f-col datasource" (scroll)="onTableScroll($event)">
                         <table mat-table [dataSource]="dataSource" #table matSort>
@@ -489,15 +490,14 @@
                                                         [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                                         [ngIfElse]="other">
                                                         <div class="f-col">
-                                                            <span class="correction"
-                                                                id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                            <span class="correction" id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
-                                                                element[dynCols].oldData) : '' }}
+                                                                element[dynCols].fieldData) : '' }}
                                                             </span>
 
                                                             <span class="correction line-cut">
                                                                 {{ element[dynCols] ? formatCellData(dynCols,
-                                                                element[dynCols].fieldData) : '' }}
+                                                                element[dynCols].oldData) : '' }}
                                                             </span>
 
                                                         </div>

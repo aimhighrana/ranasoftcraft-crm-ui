@@ -28,17 +28,17 @@
             
         <mat-autocomplete [displayWith]="singleSelectDisplayFn" #auto="matAutocomplete">  
             <mat-option *ngFor="let option of filterdOptionsObs | async" 
-                        [value]="option"> {{ option.TEXT }} </mat-option>
+                        [value]="option" libTooltip="{{ option.TEXT }}" matTooltipPosition="right"> {{ option.TEXT }} </mat-option>
         </mat-autocomplete>
     </mat-form-field> 
 
     <!-- Input type multiple select -->
-    <mat-form-field *ngSwitchCase="FIELD_TYPE.MULTI_SELECT" appearance="outline" prosClickStopPropagation>                                     
+    <mat-form-field *ngSwitchCase="FIELD_TYPE.MULTI_SELECT" appearance="outline" prosClickStopPropagation class="edit-cell">                                     
         <mat-label>Select value</mat-label>
         <mat-select #selectMultiple multiple [value]="value" #input
                     (openedChange)="!selectMultiple.panelOpen ? formatMultiSelectValue(selectMultiple.value) : 0">
             <mat-option *ngFor="let option of selectFieldOptions" 
-                    [value]="option.CODE"> {{ option.TEXT }} </mat-option>
+                    [value]="option.CODE" libTooltip="{{ option.TEXT }}" matTooltipPosition="right"> {{ option.TEXT }} </mat-option>
         </mat-select>
     </mat-form-field>
 

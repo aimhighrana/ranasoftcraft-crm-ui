@@ -285,6 +285,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       schemaReq.discription = 'New schema';
       this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         const receivedSchemaId = response;
+        this.sharedService.setAfterBrSave(null);
         this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${receivedSchemaId}` } }], { queryParams: { name: moduleDesc,updateschema:true } })
       }, (error) => {
         console.log('Something went wrong while creating schema', error.message);

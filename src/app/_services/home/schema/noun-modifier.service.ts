@@ -178,8 +178,10 @@ export class NounModifierService {
     return this.http.post<any>(this.endpointClassic.getCreateNounModUrl(), request, {params: {matlGroup}});
   }
 
-  public addAttribute(request: Attribute[], nounSno): Observable<any> {
-    return this.http.post(this.endpointClassic.getCreateAttributeUrl(nounSno), request)
+  public addAttribute(request: Attribute[], nounCode: string , modCode: string): Observable<any> {
+    modCode  = modCode  ? modCode  : '';
+    nounCode = nounCode ? nounCode : '';
+    return this.http.post(this.endpointClassic.getCreateAttributeUrl(), request, {params:{nounCode, modCode}})
   }
 
   public saveAttributesMapping(request: AttributesMapping, schemaId: string): Observable<any> {

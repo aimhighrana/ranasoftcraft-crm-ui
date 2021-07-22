@@ -307,9 +307,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
 
 
     const dropdownSearchCtrlSub = this.dropdownSearchCtrl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((val) => {
-      if (this.dropdownValues.length) {
-        this.dropdownFilteredValues = this.dropdownValues.filter((x) => x.value.toLowerCase().includes(val.trim().toLowerCase()));
-      }
+      // if (this.dropdownValues.length) {
+      //   this.dropdownFilteredValues = this.dropdownValues.filter((x) => x.value.toLowerCase().includes(val.trim().toLowerCase()));
+      // }
+      this.getFilterValues(this.currentFilter.fieldId, false, val);
     });
     this.subscriptions.push(dropdownSearchCtrlSub);
 
@@ -960,19 +961,19 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * gets dropdown values for multi choice filter types
    * @param filterId holds filter id
    */
-  getFilterValues(filterId, isUpdate) {
-    this.schemaService.dropDownValues(filterId, '').subscribe((data) => {
-      if (data) {
-        data.forEach((x) => {
-          const res: any = {...x};
-          res.value = x.TEXT,
-          res.key = x.CODE
-          res.checked = false;
+  getFilterValues(filterId, isUpdate, searchString?: string) {
+    this.schemaService.dropDownValues(filterId, searchString ? searchString: '').subscribe((data) => {
+      data = data ? data : [];
+      this.dropdownValues = [];
+      data.forEach((x) => {
+        const res: any = {...x};
+        res.value = x.TEXT,
+        res.key = x.CODE
+        res.checked = false;
 
-          this.dropdownValues.push(res);
-        });
-        this.dropdownFilteredValues = this.dropdownValues;
-      }
+        this.dropdownValues.push(res);
+      });
+      this.dropdownFilteredValues = this.dropdownValues;
       if (isUpdate) {
         this.setFilterExistingValues();
       }
@@ -1002,7 +1003,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
           });
         } else if (this.filterControlType === 'dropdown_single') {
           const field = this.dropdownValues.find((x) => x.key === currentFilterCriteria.values[0]);
-          this.dropdownSearchCtrl.setValue(field.value);
+          this.dropdownSearchCtrl.setValue(field ? field.value : currentFilterCriteria.values[0]);
         } else if (this.filterControlType === 'dropdown_multi') {
           this.dropdownValues.forEach((x, i) => {
             if (currentFilterCriteria.values.includes(x.CODE)) {

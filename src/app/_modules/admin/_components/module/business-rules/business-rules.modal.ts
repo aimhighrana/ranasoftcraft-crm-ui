@@ -93,7 +93,7 @@ export const RULE_TYPES = [
     { ruleDesc: 'MDO Classification Master Check', ruleId: '', ruleType: BusinessRuleType.MRO_CLS_MASTER_CHECK, isImplemented: true },
     { ruleDesc: 'Manufacturer Part Number Lookup', ruleId: '', ruleType: BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP, isImplemented: true },
     { ruleDesc: 'Manufacturer Part Number Identification', ruleId: '', ruleType: BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI, isImplemented: true },
-    { ruleDesc: 'Material Description Match', ruleId: '', ruleType: BusinessRuleType.MRO_GSN_DESC_MATCH, isImplemented: true },
+    { ruleDesc: 'Material Description Match', ruleId: '', ruleType: BusinessRuleType.MRO_GSN_DESC_MATCH, isImplemented: false },
 ];
 
 export const PRE_DEFINED_REGEX = [
