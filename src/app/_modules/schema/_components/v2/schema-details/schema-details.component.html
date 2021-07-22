@@ -285,9 +285,7 @@
                         </ng-container> -->
                             <ng-container matColumnDef="_assigned_buckets" sticky>
                                 <th mat-header-cell *matHeaderCellDef>
-                                    <lib-avatar (click)="openTableColumnSettings()">
-                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                                    </lib-avatar>
+                                    <lib-button type="plain" rounded="true" (click)="openTableColumnSettings()" icon="cog"></lib-button>
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     <lib-avatar>
