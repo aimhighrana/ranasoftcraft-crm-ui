@@ -529,6 +529,7 @@
                         [formControl]="hasAppliedTransformationCtrl"></lib-slide-toggle>
                     <mat-icon fontSet="mdo-icons" class="mat-head-icon">question-circle</mat-icon>
                 </div>
+                
                 <ng-template [ngIf]="hasAppliedTransformationCtrl.value">
                     <lib-tab-group class="schema-info-tabs" disableRipple="true" animationDuration="0ms"
                         (selectedIndexChange)="transTabIndex = $event" [selectedIndex]="transTabIndex">
