@@ -439,7 +439,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
           const gridFields = this.mapGridFields(flds);
           const hierarchyFields = this.mapHierarchyFields(flds);
-          console.log('grid fields====', gridFields, hierarchyFields)
           this.fieldData = [...gridFields, ...hierarchyFields];
           this.fieldsObs = of(this.fieldData);
         }
