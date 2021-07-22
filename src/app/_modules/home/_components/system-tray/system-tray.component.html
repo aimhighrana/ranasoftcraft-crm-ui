@@ -4,7 +4,7 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <lib-text-line i18n="@@system_tray" type="leading">System tray</lib-text-line>
+                <lib-text-line i18n="@@system_tray" type="leading">Notification</lib-text-line>
             </div>
         </div>
     </div>
@@ -25,9 +25,11 @@
                                         {{notification.contentText}}
                                     </lib-text-line>
 
-                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true"
-                                        (click)="download(notification.downloadLink)">
-                                        {{notification.downloadLink}}</lib-text-line>
+                                    <div class="f-row">
+                                        <lib-text-line type="xsmall" textColor="link" (click)="download(notification.downloadLink)">Click here</lib-text-line>
+                                        &nbsp;
+                                        <lib-text-line type="xsmall" textColor="secondary">to download</lib-text-line>
+                                    </div>
 
                                     <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96)|| (notification.contentText && notification.contentText.length > 96)"
                                         (click)="notification.showMore = !notification.showMore">
@@ -35,7 +37,7 @@
                                         </mat-icon>
                                     </a>
 
-                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true">
+                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true" class="timetext">
                                         {{notification.sendTime | date:"dd
                                         MMM
                                         hh:mm:ss" }}
