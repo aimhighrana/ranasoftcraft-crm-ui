@@ -191,4 +191,18 @@ export class NounModifierService {
   public getAttributesMapping(libnounSno, libmodSno): Observable<AttributesMapping> {
     return this.http.post<any>(this.endpointClassic.getFetchAttributesMappingUrl(), null, {params: {libnounSno, libmodSno}});
   }
+
+  /**
+   * Get the connecthub lib attributes ...
+   * @param nounCode will be part of the request param
+   * @param modifierCode will be part of the request param
+   * @param plantCode will be part of the request param
+   * @param schemaId will be part of the request param
+   * @param searchString will be part of the request param, if it not there will triet as empty
+   * @returns will return Observable of NounModifier
+   */
+  public getConnecthukLibAttroibuteLib(nounCode: string,  modifierCode: string, plantCode : string , schemaId: string, searchString?: string): Observable<NounModifier> {
+    searchString = searchString ? searchString : '';
+    return this.http.get<NounModifier>(this.endpointClassic.getConnecthukLibAttroibuteLib(), {params:{nounCode, modifierCode, plantCode, schemaId, searchString}});
+  }
 }

@@ -208,14 +208,7 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
 
     // inline approve
     component.approveRec(row, 0);
-    expect(row.__aditionalProp.isReviewed).toBeTruthy();
-
-    // error response
-    spyOn(console, 'error');
-    row.__aditionalProp.isReviewed = false;
-    component.approveRec(row, 0);
-    expect(row.__aditionalProp.isReviewed).toBeFalse();
-    expect(console.error).toHaveBeenCalled();
+    expect(row.__aditionalProp.isReviewed).toBeFalsy();
 
     // global approve no selection
     expect(() => component.approveRec({}, 0, 'all')).toThrowError('Objectnumber is required');
@@ -223,7 +216,8 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     // global approve with selection
     component.selection.select(row);
     component.approveRec({}, 0, 'all');
-    expect(row.__aditionalProp.isReviewed).toBeTruthy();
+    expect(row.__aditionalProp.isReviewed).toBeFalsy();
+
 
   }));
 

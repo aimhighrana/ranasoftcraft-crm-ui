@@ -727,4 +727,14 @@ export class EndpointsRuleService {
   public getClassificationAttributeValueUrl(): string {
     return `${this.classicOrigin}/schema/getAttributeValues`;
   }
+
+
+  /**
+   * Url for get the connekthub lib attributes ..
+   * @returns will return the connethub lib attributes ..
+   */
+  public getConnecthukLibAttroibuteLib(): string {
+    return `${this.origin}/schema/connekthub-attribute`;
+  }
+
 }

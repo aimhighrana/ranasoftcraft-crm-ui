@@ -228,7 +228,7 @@ describe('LibraryMappingSidesheetComponent', () => {
   it('should getAttributesFromGsn', () => {
     spyOn(component, 'getAttributesMapping');
     spyOn(userDetails, 'getUserDetails').and.returnValue(of({plantCode: '0'}  as Userdetails));
-    spyOn(nounModifierService, 'getGsnAttribute').and.returnValue(of({ATTRIBUTES: [{ATTR_CODE:'length'} as AttributesDoc]} as NounModifier));
+    spyOn(nounModifierService, 'getConnecthukLibAttroibuteLib').and.returnValue(of({ATTRIBUTES: [{ATTR_CODE:'length'} as AttributesDoc]} as NounModifier));
 
     component.buildMappingForm();
     component.getAttributesFromGsn('Bearing', 'Ball');
