@@ -805,6 +805,7 @@ describe('BrruleSideSheetComponent', () => {
     component.searchTransRules('');
     expect(component.delayedCallWithTransLib).toHaveBeenCalledWith('');
   }));
+  
 
   it('editTransRule(), edit the business rule and nav to the edit mode', async(()=>{
     spyOn(router,'navigate');
