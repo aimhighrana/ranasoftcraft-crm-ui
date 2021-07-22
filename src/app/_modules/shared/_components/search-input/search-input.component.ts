@@ -39,11 +39,6 @@ export class SearchInputComponent implements OnInit, OnChanges {
   preValue = '';
 
   /**
-   * toggle to handle focus class
-   */
-  hasFocus = false;
-
-  /**
    * To emit the value for parent
    */
   @Output() value = new EventEmitter<string>();
@@ -68,7 +63,6 @@ export class SearchInputComponent implements OnInit, OnChanges {
     this.control.reset('', { emitEvent: !skipEmit });
     // this.value.emit('');
   }
-
 
   /**
    * ANGULAR HOOK

@@ -570,7 +570,6 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getApisRule('', this.coreSchemaBrInfo.apiSno);
         }
 
-
       }
     }, error => console.error(`Error : ${error.message}`));
   }
@@ -832,6 +831,7 @@ export class BrruleSideSheetComponent implements OnInit {
         this.form.controls[key].updateValueAndValidity();
         if (key !== 'rule_type' && key !== 'weightage' && key !== 'accuracyScore' && key !== 'transformationRuleType') {
           this.form.controls[key].setValue(null);
+          this.form.controls[key].updateValueAndValidity();
         }
       } else {
         this.form.controls[key].setValidators([Validators.required]);
@@ -1525,9 +1525,8 @@ export class BrruleSideSheetComponent implements OnInit {
         if(this.isOnlyForTrans) {
           this.sharedService.settransSavedBehaviourSub(true);
           this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
-        } else {
-          this.sharedService.setAfterBrSave(res);
         }
+        this.sharedService.setAfterBrSave(res);
         this.close();
       }, err => console.error(`Error : ${err.message}`));
 
@@ -1987,7 +1986,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   openBusinessRuleSideSheet() {
     this.router.navigate(['', { outlets: {sb_three: `sb_three/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb_three` }}],
-      {queryParams:{r:'BR_TRANSFORMATION'}});
+    {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
   /**
@@ -2007,14 +2006,14 @@ export class BrruleSideSheetComponent implements OnInit {
   addTransRule(rule: CoreSchemaBrInfo, tab: string) {
     if(tab === 'success') {
       const idx = this.attachedTransRules.success.findIndex(f=> f.ruleInfo?.brIdStr === rule.brIdStr);
-      if(idx ===-1) {
+      if(idx === -1) {
         this.attachedTransRules.success.push({isConfigured:false,isEnabled:false,ruleInfo:rule});
       } else {
         this.transientService.open('Rule already added ','ok',{duration:2000});
       }
     } else {
       const idx = this.attachedTransRules.error.findIndex(f=> f.ruleInfo?.brIdStr === rule.brIdStr);
-      if(idx ===-1) {
+      if(idx === -1) {
         this.attachedTransRules.error.push({isConfigured:false,isEnabled:false,ruleInfo:rule});
       } else {
         this.transientService.open('Rule already added ','ok',{duration:2000});
@@ -2050,7 +2049,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   editTransRule(br: TransformationMappingTabResponse, tab: string) {
     this.router.navigate(['', { outlets: { sb_three: `sb_three/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/sb_three` }}],
-      {queryParams:{r:'BR_TRANSFORMATION'}});
+    {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
   /**
@@ -2058,7 +2057,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param res from side sheet
    */
   addTransRules(res: CoreSchemaBrInfo[]) {
-    res = Array.isArray(res) ? res : [];
+    res = Array.isArray(res) ? res : [res];
     if(this.transTabIndex === 0) {
       res.forEach(r=>{
         const isExits = this.attachedTransRules.success.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
@@ -2069,7 +2068,7 @@ export class BrruleSideSheetComponent implements OnInit {
             ruleInfo: r
           });
         }
-      })
+      });
     } else {
       res.forEach(r=>{
         const isExits = this.attachedTransRules.error.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
@@ -2080,7 +2079,7 @@ export class BrruleSideSheetComponent implements OnInit {
             ruleInfo: r
           });
         }
-      })
+      });
     }
   }
 

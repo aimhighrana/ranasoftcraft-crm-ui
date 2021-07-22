@@ -255,13 +255,14 @@
                                                 <ng-container
                                                     *ngFor="let aggOp of getValue(aggregrationOp,styleCtrlGrp.get('aggregrationOp'))">
                                                     <mat-option [value]="aggOp"
-                                                        *ngIf="aggOp.key === 'GROUPBY' && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')"
-                                                       >{{aggOp.value}}</mat-option>
+                                                        *ngIf="aggOp.key === 'GROUPBY' && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">
+                                                        {{aggOp.value}}</mat-option>
                                                     <mat-option [value]="aggOp"
-                                                        *ngIf="(aggOp.key === 'COUNT' && (selStyleWid.widgetType === 'COUNT'))"
-                                                       >{{aggOp.value}}</mat-option>
+                                                        *ngIf="(aggOp.key === 'COUNT' && (selStyleWid.widgetType === 'COUNT'))">
+                                                        {{aggOp.value}}</mat-option>
                                                     <mat-option [value]="aggOp"
-                                                        *ngIf="(aggOp.key === 'SUM' && (selStyleWid.widgetType === 'COUNT' && checkFieldDataType))"> {{aggOp.value}}</mat-option>
+                                                        *ngIf="(aggOp.key === 'SUM' && (selStyleWid.widgetType === 'COUNT' && checkFieldDataType))">
+                                                        {{aggOp.value}}</mat-option>
                                                 </ng-container>
                                             </mat-autocomplete>
                                         </div>
@@ -415,7 +416,7 @@
                                                 <input matInput [matAutocomplete]="chooseColumnM"
                                                     [formControl]="fieldCtrl" #columnsTriggerM="matAutocompleteTrigger"
                                                     (click)="openAutoComplete(columnsTriggerM)"
-                                                    (keyup)="openAutoComplete(columnsTriggerM); searchChooseColumn($event.target.value)">
+                                                    (keyup)="openAutoComplete(columnsTriggerM);searchChooseColumn($event.target.value)">
                                                 <!-- autocomplete -->
                                                 <mat-autocomplete #chooseColumnM="matAutocomplete"
                                                     [displayWith]="chooseColumnDisWith"
@@ -434,6 +435,19 @@
                                                     </mat-optgroup>
                                                     <mat-optgroup label="Header fileds">
                                                         <mat-option *ngFor="let field of headerFields | async"
+                                                            value="{{ field.fieldId }}">
+                                                            <div (click)="optionClicked($event, field)">
+                                                                <lib-checkbox prosClickStopPropagation
+                                                                    (valueChange)="toggleSelection(field)"
+                                                                    [checked]="isSelected(field)"
+                                                                    [label]="field.fieldDescri">
+                                                                </lib-checkbox>
+                                                            </div>
+                                                        </mat-option>
+                                                    </mat-optgroup>
+                                                    <mat-optgroup [label]="fld.fieldDescri"
+                                                        *ngFor="let fld of fieldsObs|async">
+                                                        <mat-option *ngFor="let field of fld.childs"
                                                             value="{{ field.fieldId }}">
                                                             <div (click)="optionClicked($event, field)">
                                                                 <lib-checkbox prosClickStopPropagation
@@ -571,6 +585,15 @@
                                     not applicable"></lib-checkbox>
                                 </div>
 
+
+                                <div class="row-spacer"></div>
+                                <div class="f-col">
+                                    <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType !== 'TABLE_LIST'">
+                                        <lib-checkbox formControlName="applyDistinct" label="Apply distinct">
+                                        </lib-checkbox>
+                                    </ng-template>
+                                </div>
+
                                 <div class="f-col">
                                     <!-- FOR IMAGE WIDGET-->
                                     <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'IMAGE'">
@@ -654,8 +677,8 @@
                                     <mat-label i18n="@@orientation">Orientation</mat-label>
                                     <div class="mdo-field-input"
                                         *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value?.key === 'BAR'">
-                                        <input matInput #optionsInput
-                                            formControlName="orientation" [matAutocomplete]="auto" />
+                                        <input matInput #optionsInput formControlName="orientation"
+                                            [matAutocomplete]="auto" />
                                         <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
                                             [displayWith]="displayProperties">
                                             <mat-option
@@ -685,8 +708,8 @@
                                     <div class="f-col  mdo-field" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                         <mat-label i18n="@@sortBy">Sort by</mat-label>
                                         <div class="mdo-field-input">
-                                            <input matInput #optInput
-                                                formControlName="orderWith" [matAutocomplete]="auto" />
+                                            <input matInput #optInput formControlName="orderWith"
+                                                [matAutocomplete]="auto" />
                                             <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
                                                 [displayWith]="displayProperties">
                                                 <ng-container
@@ -694,7 +717,7 @@
                                                     <mat-option
                                                         *ngIf="sort.key !== OrderWith.ASC && sort.key !== OrderWith.DESC"
                                                         [value]="sort">
-                                                        {{sort.value}} 
+                                                        {{sort.value}}
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-autocomplete>
@@ -795,7 +818,8 @@
                                     </lib-input>
                                 </div>
 
-                                <div class="f-col" *ngIf="selStyleWid.widgetType === 'TIMESERIES' && !selStyleWid.chartProperties?.hasCustomSLA">
+                                <div class="f-col"
+                                    *ngIf="selStyleWid.widgetType === 'TIMESERIES' && !selStyleWid.chartProperties?.hasCustomSLA">
                                     <!-- SERIES WITH -->
                                     <div class="f-col mdo-field">
                                         <mat-label class="mdo-field-label" i18n="@@serieswith">Series with</mat-label>
@@ -856,26 +880,30 @@
                                     <mat-label class="mdo-field-label" i18n="@@SLAFilter">SLA filter</mat-label>
                                     <div class="mdo-field-input">
                                         <input matInput placeholder="Type to search" #optionsInput
-                                        formControlName="bucketFilter"
-                                        [matAutocomplete]="auto"/>
-                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete" [displayWith]="displayProperties">
-                                            <mat-option class="mdo-option" *ngFor="let bucket of getValue(bucketFilter,chartPropCtrlGrp.get('bucketFilter'))" [value]="bucket">
+                                            formControlName="bucketFilter" [matAutocomplete]="auto" />
+                                        <mat-autocomplete class="mdo-autocomplete" #auto="matAutocomplete"
+                                            [displayWith]="displayProperties">
+                                            <mat-option class="mdo-option"
+                                                *ngFor="let bucket of getValue(bucketFilter,chartPropCtrlGrp.get('bucketFilter'))"
+                                                [value]="bucket">
                                                 {{ bucket.value }}
                                             </mat-option>
                                         </mat-autocomplete>
                                     </div>
                                 </div>
 
-                                <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'  && !selStyleWid.chartProperties?.hasCustomSLA">
+                                <div class="f-col"
+                                    *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'  && !selStyleWid.chartProperties?.hasCustomSLA">
                                     <lib-input i18n="@@defaultSLA" label="Default SLA" placeholder="24 hours"
-                                      [disabled]="true">
+                                        [disabled]="true">
                                     </lib-input>
                                 </div>
 
                                 <div class="f-col"
                                     *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'">
                                     <lib-slide-toggle theme="primary" labelPosition="before"
-                                        formControlName="hasCustomSLA" i18n="@@useCustomSLAValue" label="Use custom SLA value"></lib-slide-toggle>
+                                        formControlName="hasCustomSLA" i18n="@@useCustomSLAValue"
+                                        label="Use custom SLA value"></lib-slide-toggle>
                                 </div>
                                 <div class="f-row" *ngIf="selStyleWid && selStyleWid.chartProperties?.hasCustomSLA">
                                     <div class="f-col">
@@ -898,8 +926,10 @@
                                     </div>
                                 </div>
                                 <div class="row-spacer"></div>
-                                <div class="f-col" *ngIf="selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES'">
-                                    <lib-checkbox formControlName="showTotal" i18n="@@showTotal" label="Show total count">
+                                <div class="f-col"
+                                    *ngIf="(selStyleWid.chartProperties && (selStyleWid.chartProperties.chartType === 'BAR' || selStyleWid.chartProperties.chartType === 'LINE')) || selStyleWid.widgetType === 'TIMESERIES'">
+                                    <lib-checkbox formControlName="showTotal" i18n="@@showTotal"
+                                        label="Show total count">
                                     </lib-checkbox>
                                 </div>
                             </div>

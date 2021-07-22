@@ -4,7 +4,7 @@ import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Or
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
-import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
+import { Heirarchy, MetadataModel, MetadataModeleResponse, ParentField } from 'src/app/_models/schema/schemadetailstable';
 import { ActivatedRoute } from '@angular/router';
 import { ObjectTypeResponse, WorkflowResponse, WorkflowPath } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
@@ -18,6 +18,7 @@ import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/m
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
+import { Metadata } from './metadatafield-control/metadatafield-control.component';
 
 @Component({
   selector: 'pros-container',
@@ -120,6 +121,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Hold only header fields.. */
   headerFls: MetadataModel[] = [];
   headerFields: Observable<MetadataModel[]> = of([]);
+
+  /** Hold hierarchy and grid fields */
+  fieldData: Metadata[] = [];
+  fieldsObs: Observable<Metadata[]> = of([]);
 
   /** For workflow data set choose column filter ... */
   workflowFieldsObs: Observable<WorkflowFieldRes> = of(new WorkflowFieldRes());
@@ -262,7 +267,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       pageDefaultSize: [''],
       isFieldDistinct: [false],
       displayCriteria: [{ ...this.displayCriteria[1] }],
-      isEnableGlobalFilter: [false]
+      isEnableGlobalFilter: [false],
+      applyDistinct : [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -284,10 +290,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       blankValueAlias: [''],
       timeseriesStartDate: [{ ...this.timeInterval[1] }],
       isEnabledBarPerc: [false],
-      bucketFilter: [{...this.bucketFilter[0]}],
+      bucketFilter: [{ ...this.bucketFilter[0] }],
       hasCustomSLA: [false],
       slaValue: [],
-      slaType: [{...this.slaMenu[0]}],
+      slaType: [{ ...this.slaMenu[0] }],
       showTotal: [false]
     });
 
@@ -319,6 +325,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.displayCriteria = latestVal.displayCriteria?.key ? latestVal.displayCriteria.key : this.displayCriteria[1];
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
         changedWidget.isEnableGlobalFilter = latestVal.isEnableGlobalFilter;
+        changedWidget.applyDistinct = latestVal.applyDistinct
 
         // hold selected field control
         if (typeof latestVal.field !== 'string') {
@@ -368,19 +375,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         if (latestProp.hasCustomSLA) {
           this.selStyleWid.chartProperties.seriesWith = latestProp.slaType && typeof (latestProp.slaType) === 'object' ? latestProp.slaType.key : this.slaMenu[0].key;
         }
-       else {
-        this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
-       }
-       if(this.selStyleWid.widgetType === 'TIMESERIES' && this.styleCtrlGrp.get('field').value === 'TIME_TAKEN') {
-        if(latestProp.bucketFilter?.key === 'none'){
-          this.selStyleWid.chartProperties.bucketFilter = BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
+        else {
+          this.selStyleWid.chartProperties.seriesWith = latestProp.seriesWith?.key ? latestProp.seriesWith.key : this.seriesWith[0].key;
         }
-        else{
-            this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter?.key : BucketFilter.WITHIN_1_DAY+','+BucketFilter.MORE_THEN_1_DAY;
+        if (this.selStyleWid.widgetType === 'TIMESERIES' && this.selStyleWid.field === 'TIME_TAKEN') {
+          this.selStyleWid.chartProperties.bucketFilter = latestProp.bucketFilter?.key ? latestProp.bucketFilter?.key : BucketFilter.WITHIN_1_DAY;
+        } else {
+          this.selStyleWid.chartProperties.bucketFilter = null;
         }
-       } else {
-        this.selStyleWid.chartProperties.bucketFilter = null;
-       }
         this.selStyleWid.chartProperties.timeseriesStartDate = latestProp.timeseriesStartDate?.key ? latestProp.timeseriesStartDate.key : this.timeInterval[1].key;
         this.selStyleWid.chartProperties.chartType = latestProp.chartType?.key ? latestProp.chartType.key : this.chartType[0].key;
         this.selStyleWid.chartProperties.datalabelsPosition = latestProp.datalabelsPosition?.key ? latestProp.datalabelsPosition.key : this.datalabelsPosition[0].key;
@@ -419,6 +421,34 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
         }
+        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet !== this.styleCtrlGrp.value.isWorkflowDataset) {
+          if (this.selStyleWid.isWorkflowdataSet) {
+            this.getWorkFlowFields(fillData.split(','));
+            this.getRecordCount(fillData, true);
+            this.getWorkFlowPathDetails(fillData.split(','));
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          } else {
+            this.getAllFields(fillData);
+            this.getRecordCount(fillData);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          }
+        }
+
+        if (fillData === this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet !== this.styleCtrlGrp.value.isCustomdataSet) {
+          if (this.selStyleWid.isCustomdataSet) {
+            this.getCustomFields(fillData);
+            this.getRecordCount(fillData, false, true);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
+          } else {
+            this.getAllFields(fillData);
+            this.getRecordCount(fillData);
+            this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+            this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
+          }
+        }
       } else {
         console.log(fillData);
       }
@@ -435,6 +465,13 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.headerFls = headerArray;
         this.headerFields = of(headerArray);
+
+        if (!this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
+          const gridFields = this.mapGridFields(flds);
+          const hierarchyFields = this.mapHierarchyFields(flds);
+          this.fieldData = [...gridFields, ...hierarchyFields];
+          this.fieldsObs = of(this.fieldData);
+        }
       }
     });
 
@@ -445,7 +482,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
     this.subscriptions.push(fldSub);
-    this.subscriptions.push(wfldSub)
+    this.subscriptions.push(wfldSub);
   }
 
   /**
@@ -552,7 +589,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.widgetList.push(dropableWidget);
     }
     // update variable for dom control
-    if (dropableWidget.chartProperties?.hasCustomSLA) {
+    if (dropableWidget.chartProperties) {
       delete dropableWidget.chartProperties.slaType;
     }
     this.selStyleWid = dropableWidget;
@@ -633,7 +670,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           displayCriteria: data.displayCriteria ? selectedDisplayCriteria : { ...this.displayCriteria[1] },
           objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
-          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false
+          isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false,
+          applyDistinct : data.applyDistinct ? data.applyDistinct : false
         });
 
 
@@ -647,7 +685,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           const selectedDataLabelPosition = this.datalabelsPosition.find(data1 => data1.key === data.chartProperties.datalabelsPosition);
           const selectedLegendPosition = this.legendPosition.find(legend => legend.key === data.chartProperties.legendPosition);
           const selectedOrderWithValues = this.orderWith.find(order => order.key === data.chartProperties.orderWith);
-          const selectedBucketFilter = this.bucketFilter.find(bucket=> bucket.key === data.chartProperties.bucketFilter);
+          const selectedBucketFilter = this.bucketFilter.find(bucket => bucket.key === data.chartProperties.bucketFilter);
           this.chartPropCtrlGrp.patchValue(data.chartProperties);
           this.chartPropCtrlGrp.patchValue({
             bucketFilter: selectedBucketFilter ? selectedBucketFilter : this.bucketFilter[0],
@@ -803,7 +841,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
     }
 
-    if (this.chartPropCtrlGrp.get('chartType').value !== 'TIMESERIES' && this.styleCtrlGrp.get('field').value !== 'TIME_TAKEN') {
+    if (this.selStyleWid.widgetType !== 'TIMESERIES' && this.selStyleWid.field !== 'TIME_TAKEN') {
       this.chartPropCtrlGrp.get('isEnabledBarPerc').setValue(false);
       this.selStyleWid.chartProperties.bucketFilter = null;
     }
@@ -1119,11 +1157,31 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param val searchable text for choose columns ..
    */
   searchChooseColumn(val: string) {
+    const listData = JSON.parse(JSON.stringify(this.fieldData));
+    this.fieldsObs = of([]);
     if (val && val.trim() !== '') {
       this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1));
+      this.fieldsObs = val ? this.filtered(listData, val) : listData;
     } else {
       this.headerFields = of(this.headerFls);
+      this.fieldsObs = of(this.fieldData);
     }
+  }
+
+  filtered(array, text) {
+    const getChildren = (result, object) => {
+      const re = new RegExp(text, 'gi');
+      if (object.fieldDescri.match(re)) {
+        result.push(object);
+        return result;
+      }
+      if (Array.isArray(object.childs)) {
+        const children = object.childs.reduce(getChildren, []);
+        if (children.length) result.push({ ...object, childs: children });
+      }
+      return result;
+    };
+    return of(array.reduce(getChildren, []));
   }
 
   /**
@@ -1345,7 +1403,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get possibleBucketFilter() {
     const bucketFilter = [
-      { key:'none', value: $localize`:@@none:None` },
       { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within time spent limit` },
       { key: BucketFilter.MORE_THEN_1_DAY, value: $localize`:@@exceedsSLA:Exceeds time spent limit` }
     ];
@@ -1468,4 +1525,79 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return possibleSlaMenu;
   }
 
+  public mapHierarchyFields(response: MetadataModeleResponse): Metadata[] {
+    const metadata: Metadata[] = [];
+    if (response && response.hierarchy) {
+      response.hierarchy.forEach(hierarchy => {
+        const hierarchyChilds: Metadata[] = [];
+        if (response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld => {
+            const hierarchyDesc = response.hierarchy.find((x) => { return x.heirarchyId === hierarchy.heirarchyId });
+            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+            hierarchyChilds.push({
+              fieldId: fldCtrl.fieldId,
+              fieldDescri: fldCtrl.fieldDescri,
+              isGroup: false,
+              fldCtrl,
+              childs: [],
+              fieldType: this.getHierarchyParentField(hierarchyDesc)
+            });
+          });
+        }
+
+        metadata.push({
+          fieldId: hierarchy.heirarchyId,
+          fieldDescri: hierarchy.heirarchyText,
+          isGroup: true,
+          childs: hierarchyChilds
+        });
+      });
+      return metadata;
+    }
+  }
+
+
+  getHierarchyParentField(hierarchy: Heirarchy): ParentField {
+    const parentField: ParentField = {
+      fieldId: hierarchy?.fieldId,
+      fieldDescri: hierarchy?.heirarchyText,
+    }
+    return parentField;
+  }
+
+  mapGridFields(response) {
+    const metaData: Metadata[] = []
+    Object.keys(response.grids).forEach(grid => {
+      const gridChilds: Metadata[] = [];
+      if (response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+        Object.keys(response.gridFields[grid]).forEach(fld => {
+          const gridDesc = this.getGridParentField(response.grids[grid]);
+          const fldCtrl = response.gridFields[grid][fld];
+          gridChilds.push({
+            fieldId: fldCtrl.fieldId,
+            fieldDescri: fldCtrl.fieldDescri,
+            isGroup: false,
+            fldCtrl,
+            childs: [],
+            fieldType: gridDesc
+          });
+        });
+      }
+      metaData.push({
+        fieldId: grid,
+        fieldDescri: response.grids[grid].fieldDescri,
+        isGroup: true,
+        childs: gridChilds
+      });
+    })
+    return metaData;
+  }
+
+  getGridParentField(grid: MetadataModel) {
+    const parentField: ParentField = {
+      fieldId: grid?.fieldId,
+      fieldDescri: grid?.fieldDescri,
+    }
+    return parentField;
+  }
 }

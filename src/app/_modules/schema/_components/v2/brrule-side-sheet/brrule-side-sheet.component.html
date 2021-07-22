@@ -90,7 +90,7 @@
                     </mat-error>
                 </div>
 
-                <div class="f-col mdo-field"
+                <div class="f-col"
                     [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)"
                     *ngIf="!isDuplicateType && !isUDR">
                    
@@ -105,7 +105,6 @@
                         labelKey="categoryDesc"
                         valueKey="categoryId">
                     </pros-select>
-
                 </div>
 
                 <div class="f-col">
@@ -234,7 +233,7 @@
 
                     <div class="mdo-field-input">
                         <input matInput [formControl]="formField('sourceFieldSearchStr')"
-                            i18n-placeholder="@@source_field" placeholder="Source Field"
+                            i18n-placeholder="@@source_field" placeholder="Source field"
                             [matAutocomplete]="sourceFieldAuto" />
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displaySourceFieldFn.bind(this)"
                             #sourceFieldAuto="matAutocomplete"
@@ -529,6 +528,7 @@
                         [formControl]="hasAppliedTransformationCtrl"></lib-slide-toggle>
                     <mat-icon fontSet="mdo-icons" class="mat-head-icon">question-circle</mat-icon>
                 </div>
+                
                 <ng-template [ngIf]="hasAppliedTransformationCtrl.value">
                     <lib-tab-group class="schema-info-tabs" disableRipple="true" animationDuration="0ms"
                         (selectedIndexChange)="transTabIndex = $event" [selectedIndex]="transTabIndex">
