@@ -104,7 +104,7 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(schmeaInfoByModuleId);
   }
   deleteSchema(schemaId: string) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response === 'yes') {
         this.schemaService.deleteSChema(schemaId)
           .subscribe(resp => {

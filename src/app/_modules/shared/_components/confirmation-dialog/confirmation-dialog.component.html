@@ -1,13 +1,11 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
-            Confirmation
-        </div>
+        <lib-text-line type="leading">Confirmation</lib-text-line>
         <span class="f-spacer"></span>
-        <lib-button type="plain"  (click)="close(false)" iconFontType="light" icon="times"></lib-button>
-
+        <lib-button type="plain" (click)="close(false)" iconFontType="light" icon="times"></lib-button>
     </div>
-    <p class="content-text">{{data ? data.label : 'Are you sure to delete?'}}</p>
+    <lib-text-line type="base">{{data ? data.label : 'Are you sure you want to delete this?'}}</lib-text-line>
+    <div class="row-spacer"></div>
     <div class="row-spacer"></div>
     <!-- navigation buttons -->
     <div class="f-row">

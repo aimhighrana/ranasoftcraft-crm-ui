@@ -519,7 +519,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   deleteBr(br: CoreSchemaBrInfo) {
     const index= this.businessRuleData.findIndex(element=>element.brId===br.brId);
-    let label='Are you sure to delete ?';
+    let label='Are you sure you want to delete this ?';
     if(this.businessRuleData[index].dep_rules)
     label='After delete the dependent rules will removed';
     this.globalDialogService.confirm({ label }, (response) => {
@@ -551,7 +551,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param br delete by br id
    */
   deleteBrChild(br: CoreSchemaBrInfo,parentbr: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response && response === 'yes') {
         const idx = this.businessRuleData.findIndex(element=>element.brIdStr===parentbr.brIdStr);
         const childIdx = this.businessRuleData[idx].dep_rules;
@@ -698,7 +698,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param sNo serial No of the subscriber.
    */
   public deleteSubscriber(sNo: number) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response && response === 'yes') {
         const deleteSubscriber = this.schemaDetailsService.deleteCollaborator([sNo]).subscribe(res => {
           this.toasterService.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
