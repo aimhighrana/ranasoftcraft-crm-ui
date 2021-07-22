@@ -243,7 +243,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   isInRunning: boolean;
 
   /**
-   * Variant name if have otherwise by default is entire dataset
+   * Variant name if have otherwise by default is entire dataset...
    */
   variantName = 'Entire dataset';
 
