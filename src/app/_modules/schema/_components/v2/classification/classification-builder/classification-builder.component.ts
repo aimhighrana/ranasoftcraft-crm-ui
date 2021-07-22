@@ -303,10 +303,10 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
+      this.getSchemaDetails();
       if(!this.isInRunning) {
         this.getDataScope();
         this.getSchemaStatics();
-        this.getSchemaDetails();
         this.getSchemaTableActions();
         // this.getFieldsByUserView();
       }
