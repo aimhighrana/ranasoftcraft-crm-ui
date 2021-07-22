@@ -287,7 +287,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param variantId : ID of variant needs to be deleted
    */
   deleteVariant(variantId: string) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       this.deleteVariantAfterConfirm(response, variantId);
     });
   }
@@ -648,7 +648,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   deleteBr(br: CoreSchemaBrInfo) {
     const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
-    let label = 'Are you sure to delete ?';
+    let label = 'Are you sure you want to delete this ?';
     if (this.businessRuleData[index].dep_rules)
       label = 'All the dependent rules will also be deleted. Do you wish to proceed ?';
     this.globalDialogService.confirm({ label }, (response) => {
@@ -683,7 +683,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param br delete by br id
    */
   deleteBrChild(br: CoreSchemaBrInfo, parentbr: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response && response === 'yes') {
         const idx = this.businessRuleData.indexOf(parentbr);
         const childIdx = this.businessRuleData[idx].dep_rules;
@@ -855,7 +855,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   public deleteSubscriber(sNo: string) {
     console.log(sNo);
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       this.deleteSubsAfterConfirm(response, sNo)
     });
   }
@@ -1291,7 +1291,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   deleteSchema() {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globalDialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response === 'yes') {
         this.schemaService.deleteSChema(this.schemaId)
         .subscribe(resp => {

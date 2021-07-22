@@ -1415,7 +1415,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   deleteBR(rule: CoreSchemaBrInfo) {
     const indexofRule= this.selectedBusinessRules.indexOf(rule);
-    let label='Are you sure to delete ?';
+    let label='Are you sure you want to delete this ?';
     if(this.selectedBusinessRules[indexofRule].dep_rules)
     label='After delete the dependent rules will removed';
     this.globaldialogService.confirm({ label }, (response) => {
@@ -1443,7 +1443,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param br delete by br id
    */
   deleteBrChild(br: CoreSchemaBrInfo,parentbr: CoreSchemaBrInfo) {
-    this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globaldialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response && response === 'yes') {
         const idx=this.selectedBusinessRules.indexOf(parentbr);
         const childIdx=this.selectedBusinessRules[idx].dep_rules;
@@ -1464,7 +1464,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteSubscriber(index) {
-    this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globaldialogService.confirm({ label: 'Are you sure you want to delete this ?' }, (response) => {
       if (response && response === 'yes') {
         this.subscribersList.splice(index, 1);
         this.requestForm.controls.subcribers.value.splice(index, 1)

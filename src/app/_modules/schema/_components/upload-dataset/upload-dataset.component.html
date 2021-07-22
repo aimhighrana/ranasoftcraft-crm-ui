@@ -290,7 +290,7 @@
                                         <div class="col col-x8 mat-item-center">
                                             <div class="f-row slider-row"
                                                 *ngIf="!isExistingRule(deps.tempId); else notConfigured">
-                                                <lib-range-slider class="lib-slider" thumbLabel="true" minValue="0"
+                                                <lib-range-slider class="lib-slider" minValue="0"
                                                     maxValue="100" [value]="getWeightage(businessRule)"
                                                     (valueChange)="weightageChange($event, k)"
                                                     [formatLabelFn]="rangeSliderLabelFormat" color="primary">
