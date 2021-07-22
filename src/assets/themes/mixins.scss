@@ -2113,6 +2113,12 @@
                 .mat-list-item-content {
                   padding: 0 0 0 86px;
                 }
+
+                &.attribute-tree {
+                  .mat-list-item-content {
+                    padding-left: 56px;
+                  }
+                }
               }
             }
           }

@@ -147,7 +147,7 @@
                                             </mat-expansion-panel-header>
 
                                             <mat-nav-list role="navigation" class="tree-nav-list">
-                                                <mat-list-item class="f-row understep-two" [class.selected]="noun.nounCode === activeNounCode && modifier.modCode === activeModeCode"
+                                                <mat-list-item class="f-row understep-two attribute-tree" [class.selected]="noun.nounCode === activeNounCode && modifier.modCode === activeModeCode"
                                                     *ngFor="let modifier of noun.modifier"
                                                     (click)="applyFilter(noun.nounCode, modifier.modCode, 'MRO_MANU_PRT_NUM_LOOKUP');
                                                     innerBreadcurmbtxt = 'Connekthub library' + ' / ' + noun?.nounDesc + ' / ' + (modifier?.modDesc ? modifier?.modDesc : 'Unknown' )">
@@ -165,6 +165,7 @@
                                                     <div class="col-spacer"></div>
                                                     <lib-text-line type="base" textColor="success">{{ modifier.doc_count
                                                         ? modifier.doc_count : 0 }}</lib-text-line>
+                                                        <div class="col-spacer"></div>
                                                 </mat-list-item>
                                             </mat-nav-list>
                                         </mat-expansion-panel>
