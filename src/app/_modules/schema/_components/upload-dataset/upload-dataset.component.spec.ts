@@ -1610,20 +1610,6 @@ describe('UploadDatasetComponent', () => {
     expect(component.deleteBrChild(chldBr, parentBr)).toBeUndefined();
   });
 
-  it('setFormValue() should set form value', async (done) => {
-    component.createForm();
-    component.initHeaderForm([]);
-    const formBody: any = {};
-    formBody.name = new FormControl('name', [Validators.required]);
-    component.headerForm = new FormGroup(formBody);
-    component.dataSource = [{
-      mdoFldId: 'name'
-    } as DataSource];
-    component.setFormValue('test', 'name');
-    expect(component.headerForm.controls.name.value).toEqual('test');
-    done();
-  });
-
   it('configureRule() should configure the rule', async () => {
     component.createForm();
     component.initHeaderForm([]);

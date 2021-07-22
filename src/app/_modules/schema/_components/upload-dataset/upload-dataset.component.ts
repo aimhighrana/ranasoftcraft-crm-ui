@@ -628,6 +628,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   validateStep() {
     if (!this.headerForm.valid || !this.requestForm.valid) {
+      if(!this.headerForm.valid) { this.showValidationError('Please fix the error below to continue.'); }
       return false;
     }
     if (this.stepper.selectedIndex === 2) {
@@ -1587,21 +1588,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls[field].setValue(value);
     } else {
       this.requestForm.controls[field].setValue(value.value);
-    }
-  }
-
-  /**
-   * function to set the value in the form
-   * @param value entered value
-   * @param field the selected field of form
-   */
-  setFormValue(value: any, field: string) {
-    if (this.headerForm.controls[field].value !== value) {
-      this.headerForm.controls[field].setValue(value);
-      const index = this.dataSource.findIndex((ds) => ds.mdoFldId === field);
-      if (index > -1) {
-        this.dataSource[index].excelFld = value;
-      }
     }
   }
 

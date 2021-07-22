@@ -87,17 +87,24 @@
 
                     <form *ngIf="dataSource.length>0" [formGroup]="headerForm">
                         <ng-container *ngFor="let data of dataSource;let rowIndex=index;">
-                            <div class="f-row colunm-box">
+                            <div class="f-row colunm-box" 
+                                [style.minHeight.px]="headerForm.controls[data.mdoFldId].errors? 65: 48">
                                 <div class="col col-x8">
                                     <div [style.display]="isEditable(data)? 'block': 'none'" class="lib-input"
                                         (click)="onClick($event)">
-                                        <lib-input i18n-placeholder="@@enter_value" placeholder="Enter a value"
-                                            [disabled]="false" [value]="data.excelFld" [id]="data.mdoFldId"
-                                            (valueChange)="setFormValue($event, data.mdoFldId)"></lib-input>
-                                        <mat-error i18n="@@required_field_msg"
+                                        <lib-input 
+                                            [formControlName]="data.mdoFldId"
+                                            i18n-placeholder="@@enter_value"
+                                            placeholder="Enter a value"
+                                            [isRequired]="true"
+                                            [hasError]="headerForm.controls[data.mdoFldId].errors"
+                                            [hint]="headerForm.controls[data.mdoFldId].errors? 'This field is required': ''"
+                                            [id]="data.mdoFldId">
+                                        </lib-input>
+                                        <!-- <mat-error i18n="@@required_field_msg"
                                             *ngIf="headerForm.controls[data.mdoFldId].errors">
                                             This field is required
-                                        </mat-error>
+                                        </mat-error> -->
                                     </div>
                                     <lib-text-line type="base" enableWrap="true"
                                         [style.display]="isEditable(data)? 'none': 'block'"
