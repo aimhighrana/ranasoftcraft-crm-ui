@@ -8,7 +8,7 @@
 
     <mat-form-field *ngSwitchCase="'dropdown'"  appearance="outline" prosClickStopPropagation class="edit-cell">
         <input matInput class="mat-input" [matAutocomplete]="auto" #input [formControl]="searchControl"
-            placeholder="Search">
+            placeholder="Search" (blur)="emitChngSelectValue($event)">
             <div class="f-row input-actions">
                 <mat-icon fontSet="mdo-icons">search</mat-icon>
             </div>

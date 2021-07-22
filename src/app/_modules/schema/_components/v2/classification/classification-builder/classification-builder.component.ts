@@ -838,6 +838,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
                 this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm);
               }
 
+            } else if(this.activeTab ==='correction'){
+              this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm);
             }
 
           }
@@ -883,6 +885,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       isDropdown = true;
     }
 
+    const val: string = row[fldid] ? row[fldid].fieldValue : '';
 
     // add the input component to the cell
     const componentRef = containerRef.viewContainerRef.createComponent(componentFactory);
@@ -896,6 +899,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     componentRef.instance.modCode = modCode;
     componentRef.instance.brType = this.dataFrm;
     componentRef.instance.attrControl = hasFld;
+    componentRef.instance.value = val;
     componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 || isDropdown ? 'dropdown' : 'inputText';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));
 
@@ -935,13 +939,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
       /* if(document.getElementById('approveBtn_'+rIndex))
         document.getElementById('approveBtn_'+rIndex).remove(); */
-        if (fromWhere === 'all') {
-          this.selection.selected.forEach(record => {
-            record.__aditionalProp.isReviewed = true;
-          })
-        } else {
-          row.__aditionalProp.isReviewed = true;
-        }
+        // if (fromWhere === 'all') {
+        //   this.selection.selected.forEach(record => {
+        //     record.__aditionalProp.isReviewed = true;
+        //   })
+        // } else {
+        //   row.__aditionalProp.isReviewed = true;
+        // }
+        setTimeout(()=>{
+          this.getClassificationNounMod(this.searchNounNavCtrl.value, true);
+          this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm);
+        }, 1000);
         this.selection.clear();
       this.snackBar.open(`Successfully approved`,'Close',{duration:5000});
     }, err=>{
@@ -967,14 +975,14 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     if(!objNrs.length) {
       throw new Error(`Objectnumber is required`);
     }
-    const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
-    const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
+    // const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
+    // const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
 
     this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
       if(res) {
         setTimeout(()=>{
-          this.getClassificationNounMod(this.searchNounNavCtrl.value);
-          this.applyFilter(nounCode, modCode, this.dataFrm);
+          this.getClassificationNounMod(this.searchNounNavCtrl.value, true);
+          this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm);
         },1000);
         this.schemaInfo.correctionValue = res.count;
       }

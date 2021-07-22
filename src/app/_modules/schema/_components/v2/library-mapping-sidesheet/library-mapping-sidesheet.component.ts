@@ -262,7 +262,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   getAttributesFromGsn(nounCode: string , modCode: string) {
     this.userDetails.getUserDetails().subscribe(user=>{
-      this.nounModifierService.getGsnAttribute(nounCode, modCode, user.plantCode).subscribe(res=>{
+      this.nounModifierService.getConnecthukLibAttroibuteLib(nounCode, modCode, user.plantCode, this.schemaId, '').subscribe(res=>{
         this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
         this.mgroup = res.MGROUP ? res.MGROUP : '';
         this.getAttributesMapping();

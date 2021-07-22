@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ClassificationHeader } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
@@ -58,6 +57,11 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   @Input()
   controlType: string;
 
+  /**
+   * Hold current value while editing ...
+   */
+  @Input()
+  value: string;
   /**
    * Properties for the editable atribute
    */
@@ -123,6 +127,8 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
       this.searchControl.updateValueAndValidity({emitEvent:true,onlySelf:true});
     }
 
+    this.searchControl.setValue(this.value ? this.value : '');
+
   }
 
   ngAfterViewInit() {
@@ -132,8 +138,13 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
 
   }
 
-  emitChngSelectValue(event: MatAutocompleteSelectedEvent) {
-    const selVal = event.option.value;
+  emitChngSelectValue(event: any) {
+    if (event.relatedTarget && event.relatedTarget.id.indexOf('mat-option') > -1) {
+      event.preventDefault();
+      console.log('selection blur')
+      return;
+    }
+    const selVal = event.option ? event.option.value : event.target.value ;
     this.emitInputBlur(selVal);
   }
 
