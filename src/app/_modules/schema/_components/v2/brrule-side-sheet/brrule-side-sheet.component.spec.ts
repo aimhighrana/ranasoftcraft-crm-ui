@@ -810,7 +810,7 @@ describe('BrruleSideSheetComponent', () => {
     spyOn(router,'navigate');
     component.editTransRule({ruleInfo:{brIdStr:'8867678658'} as CoreSchemaBrInfo} as TransformationMappingTabResponse,'success');
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {
-    outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/8867678658/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+    sb_three: `sb_three/schema/business-rule/${component.moduleId}/${component.schemaId}/8867678658/sb_three` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
   }));
 
   it('openBusinessRuleSideSheet()', async(() => {
