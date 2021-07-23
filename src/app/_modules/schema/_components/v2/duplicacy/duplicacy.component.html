@@ -39,7 +39,7 @@
         </mat-menu>
     </div>
     <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
-        <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
+        <pros-schema-progress [schemaId]="schemaId" (runCompleted)="onRunCompleted($event)"></pros-schema-progress>
     </ng-template>
 
     <ng-template #schemaInfoTemplate>

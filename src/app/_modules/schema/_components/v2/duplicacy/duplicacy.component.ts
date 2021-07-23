@@ -1269,4 +1269,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     return row.OBJECTNUMBER.delFlag ? row.OBJECTNUMBER.delFlag : false;
   }
 
+  onRunCompleted($event) {
+    this.isInRunning = false;
+  }
 }
