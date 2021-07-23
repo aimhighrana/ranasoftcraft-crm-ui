@@ -54,8 +54,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: this.titlecasePipe.transform(MonthOn[item]),
-      key: item
+      key: this.titlecasePipe.transform(MonthOn[item]),
+      value: item
     }
   });
   /**

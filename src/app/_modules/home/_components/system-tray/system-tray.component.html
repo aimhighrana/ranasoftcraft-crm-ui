@@ -25,7 +25,7 @@
                                         {{notification.contentText}}
                                     </lib-text-line>
 
-                                    <div class="f-row">
+                                    <div class="f-row" *ngIf="notification.downloadLink">
                                         <lib-text-line type="xsmall" textColor="link" (click)="download(notification.downloadLink)">Click here</lib-text-line>
                                         &nbsp;
                                         <lib-text-line type="xsmall" textColor="secondary">to download</lib-text-line>

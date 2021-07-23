@@ -31,7 +31,6 @@
                         [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]">
                        This schema is running&nbsp;<lib-text-line textColor="link" class="cursor"> Click here </lib-text-line>&nbsp;to either track the progress or see result
                     </lib-banner>
-
                     <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'"
                         status="info" i18n-text="@@schema_running_msg"
                         [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]">

@@ -93,9 +93,9 @@
       <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
         <mat-nav-list role="navigation" [disableRipple]="true">
-          <mat-list-item *ngFor="let schema of schemaList"
+          <mat-list-item *ngFor="let schema of schemaList" (click)="updateSchemaBadgeInfo(schema)"
             [routerLink]="['schema/schema-details', schema.moduleId, schema.schemaId]" [routerLinkActive]="'selected'">
-            <div mat-line (click)="updateSchemaBadgeInfo(schema)" class="f-col">
+            <div mat-line  class="f-col">
               <lib-text-line type="small" weight="strong" textColor="primary" class="nav-heading">
                 {{schema.schemaDescription ? schema.schemaDescription : 'Untitled'}}</lib-text-line>
               <lib-text-line type="xsmall" textColor="secondary">{{schema.moduleDesc}}</lib-text-line>
