@@ -15,9 +15,9 @@ import { AddFilterOutput, DataScopeSidesheet} from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
-import { forkJoin, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
@@ -124,6 +124,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Applied search string on brs list
    */
   brSearchString = '';
+  serachFieldsSub: BehaviorSubject<string> = new BehaviorSubject(null);
 
   brListFetchCount = 0;
 
@@ -206,6 +207,10 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
           this.setDataScopeName('0');
         }
       }
+    });
+
+    this.serachFieldsSub.pipe(filter(res=> res !== null), debounceTime(300), distinctUntilChanged()).subscribe(res=>{
+      this.getAllBusinessRulesList(this.moduleId, res, '', false);
     });
   }
 
@@ -443,18 +448,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const subscriberData = this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
       responseData.forEach((subscriber) => {
         subscriber.filterCriteria.forEach((data) => {
-          const filter: FilterCriteria = new FilterCriteria();
-          filter.fieldId = data.fieldId;
-          filter.type = data.type;
-          filter.values = data.values;
+          const fltr: FilterCriteria = new FilterCriteria();
+          fltr.fieldId = data.fieldId;
+          fltr.type = data.type;
+          fltr.values = data.values;
 
           const dropVal: DropDownValue[] = [];
-          filter.values.forEach(val => {
+          fltr.values.forEach(val => {
             const dd: DropDownValue = { CODE: val, FIELDNAME: data.fieldId } as DropDownValue;
             dropVal.push(dd);
           })
-          filter.filterCtrl = { fldCtrl: data.fldCtrl, selectedValues: dropVal };
-          data.filterCtrl = filter.filterCtrl;
+          fltr.filterCtrl = { fldCtrl: data.fldCtrl, selectedValues: dropVal };
+          data.filterCtrl = fltr.filterCtrl;
         })
       }),
         this.subscriberData = responseData;
@@ -719,7 +724,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /**
    * Edit curren business rule..
-   * @param br editable business rule ..
+   * @param br editable business rule
    */
   editBr(br: CoreSchemaBrInfo) {
     this.schemaService.currentweightage = this.availableWeightage('0');
@@ -906,8 +911,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
          */
         delete data.userMdoModel;
 
-        exitingFilterCtrl.map((filter) => {
-          data.filterCriteria.push(filter);
+        exitingFilterCtrl.map((fltr) => {
+          data.filterCriteria.push(fltr);
         })
         const collaboratorArray = [];
         collaboratorArray.push(data)
@@ -1043,6 +1048,10 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   openBrLibrarySideSheet() {
     this.router.navigate([{ outlets: { sb: `sb/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}` } }])
+  }
+
+  triggerSearch(str) {
+    this.serachFieldsSub.next(str);
   }
 
   /**

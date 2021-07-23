@@ -673,9 +673,10 @@ describe('DuplicacyComponent', () => {
 
     sharedService.setChooseColumnData(null);
 
+    spyOn(component, 'getSelectedTableColumns');
     const columnsData = {selectedFields: [], tableActionsList: [] };
     sharedService.setChooseColumnData(columnsData);
-    expect(component.selectedFields.length).toEqual(0);
+    expect(component.getSelectedTableColumns).toHaveBeenCalled();
 
     columnsData.tableActionsList.push({ actionText: 'Approve'} as SchemaTableAction);
     sharedService.setChooseColumnData(columnsData);

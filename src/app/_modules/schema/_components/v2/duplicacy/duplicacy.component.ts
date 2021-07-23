@@ -29,6 +29,7 @@ import { UserService } from '@services/user/userservice.service';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { FormControl } from '@angular/forms';
 import { TransientService } from 'mdo-ui-library';
+import { sortBy } from 'lodash';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -320,9 +321,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
      */
     this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
       if (result && !result.editActive) {
-        this.selectedFields = result.selectedFields;
-        this.selectedFields.map((x) => x.editable = true);
-        this.calculateDisplayFields();
+        this.getSelectedTableColumns();
         if (result.tableActionsList && result.tableActionsList.length) {
           this.tableActionsList = result.tableActionsList
         }
@@ -399,6 +398,16 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }, error => console.error(`Error : ${error.message}`))
   }
 
+  getSelectedTableColumns() {
+    this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId)
+      .subscribe(res => {
+          this.selectedFields = sortBy(res, 'order');
+          this.selectedFields.map((x) => x.editable = true);
+          console.log(this.selectedFields);
+          this.calculateDisplayFields();
+      });
+  }
+
   /**
    * Combine obserable for metadata and selected field by user
    */
@@ -434,6 +443,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
             this.selectedFields.map((x) => x.editable = true);
           } else {
             this.selectedFields = res[1] ? res[1] : [];
+            this.selectedFields = sortBy(this.selectedFields, 'order');
             this.selectedFields.map((x) => x.editable = true);
           }
           this.calculateDisplayFields();
@@ -1269,4 +1279,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     return row.OBJECTNUMBER.delFlag ? row.OBJECTNUMBER.delFlag : false;
   }
 
+  onRunCompleted($event) {
+    this.isInRunning = false;
+  }
 }
