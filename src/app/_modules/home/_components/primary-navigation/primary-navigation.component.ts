@@ -1,7 +1,7 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenavContent } from '@angular/material/sidenav';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Userdetails } from '@models/userdetails';
 import { UploadDatasetComponent } from '@modules/schema/_components/upload-dataset/upload-dataset.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -93,6 +93,13 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
     this.getNotificationsCount();
     const currentUrl = this.router.url;
     this.checkNavOnReload(currentUrl);
+
+    this.router.events.subscribe((res: any) => {
+      const value = res instanceof NavigationEnd;
+      if (value) {
+        this.checkNavOnReload(res.url);
+      }
+    });
   }
 
   ngAfterViewInit() {
