@@ -548,7 +548,7 @@ export class BrruleSideSheetComponent implements OnInit {
   /**
    * get businessrule data from api to patch in sidesheet
    */
-  getBusinessRuleInfo(brId) {
+  getBusinessRuleInfo(brId: string) {
     this.schemaService.getBusinessRuleInfo(brId).subscribe((businessRuleInfo: CoreSchemaBrInfo) => {
       this.coreSchemaBrInfo = businessRuleInfo;
       if (this.coreSchemaBrInfo) {
@@ -870,6 +870,7 @@ export class BrruleSideSheetComponent implements OnInit {
       target_field: br.target_field || '',
       accuracyScore: br.accuracyScore || 0
     };
+    
     // set the value for transformation ...
     this.hasAppliedTransformationCtrl.setValue(br.isTransformationApplied ? br.isTransformationApplied : false);
 

@@ -138,7 +138,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
    * @param val Pass the current value(string)
    */
   writeValue(val: string): void {
-    this.control.setValue(val);
+    this.setSelectedValue(val);
   }
 
   /**
