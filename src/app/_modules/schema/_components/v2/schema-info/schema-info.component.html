@@ -34,8 +34,8 @@
 
                     <lib-banner *ngIf="!schemaDetails.isInRunning && dataScopeName.value !== 'Entire data scope'"
                         status="info" i18n-text="@@schema_running_msg"
-                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]"
-                        text="{{ currentVariantCnt || 0 }} out of {{ module?.datasetCount || 0 }} records will be validated based on your data scope selection">
+                        [routerLink]="['/home/schema/schema-details', schemaDetails.moduleId, schemaDetails.schemaId]">
+                        {{ currentVariantCnt || 0 }} out of {{ module?.datasetCount || 0 }} records will be validated based on your data scope selection
                     </lib-banner>
                 </div>
             </ng-container>
@@ -68,7 +68,7 @@
                         <div class="datascope-scroll">
                             <mat-option value='0' i18n="@@entire_data_scope">
                                 <div class="f-row">
-                                    <lib-text-line type="base">Entire data scope</lib-text-line>
+                                    <lib-text-line type="base" weight="strong">Entire data scope</lib-text-line>
                                     <span class="f-spacer"></span>
                                     <lib-text-line type="base" textColor="secondary">{{module?.datasetCount || 0}}
                                     </lib-text-line>
@@ -87,7 +87,7 @@
                                 </div>
                             </mat-option>
                             <mat-divider class="horizontal-divider"></mat-divider>
-                            <mat-option i18n="@@add_data_scope" (click)="addDataScope()"><lib-text-line type="base" textColor="link">Add data scope</lib-text-line></mat-option>
+                            <mat-option i18n="@@add_data_scope" (click)="addDataScope()"><lib-text-line type="base" textColor="link">New data scope</lib-text-line></mat-option>
                         </div>
                     </mat-autocomplete>
                 </div>

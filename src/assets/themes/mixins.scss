@@ -1153,7 +1153,7 @@
       }
 
       .text-strike {
-        opacity: 0.4;
+        color: $color-text-disabled;
         pointer-events: none;
         text-decoration: line-through;
       }

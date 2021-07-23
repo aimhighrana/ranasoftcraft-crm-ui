@@ -294,8 +294,8 @@
                         <ng-container matColumnDef="OBJECTNUMBER" sticky>
                             <mat-header-cell *matHeaderCellDef mat-sort-header> {{moduleInfo?.moduleDesc || 'Object number'}}
                             </mat-header-cell>
-                            <mat-cell *matCellDef="let element" [class.text-strike]="isDeleted(element)">
-                                {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
+                            <mat-cell *matCellDef="let element">
+                                <div [class.text-strike]="isDeleted(element)">{{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}</div>
                             </mat-cell>
                         </ng-container>
 
@@ -313,54 +313,57 @@
                                         </mat-cell> -->
 
                                     <mat-cell *matCellDef="let element; let rIndex = index;"
-                                        [class.error-cell]="element[dynCol] ? element[dynCol].isInError : false" [class.text-strike]="isDeleted(element)"
+                                        [class.error-cell]="element[dynCol] ? element[dynCol].isInError : false"
                                         (click)="editCurrentCell(dynCol,element, rIndex, containerRef)">
-                                        <div class="f-col grid-cell-editable">
-                                            <div class="mdo-form-input f-col" style="display: none;"
-                                                id="inpctrl_{{ dynCol + '_' + rIndex }}">
-
-                                                <!-- container to hold input field when cell gets edited  -->
-                                                <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                        <div [class.text-strike]="isDeleted(element)">
+                                            <div class="f-col grid-cell-editable">
+                                                <div class="mdo-form-input f-col" style="display: none;"
+                                                    id="inpctrl_{{ dynCol + '_' + rIndex }}">
+    
+                                                    <!-- container to hold input field when cell gets edited  -->
+                                                    <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                                    </ng-template>
+                                                </div>
+                                                <ng-template [ngIf]="element[dynCol] && element[dynCol].isCorrected"
+                                                    [ngIfElse]="normalCell">
+                                                    <ng-template
+                                                        [ngIf]="element[dynCol].oldData !== element[dynCol].fieldData"
+                                                        [ngIfElse]="other">
+                                                        <div class="f-col">
+                                                            <lib-text-line type="base" class="correction" id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                                {{ element[dynCol] ? formatCellData(dynCol,
+                                                                    element[dynCol].fieldData) : '' }}
+                                                            </lib-text-line>
+                                                            <lib-text-line type="base" textColor="info" class="text-correction correction line-cut">
+                                                                {{ element[dynCol] ? formatCellData(dynCol,
+                                                                    element[dynCol].oldData) : '' }}
+                                                            </lib-text-line>
+                                                        </div>
+    
+                                                    </ng-template>
+                                                    <ng-template #other>
+                                                        <div class="f-col">
+                                                            <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">{{ element[dynCol] ? formatCellData(dynCol,
+                                                                element[dynCol].fieldData) : '' }}</lib-text-line>
+                                                        </div>
+                                                    </ng-template>
                                                 </ng-template>
-                                            </div>
-                                            <ng-template [ngIf]="element[dynCol] && element[dynCol].isCorrected"
-                                                [ngIfElse]="normalCell">
-                                                <ng-template
-                                                    [ngIf]="element[dynCol].oldData !== element[dynCol].fieldData"
-                                                    [ngIfElse]="other">
+                                                <ng-template #normalCell>
                                                     <div class="f-col">
-                                                        <lib-text-line type="base" class="correction" id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                        <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">
                                                             {{ element[dynCol] ? formatCellData(dynCol,
                                                                 element[dynCol].fieldData) : '' }}
                                                         </lib-text-line>
-                                                        <lib-text-line type="base" textColor="info" class="text-correction" class="correction line-cut">
-                                                            {{ element[dynCol] ? formatCellData(dynCol,
-                                                                element[dynCol].oldData) : '' }}
+                                                       
+                                                        <lib-text-line type="base" textColor="info" class="text-correction">
+                                                            {{ element[dynCol] ? element[dynCol].errorMsg : ''
+                                                            }}
                                                         </lib-text-line>
                                                     </div>
-
                                                 </ng-template>
-                                                <ng-template #other>
-                                                    <div class="f-col">
-                                                        <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">{{ element[dynCol] ? formatCellData(dynCol,
-                                                            element[dynCol].fieldData) : '' }}</lib-text-line>
-                                                    </div>
-                                                </ng-template>
-                                            </ng-template>
-                                            <ng-template #normalCell>
-                                                <div class="f-col">
-                                                    <lib-text-line type="base" id="viewctrl_{{ dynCol + '_' + rIndex }}">
-                                                        {{ element[dynCol] ? formatCellData(dynCol,
-                                                            element[dynCol].fieldData) : '' }}
-                                                    </lib-text-line>
-                                                   
-                                                    <lib-text-line type="base" textColor="info" class="text-correction">
-                                                        {{ element[dynCol] ? element[dynCol].errorMsg : ''
-                                                        }}
-                                                    </lib-text-line>
-                                                </div>
-                                            </ng-template>
+                                            </div>
                                         </div>
+                                       
                                     </mat-cell>
 
                                 </ng-container>
