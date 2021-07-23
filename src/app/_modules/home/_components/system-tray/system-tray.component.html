@@ -18,7 +18,8 @@
                         <div class="f-row notification-listing">
                             <div class="f-col notify-row">
                                 <ng-template [ngIf]="!notification.showMore" [ngIfElse]="withoutTruncate">
-                                    <lib-text-line type="base" weight="strong" textColor="primary">{{notification.headerText}}
+                                    <lib-text-line type="base" weight="strong" textColor="primary">
+                                        {{notification.headerText}}
                                     </lib-text-line>
 
                                     <lib-text-line type="xsmall" textColor="secondary" enableWrap="true">
@@ -26,7 +27,8 @@
                                     </lib-text-line>
 
                                     <div class="f-row" *ngIf="notification.downloadLink">
-                                        <lib-text-line type="xsmall" textColor="link" (click)="download(notification.downloadLink)">Click here</lib-text-line>
+                                        <lib-text-line type="xsmall" textColor="link"
+                                            (click)="download(notification.downloadLink)">Click here</lib-text-line>
                                         &nbsp;
                                         <lib-text-line type="xsmall" textColor="secondary">to download</lib-text-line>
                                     </div>
@@ -37,7 +39,8 @@
                                         </mat-icon>
                                     </a>
 
-                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true" class="timetext">
+                                    <lib-text-line type="xsmall" textColor="secondary" enableWrap="true"
+                                        class="timetext">
                                         {{notification.sendTime | date:"dd
                                         MMM
                                         hh:mm:ss" }}
@@ -45,8 +48,10 @@
                                 </ng-template>
                                 <ng-template #withoutTruncate>
                                     <div class="notify-content expand-content">
-                                        <lib-text-line type="xsmall" textColor="secondary">{{notification.contentText}}</lib-text-line>
-                                        <lib-text-line type="xsmall" textColor="secondary" (click)="download(notification.downloadLink)">
+                                        <lib-text-line type="xsmall" textColor="secondary">{{notification.contentText}}
+                                        </lib-text-line>
+                                        <lib-text-line type="xsmall" textColor="secondary"
+                                            (click)="download(notification.downloadLink)">
                                             {{notification.downloadLink}}</lib-text-line>
                                     </div>
                                     <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96) || (notification.contentText && notification.contentText.length > 96)"
@@ -58,17 +63,17 @@
                             </div>
                             <div class="f-row">
                                 <ng-template [ngIf]="notification.senderUid || notification.senderMail"
-                                        [ngIfElse]="showUserProfile">
-                                        <lib-avatar
-                                            [initials]="notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]">
-                                        </lib-avatar>
-                                    </ng-template>
+                                    [ngIfElse]="showUserProfile">
+                                    <lib-avatar
+                                        [initials]="notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]">
+                                    </lib-avatar>
+                                </ng-template>
 
-                                    <ng-template #showUserProfile>
-                                        <lib-avatar>
-                                            <mat-icon fontSet="mdo-icons">user</mat-icon>
-                                        </lib-avatar>
-                                    </ng-template>
+                                <ng-template #showUserProfile>
+                                    <lib-avatar>
+                                        <mat-icon fontSet="mdo-icons">user</mat-icon>
+                                    </lib-avatar>
+                                </ng-template>
                                 <span class="f-col-spacer-half"></span>
                                 <lib-button (click)="deleteNotification(notification.id)" type="plain" icon="trash-alt"
                                     prosClickStopPropagation></lib-button>
@@ -85,14 +90,16 @@
                             <div class="f-col job-row">
                                 <lib-text-line type="base">{{job.logMessage}}</lib-text-line>
                             </div>
-                            
+
                             <span class="f-spacer"></span>
 
                             <lib-chip-list>
                                 <lib-label status="success" *ngIf="job.jobPk.status === 'IN_PROGRESS'">
                                     <lib-spinner size="13"></lib-spinner>&nbsp; Running
                                 </lib-label>
-                                <lib-label *ngIf="job.jobPk.status === 'COMPLETE'" prefixIcon="clock" iconFontType="light">&nbsp; {{job.startDate | date:'dd-MMM-yyyy hh:mm:ss'}}</lib-label>
+                                <lib-label *ngIf="job.jobPk.status === 'COMPLETE'" prefixIcon="clock"
+                                    iconFontType="light">&nbsp; {{job.startDate | date:'dd-MMM-yyyy hh:mm:ss'}}
+                                </lib-label>
                             </lib-chip-list>
                             <span class="col-spacer"></span>
                             <lib-avatar [initials]="job.initiatedBy"></lib-avatar>
