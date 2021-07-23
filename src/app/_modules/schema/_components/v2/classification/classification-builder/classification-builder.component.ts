@@ -1229,7 +1229,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     }
     else {
       this.arrowIcon = 'chevron-left';
-      this.widthOfSchemaNav=292;
+      this.widthOfSchemaNav=246;
     }
   }
 

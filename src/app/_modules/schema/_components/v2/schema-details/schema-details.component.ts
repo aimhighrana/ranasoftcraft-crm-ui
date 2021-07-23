@@ -1491,11 +1491,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     if (this.arrowIcon === 'chevron-left') {
       this.arrowIcon = 'chevron-right';
       this.widthOfSchemaNav=0;
-
     }
     else {
       this.arrowIcon = 'chevron-left';
-      this.widthOfSchemaNav=292;
+      this.widthOfSchemaNav=246;
     }
   }
 
