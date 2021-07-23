@@ -243,7 +243,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   isInRunning: boolean;
 
   /**
-   * Variant name if have otherwise by default is entire dataset
+   * Variant name if have otherwise by default is entire dataset...
    */
   variantName = 'Entire dataset';
 
@@ -303,10 +303,10 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
+      this.getSchemaDetails();
       if(!this.isInRunning) {
         this.getDataScope();
         this.getSchemaStatics();
-        this.getSchemaDetails();
         this.getSchemaTableActions();
         // this.getFieldsByUserView();
       }

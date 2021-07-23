@@ -261,7 +261,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     } */
     const moduleSub = this.getModuleInfo(this.moduleId);
     forkJoin({ getModuleInfo: moduleSub, ...!this.isInRunning && { getDataScope: this.getDataScope() } }).subscribe((res) => {
-      if (res && !this.isInRunning) {
+      if (res) {
         this.getSchemaDetails();
       }
     });
