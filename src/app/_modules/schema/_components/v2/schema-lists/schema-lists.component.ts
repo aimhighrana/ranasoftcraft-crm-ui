@@ -64,7 +64,6 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.getRouteParams();
-
     this.subscriptions.push(this.sharedService.refresSchemaListTrigger.subscribe(res=>{
       if(res) {
         this.getModuleInfo();
