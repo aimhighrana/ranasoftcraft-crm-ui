@@ -8,6 +8,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SystemTrayComponent } from './system-tray.component';
 import { Userdetails } from '@models/userdetails';
+import { CustomNotification } from '@models/customNotification';
 
 describe('SystemTrayComponent', () => {
   let component: SystemTrayComponent;
@@ -160,5 +161,21 @@ describe('SystemTrayComponent', () => {
     component.close();
     expect(component.close).toBeTruthy();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
+  });
+
+  it('should trackByFn', () => {
+    expect(component.trackByFn(1, { headerText: "test 1 running for shahnshah module test 1 ",
+    id: "349710404638900102"} as CustomNotification)).toEqual('349710404638900102');
+  });
+
+  it('indexChange(), should call notification or jobQueue based on index', () => {
+    spyOn(component, 'getJobsQueue');
+    spyOn(component, 'getNotifications');
+
+    component.indexChange(0);
+    expect(component.getNotifications).toHaveBeenCalled();
+
+    component.indexChange(1);
+    expect(component.getJobsQueue).toHaveBeenCalled();
   });
 });

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
@@ -8,12 +8,13 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { HomeService } from '@services/home/home.service'
 import { JobQueue } from '@models/jobQueue';
 import { GlobaldialogService } from '@services/globaldialog.service';
+
 @Component({
   selector: 'pros-system-tray',
   templateUrl: './system-tray.component.html',
   styleUrls: ['./system-tray.component.scss']
 })
-export class SystemTrayComponent implements OnInit, AfterViewInit {
+export class SystemTrayComponent implements OnInit {
 
   /**
    * Variable to store the user details
@@ -29,6 +30,11 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    * variable to store notifications
    */
   notifications: Array<CustomNotification> = [];
+
+  /**
+   * loader for notifications
+   */
+  loader: boolean;
 
   /**
    * child object to access mat group events
@@ -60,9 +66,6 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.getUser();
-    if (this.userDetails) {
-      this.getNotifications();
-    }
   }
 
   /**
@@ -72,20 +75,16 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
     this.userService.getUserDetails()
       .subscribe((user: Userdetails) => {
         this.userDetails = user;
+        this.getNotifications();
       })
   }
 
   /**
-   * Angular hook
+   * Fire event on tab index change
+   * @param currentindex pass the current Index
    */
-  ngAfterViewInit() {
-    this.mattabgroup.selectedIndexChange
-      .subscribe((index) => {
-        switch (index) {
-          case 0: this.getNotifications(); break;
-          case 1: this.getJobsQueue(); break
-        }
-      })
+  indexChange(currentindex: number) {
+    currentindex === 0? this.getNotifications(): this.getJobsQueue()
   }
 
   /**
@@ -96,6 +95,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
       this.notificationPagination.from = 0;
       this.notificationPagination.to = this.notificationPagination.offset;
     }
+    this.loader = true;
     this.notificationSubscription = this.homeService
       .getNotifications(
         this.userDetails.userName,
@@ -103,6 +103,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
         this.notificationPagination.to
       )
       .subscribe((notifications: Array<CustomNotification>) => {
+        this.loader = false;
         notifications.forEach((notification) => {
           notification.showMore = false;
         })
@@ -111,6 +112,8 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
         } else {
           this.notifications.push(...notifications);
         }
+      }, () => {
+        this.loader = false;
       });
   }
 
@@ -118,13 +121,17 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    * function to get joba
    */
   getJobsQueue() {
+    this.loader = true;
     this.homeService.getJobQueue(this.userDetails.userName, this.userDetails.plantCode)
       .subscribe((jobs: JobQueue[]) => {
+        this.loader = false;
         this.jobQueueData.length = 0;
         jobs.forEach((job) => {
           job.initiatedBy = job.initiatedBy.split(' ').map(name => name[0]).join(' ');
         })
         this.jobQueueData.push(...jobs)
+      }, () => {
+        this.loader = false;
       })
   }
 
@@ -143,17 +150,22 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
    * Delete a notification
    * @param notificationid id of selected notification
    */
-  deleteNotification(notificationid) {
+  deleteNotification(notificationid: string) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
         const subscriber = this.homeService.deleteNotification([notificationid]).subscribe(() => {
+          this.getNotifications();
           subscriber.unsubscribe();
-          setTimeout(() => {
-            this.getNotifications();
-          }, 1000);
         });
       }
     });
+  }
+
+  /**
+   * identify unique items and update on change
+   */
+  trackByFn(index: number, item: CustomNotification) {
+    return item?.id;
   }
 
   /**
@@ -162,7 +174,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
   paginateNotification() {
     this.notificationPagination.from += this.notificationPagination.offset;
     this.notificationPagination.to += this.notificationPagination.offset;
-    this.getNotifications(false)
+    this.getNotifications(false);
   }
 
   close() {
