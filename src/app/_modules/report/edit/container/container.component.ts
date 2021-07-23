@@ -16,7 +16,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { UserService } from '@services/user/userservice.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { Metadata } from './metadatafield-control/metadatafield-control.component';
 
@@ -450,6 +450,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       if (flds) {
         this.workflowFields = flds;
         this.workflowFieldsObs = of(flds);
+      }
+    })
+    this.fieldCtrl.valueChanges.pipe(debounceTime(500)).subscribe(res=>{
+      if(this.styleCtrlGrp.get('isWorkflowdataSet').value===false  && this.styleCtrlGrp.get('isCustomdataSet').value===false)
+      {
+        this.searchChooseColumn(res);
+      }
+      if(this.styleCtrlGrp.get('isWorkflowdataSet').value===true  && this.styleCtrlGrp.get('isCustomdataSet').value===false)
+      {
+        this.searchChooseColumnWorkflow(res);
+      }
+      if(this.styleCtrlGrp.get('isWorkflowdataSet').value===false  && this.styleCtrlGrp.get('isCustomdataSet').value===true)
+      {
+        this.searchCustomChooseColumn(res);
       }
     })
     this.subscriptions.push(fldSub);
@@ -994,7 +1008,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   removeError(value: 'fieldCtrl' | 'datasetCtrl') {
     switch (value) {
       case 'fieldCtrl':
-        this.fieldCtrl = new FormControl('');
+        // this.fieldCtrl = new FormControl('');
+        this.fieldCtrl.setErrors(null);
+        this.fieldCtrl.setValue('');
+        this.fieldCtrl.updateValueAndValidity();
         break;
       case 'datasetCtrl':
         this.datasetCtrl = new FormControl(this.datasetCtrl.value);

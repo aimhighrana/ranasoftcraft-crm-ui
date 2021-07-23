@@ -415,8 +415,7 @@
                                             <div class="mdo-field-input">
                                                 <input matInput [matAutocomplete]="chooseColumnM"
                                                     [formControl]="fieldCtrl" #columnsTriggerM="matAutocompleteTrigger"
-                                                    (click)="openAutoComplete(columnsTriggerM)"
-                                                    (keyup)="openAutoComplete(columnsTriggerM);searchChooseColumn($event.target.value)">
+                                                    (click)="openAutoComplete(columnsTriggerM)">
                                                 <!-- autocomplete -->
                                                 <mat-autocomplete #chooseColumnM="matAutocomplete"
                                                     [displayWith]="chooseColumnDisWith"
@@ -478,8 +477,7 @@
                                             <div class="mdo-field-input">
                                                 <input matInput [matAutocomplete]="chooseColumnWF"
                                                     [formControl]="fieldCtrl" #columnsTriggerWM="matAutocompleteTrigger"
-                                                    (click)="openAutoComplete(columnsTriggerWM)"
-                                                    (keyup)="openAutoComplete(columnsTriggerWM); searchChooseColumnWorkflow($event.target.value)">
+                                                    (click)="openAutoComplete(columnsTriggerWM)">
                                                 <!-- autocomplete -->
                                                 <mat-autocomplete #chooseColumnWF="matAutocomplete"
                                                     (opened)="removeError('fieldCtrl')"
@@ -531,8 +529,7 @@
                                             <div class="mdo-field-input">
                                                 <input matInput [matAutocomplete]="chooseColumnCM"
                                                     [formControl]="fieldCtrl" #columnsTriggerCM="matAutocompleteTrigger"
-                                                    (click)="openAutoComplete(columnsTriggerCM)"
-                                                    (keyup)="openAutoComplete(columnsTriggerCM); searchCustomChooseColumn($event.target.value)">
+                                                    (click)="openAutoComplete(columnsTriggerCM)">
                                                 <!-- autocomplete -->
                                                 <mat-autocomplete #chooseColumnCM="matAutocomplete"
                                                     (opened)="removeError('fieldCtrl')"
