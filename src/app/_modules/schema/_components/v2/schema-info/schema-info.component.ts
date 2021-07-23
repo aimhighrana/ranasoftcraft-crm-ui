@@ -724,7 +724,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /**
    * Edit curren business rule..
-   * @param br editable business rule ..
+   * @param br editable business rule
    */
   editBr(br: CoreSchemaBrInfo) {
     this.schemaService.currentweightage = this.availableWeightage('0');
