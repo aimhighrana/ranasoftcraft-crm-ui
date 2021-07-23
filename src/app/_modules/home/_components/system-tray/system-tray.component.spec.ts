@@ -164,8 +164,8 @@ describe('SystemTrayComponent', () => {
   });
 
   it('should trackByFn', () => {
-    expect(component.trackByFn(1, { headerText: "test 1 running for shahnshah module test 1 ",
-    id: "349710404638900102"} as CustomNotification)).toEqual('349710404638900102');
+    expect(component.trackByFn(1, { headerText: 'test 1 running for shahnshah module test 1 ',
+    id: '349710404638900102'} as CustomNotification)).toEqual('349710404638900102');
   });
 
   it('indexChange(), should call notification or jobQueue based on index', () => {
