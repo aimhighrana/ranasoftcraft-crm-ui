@@ -65,7 +65,7 @@ describe('ContainerComponent', () => {
                                              },
                               defaultFilters: null,fieldCtrl: null, groupByIdCtrl: null, dateFilterCtrl: null, isWorkflowdataSet: false,
                               workflowPath: [], distictWith: null, isCustomdataSet: true, pageDefaultSize: 100, isFieldDistinct: false, displayCriteria: DisplayCriteria.CODE,
-                              isEnableGlobalFilter: false
+                              isEnableGlobalFilter: false, applyDistinct: false
                             };
   });
 
@@ -176,7 +176,7 @@ describe('ContainerComponent', () => {
                                                                 },
             defaultFilters: null,fieldCtrl: null, groupByIdCtrl: null, dateFilterCtrl: null, isWorkflowdataSet: false,
             workflowPath: [], distictWith: null, isCustomdataSet: true, pageDefaultSize: 100, isFieldDistinct: false, displayCriteria: DisplayCriteria.CODE,
-            isEnableGlobalFilter: false}
+            isEnableGlobalFilter: false, applyDistinct: false}
     component.styleCtrlGrp = new FormGroup({});
     component.ngOnInit();
     component.showStyle(data);
