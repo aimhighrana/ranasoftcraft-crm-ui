@@ -65,11 +65,12 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRouteParams();
 
-    /* this.sharedService.isSecondaryNavRefresh().subscribe(res=>{
-      if(res && res.activeMenu === SecondaynavType.schema) {
+    this.subscriptions.push(this.sharedService.refresSchemaListTrigger.subscribe(res=>{
+      if(res) {
+        this.getModuleInfo();
         this.getSchemaList();
       }
-    }); */
+    }));
   }
 
   /**
