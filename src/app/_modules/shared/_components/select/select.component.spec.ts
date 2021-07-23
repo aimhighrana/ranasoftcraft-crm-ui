@@ -73,9 +73,12 @@ describe('SelectComponent', () => {
     expect(component.formatValue(component.allOptions[0])).toEqual('Test Field one');
   });
 
-  it('afterChange(), should change the value of the control', async () => {
-    component.writeValue('test val');
-    expect(component.control.value).toEqual('test val');
+  it('writeValue(), should change the value of the control', async () => {
+    component.writeValue('Test Field two');
+    expect(component.control.value).toEqual({
+      fieldDescri: 'Test Field two',
+      fieldId: 'test_2636733',
+    });
   });
 
   it('should registerOnTouched', () => {
