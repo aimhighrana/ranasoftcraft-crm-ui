@@ -1348,5 +1348,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     return Object.keys(msgs).length >0 ? msgs : null;
   }
 
-
+  onRunCompleted($event) {
+    this.isInRunning = false;
+  }
 }

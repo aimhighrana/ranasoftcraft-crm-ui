@@ -116,7 +116,7 @@
                     (openCustomDialog)="openBrLibrarySideSheet()" [updatedOptionsList]="allBusinessRulesList"
                     [labelKey]="'brInfo'" (emitExtraLabelClick)="openBusinessRuleSideSheet()"
                     (optionSelectedEmit)="addBusinessRule($event)" i18n-extraOptionLabel="@@new_br_rule"
-                    extraOptionLabel="New business rule" [isExtraLabel]="true">
+                    extraOptionLabel="New business rule" [isExtraLabel]="true" (emitSearchValue)="triggerSearch($event)">
                 </pros-form-input-autoselect>
                 <!-- (emitExtraLabelClick)="openBusinessRuleSideSheet()" -->
             </div>
