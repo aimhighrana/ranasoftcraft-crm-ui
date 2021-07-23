@@ -5,7 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SelectComponent } from './select.component';
 
-fdescribe('SelectComponent', () => {
+describe('SelectComponent', () => {
   let component: SelectComponent;
   let fixture: ComponentFixture<SelectComponent>;
 
