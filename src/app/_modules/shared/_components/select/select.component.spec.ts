@@ -5,7 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SelectComponent } from './select.component';
 
-describe('SelectComponent', () => {
+fdescribe('SelectComponent', () => {
   let component: SelectComponent;
   let fixture: ComponentFixture<SelectComponent>;
 
@@ -74,7 +74,7 @@ describe('SelectComponent', () => {
   });
 
   it('writeValue(), should change the value of the control', async () => {
-    component.writeValue('Test Field two');
+    component.writeValue('test_2636733');
     expect(component.control.value).toEqual({
       fieldDescri: 'Test Field two',
       fieldId: 'test_2636733',
