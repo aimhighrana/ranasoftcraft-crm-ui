@@ -336,7 +336,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     const moduleSub = this.getModuleInfo(this.moduleId);
     forkJoin({...!this.isInRunning && {getDataScope: this.getDataScope()}, getModuleInfo: moduleSub}).subscribe((res) => {
-      if (res && !this.isInRunning) {
+      if (res) {
         this.getSchemaDetails();
       }
     });
