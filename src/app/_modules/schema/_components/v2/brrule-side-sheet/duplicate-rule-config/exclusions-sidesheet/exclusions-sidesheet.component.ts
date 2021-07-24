@@ -218,7 +218,7 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
    * function to emit data and close the dialog
    */
   close() {
-    this.router.navigate([{ outlets: { outer: null } }]);
+    this.router.navigate([{ outlets: { sb3: null } }]);
   }
 
   get synonymsArray(){

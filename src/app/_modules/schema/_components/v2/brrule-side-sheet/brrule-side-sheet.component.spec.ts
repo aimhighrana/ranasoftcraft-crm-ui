@@ -806,11 +806,12 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.delayedCallWithTransLib).toHaveBeenCalledWith('');
   }));
 
+
   it('editTransRule(), edit the business rule and nav to the edit mode', async(()=>{
     spyOn(router,'navigate');
     component.editTransRule({ruleInfo:{brIdStr:'8867678658'} as CoreSchemaBrInfo} as TransformationMappingTabResponse,'success');
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {sb:`sb/schema/business-rule/${component.moduleId}/${component.schemaId}/${component.brId}`,
-    outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/8867678658/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: {
+    sb3: `sb3/schema/business-rule/${component.moduleId}/${component.schemaId}/8867678658/sb3` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
   }));
 
   it('openBusinessRuleSideSheet()', async(() => {
