@@ -71,7 +71,7 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         this.rightSideNav1.close();
       }
-      if (evt.url.indexOf('sb_three:') > 0) {
+      if (evt.url.indexOf('sb3:') > 0) {
         this.thirdSideNav.open();
       } else {
         this.thirdSideNav.close();

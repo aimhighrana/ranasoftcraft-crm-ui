@@ -156,7 +156,7 @@ describe('ExclusionsSidesheetComponent', () => {
   it('should close()', () => {
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb3: null } }]);
   })
 
   it('should init component', () => {

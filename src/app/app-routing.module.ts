@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'nonav', loadChildren: () => import('./_modules/nonav/nonav.module').then((m) => m.NonavModule), canActivate: [AuthGuard] },
   { path: 'sb/schema', loadChildren: () => import('./_modules/schema/schema.module').then((m) => m.SchemaModule), outlet: 'sb' },
   { path: 'outer/schema', loadChildren: () => import('./_modules/schema/schema.module').then((m) => m.SchemaModule), outlet: 'outer' },
-  { path: 'sb_three/schema', loadChildren: () => import('./_modules/schema/schema.module').then((m) => m.SchemaModule), outlet: 'sb_three' },
+  { path: 'sb3/schema', loadChildren: () => import('./_modules/schema/schema.module').then((m) => m.SchemaModule), outlet: 'sb3' },
   { path: 'sb/list', loadChildren: () => import('./_modules/list/list.module').then((m) => m.ListModule), outlet: 'sb' },
   { path: 'outer/list', loadChildren: () => import('./_modules/list/list.module').then((m) => m.ListModule), outlet: 'outer' },
   { path: 'settings', loadChildren: () => import('./_modules/settings/settings.module').then((m) => m.SettingsModule), outlet: 'sb' },

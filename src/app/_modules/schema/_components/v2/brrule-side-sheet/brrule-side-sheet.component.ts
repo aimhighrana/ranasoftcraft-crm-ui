@@ -448,7 +448,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
           // set is trans edit only
           this.activatedRouter.queryParams.subscribe(q=>{
-            if(this.activeOutlet === 'sb_three' && q.r && q.r === 'BR_TRANSFORMATION') {
+            if(this.activeOutlet === 'sb3' && q.r && q.r === 'BR_TRANSFORMATION') {
               this.isOnlyForTrans = true;
             } else {
               this.isOnlyForTrans = false;
@@ -459,7 +459,7 @@ export class BrruleSideSheetComponent implements OnInit {
           // not required missing rule bydefault...
           // this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
           this.activatedRouter.queryParams.subscribe(q=>{
-            if(this.activeOutlet === 'sb_three' && q.r && q.r === 'BR_TRANSFORMATION') {
+            if(this.activeOutlet === 'sb3' && q.r && q.r === 'BR_TRANSFORMATION') {
               this.form.controls.transformationRuleType.setValue(this.transformationType.REGEX);
               // update manually if has only for transformation rule
               setTimeout(()=>{
@@ -1985,7 +1985,12 @@ export class BrruleSideSheetComponent implements OnInit {
    * Create new business rules ...
    */
   openBusinessRuleSideSheet() {
-    this.router.navigate(['', { outlets: {sb_three: `sb_three/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb_three` }}],
+    console.log(this.activatedRouter.url);
+    /* this.router.navigate([`sb3:sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb3`],
+    {queryParams:{r:'BR_TRANSFORMATION'}, relativeTo: this.activatedRouter}); */
+    /* this.router.navigateByUrl(`../(sb3:sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb3)`,
+    {queryParams:{r:'BR_TRANSFORMATION'}, relativeTo: this.activatedRouter}); */
+    this.router.navigate(['', { outlets: { sb3:  `sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb3`}}],
     {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
@@ -2048,7 +2053,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * Edit the exiting transformation....
    */
   editTransRule(br: TransformationMappingTabResponse, tab: string) {
-    this.router.navigate(['', { outlets: { sb_three: `sb_three/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/sb_three` }}],
+    this.router.navigate(['', { outlets: { sb3: `sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/sb3` }}],
     {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
