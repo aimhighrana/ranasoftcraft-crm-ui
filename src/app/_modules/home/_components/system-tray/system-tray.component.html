@@ -10,11 +10,27 @@
     </div>
 
     <div class="f-col sidesheetcontent-listing">
-        <lib-tab-group disableRipple="true" #matTabgroup class="lib-tab">
+        <lib-tab-group disableRipple="true" #matTabgroup class="lib-tab" (selectedIndexChange)="indexChange($event)">
             <lib-tab i18n-label="@@notifications" label="Notifications">
                 <mat-nav-list class="notification-list" prosInfiniteScroll bufferPercentage="20"
                     (scrollEnd)="paginateNotification()">
-                    <mat-list-item *ngFor="let notification of notifications;">
+
+                    <ng-container *ngIf="!notifications.length && loader">
+                        <mat-list-item *ngFor="let a of [].constructor(10)">
+                            <div class="f-row notification-listing">
+                                <div class="f-col notify-row">
+                                    <lib-skeleton type="line"></lib-skeleton>
+                                    <lib-skeleton type="line-half"></lib-skeleton>
+                                </div>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="avatar"></lib-skeleton>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="button"></lib-skeleton>
+                            </div>
+                        </mat-list-item>
+                    </ng-container>
+
+                    <mat-list-item *ngFor="let notification of notifications;trackBy: trackByFn;">
                         <div class="f-row notification-listing">
                             <div class="f-col notify-row">
                                 <ng-template [ngIf]="!notification.showMore" [ngIfElse]="withoutTruncate">
@@ -80,11 +96,43 @@
                             </div>
                         </div>
                     </mat-list-item>
+
+                    <ng-container *ngIf="loader">
+                        <mat-list-item>
+                            <div class="f-row notification-listing">
+                                <div class="f-col notify-row">
+                                    <lib-skeleton type="line"></lib-skeleton>
+                                    <lib-skeleton type="line-half"></lib-skeleton>
+                                </div>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="avatar"></lib-skeleton>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="button"></lib-skeleton>
+                            </div>
+                        </mat-list-item>
+                    </ng-container>
                 </mat-nav-list>
             </lib-tab>
 
             <lib-tab label="Job queue" [badgeCount]="jobQueueData.length">
-                <mat-nav-list>
+                <mat-nav-list class="notification-list" prosInfiniteScroll bufferPercentage="20"
+                (scrollEnd)="paginateJobs()">
+
+                    <ng-container *ngIf="!jobQueueData.length && loader">
+                        <mat-list-item *ngFor="let a of [].constructor(10)">
+                            <div class="f-row notification-listing">
+                                <div class="f-col notify-row">
+                                    <lib-skeleton type="line"></lib-skeleton>
+                                    <lib-skeleton type="line-half"></lib-skeleton>
+                                </div>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="avatar"></lib-skeleton>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="button"></lib-skeleton>
+                            </div>
+                        </mat-list-item>
+                    </ng-container>
+
                     <mat-list-item *ngFor="let job of jobQueueData">
                         <div class="f-row notification-listing">
                             <div class="f-col job-row">
@@ -107,6 +155,21 @@
                             <lib-button type="plain" icon="ellipsis-h"></lib-button>
                         </div>
                     </mat-list-item>
+
+                    <ng-container *ngIf="loader">
+                        <mat-list-item>
+                            <div class="f-row notification-listing">
+                                <div class="f-col notify-row">
+                                    <lib-skeleton type="line"></lib-skeleton>
+                                    <lib-skeleton type="line-half"></lib-skeleton>
+                                </div>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="avatar"></lib-skeleton>
+                                <div class="f-col-spacer-half"></div>
+                                <lib-skeleton type="button"></lib-skeleton>
+                            </div>
+                        </mat-list-item>
+                    </ng-container>
                 </mat-nav-list>
             </lib-tab>
         </lib-tab-group>

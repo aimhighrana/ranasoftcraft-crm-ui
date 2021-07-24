@@ -469,8 +469,13 @@ export class EndpointsClassicService {
    * @param userName username of logged in user
    * @param plantCode plantcode of logged in user
    */
-  public getJobQueueUrl(userName: string, plantCode: string): string {
-    return `${this.apiUrl}/schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`
+  public getJobQueueUrl(userName: string, plantCode: string, fetchData: any = null): string {
+    let baseUrl = `${this.apiUrl}/schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`;
+
+    if(fetchData?.fetchCount > -1) {baseUrl += `&fetchCount=${fetchData.fetchCount}`};
+    if(fetchData?.fetchSize > 0) {baseUrl += `&fetchSize=${fetchData.fetchSize}`};
+
+    return baseUrl;
   }
 
 

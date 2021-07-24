@@ -653,7 +653,7 @@ describe('EndpointsClassicService', () => {
     const serObj =new EndpointsClassicService();
     const userName = 'harshit';
     const plantCode = '0'
-    expect(serObj.getJobQueueUrl(userName, plantCode)).toContain(`schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`);
+    expect(serObj.getJobQueueUrl(userName, plantCode, null)).toContain(`schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`);
   }));
 
   it('getNotificationsCount(), return count of notification',async(() => {
