@@ -15,7 +15,6 @@ describe('SystemTrayComponent', () => {
   let fixture: ComponentFixture<SystemTrayComponent>;
   let userSpy;
   let notificationSpy;
-  let jobsSpy;;
   let updateNotiticationSpy;
   let deleteNotificationSpy;
   let jobqueueSpy;
@@ -47,9 +46,6 @@ describe('SystemTrayComponent', () => {
       })
     });
     notificationSpy = spyOn(component.homeService, 'getNotifications').and.callFake(() => {
-      return of([])
-    });
-    jobsSpy = spyOn(component.homeService, 'getJobQueue').and.callFake(() => {
       return of([])
     });
 
@@ -151,7 +147,7 @@ describe('SystemTrayComponent', () => {
     component.jobsPagination.fetchCount = 0;
     component.jobsPagination.fetchSize = 0;
     component.paginateJobs();
-    expect(jobsSpy).toHaveBeenCalled();
+    expect(jobqueueSpy).toHaveBeenCalled();
   });
 
   it('should delete notification', async () => {
@@ -164,7 +160,7 @@ describe('SystemTrayComponent', () => {
     component.getJobsQueue();
     expect(jobqueueSpy).toHaveBeenCalled();
     expect(component.jobQueueData[0].initiatedBy).toEqual('A');
-    expect(component.jobQueueData.length).toEqual(1)
+    expect(component.jobQueueData.length).toEqual(1);
   });
 
   it('close(), should close the current router' , () => {
@@ -180,13 +176,10 @@ describe('SystemTrayComponent', () => {
   });
 
   it('indexChange(), should call notification or jobQueue based on index', () => {
-    spyOn(component, 'getJobsQueue');
-    spyOn(component, 'getNotifications');
-
     component.indexChange(0);
-    expect(component.getNotifications).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalled();
 
     component.indexChange(1);
-    expect(component.getJobsQueue).toHaveBeenCalled();
+    expect(jobqueueSpy).toHaveBeenCalled();
   });
 });
