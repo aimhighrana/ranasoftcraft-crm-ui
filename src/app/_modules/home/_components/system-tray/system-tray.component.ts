@@ -49,6 +49,12 @@ export class SystemTrayComponent implements OnInit {
     offset: Math.round(window.innerHeight / 50 * 1.5)
   }
 
+  jobsPagination = {
+    fetchCount: 0,
+    fetchSize: Math.round(window.innerHeight / 50 * 1.5),
+    offset: Math.round(window.innerHeight / 50 * 1.5)
+  }
+
   /**
    * Constructor of class
    * @param router Router object
@@ -120,16 +126,24 @@ export class SystemTrayComponent implements OnInit {
   /**
    * function to get joba
    */
-  getJobsQueue() {
+  getJobsQueue(reload = true) {
+    if (reload) {
+      this.jobsPagination.fetchCount = 0;
+      this.jobsPagination.fetchSize = this.jobsPagination.offset;
+    }
     this.loader = true;
-    this.homeService.getJobQueue(this.userDetails.userName, this.userDetails.plantCode)
+    this.homeService.getJobQueue(this.userDetails.userName, this.userDetails.plantCode, this.jobsPagination)
       .subscribe((jobs: JobQueue[]) => {
         this.loader = false;
-        this.jobQueueData.length = 0;
         jobs.forEach((job) => {
           job.initiatedBy = job.initiatedBy.split(' ').map(name => name[0]).join(' ');
-        })
-        this.jobQueueData.push(...jobs)
+        });
+        if(reload) {
+          this.jobQueueData.length = 0;
+          this.jobQueueData = jobs;
+        } else {
+          this.jobQueueData.push(...jobs);
+        }
       }, () => {
         this.loader = false;
       })
@@ -175,6 +189,15 @@ export class SystemTrayComponent implements OnInit {
     this.notificationPagination.from += this.notificationPagination.offset;
     this.notificationPagination.to += this.notificationPagination.offset;
     this.getNotifications(false);
+  }
+
+  /**
+   * Function to paginate getJobsQueue
+   */
+  paginateJobs() {
+    this.jobsPagination.fetchCount += this.jobsPagination.offset;
+    this.jobsPagination.fetchSize += this.jobsPagination.offset;
+    this.getJobsQueue(false);
   }
 
   close() {

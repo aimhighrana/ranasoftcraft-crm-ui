@@ -44,8 +44,8 @@ export class HomeService {
    * @param userName userid of logged in user
    * @param plantCode plantcode of loggedin user
    */
-  getJobQueue(userName: string, plantCode: string) {
-    return this.http.get(this.endpointService.getJobQueueUrl(userName, plantCode))
+  getJobQueue(userName: string, plantCode: string, fetchData: any) {
+    return this.http.get(this.endpointService.getJobQueueUrl(userName, plantCode, fetchData))
   }
 
   /**

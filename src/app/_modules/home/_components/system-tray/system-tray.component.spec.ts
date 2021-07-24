@@ -15,6 +15,7 @@ describe('SystemTrayComponent', () => {
   let fixture: ComponentFixture<SystemTrayComponent>;
   let userSpy;
   let notificationSpy;
+  let jobsSpy;;
   let updateNotiticationSpy;
   let deleteNotificationSpy;
   let jobqueueSpy;
@@ -46,6 +47,9 @@ describe('SystemTrayComponent', () => {
       })
     });
     notificationSpy = spyOn(component.homeService, 'getNotifications').and.callFake(() => {
+      return of([])
+    });
+    jobsSpy = spyOn(component.homeService, 'getJobQueue').and.callFake(() => {
       return of([])
     });
 
@@ -141,6 +145,13 @@ describe('SystemTrayComponent', () => {
     component.notificationPagination.to = 0;
     component.paginateNotification();
     expect(notificationSpy).toHaveBeenCalled();
+  });
+
+  it('should call paginateJobs', async () => {
+    component.jobsPagination.fetchCount = 0;
+    component.jobsPagination.fetchSize = 0;
+    component.paginateJobs();
+    expect(jobsSpy).toHaveBeenCalled();
   });
 
   it('should delete notification', async () => {
