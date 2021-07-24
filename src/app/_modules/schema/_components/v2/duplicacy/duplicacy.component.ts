@@ -106,7 +106,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * Static column for actions
    */
-  startColumns = ['select', 'action', 'OBJECTNUMBER', RECORD_STATUS_KEY];
+  startColumns = ['select', 'action', RECORD_STATUS_KEY, 'OBJECTNUMBER'];
   // 'avatar',
 
   /**
