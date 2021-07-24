@@ -107,7 +107,6 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Static column for actions
    */
   startColumns = ['select', 'action', RECORD_STATUS_KEY, 'OBJECTNUMBER'];
-  // 'avatar',
 
   /**
    * All display column fieldid should be here
