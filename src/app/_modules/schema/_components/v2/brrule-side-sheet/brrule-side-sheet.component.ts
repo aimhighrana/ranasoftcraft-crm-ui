@@ -4,7 +4,7 @@ import { BusinessRuleType, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierar
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CategoryInfo, FieldConfiguration, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
-import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -392,6 +392,14 @@ export class BrruleSideSheetComponent implements OnInit {
     this.getTransRules(searchText);
   }, 400);
 
+
+  /**
+   * Search the trans rule from map lib..
+   */
+   delayedCallForApis = debounce((searchText: string) => {
+    this.getApisRule(searchText);
+  }, 400);
+
   /**
    * function to format slider thumbs label.
    * @param percent percent
@@ -479,7 +487,12 @@ export class BrruleSideSheetComponent implements OnInit {
      */
      this.sharedService.getAfterBrSave().subscribe((res: CoreSchemaBrInfo[])=>{
       if(res) {
-        this.addTransRules(res);
+        if(Array.isArray(res) && res.map(m=> m.brType === BusinessRuleType.BR_TRANSFORMATION).length === res.length) {
+          this.addTransRules(res);
+        } else if(!Array.isArray(res)) {
+          this.addTransRules(res);
+        }
+
       }
     });
 
@@ -502,11 +515,11 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
 
-    this.form.controls.apiSno.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(res=>{
-      if(typeof res ==='string') {
-        this.getApisRule(res);
-      }
-    });
+    // this.form.controls.apiSno.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(res=>{
+    //   if(typeof res ==='string') {
+    //     this.getApisRule(res);
+    //   }
+    // });
 
   }
 
@@ -569,6 +582,7 @@ export class BrruleSideSheetComponent implements OnInit {
         if(this.coreSchemaBrInfo.brType === BusinessRuleType.BR_API_RULE) {
           this.getApisRule('', this.coreSchemaBrInfo.apiSno);
         }
+
 
       }
     }, error => console.error(`Error : ${error.message}`));
@@ -1381,6 +1395,17 @@ export class BrruleSideSheetComponent implements OnInit {
       brType = BusinessRuleType.BR_TRANSFORMATION;
     }
 
+    if(brType === BusinessRuleType.BR_API_RULE) {
+      const hasInDrop = this.apiRules.find(a=> a.sno === this.form.get('apiSno').value);
+      if(!hasInDrop) {
+        this.form.controls.apiSno.markAsDirty();
+        this.form.controls.apiSno.markAsTouched();
+        this.form.controls.apiSno.setValue('');
+        // this.form.controls.apiSno;
+        return false;
+      }
+    }
+
     if (!this.form.valid) {
       console.log(this.form.controls);
 
@@ -2096,6 +2121,9 @@ export class BrruleSideSheetComponent implements OnInit {
   getApisRule(searchString: string,prefer?: string) {
     this.schemaService.getApisRule(this.moduleId, searchString, 0, 10, prefer).subscribe(res=>{
       this.apiRules = res ? res: [];
+      if(prefer) {
+        this.form.controls.apiSno.patchValue(this.coreSchemaBrInfo.apiSno);
+      }
     }, err=> console.error(`Error : ${err.message}`));
   }
 
@@ -2104,6 +2132,10 @@ export class BrruleSideSheetComponent implements OnInit {
    */
    displayApisRuleFn(value?: string) {
     return value ? this.apiRules.find(rule => rule.sno === value)?.description : '';
+  }
+
+  searchApisRules(val: string) {
+    this.delayedCallForApis(val);
   }
 
 }
