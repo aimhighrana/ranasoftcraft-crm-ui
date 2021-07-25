@@ -484,7 +484,7 @@ describe('ContainerComponent', () => {
     component.ngOnInit();
     component.afterCustomSelect(obj);
     expect(component.styleCtrlGrp.get('isWorkflowdataSet').value).toEqual(false);
-    expect(component.styleCtrlGrp.get('isCustomdataSet').value).toEqual(true);
+    expect(component.styleCtrlGrp.get('isCustomdataSet').value).toEqual(false);
   });
 
   it('addWidget()', async()=>{
