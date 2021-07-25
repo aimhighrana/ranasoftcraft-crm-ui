@@ -163,7 +163,7 @@
                             class="mandatory">*</span></lib-text-line>
                     
                     <div class="mdo-field-input">
-                        <input matInput formControlName="apiSno"
+                        <input matInput formControlName="apiSno" (keyup)="searchApisRules($event.target.value)"
                             placeholder="Type to search" [matAutocomplete]="apiRuleCustomValidation" />
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayApisRuleFn.bind(this)"
                             #apiRuleCustomValidation="matAutocomplete" (optionSelected)="selectSingle(form, 'apiSno', $event)">
