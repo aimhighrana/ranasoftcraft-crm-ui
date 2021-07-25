@@ -920,6 +920,8 @@ describe('BrruleSideSheetComponent', () => {
       description:'Api 1', sno:'8767757'
     }];
 
+    component.buildCommonDataForm();
+
     spyOn(schemaServiceSpy,'getApisRule').withArgs(component.moduleId,'',0,10,'76775').and.returnValue(of(apisRules));
 
     component.getApisRule('','76775');
