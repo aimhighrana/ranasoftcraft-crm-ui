@@ -146,7 +146,7 @@ describe('SendEmailComponent', () => {
   });
 
   it('getSelectedTemplate(),should set template subject and message ',()=>{
-    const templates: EmailTemplateBody = {subType: 'Dashboard', emailSubject: 'Subject', emailText: `<b>Test Template</b>`}
+    const templates: EmailTemplateBody = {subType: 'Dashboard', emailSubject: 'Subject', emailText: `<b>Test Template</b>`, templateDescription: 'test'}
     reportService.selectedTemplate = new BehaviorSubject<EmailTemplateBody>(templates);
     component.getSelectedTemplate();
     expect(component.emailFormGrp.controls.subject.value).toEqual(templates.emailSubject);

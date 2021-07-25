@@ -67,7 +67,6 @@ export class SendEmailComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    this.reportService.selectedTemplate.next(null);
     this.setEmailFormGroup();
     this.getCollaboratorPermission('', 0);
     this.getSelectedTemplate();

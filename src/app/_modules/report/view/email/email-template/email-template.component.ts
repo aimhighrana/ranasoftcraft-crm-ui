@@ -4,7 +4,7 @@ import { ReportService } from '../../../_service/report.service'
 import { EmailTemplate, EmailTemplateBody } from '../../../_models/email';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { MatAutocomplete,MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
@@ -52,6 +52,7 @@ export class EmailTemplateComponent implements OnInit {
   /* Set Filtered list */
   public setupFilteredList() {
     this.filteredTemplates = this.templateFormGrp.controls.templateName.valueChanges.pipe(
+      startWith(''),
       map((template: string | null) => template ? this.filter(template, this.templates) : this.templates?.slice()));
   }
 
@@ -60,7 +61,9 @@ export class EmailTemplateComponent implements OnInit {
     this.templateFormGrp = new FormGroup({
       templateName: new FormControl(),
     });
-    this.templateFormGrp.controls.templateName.setValue('No');
+    const template = this.reportService.selectedTemplate.getValue();
+    const templateDesc = template?.templateDescription ?? 'No';
+    this.templateFormGrp.controls.templateName.setValue(templateDesc);
     this.setupFilteredList();
   }
 
