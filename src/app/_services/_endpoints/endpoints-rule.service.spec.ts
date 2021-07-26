@@ -410,7 +410,7 @@ describe('EndpointsRuleService', () => {
 
   it('copyDuplicate(),should return co[y duplicate url', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.copyDuplicate()).toContain('duplicate/copyDuplicate');
+    expect(serObj.copyDuplicate()).toContain('/schema/actions/copyDuplicate');
   }));
 
   it('saveUpdateDataScopeUrl(),should return saveUpdateDataScopeUrl url', async(() => {
