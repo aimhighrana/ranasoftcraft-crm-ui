@@ -388,7 +388,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openModifierSidesheet() {
     this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}], {
+    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.seletedNounCtrl && this.seletedNounCtrl.NSNO ? this.seletedNounCtrl.NSNO : this.selectedNounCode }` }}], {
       queryParamsHandling: 'preserve'
     });
   }
