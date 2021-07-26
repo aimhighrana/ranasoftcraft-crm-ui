@@ -155,9 +155,10 @@ export class BrruleSideSheetComponent implements OnInit {
     const enableFor = ['BR_METADATA_RULE','BR_MANDATORY_FIELDS','BR_REGEX_RULE','BR_CUSTOM_SCRIPT'];
     if(this.form && this.form.value.rule_type && enableFor.indexOf(this.form.value.rule_type) !==-1) {
       return true;
-    } else if(enableFor.indexOf(this.coreSchemaBrInfo.brType) !==-1) {
+    } else if(this.coreSchemaBrInfo && enableFor.indexOf(this.coreSchemaBrInfo.brType) !==-1) {
       return true;
     }
+
     return false;
   }
 
@@ -1977,6 +1978,8 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param status checkbox status ....
    */
   updateTransStatus(br: TransformationMappingTabResponse,tab: string, status: boolean) {
+    if(!this.attachedTransRules) { return; }
+
     if(tab === 'success') {
       const idx = this.attachedTransRules.success.findIndex(f=> f.ruleInfo.brIdStr === br.ruleInfo.brIdStr);
       this.attachedTransRules.success[idx].isEnabled = status;
@@ -2088,6 +2091,8 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   addTransRules(res: CoreSchemaBrInfo[]) {
     res = Array.isArray(res) ? res : [res];
+    if(!this.attachedTransRules) { return; };
+
     if(this.transTabIndex === 0) {
       res.forEach(r=>{
         const isExits = this.attachedTransRules.success.some(s=> s.ruleInfo?.brIdStr === r.brIdStr);
