@@ -21,7 +21,10 @@
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="openDataScopeSideSheet()">[Add data scope] </button>
+                <button mat-menu-item (click)="openDataScopeSideSheet()">
+                    <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> <span
+                        i18n="@@new_data_scope">Add data scope</span>
+                </button>
             </mat-menu>
         </ng-template>
         <div class="f-col-spacer-half"></div>
@@ -273,7 +276,7 @@
                         </ng-container>
 
                         <!-- Status Column -->
-                        <ng-container [matColumnDef]="RECORD_STATUS_KEY">
+                        <ng-container [matColumnDef]="RECORD_STATUS_KEY" sticky>
                             <mat-header-cell *matHeaderCellDef mat-sort-header> Status
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element" class="no-text-decoration">
@@ -314,6 +317,7 @@
 
                                     <mat-cell *matCellDef="let element; let rIndex = index;"
                                         [class.error-cell]="element[dynCol] ? element[dynCol].isInError : false"
+                                        [class.edit-mode]="isEditEnabled(dynCol,element, rIndex)"
                                         (click)="editCurrentCell(dynCol,element, rIndex, containerRef)">
                                         <div [class.text-strike]="isDeleted(element)">
                                             <div class="f-col grid-cell-editable">

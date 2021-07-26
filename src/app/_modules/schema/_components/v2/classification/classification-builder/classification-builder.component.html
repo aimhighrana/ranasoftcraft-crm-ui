@@ -290,7 +290,9 @@
                                         <mat-header-cell *matHeaderCellDef>
                                             {{ columnName(dynCols) }} <span class="mandatory" *ngIf="isMandatory(dynCols)">*</span>
                                         </mat-header-cell>
-                                        <mat-cell *matCellDef="let element; let rIndex = index;" [class.error-cell]="element[dynCols] && element[dynCols].err_msg ? true : false"
+                                        <mat-cell *matCellDef="let element; let rIndex = index;" 
+                                            [class.error-cell]="element[dynCols] && element[dynCols].err_msg ? true : false"
+                                            [class.edit-mode]="isEditEnabled(dynCol,element, rIndex)"
                                             (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                             <div class="f-col grid-cell-editable">
                                                 <div class="mdo-form-input f-col" style="display: none;"
