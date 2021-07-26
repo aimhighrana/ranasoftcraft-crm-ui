@@ -455,6 +455,12 @@ describe('SchemaInfoComponent', () => {
       message: 'Region should be Asia',
       isCopied: true
     } as CoreSchemaBrInfo;
+    brInfo.brWeightage = '45';
+    brInfo.accuracyScore = 23;
+    brInfo.categoryId = 'TEST';
+    brInfo.apiKey = '1234';
+    brInfo.target_field = 'EPO';
+    brInfo.source_field = 'SOP';
     component.schemaId = '245521';
     component.moduleId = '1005';
 
@@ -469,6 +475,12 @@ describe('SchemaInfoComponent', () => {
     request.isCopied = brInfo.isCopied;
     request.moduleId = component.moduleId;
     request.copiedFrom = brInfo.brIdStr;
+    request.brWeightage = brInfo.brWeightage;
+    request.accuracyScore = brInfo.accuracyScore;
+    request.categoryId = brInfo.categoryId;
+    request.apiKey = brInfo.apiKey;
+    request.target_field = brInfo.target_field;
+    request.source_field = brInfo.source_field;
 
     component.businessRuleData = [
       {
@@ -494,6 +506,12 @@ describe('SchemaInfoComponent', () => {
       message: 'Region should be Asia',
       isCopied: true
     } as CoreSchemaBrInfo;
+    brInfoDup.brWeightage = '45';
+    brInfoDup.accuracyScore = 23;
+    brInfoDup.categoryId = 'TEST';
+    brInfoDup.apiKey = '1234';
+    brInfoDup.target_field = 'EPO';
+    brInfoDup.source_field = 'SOP';
 
     const requestDup: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
@@ -506,6 +524,12 @@ describe('SchemaInfoComponent', () => {
     requestDup.isCopied = brInfoDup.isCopied;
     requestDup.moduleId = component.moduleId;
     requestDup.copiedFrom = brInfoDup.brIdStr;
+    requestDup.brWeightage = brInfoDup.brWeightage;
+    requestDup.accuracyScore = brInfoDup.accuracyScore;
+    requestDup.categoryId = brInfoDup.categoryId;
+    requestDup.apiKey = brInfoDup.apiKey;
+    requestDup.target_field = brInfoDup.target_field;
+    requestDup.source_field = brInfoDup.source_field;
 
     spyOn(schemaService, 'copyDuplicateRule').withArgs(requestDup).and.returnValue(of(brInfoDup));
     component.addBusinessRule(brInfoDup);
