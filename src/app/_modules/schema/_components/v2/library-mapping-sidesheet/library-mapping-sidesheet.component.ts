@@ -243,11 +243,16 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         }
       })
     }
+
+    // set the selected noun ctrl 
+    if(attributesMapping.localNounCode) {
+      this.seletedNounCtrl = {NOUN_CODE: attributesMapping.localNounCode, NSNO: attributesMapping.localNounSno} as NounModifier;
+    }
   }
 
   getLocalNouns() {
     const plantCode = '0';
-    this.nounModifierService.getLocalNouns(plantCode)
+    this.nounModifierService.getLocalNouns(plantCode, '')
       .subscribe(nouns => {
         this.localNounsList = nouns;
         this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
@@ -255,7 +260,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   getLocalModifiers(nounCode) {
-    this.nounModifierService.getLocalModifier('0', nounCode)
+    this.nounModifierService.getLocalModifier('0', nounCode, '')
       .subscribe(modifiers => {
         this.LocalModifiersList = modifiers;
         console.log(this.LocalModifiersList);

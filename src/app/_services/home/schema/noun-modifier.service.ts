@@ -33,11 +33,12 @@ export class NounModifierService {
    * @param fieldValue optional for append in conditional ..
    * @param searchString  seach noun based on the values ..
    */
-  public getLocalNouns(plantCode : string , fieldId?: string, fieldValue?: string, searchString?: string): Observable<NounModifier[]> {
+  public getLocalNouns(plantCode : string , matlgrp: string, fieldId?: string, fieldValue?: string, searchString?: string): Observable<NounModifier[]> {
     fieldId = fieldId ? fieldId : '';
     fieldValue = fieldValue ? fieldValue : '';
     searchString = searchString ? searchString : '';
-    return this.http.get<NounModifier[]>(this.endpointClassic.getAvailableNounsUri(), {params:{fieldId, fieldValue, searchString, plantCode}})
+    matlgrp = matlgrp ? matlgrp : '';
+    return this.http.get<NounModifier[]>(this.endpointClassic.getAvailableNounsUri(), {params:{fieldId, fieldValue, searchString, plantCode, matlgrp}})
   }
 
   /**
@@ -46,12 +47,13 @@ export class NounModifierService {
    * @param nounCode nounCode must be required while getting modifier ..
    * @param searchString seach modifier based on the values ..
    */
-  public getLocalModifier(plantCode : string , nounCode: string, searchString?: string): Observable<NounModifier[]> {
+  public getLocalModifier(plantCode : string , nounCode: string, matlgrp: string, searchString?: string): Observable<NounModifier[]> {
     if(!nounCode) {
       throw new Error('Nouncode must be required ');
     }
     searchString = searchString ? searchString : '';
-    return this.http.get<NounModifier[]>(this.endpointClassic.getAvailableModifierUri(), {params:{nounCode, searchString, plantCode}})
+    matlgrp = matlgrp ? matlgrp : '';
+    return this.http.get<NounModifier[]>(this.endpointClassic.getAvailableModifierUri(), {params:{nounCode, searchString, plantCode, matlgrp}})
   }
 
   /**
@@ -127,9 +129,10 @@ export class NounModifierService {
    * @param brType append as parameter
    * @param searchString append as parameter
    */
-  public getSuggestedNouns(schemaId: string, runid: string, objNr: string, brType: string,searchString?: string): Observable<NounModifier[]> {
+  public getSuggestedNouns(schemaId: string, runid: string, objNr: string, brType: string,matlgrp: string, searchString?: string): Observable<NounModifier[]> {
     searchString = searchString ? searchString : '';
-    return this.http.get<NounModifier[]>(this.endpointClassic.getSuggestedNounUri(schemaId, runid), {params:{searchString, brType, objNr}})
+    matlgrp = matlgrp ? matlgrp : '';
+    return this.http.get<NounModifier[]>(this.endpointClassic.getSuggestedNounUri(schemaId, runid), {params:{searchString, brType, objNr, matlgrp}})
   }
 
   /**

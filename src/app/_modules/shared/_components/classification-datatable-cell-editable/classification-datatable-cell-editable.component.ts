@@ -68,6 +68,11 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   @Input()
   attrControl: ClassificationHeader;
 
+  /**
+   * Hold material group here ... 
+   */
+  matlgrp: string;
+
   @Output()
   inputBlur = new EventEmitter<any>();
 
@@ -164,7 +169,7 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
 
 
   getSuggestedNouns(searchString?: string) {
-    this.nounModifierService.getSuggestedNouns(this.schemaId,this.rundId,this.objectNumber,this.brType,searchString) .subscribe(res=>{
+    this.nounModifierService.getSuggestedNouns(this.schemaId,this.rundId,this.objectNumber,this.brType,this.matlgrp, searchString) .subscribe(res=>{
       if(searchString) {
         this.selectFieldOptions = this.preSuggestedValues.filter(fil=> (fil.CODE.indexOf(searchString) !==-1 || fil.TEXT.indexOf(searchString) !==-1));
       } else {
@@ -213,7 +218,7 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   getLocalNouns(serachString?: string){
     this.userService.getUserDetails().pipe(
       distinctUntilChanged(),
-      switchMap(user => this.nounModifierService.getLocalNouns(user.plantCode, '','',serachString))).subscribe(res=>{
+      switchMap(user => this.nounModifierService.getLocalNouns(user.plantCode,this.matlgrp, '','',serachString))).subscribe(res=>{
         this.selectFieldOptions = [];
         res.forEach(r=>{
           const drop: DropDownValue = {CODE: r.NOUN_CODE,FIELDNAME:this.fieldId,TEXT:r.NOUN_CODE ? r.NOUN_CODE : r.NOUN_CODE} as DropDownValue;
@@ -231,7 +236,7 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   getLocalModifiers(serachString?: string){
     this.userService.getUserDetails().pipe(
       distinctUntilChanged(),
-      switchMap(user => this.nounModifierService.getLocalModifier(user.plantCode, this.nounCode,serachString))).subscribe(res=>{
+      switchMap(user => this.nounModifierService.getLocalModifier(user.plantCode, this.nounCode, this.matlgrp, serachString))).subscribe(res=>{
         this.selectFieldOptions = [];
         res.forEach(r=>{
           const drop: DropDownValue = {CODE: r.MODE_CODE,FIELDNAME:this.fieldId,TEXT:r.MOD_LONG ? r.MOD_LONG : r.MODE_CODE} as DropDownValue;
