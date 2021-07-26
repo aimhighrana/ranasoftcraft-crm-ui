@@ -11,7 +11,6 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ExecutionTrendSidesheetComponent } from './execution-trend-sidesheet.component';
 import { SchemaService } from '@services/home/schema.service';
-import { throwError } from 'rxjs';
 
 describe('ExecutionTrendSidesheetComponent', () => {
   let component: ExecutionTrendSidesheetComponent;
