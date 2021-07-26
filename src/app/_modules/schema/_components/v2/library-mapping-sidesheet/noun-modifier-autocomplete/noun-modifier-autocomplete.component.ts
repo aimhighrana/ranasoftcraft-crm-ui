@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { NounModifier } from '@models/schema/noun-modifier';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { UserService } from '@services/user/userservice.service';
 import { Observable, of } from 'rxjs';
@@ -44,6 +45,13 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
 
   @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger })
   autoComplete: MatAutocompleteTrigger;
+
+
+  /**
+   * Emit the selected ctrl... 
+   */
+  @Output()
+  emitSelCtrl: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor(
@@ -185,6 +193,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
     });
   }
   selectOption($event) {
+    this.emitSelCtrl.emit($event.option.value);
     this.formCtrl.setValue(this.getOptionVal($event.option.value));
   }
 

@@ -6,6 +6,7 @@ export class NounModifier {
     NOUN_LONG: string;
     NOUN_CODE: string;
     NOUN_ID: string;
+    NSNO?: string;
     MODE_CODE: string;
     MOD_LONG: string;
     UNSPSC: string;

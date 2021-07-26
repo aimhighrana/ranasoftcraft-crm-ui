@@ -68,6 +68,19 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    */
   mgroup: string;
   isMapped = false;
+
+  /**
+   * Hold selected noun ctrl
+   */
+  seletedNounCtrl: NounModifier;
+
+  /**
+   * Hold selected modifier ctrl
+   */
+  seletedModifierCtrl: NounModifier;
+
+
+
   statas: Status[] = [
     {code:'matched', count: 0, text:'Matched', isSeleted: false},
     {code:'suggested', count: 0, text:'Suggested', isSeleted: false},
@@ -382,7 +395,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openAttributeSidesheet() {
     const routerCommand = ['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}/${this.selectedModifierCode}` }}];
+    outer: `outer/schema/attribute/${this.seletedNounCtrl && this.seletedNounCtrl.NSNO ? this.seletedNounCtrl.NSNO : this.selectedNounCode }/${this.selectedModifierCode}` }}];
     this.nounModifierService.attributeSheetRoute = routerCommand;
     this.router.navigate(routerCommand, {
       queryParamsHandling: 'preserve'
@@ -449,4 +462,5 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.attributeMapData.at(ind).patchValue({localAttributeCode: row.attrCode, localAttributeText: row.attrDesc});
     });
   }
+
 }

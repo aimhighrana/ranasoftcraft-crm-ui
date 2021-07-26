@@ -72,7 +72,8 @@
                                 <pros-noun-modifier-autocomplete 
                                  [formCtrl]="mappingForm.get('localNounCode')"
                                     [data]="localNounsList" [requestFor]="'noun'"
-                                    (clickAddNew)="createNewWidgetFor($event)">
+                                    (clickAddNew)="createNewWidgetFor($event)"
+                                    (emitSelCtrl)="seletedNounCtrl = $event">
                                 </pros-noun-modifier-autocomplete>
 
                             </div>
@@ -103,7 +104,8 @@
                                 [formCtrl]="mappingForm.get('localModCode')"
                                     [data]="LocalModifiersList" [requestFor]="'modifier'"
                                     [selectedNoun]="mappingForm.get('localNounCode').value"
-                                    (clickAddNew)="createNewWidgetFor($event)">
+                                    (clickAddNew)="createNewWidgetFor($event)"
+                                    (emitSelCtrl)="seletedModifierCtrl = $event">
                                 </pros-noun-modifier-autocomplete>
                             </div>
                         </div>
