@@ -72,14 +72,7 @@ describe('ExecutionTrendSidesheetComponent', () => {
 
   }));
   it('getModuleInfo()', async(() => {
-    const val: ModuleInfo[] = [
-      {
-        moduleId: '0',
-        moduleDesc: 'test',
-        datasetCount: 0
-      }
-    ];
-    spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValues(of(val), throwError('error'));
+    spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValues(of([{}] as any));
     component.moduleId = 'new';
     component.getModuleInfo();
     expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
