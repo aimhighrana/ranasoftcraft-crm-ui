@@ -510,6 +510,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   getData(isLoadingMore?) {
 
+    this.selection.clear();
+
     if (!this.groupId || !this.groupKey) {
       this.dataSource.reset();
       return;
@@ -1280,5 +1282,23 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   onRunCompleted($event) {
     this.isInRunning = false;
+  }
+
+  isEditEnabled(fldid: string, row: any, rIndex: number) {
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    if (field && !field.isEditable) {
+      return false;
+    }
+
+    const el = document.getElementById('inpctrl_' + fldid + '_' + rIndex);
+
+    if (el) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      if (inpCtrl.style.display === 'block') {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -1351,4 +1351,23 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   onRunCompleted($event) {
     this.isInRunning = false;
   }
+
+  isEditEnabled(fldid: string, row: any, rIndex: number) {
+    const selectedFields = this.selectedFieldsOb.getValue() || [];
+    const field = selectedFields.find(f => f.fieldId === fldid);
+    if (field && !field.isEditable) {
+      return false;
+    }
+
+    const el = document.getElementById('inpctrl_' + fldid + '_' + rIndex);
+
+    if (el) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      if (inpCtrl.style.display === 'block') {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
