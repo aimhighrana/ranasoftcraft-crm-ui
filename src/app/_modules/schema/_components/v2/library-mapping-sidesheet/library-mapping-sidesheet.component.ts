@@ -225,12 +225,17 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   patchMappingForm(attributesMapping: AttributesMapping) {
+
+   // set the selected noun ctrl 
+   if(attributesMapping.localNounCode) {
+    this.seletedNounCtrl = {NOUN_CODE: attributesMapping.localNounCode, NSNO: attributesMapping.localNounSno} as NounModifier;
+   }
    if(this.classificationCategory) {
      const {noun, modifier} = this.classificationCategory;
-     if(modifier.status?.toLowerCase() === 'suggested') {
+     if(modifier.status?.toLowerCase() === 'suggested' || modifier.status?.toLowerCase() === 'matched') {
        attributesMapping.localModCode = modifier.targetCtrl;
      }
-     if(noun.status?.toLowerCase() === 'suggested') {
+     if(noun.status?.toLowerCase() === 'suggested' || noun.status?.toLowerCase() === 'matched') {
        attributesMapping.localNounCode = noun.targetCtrl;
      }
    }
@@ -242,15 +247,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
 
         if (index !== -1) {
-          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && row.status?.toLowerCase() === 'suggested');
+          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && (row.status?.toLowerCase() === 'suggested' || row.status?.toLowerCase() === 'matched'));
           this.attributeMapData.at(index).patchValue({localAttributeCode: suggestedObj ? suggestedObj.targetCtrl : mapData.localAttributeCode});
         }
       })
-    }
-
-    // set the selected noun ctrl 
-    if(attributesMapping.localNounCode) {
-      this.seletedNounCtrl = {NOUN_CODE: attributesMapping.localNounCode, NSNO: attributesMapping.localNounSno} as NounModifier;
     }
   }
 
