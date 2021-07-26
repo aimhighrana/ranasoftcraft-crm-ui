@@ -180,6 +180,29 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   ) { }
 
   /**
+   * Check if the rule to save is a dependent child
+   * update the parent's child in case the rule is a child
+   * @param rule pass the rule data
+   * @returns return the modified rule
+   */
+  checkIfDependentRule(rule: CoreSchemaBrInfo): CoreSchemaBrInfo {
+    let brToUpdate = rule;
+    this.businessRuleData.map((item, index) => {
+      if(item.dep_rules?.length) {
+        item.dep_rules.map((drule, dIndex) => {
+          if(drule.brIdStr === rule.brIdStr) {
+            brToUpdate = {...this.businessRuleData[index]};
+            brToUpdate.dep_rules[dIndex] = rule;
+            return brToUpdate;
+          }
+        });
+      }
+    });
+
+    return brToUpdate;
+  }
+
+  /**
    * ANGULAR HOOK
    */
   ngOnInit(): void {
@@ -191,6 +214,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.getRouteParams();
 
     const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
+      res = this.checkIfDependentRule(res);
       if (res) {
         console.log(res);
         const fj = {};
@@ -1055,24 +1079,22 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
   updateDepRule(br: CoreSchemaBrInfo, value?: any) {
     const event = this.depRuleList.find(depRule => depRule.value === value || depRule.key === value);
-    console.log('Update dep rule', br, event);
-    const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
-    console.log(index,br,event)
-    if(event.value!==RuleDependentOn.ALL)
-    { const tobeChild=this.businessRuleData[index]
-    console.log(tobeChild)
-    console.log(this.businessRuleData)
-    if(this.businessRuleData[index-1].dep_rules)
-    {
-     this.addChildatSameRoot(tobeChild,index)
-    }
-    else{
-    this.businessRuleData[index-1].dep_rules=[];
-    this.addChildatSameRoot(tobeChild,index)
-    }
-    const idxforChild=this.businessRuleData[index-1].dep_rules.indexOf(tobeChild);
-    this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.key || event.value;
-    this.businessRuleData.splice(index,1)
+    const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
+
+    if(event.value !== RuleDependentOn.ALL) {
+      const tobeChild = this.businessRuleData[index];
+
+      if(this.businessRuleData[index-1].dep_rules) {
+        this.addChildatSameRoot(tobeChild, index);
+      } else {
+        this.businessRuleData[index-1].dep_rules = [];
+        this.addChildatSameRoot(tobeChild, index);
+      }
+
+      const idxforChild = this.businessRuleData[index-1].dep_rules.indexOf(tobeChild);
+
+      this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.key || event.value;
+      this.businessRuleData.splice(index, 1);
     }
   }
 
