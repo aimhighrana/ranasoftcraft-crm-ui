@@ -1086,7 +1086,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to add business rule to schema
+   * Function to add business rule to schema...
    * @param brInfo: business rule information for schema.
    */
   addBusinessRule(brInfo) {
