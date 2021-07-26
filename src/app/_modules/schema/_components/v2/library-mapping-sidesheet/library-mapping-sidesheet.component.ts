@@ -145,6 +145,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     } else {
       this.nounModifierService.getClassificationMappingData(request).subscribe((resp: any) => {
         this.classificationCategory = resp;
+
+        // set selected noun ctrl 
+        this.seletedNounCtrl = {NOUN_CODE: this.classificationCategory.noun.targetCtrl, NSNO: this.classificationCategory.noun.targetNounSno} as NounModifier;
+
         if(this.mappingForm) {
          const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
          frmAray.clear();
