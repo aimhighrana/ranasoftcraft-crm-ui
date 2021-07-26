@@ -1776,6 +1776,16 @@
         }
       }
     }
+
+    .lib-slider {
+      .mdo-range-slider {
+        mat-slider.mat-slider {
+          &.slider-primary {
+            position: relative;
+          }
+        }
+      }
+    }
   }
 
   pros-report-list {

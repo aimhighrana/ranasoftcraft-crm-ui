@@ -101,7 +101,7 @@
                     <lib-range-slider class="lib-slider" color="primary" formControlName="schemaThreshold"
                         [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
                         (valueChange)="onChangeSchemaThreshold($event)"></lib-range-slider>
-                    &nbsp;
+                    <div class="f-col-spacer-half"></div>
                     <lib-text-line type="base" class="percentage">{{schemaSummaryForm.controls.schemaThreshold.value}}%
                     </lib-text-line>
                 </div>
@@ -154,7 +154,7 @@
                                         textColor="link" class="cursor">{{businessRule.brInfo}}</lib-text-line>
                                 </div>
 
-                                <div class="col col-x4">
+                                <div class="col col-x3">
                                     <lib-text-line type="base" enableWrap="true">{{getRuleDesc(businessRule.brType)}}
                                     </lib-text-line>
                                 </div>
@@ -166,6 +166,7 @@
                                             [value]="businessRule.brWeightage"
                                             [maxValue]="availableWeightage(businessRule.brWeightage)" color="primary">
                                         </lib-range-slider>
+                                        <div class="f-col-spacer-half"></div>
                                         <lib-text-line type="small" class="percentage">{{businessRule.brWeightage}}%
                                         </lib-text-line>
                                     </div>
@@ -216,7 +217,7 @@
                                             <lib-text-line enableWrap="true" (click)="editBr(deps)" type="base"
                                                 textColor="link" class="cursor">{{deps.brInfo}}</lib-text-line>
                                         </div>
-                                        <div class="col col-x4">
+                                        <div class="col col-x3">
                                             <lib-text-line type="base" enableWrap="true">{{getRuleDesc(deps.brType)}}
                                             </lib-text-line>
                                         </div>
@@ -228,7 +229,7 @@
                                                     [value]="deps.brWeightage"
                                                     [maxValue]="availableWeightage(deps.brWeightage)" color="primary">
                                                 </lib-range-slider>
-                                                &nbsp;
+                                                <div class="f-col-spacer-half"></div>
                                                 <lib-text-line type="small" class="percentage">{{deps.brWeightage}}%
                                                 </lib-text-line>
                                             </div>

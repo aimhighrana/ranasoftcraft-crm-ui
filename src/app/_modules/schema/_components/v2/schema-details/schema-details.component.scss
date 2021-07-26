@@ -148,10 +148,15 @@ div.root {
 
           .mat-column-_row_actions {
             border-right: none;
+            max-width: 220px;
 
             .action-iconbtns {
-              max-width: 200px;
+              max-width: 220px;
               min-width: 36px;
+            }
+
+            .more-btn {
+              margin-right: 1px;
             }
           }
 
