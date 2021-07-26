@@ -286,10 +286,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const sub = this.widgetService.getListTableMetadata(this.widgetId).subscribe((returnData: ReportingWidget[]) => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         returnData.forEach(singlerow => {
-          if (singlerow.fields === 'EVENT_ID') {
-            /* setting the picklist of event column as '1' */
-            singlerow.fldMetaData.picklist = '1';
-          }
           const obj = { fields: singlerow.fields, fieldOrder: singlerow.fieldOrder, ...this.getFieldType(singlerow.fldMetaData) }
           fieldsArray.push(obj);
           this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc : singlerow.fldMetaData.fieldDescri;
