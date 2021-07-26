@@ -466,25 +466,6 @@
                                                             </mat-optgroup>
                                                         </mat-autocomplete>
                                                     </mat-form-field>
-
-                                                    <mat-select *ngIf="false" class="udr-form-select" mat-stroked-button
-                                                        formControlName="conditionOperator"
-                                                        i18n-placeholder="@@select_operator"
-                                                        placeholder="Select operator">
-                                                        <mat-optgroup *ngFor="let group of operators"
-                                                            [label]="group.desc">
-                                                            <ng-container *ngFor="let child of group.childs">
-                                                                <mat-option [value]="child">
-                                                                    <ng-container *ngIf="child !== 'EQUAL'">
-                                                                        {{child | replaceUnderscorePipe}}
-                                                                    </ng-container>
-                                                                    <ng-container *ngIf="child === 'EQUAL'">
-                                                                        {{'EQUALS'}}
-                                                                    </ng-container>
-                                                                </mat-option>
-                                                            </ng-container>
-                                                        </mat-optgroup>
-                                                    </mat-select>
                                                 </div>
                                                 <div [class.range-col]="chldNode.value.conditionOperator  === 'RANGE'"
                                                     class="col"
