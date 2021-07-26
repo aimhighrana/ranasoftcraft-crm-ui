@@ -11,6 +11,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ExecutionTrendSidesheetComponent } from './execution-trend-sidesheet.component';
 import { SchemaService } from '@services/home/schema.service';
+import { throwError } from 'rxjs';
 
 describe('ExecutionTrendSidesheetComponent', () => {
   let component: ExecutionTrendSidesheetComponent;
@@ -79,10 +80,8 @@ describe('ExecutionTrendSidesheetComponent', () => {
       }
     ];
     spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValues(of(val), throwError('error'));
-
-    component.variantId = 'new';
+    component.moduleId = 'new';
     component.getModuleInfo();
-    expect(component.scopeCnt).toEqual(0);
     expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
   }));
 });

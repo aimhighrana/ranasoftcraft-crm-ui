@@ -962,12 +962,6 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.displayOperatorFn(null)).toEqual('');
   }));
 
-  it('udrOperatorSelected(), should set form value', async(()=>{
-    const udrControl = new FormControl();
-    component.udrOperatorSelected(udrControl, {option: {value: 'test'}});
-    expect(udrControl.value).toEqual('test');
-  }));
-
   it('filterOperator(), should filter the operator values', async(()=>{
     component.operators = [{
       desc: 'group1',
