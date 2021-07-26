@@ -510,6 +510,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   getData(isLoadingMore?) {
 
+    this.selection.clear();
+
     if (!this.groupId || !this.groupKey) {
       this.dataSource.reset();
       return;

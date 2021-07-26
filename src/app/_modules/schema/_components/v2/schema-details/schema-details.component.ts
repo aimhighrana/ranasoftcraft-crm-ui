@@ -742,6 +742,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * @param sort apply some sorting on column ..
    */
   getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number, isLoadMore?: boolean) {
+    this.selection.clear();
     const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     request.schemaId = this.schemaId;
     request.variantId = this.variantId;

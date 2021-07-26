@@ -161,7 +161,7 @@
                         <!-- Checkbox Column -->
                         <ng-container matColumnDef="select" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                <lib-checkbox (change)="$event ? masterToggle() : null"
+                                <lib-checkbox (valueChange)="masterToggle()"
                                     [checked]="selection.hasValue() && isAllSelected()"
                                     [indeterminate]="selection.hasValue() && !isAllSelected()"
                                     [aria-label]="checkboxLabel()">
@@ -169,7 +169,7 @@
                             </mat-header-cell>
                             <mat-cell class="fixed-width-c1" *matCellDef="let row">
                                 <lib-checkbox (click)="$event.stopPropagation()"
-                                    (change)="$event ? selection.toggle(row) : null"
+                                    (valueChange)="selection.toggle(row)"
                                     [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
                                 </lib-checkbox>
                             </mat-cell>
