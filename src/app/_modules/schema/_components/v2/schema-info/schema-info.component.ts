@@ -1102,6 +1102,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.moduleId = this.moduleId;
     request.isCopied = true;
     request.copiedFrom = brInfo.brIdStr;
+    request.brWeightage = brInfo.brWeightage;
+    request.accuracyScore = brInfo.accuracyScore;
+    request.categoryId = brInfo.categoryId;
+    request.apiKey = brInfo.apiKey;
+    request.target_field = brInfo.target_field;
+    request.source_field = brInfo.source_field;
+
     console.log(brInfo);
     const checkExistBr = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
     const checkExistCopiedBr = this.businessRuleData.filter((businessRule) => businessRule.copiedFrom === brInfo.brIdStr)[0];
