@@ -905,7 +905,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     if (picklist) {
       const dropdownPickLists = ['1', '30', '37'];
       if (dropdownPickLists.includes(picklist)) {
-        this.filterControlType = (this.currentFilter.isCheckList === 'true') ? 'dropdown_multi' : 'dropdown_single';
+        this.filterControlType = 'dropdown_multi';
       } else if (this.dynmaicFilterSchema[picklist]) {
         const res = this.dynmaicFilterSchema[picklist].find((x) => x.dataType === dataType.toUpperCase());
         if (res) {

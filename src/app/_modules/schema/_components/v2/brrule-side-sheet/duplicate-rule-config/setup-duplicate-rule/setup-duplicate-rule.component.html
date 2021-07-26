@@ -16,17 +16,17 @@
                         </div>
                         <div class="col col-x4">
                             <lib-text-line type="small" weight="strong" i18n="@@match">Match <mat-icon
-                                i18n-libTooltip="@@match" libTooltip="match" fontSet="mdo-icons"
-                                class="mat-head-icon">
-                                question-circle</mat-icon>
-                        </lib-text-line>
+                                    i18n-libTooltip="@@match" libTooltip="match" fontSet="mdo-icons"
+                                    class="mat-head-icon">
+                                    question-circle</mat-icon>
+                            </lib-text-line>
                         </div>
                         <div class="col col-x4">
                             <lib-text-line type="small" weight="strong" i18n="@@exclusions">Exclusions <mat-icon
-                                libTooltip="exclusions" i18n-libTooltip="@@exclusions" fontSet="mdo-icons"
-                                class="mat-head-icon">
-                                question-circle</mat-icon>
-                        </lib-text-line>
+                                    libTooltip="exclusions" i18n-libTooltip="@@exclusions" fontSet="mdo-icons"
+                                    class="mat-head-icon">
+                                    question-circle</mat-icon>
+                            </lib-text-line>
                         </div>
                         <div class="col mat-item-end"></div>
                     </div>
@@ -60,10 +60,10 @@
                                     </div>
                                     <div class="col col-x4">
                                         <div class="f-col">
-                                            <lib-button [matMenuTriggerFor]="fieldMatchMenu">
-                                                {{ getDuppCriteriaDesc(item.value.criteria) }}
-                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></lib-button>
-                                        <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
+                                            <lib-label text="{{ getDuppCriteriaDesc(item.value.criteria) }}"
+                                                [matMenuTriggerFor]="fieldMatchMenu" suffixIcon="caret-down"
+                                                iconFontType="solid"></lib-label>
+                                            <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item
                                                     (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
                                                     Exact Match</button>
@@ -76,8 +76,9 @@
                                                 Please select value</mat-error>
                                         </div>
                                     </div>
-                                    <div class="col col-x4"> 
-                                        <lib-text-line type="base" textColor="link" (click)="exclusionConf(item)" class="cursor">{{
+                                    <div class="col col-x4">
+                                        <lib-text-line type="base" textColor="link" (click)="exclusionConf(item)"
+                                            class="cursor">{{
                                             item.value.exclusion }}</lib-text-line>
                                     </div>
                                     <div class="col mat-item-end">
@@ -88,7 +89,10 @@
                             </div>
                         </div>
                     </ng-container>
-                    <lib-empty-state *ngIf="fieldRecords.controls.length === 0" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here" i18n-secondaryText="@@type_inside_search_box_to_find_fields" secondaryText="Type inside the search box to find fields" icon="table" iconSize="100"></lib-empty-state>
+                    <lib-empty-state *ngIf="fieldRecords.controls.length === 0" i18n-primaryText="@@nothing_to_see_here"
+                        primaryText="Nothing to see here" i18n-secondaryText="@@type_inside_search_box_to_find_fields"
+                        secondaryText="Type inside the search box to find fields" icon="table" iconSize="100">
+                    </lib-empty-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
@@ -97,7 +101,8 @@
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                 <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
                     <mat-panel-title>
-                        <lib-text-line type="base" weight="strong" i18n="@@master_record_parameters">Master record parameters</lib-text-line>
+                        <lib-text-line type="base" weight="strong" i18n="@@master_record_parameters">Master record
+                            parameters</lib-text-line>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
@@ -124,24 +129,25 @@
                             </mat-autocomplete>
                         </mat-form-field>
                     </div>
-                    
+
                     <ng-container formArrayName="mergeRules">
                         <div *ngFor="let item of masterRecords.controls; let i = index"
                             class="f-row colunm-box rule-border-row">
 
                             <ng-container [formGroupName]="i">
                                 <div class="col col-x4">
-                                    <lib-text-line type="base">{{ getMergeRuleTypeDesc(item.value.ruleType) }}</lib-text-line>
+                                    <lib-text-line type="base">{{ getMergeRuleTypeDesc(item.value.ruleType) }}
+                                    </lib-text-line>
                                 </div>
                                 <div class="col col-x4">
                                     <div class="f-col">
                                         <ng-template
                                             [ngIf]="(item.value.ruleType === 'NEWEST') || (item.value.ruleType === 'OLDEST')"
                                             [ngIfElse]="others">
-                                            <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
-                                                {{ getMergeRuleFieldDesc(item.value.fieldId) }}
-                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></button>
-                                        <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
+                                            <lib-label text="{{ getMergeRuleFieldDesc(item.value.fieldId) }}"
+                                                [matMenuTriggerFor]="fieldMatchMenu" suffixIcon="caret-down"
+                                                iconFontType="solid"></lib-label>
+                                            <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item *ngFor="let field of MERGE_RULE_FIELDS"
                                                     (click)="setFieldValue(item.value.ruleType, field.value, i)">
                                                     {{ field.label }} </button>
@@ -149,11 +155,12 @@
                                         </ng-template>
 
                                         <ng-template #others>
-                                            <lib-button [matMenuTriggerFor]="searchFieldMenu">
-                                                {{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}
-                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></lib-button>
-                                                <!-- field search menu -->
-                                                <mat-menu #searchFieldMenu="matMenu" class="navigation-menu">
+                                            <lib-label
+                                                text="{{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}"
+                                                [matMenuTriggerFor]="searchFieldMenu" suffixIcon="caret-down"
+                                                iconFontType="solid"></lib-label>
+                                            <!-- field search menu -->
+                                            <mat-menu #searchFieldMenu="matMenu" class="navigation-menu">
                                                 <div class="fields-menu">
                                                     <pros-search-input (value)="input.value = $event"
                                                         prosClickStopPropagation></pros-search-input>
@@ -168,7 +175,8 @@
                                                             </mat-list-item>
                                                         </ng-template>
                                                         <ng-template #noNumeric>
-                                                            <pros-null-state message="" [button]="null"></pros-null-state>
+                                                            <pros-null-state message="" [button]="null">
+                                                            </pros-null-state>
                                                         </ng-template>
                                                     </mat-nav-list>
                                                 </div>
@@ -196,7 +204,11 @@
                             </ng-container>
                         </div>
                     </ng-container>
-                    <lib-empty-state *ngIf="masterRecords.controls.length === 0" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here" i18n-secondaryText="@@type_inside_search_box_to_find_master" secondaryText="Type inside the search box to find master records" icon="table" iconSize="100"></lib-empty-state>
+                    <lib-empty-state *ngIf="masterRecords.controls.length === 0"
+                        i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
+                        i18n-secondaryText="@@type_inside_search_box_to_find_master"
+                        secondaryText="Type inside the search box to find master records" icon="table" iconSize="100">
+                    </lib-empty-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>

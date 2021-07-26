@@ -55,7 +55,7 @@
                                 (scrollEnd)="updateDataScopeList()">
                                 <mat-option value='0' i18n="@@entire_data_scope">
                                     <div class="f-row">
-                                        <lib-text-line type="base">Entire data scope</lib-text-line>
+                                        <lib-text-line type="base" weight="strong">Entire data scope</lib-text-line>
                                         <span class="f-spacer"></span>
                                         <lib-text-line type="base" textColor="secondary">{{entireDataSetCount ? entireDataSetCount : 0}}
                                         </lib-text-line>
@@ -75,7 +75,7 @@
                                 </mat-option>
                                 <mat-divider></mat-divider>
                                 <mat-option (click)="openDataScopeSideSheet()">
-                                    <lib-text-line type="base" textColor="link" i18n="@@add_data_scope">Add data scope</lib-text-line>
+                                    <lib-text-line type="base" textColor="link" i18n="@@add_data_scope">New data scope</lib-text-line>
                                 </mat-option>
                             </div>
                         </mat-autocomplete>
@@ -215,7 +215,7 @@
 
                                             <div class="col col-x4">
                                                 <lib-text-line type="base" enableWrap="true">{{
-                                                    getRuleTypeDesc(businessRule.brType) }}</lib-text-line>
+                                                    getRuleTypeDesc(deps.brType) }}</lib-text-line>
                                             </div>
 
                                             <div class="col col-x8 mat-item-center">

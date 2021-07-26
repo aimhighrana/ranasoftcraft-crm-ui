@@ -13,7 +13,8 @@ export interface EmailTemplate {
 export interface EmailTemplateBody {
   emailSubject: string,
   subType: string,
-  emailText: string
+  emailText: string,
+  templateDescription: string
 }
 
 export interface EmailResponseBody {

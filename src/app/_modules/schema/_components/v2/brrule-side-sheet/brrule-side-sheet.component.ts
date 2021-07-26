@@ -4,7 +4,7 @@ import { BusinessRuleType, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierar
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CategoryInfo, FieldConfiguration, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
-import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -392,6 +392,14 @@ export class BrruleSideSheetComponent implements OnInit {
     this.getTransRules(searchText);
   }, 400);
 
+
+  /**
+   * Search the trans rule from map lib..
+   */
+   delayedCallForApis = debounce((searchText: string) => {
+    this.getApisRule(searchText);
+  }, 400);
+
   /**
    * function to format slider thumbs label.
    * @param percent percent
@@ -448,7 +456,7 @@ export class BrruleSideSheetComponent implements OnInit {
           this.getBusinessRuleInfo(this.brId);
           // set is trans edit only
           this.activatedRouter.queryParams.subscribe(q=>{
-            if(q.r && q.r === 'BR_TRANSFORMATION') {
+            if(this.activeOutlet === 'sb3' && q.r && q.r === 'BR_TRANSFORMATION') {
               this.isOnlyForTrans = true;
             } else {
               this.isOnlyForTrans = false;
@@ -459,7 +467,7 @@ export class BrruleSideSheetComponent implements OnInit {
           // not required missing rule bydefault...
           // this.form.controls.rule_type.setValue(BusinessRuleType.BR_MANDATORY_FIELDS);
           this.activatedRouter.queryParams.subscribe(q=>{
-            if(q.r && q.r === 'BR_TRANSFORMATION') {
+            if(this.activeOutlet === 'sb3' && q.r && q.r === 'BR_TRANSFORMATION') {
               this.form.controls.transformationRuleType.setValue(this.transformationType.REGEX);
               // update manually if has only for transformation rule
               setTimeout(()=>{
@@ -479,7 +487,12 @@ export class BrruleSideSheetComponent implements OnInit {
      */
      this.sharedService.getAfterBrSave().subscribe((res: CoreSchemaBrInfo[])=>{
       if(res) {
-        this.addTransRules(res);
+        if(Array.isArray(res) && res.map(m=> m.brType === BusinessRuleType.BR_TRANSFORMATION).length === res.length) {
+          this.addTransRules(res);
+        } else if(!Array.isArray(res)) {
+          this.addTransRules(res);
+        }
+
       }
     });
 
@@ -502,11 +515,11 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
 
-    this.form.controls.apiSno.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(res=>{
-      if(typeof res ==='string') {
-        this.getApisRule(res);
-      }
-    });
+    // this.form.controls.apiSno.valueChanges.pipe(distinctUntilChanged(), debounceTime(300)).subscribe(res=>{
+    //   if(typeof res ==='string') {
+    //     this.getApisRule(res);
+    //   }
+    // });
 
   }
 
@@ -548,7 +561,7 @@ export class BrruleSideSheetComponent implements OnInit {
   /**
    * get businessrule data from api to patch in sidesheet
    */
-  getBusinessRuleInfo(brId: string) {
+  getBusinessRuleInfo(brId) {
     this.schemaService.getBusinessRuleInfo(brId).subscribe((businessRuleInfo: CoreSchemaBrInfo) => {
       this.coreSchemaBrInfo = businessRuleInfo;
       if (this.coreSchemaBrInfo) {
@@ -569,6 +582,7 @@ export class BrruleSideSheetComponent implements OnInit {
         if(this.coreSchemaBrInfo.brType === BusinessRuleType.BR_API_RULE) {
           this.getApisRule('', this.coreSchemaBrInfo.apiSno);
         }
+
 
       }
     }, error => console.error(`Error : ${error.message}`));
@@ -870,7 +884,6 @@ export class BrruleSideSheetComponent implements OnInit {
       target_field: br.target_field || '',
       accuracyScore: br.accuracyScore || 0
     };
-
     // set the value for transformation ...
     this.hasAppliedTransformationCtrl.setValue(br.isTransformationApplied ? br.isTransformationApplied : false);
 
@@ -1380,6 +1393,17 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if(this.isOnlyForTrans) {
       brType = BusinessRuleType.BR_TRANSFORMATION;
+    }
+
+    if(brType === BusinessRuleType.BR_API_RULE) {
+      const hasInDrop = this.apiRules.find(a=> a.sno === this.form.get('apiSno').value);
+      if(!hasInDrop) {
+        this.form.controls.apiSno.markAsDirty();
+        this.form.controls.apiSno.markAsTouched();
+        this.form.controls.apiSno.setValue('');
+        // this.form.controls.apiSno;
+        return false;
+      }
     }
 
     if (!this.form.valid) {
@@ -1986,8 +2010,13 @@ export class BrruleSideSheetComponent implements OnInit {
    * Create new business rules ...
    */
   openBusinessRuleSideSheet() {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
-    outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+    console.log(this.activatedRouter.url);
+    /* this.router.navigate([`sb3:sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb3`],
+    {queryParams:{r:'BR_TRANSFORMATION'}, relativeTo: this.activatedRouter}); */
+    /* this.router.navigateByUrl(`../(sb3:sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb3)`,
+    {queryParams:{r:'BR_TRANSFORMATION'}, relativeTo: this.activatedRouter}); */
+    this.router.navigate(['', { outlets: { sb3:  `sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/new/sb3`}}],
+    {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
   /**
@@ -2049,8 +2078,8 @@ export class BrruleSideSheetComponent implements OnInit {
    * Edit the exiting transformation....
    */
   editTransRule(br: TransformationMappingTabResponse, tab: string) {
-    this.router.navigate(['', { outlets: {sb:`sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${this.brId}`,
-    outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/outer` }}],{queryParams:{r:'BR_TRANSFORMATION'}});
+    this.router.navigate(['', { outlets: { sb3: `sb3/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.ruleInfo?.brIdStr}/sb3` }}],
+    {queryParams:{r:'BR_TRANSFORMATION'}});
   }
 
   /**
@@ -2092,6 +2121,9 @@ export class BrruleSideSheetComponent implements OnInit {
   getApisRule(searchString: string,prefer?: string) {
     this.schemaService.getApisRule(this.moduleId, searchString, 0, 10, prefer).subscribe(res=>{
       this.apiRules = res ? res: [];
+      if(prefer) {
+        this.form.controls.apiSno.patchValue(this.coreSchemaBrInfo.apiSno);
+      }
     }, err=> console.error(`Error : ${err.message}`));
   }
 
@@ -2100,6 +2132,10 @@ export class BrruleSideSheetComponent implements OnInit {
    */
    displayApisRuleFn(value?: string) {
     return value ? this.apiRules.find(rule => rule.sno === value)?.description : '';
+  }
+
+  searchApisRules(val: string) {
+    this.delayedCallForApis(val);
   }
 
 }

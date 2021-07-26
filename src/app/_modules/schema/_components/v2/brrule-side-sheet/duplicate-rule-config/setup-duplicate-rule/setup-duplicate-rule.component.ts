@@ -327,7 +327,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
   exclusionConf(item: FormGroup) {
     const data = { fId: item.value.fId, exclusion: item.value.exclusion, ival: item.value.ival, sval: item.value.sval, editActive: true };
     this.sharedService.setExclusionData(data)
-    this.router.navigate(['', { outlets: { outer: 'outer/schema/setup-br-exclusion' } }]);
+    this.router.navigate(['', { outlets: { sb3: 'sb3/schema/setup-br-exclusion' } }]);
   }
 
   /**

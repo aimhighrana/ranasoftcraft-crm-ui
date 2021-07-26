@@ -185,7 +185,7 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log(response);
-      this.sharedService.setChooseColumnData({...this.data, editActive: false});
+      this.sharedService.setChooseColumnData({...this.data, selectedFields: this.beforeSaveState, editActive: false});
       this.close();
     }, error => {
       console.error('Exception while persist table view');
@@ -341,7 +341,7 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
     this.schemaDetailsService.createUpdateSchemaAction(action).subscribe(resp => {
       console.log(resp);
       rowIndex !== undefined ? this.actionsList[rowIndex] = resp : this.actionsList.splice(0, 0, resp);
-      this.sharedService.setChooseColumnData({tableActionsList: this.actionsList, editActive: false});
+      this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.actionsList, editActive: false});
     })
   }
 
@@ -451,7 +451,7 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
     this.actionsList.forEach((action, index) => action.actionOrder = index);
     this.schemaDetailsService.createUpdateSchemaActionsList(this.actionsList).subscribe(actions => {
       console.log(actions);
-      this.sharedService.setChooseColumnData({tableActionsList: actions, editActive: false});
+      this.sharedService.setChooseColumnData({selectedFields: this.beforeSaveState, tableActionsList: actions, editActive: false});
       this.close();
     }, error => {
       console.log('something went wrong!')

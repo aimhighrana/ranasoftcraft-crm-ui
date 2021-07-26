@@ -30,7 +30,8 @@ div.root {
 
       .listset-navigation {
         height: 100%;
-        width: 292px;
+        width: 246px;
+        transition: width ease-in-out 0.15s;
         margin-right: 12px;
         border-right-width: 1px;
         border-right-style: solid;

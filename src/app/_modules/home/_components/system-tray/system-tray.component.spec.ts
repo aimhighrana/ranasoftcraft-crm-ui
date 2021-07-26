@@ -8,6 +8,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SystemTrayComponent } from './system-tray.component';
 import { Userdetails } from '@models/userdetails';
+import { CustomNotification } from '@models/customNotification';
 
 describe('SystemTrayComponent', () => {
   let component: SystemTrayComponent;
@@ -142,6 +143,13 @@ describe('SystemTrayComponent', () => {
     expect(notificationSpy).toHaveBeenCalled();
   });
 
+  it('should call paginateJobs', async () => {
+    component.jobsPagination.fetchCount = 0;
+    component.jobsPagination.fetchSize = 0;
+    component.paginateJobs();
+    expect(jobqueueSpy).toHaveBeenCalled();
+  });
+
   it('should delete notification', async () => {
     component.deleteNotification('1');
     expect(component.jobQueueData.length).toEqual(0)
@@ -152,7 +160,7 @@ describe('SystemTrayComponent', () => {
     component.getJobsQueue();
     expect(jobqueueSpy).toHaveBeenCalled();
     expect(component.jobQueueData[0].initiatedBy).toEqual('A');
-    expect(component.jobQueueData.length).toEqual(1)
+    expect(component.jobQueueData.length).toEqual(1);
   });
 
   it('close(), should close the current router' , () => {
@@ -160,5 +168,18 @@ describe('SystemTrayComponent', () => {
     component.close();
     expect(component.close).toBeTruthy();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
+  });
+
+  it('should trackByFn', () => {
+    expect(component.trackByFn(1, { headerText: 'test 1 running for shahnshah module test 1 ',
+    id: '349710404638900102'} as CustomNotification)).toEqual('349710404638900102');
+  });
+
+  it('indexChange(), should call notification or jobQueue based on index', () => {
+    component.indexChange(0);
+    expect(notificationSpy).toHaveBeenCalled();
+
+    component.indexChange(1);
+    expect(jobqueueSpy).toHaveBeenCalled();
   });
 });

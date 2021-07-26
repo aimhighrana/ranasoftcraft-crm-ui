@@ -16,7 +16,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { UserService } from '@services/user/userservice.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { Metadata } from './metadatafield-control/metadatafield-control.component';
 
@@ -268,7 +268,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isFieldDistinct: [false],
       displayCriteria: [{ ...this.displayCriteria[1] }],
       isEnableGlobalFilter: [false],
-      applyDistinct : [false]
+      applyDistinct: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -481,6 +481,17 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.workflowFieldsObs = of(flds);
       }
     })
+    this.fieldCtrl.valueChanges.pipe(debounceTime(500)).subscribe(res => {
+      if (this.styleCtrlGrp.get('isWorkflowdataSet').value === false && this.styleCtrlGrp.get('isCustomdataSet').value === false) {
+        this.searchChooseColumn(res);
+      }
+      if (this.styleCtrlGrp.get('isWorkflowdataSet').value === true && this.styleCtrlGrp.get('isCustomdataSet').value === false) {
+        this.searchChooseColumnWorkflow(res);
+      }
+      if (this.styleCtrlGrp.get('isWorkflowdataSet').value === false && this.styleCtrlGrp.get('isCustomdataSet').value === true) {
+        this.searchCustomChooseColumn(res);
+      }
+    })
     this.subscriptions.push(fldSub);
     this.subscriptions.push(wfldSub);
   }
@@ -671,7 +682,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           objectType: data.objectType ? data.objectType : '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false,
           isEnableGlobalFilter: data.isEnableGlobalFilter ? data.isEnableGlobalFilter : false,
-          applyDistinct : data.applyDistinct ? data.applyDistinct : false
+          applyDistinct: data.applyDistinct ? data.applyDistinct : false
         });
 
 
@@ -1024,7 +1035,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   removeError(value: 'fieldCtrl' | 'datasetCtrl') {
     switch (value) {
       case 'fieldCtrl':
-        this.fieldCtrl = new FormControl('');
+        // this.fieldCtrl = new FormControl('');
+        this.fieldCtrl.setErrors(null);
+        this.fieldCtrl.setValue('');
+        this.fieldCtrl.updateValueAndValidity();
         break;
       case 'datasetCtrl':
         this.datasetCtrl = new FormControl(this.datasetCtrl.value);
@@ -1401,6 +1415,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+
+  /**
+   * return the possible bucket filter values for drop down values
+   */
   get possibleBucketFilter() {
     const bucketFilter = [
       { key: BucketFilter.WITHIN_1_DAY, value: $localize`:@@withinSLA:Within time spent limit` },
@@ -1408,6 +1426,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
     return bucketFilter;
   }
+
+  /**
+   * return the possible time interval values for drop down values
+   */
   get possibleTimeIntervalFilter() {
     const timeInterval = [
       { key: SeriesWith.millisecond, value: $localize`:@@today:Today` },
@@ -1419,6 +1441,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return timeInterval;
   }
 
+  /**
+   * return the possible filter type values for drop down value
+   */
   get possibleFilterType() {
     const filterType = [
       { key: FilterWith.DROPDOWN_VALS, value: $localize`:@@dropdownValue: Dropdown value` },
@@ -1428,6 +1453,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return filterType
   }
 
+  /**
+   * return the possible orderWith drop down values
+   */
   get possibleOrderWith() {
     const orderWith = [
       { key: OrderWith.ASC, value: $localize`:@@ascending :Ascending` },
@@ -1440,6 +1468,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return orderWith;
   }
 
+  /**
+   * return the possible series With drop Down values
+   */
   get possibleseriesWith() {
     const seriesWith = [
       { key: SeriesWith.day, value: $localize`:@@day:Day` },
@@ -1451,6 +1482,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return seriesWith;
   }
 
+  /**
+   *  return the possible aggregration operator values for drop down
+   */
   get possibleAggregrationOperator() {
     const aggregrationOp = [
       { key: AggregationOperator.GROUPBY, value: $localize`:@@groupBy:Group by` },
@@ -1460,6 +1494,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return aggregrationOp
   }
 
+
+  /**
+   *  return the possible aggregration operator values for drop down
+   */
   get possibleDisplayCriteria() {
     const displayCriteria = [
       { key: DisplayCriteria.CODE, value: $localize`:@@code:Code` },
@@ -1469,6 +1507,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return displayCriteria
   }
 
+  /**
+   *  return the possible chart type values for drop down
+   */
   get possibleChartType() {
     const chartType = [
       { key: ChartType.BAR, value: $localize`:@@bar:Bar` },
@@ -1478,6 +1519,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return chartType;
   }
 
+  /**
+   *  return the possible orientation values for drop down
+   */
   get possibleOrientation() {
     const orientation = [
       { key: Orientation.VERTICAL, value: $localize`:@@vertical:Vertical` },
@@ -1486,6 +1530,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return orientation;
   }
 
+  /**
+   *  return the possible data label position values for drop down
+   */
   get possibleDataLablesPosition() {
     const datalabelsPosition = [
       { key: DatalabelsPosition.center, value: $localize`:@@center:Center` },
@@ -1495,6 +1542,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return datalabelsPosition;
   }
 
+  /**
+   *  return the possible legend values for drop down
+   */
   get possibleLegendPosition() {
     const legendPosition = [
       { key: LegendPosition.top, value: $localize`:@@top:Top` },
@@ -1505,6 +1555,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return legendPosition;
   }
 
+  /**
+   *  return the possible legend values for drop down
+   */
   get possibleDateSelectionType() {
     const dateSelectionType = [
       { key: DateSelectionType.TODAY, value: $localize`:@@today:Today` },
@@ -1517,6 +1570,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return dateSelectionType;
   }
 
+  /**
+   *  return the possible sla menu values for drop down
+   */
   get possibleSLAMenu() {
     const possibleSlaMenu = [
       { key: SeriesWith.hour, value: $localize`:@@hour:Hour` },
@@ -1525,6 +1581,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return possibleSlaMenu;
   }
 
+  /**
+   *
+   * @param response holds the field meta data
+   * @returns formated data for map hierarchy
+   */
   public mapHierarchyFields(response: MetadataModeleResponse): Metadata[] {
     const metadata: Metadata[] = [];
     if (response && response.hierarchy) {
@@ -1556,7 +1617,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-
+  /**
+   *
+   * @param hierarchy hierarchy data
+   * @returns the parent field for respective child field
+   */
   getHierarchyParentField(hierarchy: Heirarchy): ParentField {
     const parentField: ParentField = {
       fieldId: hierarchy?.fieldId,
@@ -1565,6 +1630,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return parentField;
   }
 
+  /**
+   *
+   * @param response complete response of metadata field
+   * @returns transformed meta data for grid fields
+   */
   mapGridFields(response) {
     const metaData: Metadata[] = []
     Object.keys(response.grids).forEach(grid => {
@@ -1593,6 +1663,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     return metaData;
   }
 
+  /**
+   *
+   * @param grid grid data
+   * @returns parent field for respective child field
+   */
   getGridParentField(grid: MetadataModel) {
     const parentField: ParentField = {
       fieldId: grid?.fieldId,

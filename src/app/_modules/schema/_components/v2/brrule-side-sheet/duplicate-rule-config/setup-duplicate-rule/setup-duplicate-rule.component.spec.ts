@@ -293,7 +293,7 @@ describe('SetupDuplicateRuleComponent', () => {
 
 
     component.exclusionConf(component.fieldRecords.at(0) as FormGroup);
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: 'outer/schema/setup-br-exclusion' } }]);
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb3: 'sb3/schema/setup-br-exclusion' } }]);
   })
 
 });
