@@ -323,8 +323,8 @@
                                 <td mat-cell *matCellDef="let element">
                                     <div class="f-row action-iconbtns" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                         <!-- Secondary actions -->
-                                        <lib-button type="minor" icon="more" *ngIf="secondaryActions.length"
-                                            [matMenuTriggerFor]="secondaryActionsMenu"></lib-button>
+                                        <lib-button type="minor" icon="ellipsis-h" *ngIf="secondaryActions.length"
+                                            [matMenuTriggerFor]="secondaryActionsMenu" class="more-btn"></lib-button>
                                         <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                             <ng-container *ngFor="let sAction of secondaryActions">
                                                 <button mat-menu-item

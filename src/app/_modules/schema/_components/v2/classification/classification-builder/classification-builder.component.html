@@ -257,8 +257,8 @@
                                 <mat-cell *matCellDef="let row; let rIndex = index;">
                                     <div class="f-row action-iconbtns">
                                         <ng-template [ngIf]="!row['__aditionalProp'].isReviewed && (isReviewer || isApprover)">
-                                            <button mat-flat-button color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">Aa</button>
-
+                                            <lib-button type="minor" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}" libTooltip="Generate Description">Aa</lib-button>
+                                          
                                             <button mat-flat-button color="accent" *ngIf="row['__aditionalProp'] && row['__aditionalProp'].hasLatestDescGenerated && !row['__aditionalProp'].isReviewed" (click)="approveRec(row, rIndex)" id="approveBtn_{{ rIndex }}">
                                                 <mat-icon fontSet="mdo-icons">check</mat-icon> Approve
                                             </button>
