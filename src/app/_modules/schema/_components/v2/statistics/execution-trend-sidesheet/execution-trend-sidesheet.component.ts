@@ -4,6 +4,7 @@ import { SchemaListDetails, SchemaVariantsModel, VarinatType } from '@models/sch
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { StatisticsFilterParams } from '../../statics/statics.component';
 import * as moment from 'moment';
+import { SchemaService } from '@services/home/schema.service';
 
 @Component({
   selector: 'pros-execution-trend-sidesheet',
@@ -31,6 +32,7 @@ export class ExecutionTrendSidesheetComponent implements OnInit {
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
+    private schemaService: SchemaService,
     private schemaListService: SchemalistService,
     ) { }
 
@@ -51,10 +53,23 @@ export class ExecutionTrendSidesheetComponent implements OnInit {
   getSchemaDetails() {
     this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
+      this.getModuleInfo();
     }, error => console.error(`Error : ${error.message}`))
   }
 
-
+  /**
+   * Get module info ..
+   */
+  getModuleInfo() {
+    this.schemaService.getModuleInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      const module = moduleData[0];
+      if (module) {
+       Object.assign(this.schemaInfo, module);
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+  }
 
   close() {
     this.router.navigate([{ outlets: { sb: null } }], {queryParamsHandling: 'preserve'});

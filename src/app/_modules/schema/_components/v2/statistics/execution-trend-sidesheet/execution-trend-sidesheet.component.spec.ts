@@ -3,19 +3,21 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { ModuleInfo, SchemaListDetails } from '@models/schema/schemalist';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ExecutionTrendSidesheetComponent } from './execution-trend-sidesheet.component';
+import { SchemaService } from '@services/home/schema.service';
 
 describe('ExecutionTrendSidesheetComponent', () => {
   let component: ExecutionTrendSidesheetComponent;
   let fixture: ComponentFixture<ExecutionTrendSidesheetComponent>;
   let router: Router;
   let schemaListService: SchemalistService;
+  let schemaService: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +35,7 @@ describe('ExecutionTrendSidesheetComponent', () => {
     fixture = TestBed.createComponent(ExecutionTrendSidesheetComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
-
+    schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     router = TestBed.inject(Router);
   });
@@ -68,5 +70,19 @@ describe('ExecutionTrendSidesheetComponent', () => {
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
 
   }));
+  it('getModuleInfo()', async(() => {
+    const val: ModuleInfo[] = [
+      {
+        moduleId: '0',
+        moduleDesc: 'test',
+        datasetCount: 0
+      }
+    ];
+    spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValues(of(val), throwError('error'));
 
+    component.variantId = 'new';
+    component.getModuleInfo();
+    expect(component.scopeCnt).toEqual(0);
+    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
+  }));
 });

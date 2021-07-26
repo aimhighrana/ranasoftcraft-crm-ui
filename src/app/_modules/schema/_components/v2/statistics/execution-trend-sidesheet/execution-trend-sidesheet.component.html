@@ -5,7 +5,7 @@
         <div class="f-row mdo-constrained-right">
             <lib-text-line type="leading" enableWrap="true">
                 <ng-template [ngIf]="schemaInfo" [ngIfElse]="loading">
-                    {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                    {{ schemaInfo.moduleDescription ? schemaInfo.moduleDesc : 'Module' }} /
                     {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / Statistics
                 </ng-template>
                 <ng-template #loading>
