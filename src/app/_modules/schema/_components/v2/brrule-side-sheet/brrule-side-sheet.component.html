@@ -356,23 +356,27 @@
                                 </div>
                                 <!-- operators -->
                                 <div class="col">
-                                    <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-                                    <mat-select class="udr-form-select" mat-stroked-button
-                                        formControlName="conditionOperator" i18n-placeholder="@@select_operator"
-                                        placeholder="Select Operator">
-                                        <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                                            <ng-container *ngFor="let child of group.childs">
-                                                <mat-option [value]="child">
-                                                    <ng-container *ngIf="child !== 'EQUAL'">
-                                                        {{child | replaceUnderscorePipe}}
-                                                    </ng-container>
-                                                    <ng-container *ngIf="child === 'EQUAL'">
-                                                        {{'EQUALS'}}
-                                                    </ng-container>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-optgroup>
-                                    </mat-select>
+
+                                    <mat-form-field [class.has-error]="submitted && !(item.controls.conditionOperator?.value)" *ngIf="true" class="udr-operator-select" appearance="outline">
+                                        <input matInput i18n-placeholder="@@select_operator"
+                                        placeholder="Select Operator" [value]="displayOperatorFn(item.controls.conditionOperator.value)" (focus)="filterOperator('')" (input)="filterOperator($event.target.value);item.controls.conditionOperator.setValue('')"
+                                            [matAutocomplete]="fieldsCtrl">
+                                        <mat-autocomplete [displayWith]="displayOperatorFn" class="mdo-autocomplete"
+                                            #fieldsCtrl="matAutocomplete" (optionSelected)="udrOperatorSelected(item.controls.conditionOperator, $event)">
+                                            <mat-optgroup *ngFor="let group of operatorsFiltered" [label]="group.desc">
+                                                <ng-container *ngFor="let child of group.childs">
+                                                    <mat-option matTooltip="{{child | replaceUnderscorePipe}}" matTooltipPosition="right" [value]="child">
+                                                        <ng-container *ngIf="child !== 'EQUAL'">
+                                                            {{child | replaceUnderscorePipe}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="child === 'EQUAL'">
+                                                            {{'EQUALS'}}
+                                                        </ng-container>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-optgroup>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
                                 </div>
                                 <!-- Comparison value -->
                                 <div [class.range-col]="item.value.conditionOperator  === 'RANGE'" class="col"
@@ -442,7 +446,28 @@
                                                 </div>
 
                                                 <div class="col">
-                                                    <mat-select class="udr-form-select" mat-stroked-button
+                                                    <mat-form-field [class.has-error]="submitted && !(chldNode.controls.conditionOperator?.value)" *ngIf="true" class="udr-operator-select" appearance="outline">
+                                                        <input matInput i18n-placeholder="@@select_operator"
+                                                        placeholder="Select Operator" [value]="displayOperatorFn(chldNode.controls.conditionOperator.value)" (focus)="filterOperator('')" (input)="filterOperator($event.target.value);chldNode.controls.conditionOperator.setValue('')"
+                                                            [matAutocomplete]="fieldsCtrl">
+                                                        <mat-autocomplete [displayWith]="displayOperatorFn" class="mdo-autocomplete"
+                                                            #fieldsCtrl="matAutocomplete" (optionSelected)="udrOperatorSelected(chldNode.controls.conditionOperator, $event)">
+                                                            <mat-optgroup *ngFor="let group of operatorsFiltered" [label]="group.desc">
+                                                                <ng-container *ngFor="let child of group.childs">
+                                                                    <mat-option matTooltip="{{child | replaceUnderscorePipe}}" matTooltipPosition="right" [value]="child">
+                                                                        <ng-container *ngIf="child !== 'EQUAL'">
+                                                                            {{child | replaceUnderscorePipe}}
+                                                                        </ng-container>
+                                                                        <ng-container *ngIf="child === 'EQUAL'">
+                                                                            {{'EQUALS'}}
+                                                                        </ng-container>
+                                                                    </mat-option>
+                                                                </ng-container>
+                                                            </mat-optgroup>
+                                                        </mat-autocomplete>
+                                                    </mat-form-field>
+
+                                                    <mat-select *ngIf="false" class="udr-form-select" mat-stroked-button
                                                         formControlName="conditionOperator"
                                                         i18n-placeholder="@@select_operator"
                                                         placeholder="Select operator">

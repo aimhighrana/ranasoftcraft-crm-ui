@@ -1921,6 +1921,10 @@
               // }
             }
 
+            mat-form-field.udr-operator-select.has-error.mat-form-field.mat-form-field-appearance-outline div.mat-form-field-wrapper div.mat-form-field-flex div.mat-form-field-outline {
+              color: $color-status-error;
+            }
+
             .pros-generic-field-control.has-error .mat-form-field .mat-form-field-wrapper,
             .udr-select-col.has-error {
               border: 1px solid  $color-status-error;
