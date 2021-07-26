@@ -316,6 +316,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     attrMapRequest.localModCode = mappings.localModCode ? mappings.localModCode : '';
     attrMapRequest.libraryNounCode = this.libraryNounCode ? this.libraryNounCode : '';
     attrMapRequest.libraryModCode = this.libraryModifierCode ? this.libraryModifierCode : '';
+    attrMapRequest.localNounSno = this.seletedNounCtrl && this.seletedNounCtrl.NSNO ? this.seletedNounCtrl.NSNO : '';
 
     attrMapRequest.attributeMapData = [];
 

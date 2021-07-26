@@ -76,6 +76,7 @@ export interface AttributesMapping {
     localNounCode: string;
     libraryModCode: string;
     localModCode: string;
+    localNounSno?: string;
     attributeMapData: AttributeMapData[];
 }
 
