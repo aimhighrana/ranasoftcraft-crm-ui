@@ -187,6 +187,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   checkIfDependentRule(rule: CoreSchemaBrInfo): CoreSchemaBrInfo {
     let brToUpdate = rule;
+    
     this.businessRuleData.map((item, index) => {
       if(item.dep_rules?.length) {
         item.dep_rules.map((drule, dIndex) => {
