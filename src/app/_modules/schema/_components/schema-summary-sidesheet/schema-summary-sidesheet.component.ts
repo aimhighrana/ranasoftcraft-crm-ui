@@ -196,7 +196,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         const fj = {};
         if(!Array.isArray(res)) {
           fj[res.brIdStr] = res;
-          this.businessRuleData = this.businessRuleData.concat([res]);
+
+          // Update if trying to edit an existing rule and push if adding a new one
+          const index = this.businessRuleData.findIndex((brData) => brData.brIdStr === res.brIdStr);
+          (index > -1)? this.businessRuleData[index] = res: this.businessRuleData.push(res);
+
         } else {
           res.forEach((r,idx) => {
             r.brIdStr = '';
@@ -220,8 +224,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           }, err=> console.log(`Error : ${err.message}`));
 
         }
-
-
       }
     });
     this.subscriptions.push(brSave);

@@ -93,7 +93,6 @@
                 <div class="f-col"
                     [class.has-error]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)"
                     *ngIf="!isDuplicateType && !isUDR">
-                   
                     <pros-select *ngIf="categoryList?.length>0"
                         formControlName="categoryId"
                         label="Category"
@@ -101,7 +100,6 @@
                         [hasError]="submitted && (form.controls.categoryId.errors?.required || !form.controls.categoryId?.value)"
                         [isRequired]="true"
                         [availableOptions]="categoryList"
-                        [value]="form.controls.categoryId.value"
                         labelKey="categoryDesc"
                         valueKey="categoryId">
                     </pros-select>
