@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModuleInfo, SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaListDetails } from '@models/schema/schemalist';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
