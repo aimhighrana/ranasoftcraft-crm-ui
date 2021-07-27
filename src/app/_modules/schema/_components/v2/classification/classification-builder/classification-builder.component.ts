@@ -1345,7 +1345,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   /**
-   * Validate the row before sending for generate desc ...
+   * Validate the row before sending for generate desc
    * @param row current row
    */
   _valid(row: any): any {
