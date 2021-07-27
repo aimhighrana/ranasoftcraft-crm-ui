@@ -250,6 +250,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
 
   operators = [];
+  operatorsFiltered = [];
   submitted = false;
   initialConditions = ['And', 'Or'];
   /**
@@ -2143,4 +2144,29 @@ export class BrruleSideSheetComponent implements OnInit {
     this.delayedCallForApis(val);
   }
 
+  /**
+   * function to set selected operator value in the form field
+   */
+  udrOperatorSelected(condition:FormControl, $event) {
+    condition.setValue($event.option.value);
+  }
+
+  /**
+   * function to fitler operator list in auto complete
+   */
+  filterOperator(value: string) {
+    value = value?.replace(/\s/g, '_') || '';
+    this.operatorsFiltered = this.operators.map(operator => ({
+      ...operator,
+      childs: operator.childs.filter(child => child.toLowerCase().includes(value))
+    }))
+    .filter(operator => operator.childs.length);
+  }
+
+  /**
+   * function to display formatted value in auto complete field
+   */
+  displayOperatorFn(value?: string) {
+    return value === 'EQUALS' ? 'EQUAL' : value?.replace(/_/g, ' ') || '';
+  }
 }

@@ -956,4 +956,29 @@ describe('BrruleSideSheetComponent', () => {
 
   }));
 
+  it('displayOperatorFn(), should format the output', async(()=>{
+    expect(component.displayOperatorFn('EQUALS')).toEqual('EQUAL');
+    expect(component.displayOperatorFn('start_with')).toEqual('start with');
+    expect(component.displayOperatorFn(null)).toEqual('');
+  }));
+
+  it('udrOperatorSelected(), should set form value', async(()=>{
+    const udrControl = new FormControl('', Validators.required);
+    component.udrOperatorSelected(udrControl, {option: {value: 'test'}});
+    expect(udrControl.value).toEqual('test');
+  }));
+
+  it('filterOperator(), should filter the operator values', async(()=>{
+    component.operators = [{
+      desc: 'group1',
+      childs: ['test1', 'test2']
+    }, {
+      desc: 'group1',
+      childs: ['test3', 'test4']
+    }];
+    component.filterOperator('');
+    expect(component.operatorsFiltered.length).toEqual(2);
+    component.filterOperator('test3');
+    expect(component.operatorsFiltered.length).toEqual(1);
+  }));
 });
