@@ -64,7 +64,7 @@ export class ClassificationMappingResponse {
     noun: {
         source: string;
         targetCtrl: any;
-        targetNounSno: string;
+        targetNounSno?: string;
         status: AttributeStatusType;
     };
     modifier: {

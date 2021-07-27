@@ -69,7 +69,7 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   attrControl: ClassificationHeader;
 
   /**
-   * Hold material group here ... 
+   * Hold material group here ...
    */
   matlgrp: string;
 

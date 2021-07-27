@@ -910,7 +910,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     componentRef.instance.modCode = modCode;
     componentRef.instance.brType = this.dataFrm;
     componentRef.instance.attrControl = hasFld;
-    componentRef.instance.matlgrp = row['MGROUP'] ? row['MGROUP'].fieldValue : '';
+    componentRef.instance.matlgrp = row.MGROUP ? row.MGROUP.fieldValue : '';
     componentRef.instance.value = val;
     componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 || isDropdown ? 'dropdown' : 'inputText';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));

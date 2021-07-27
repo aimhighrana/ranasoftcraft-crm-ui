@@ -77,11 +77,11 @@ describe('LibraryMappingSidesheetComponent', () => {
       {NOUN_LONG: 'Bearing', NOUN_CODE: 'Bearing',  NOUN_ID: '17021', MODE_CODE: 'Ball'} as NounModifier
     ]
 
-    spyOn(nounModifierService, 'getLocalNouns').withArgs('0').and.returnValue(of(result));
+    spyOn(nounModifierService, 'getLocalNouns').withArgs('0','').and.returnValue(of(result));
 
     component.getLocalNouns();
 
-    expect(nounModifierService.getLocalNouns).toHaveBeenCalledWith('0');
+    expect(nounModifierService.getLocalNouns).toHaveBeenCalledWith('0','');
     expect(component.localNounsList).toEqual(result);
   });
 
@@ -92,11 +92,11 @@ describe('LibraryMappingSidesheetComponent', () => {
       {MODE_CODE: 'Ball', MOD_LONG: 'Ball'} as NounModifier
     ]
 
-    spyOn(nounModifierService, 'getLocalModifier').withArgs('0', 'Bearing').and.returnValue(of(result));
+    spyOn(nounModifierService, 'getLocalModifier').withArgs('0', 'Bearing','').and.returnValue(of(result));
 
     component.getLocalModifiers('Bearing');
 
-    expect(nounModifierService.getLocalModifier).toHaveBeenCalledWith('0', 'Bearing');
+    expect(nounModifierService.getLocalModifier).toHaveBeenCalledWith('0', 'Bearing','');
     expect(component.LocalModifiersList).toEqual(result);
   });
 
