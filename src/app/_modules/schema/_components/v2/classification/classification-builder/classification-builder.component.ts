@@ -41,8 +41,8 @@ const definedColumnsMetadata = {
   //   fieldDesc: 'Manufacturer',
   //   fieldValue: ''
   // },
-   MGROUP: {
-    fieldId: 'MGROUP',
+  MGROUP_DESC: {
+    fieldId: 'MGROUP_DESC',
     fieldDesc: 'Material group',
     fieldValue: ''
   }, NOUN_CODE: {
@@ -526,8 +526,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           if(this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP' || this.dataFrm === 'unmatched') {
             const columns = Object.keys(actualData[0]);
             const disPlayedCols = this.viewOf.getValue() === 'correction'?
-                                  ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
-                                  ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
+                                  ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP_DESC', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
+                                  ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP_DESC', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
             columns.forEach(key => {
               if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
                 disPlayedCols.push(key);
@@ -594,9 +594,15 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             //   break;
 
             case 'MGROUP':
-              const mggroup = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+              const mggroup = { fieldId: col, fieldDesc: 'Material group id',fieldValue: ''};
               mggroup.fieldValue = columns[col] ? columns[col] : '';
               rowData.MGROUP = mggroup;
+              break;
+
+            case 'MGROUP_DESC':
+              const mggroupDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+              mggroupDesc.fieldValue = columns[col] ? columns[col] : '';
+              rowData.MGROUP_DESC = mggroupDesc;
               break;
 
             case 'MODE_CODE':
@@ -814,6 +820,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       inpCtrl.style.display = 'none';
       viewCtrl.style.display = 'block';
 
+      if(fldid === 'NOUN_CODE' && !value) {
+        console.log(`Noun code can't be null`);
+        return false;
+      }
+
       if(objctNumber && oldVal !== value) {
         const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: ((this.dataFrm === 'MRO_CLS_MASTER_CHECK' || this.dataFrm === 'unmatched') ? true : false)} as SchemaMROCorrectionReq;
         if(fldid === 'NOUN_CODE') {
@@ -919,6 +930,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     componentRef.instance.modCode = modCode;
     componentRef.instance.brType = this.dataFrm;
     componentRef.instance.attrControl = hasFld;
+    componentRef.instance.matlgrp = row.MGROUP ? row.MGROUP.fieldValue : '';
     componentRef.instance.value = val;
     componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 || isDropdown ? 'dropdown' : 'inputText';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));

@@ -24,6 +24,7 @@ import { SimpleChanges } from '@angular/core';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
+import { GlobalCountComponent } from '../_builder/global-count/global-count.component';
 
 describe('DuplicacyComponent', () => {
   let component: DuplicacyComponent;
@@ -39,7 +40,7 @@ describe('DuplicacyComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DuplicacyComponent, SearchInputComponent, GroupDataTableComponent],
+      declarations: [DuplicacyComponent, SearchInputComponent, GroupDataTableComponent, GlobalCountComponent],
       imports: [ MdoUiLibraryModule, AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
     })
       .compileComponents();

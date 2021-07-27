@@ -46,6 +46,13 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
   autoComplete: MatAutocompleteTrigger;
 
 
+  /**
+   * Emit the selected ctrl...
+   */
+  @Output()
+  emitSelCtrl: EventEmitter<any> = new EventEmitter<any>();
+
+
   constructor(
     private nounModifierService: NounModifierService,
     private userDetailsService: UserService
@@ -185,6 +192,7 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
     });
   }
   selectOption($event) {
+    this.emitSelCtrl.emit($event.option.value);
     this.formCtrl.setValue(this.getOptionVal($event.option.value));
   }
 
