@@ -86,7 +86,7 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
 
                         // only code is visiable
                         // TODO on based on display criteria
-                        const dropVal = hdvs[hdfld].vc ? hdvs[hdfld].vc.map(map => map.c).toString() : '';
+                        const dropVal = hdvs[hdfld].vc ? hdvs[hdfld].vc.map(map => map.t || map.c).toString() : '';
                         cell.fieldData = dropVal ? dropVal : '';
 
                         // check cell is in error
@@ -95,6 +95,7 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
                             cell.isInError = hdvs[hdfld].isInError ? hdvs[hdfld].isInError : false;
                             cell.errorMsg = hdvs[hdfld].message ? hdvs[hdfld].message.toString() : '';
                         } */
+
 
                         // check for old values
                         if (hdvs[hdfld].oc && hdvs[hdfld].oc.length > 0) {
