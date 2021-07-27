@@ -9,7 +9,6 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ExecutionTrendSidesheetComponent } from './execution-trend-sidesheet.component';
-import { SchemaService } from '@services/home/schema.service';
 
 describe('ExecutionTrendSidesheetComponent', () => {
   let component: ExecutionTrendSidesheetComponent;
