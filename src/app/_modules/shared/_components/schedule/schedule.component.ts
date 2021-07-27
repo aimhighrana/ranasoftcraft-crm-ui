@@ -161,21 +161,38 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  /**
+   * method to enable/disable schedule
+   * @param toggleVal pass the toggle value
+   */
+  toggleSchedule(toggleVal: boolean) {
+    this.form.controls.isEnable.setValue(toggleVal);
+    toggleVal? this.form.enable(): this.form.disable();
+  }
+
   /**
    * Function to create or initliaze form group for scheduler..
    */
   createForm() {
     this.form = new FormGroup({
       isEnable: new FormControl(false, [Validators.required]),
-      schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY, [Validators.required]),
+      schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY),
       repeatValue: new FormControl(2, [Validators.required]),
       weeklyOn: new FormControl(null),
       monthOn: new FormControl(null),
       startOn: (this.schedulerId && this.schedulerId !== 'new') ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
-      end: new FormControl(null, [Validators.required]),
+      end: new FormControl(SchemaSchedulerEnd.AFTER, [Validators.required]),
       occurrenceVal: new FormControl(2),
       endOn: new FormControl(moment().utc().valueOf().toString())
     });
+
+    this.form.controls.schemaSchedulerRepeat.valueChanges
+    .subscribe((repeatVal) => {
+      if(repeatVal === 'NONE') {
+        this.form.controls.repeatValue.setValue(0);
+      }
+    })
   }
 
   /**
