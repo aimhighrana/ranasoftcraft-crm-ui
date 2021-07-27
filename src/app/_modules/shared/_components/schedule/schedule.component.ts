@@ -122,6 +122,9 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.form.controls.weeklyOn.setValidators(null);
       this.form.controls.monthOn.setValidators(null);
       switch (repeatValue) {
+        case SchemaSchedulerRepeat.NONE:
+          this.setValue('repeatValue', 0);
+          break;
         case SchemaSchedulerRepeat.HOURLY:
           this.setValue('repeatValue', 12);
           break;
@@ -182,17 +185,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       weeklyOn: new FormControl(null),
       monthOn: new FormControl(null),
       startOn: (this.schedulerId && this.schedulerId !== 'new') ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
-      end: new FormControl(SchemaSchedulerEnd.AFTER, [Validators.required]),
+      end: new FormControl(SchemaSchedulerEnd.NEVER, [Validators.required]),
       occurrenceVal: new FormControl(2),
       endOn: new FormControl(moment().utc().valueOf().toString())
     });
-
-    this.form.controls.schemaSchedulerRepeat.valueChanges
-    .subscribe((repeatVal) => {
-      if(repeatVal === 'NONE') {
-        this.form.controls.repeatValue.setValue(0);
-      }
-    })
   }
 
   /**
@@ -215,7 +211,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * @param field field
    * @param value value
    */
-  setValue(field, value) {
+  setValue(field: string, value: any) {
     this.form.controls[field].setValue(value);
   }
 
@@ -224,7 +220,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * @param field field
    * @param value value
    */
-  setDateValue(field, value: Date) {
+  setDateValue(field: string, value: Date) {
     this.form.controls[field].setValue(`${value.getTime()}`);
     if (field === 'startOn') {
       this.selectedStartDate = value;
@@ -270,12 +266,12 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * Function to get refrence string for scheduler..
    */
   get getReferenceString() {
-    const startValue = this.form.controls.startOn.value
+    const startValue = this.form.controls.startOn.value;
     const endValue = this.form.controls.end.value;
-    const repeatValue = this.form.controls.repeatValue.value;
+    const repeatValue = this.form.controls.repeatValue.value || 0;
     const endOn = this.form.controls.endOn.value;
-    if (!startValue || !endValue || !repeatValue) {
-      return ''
+    if (!startValue || !endValue) {
+      return '';
     }
     const startStr = `starting from ${moment(parseInt(startValue, 10)).format('MM/DD/YYYY')} `;
     let endStr;
@@ -302,8 +298,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   getScheduleInfo(schemaId: string) {
     const scheduleSubscription = this.schemaService.getSchedule(schemaId).subscribe((response) => {
-      this.scheduleInfo = response;
       if (response) {
+        this.scheduleInfo = response;
         this.setValueForFormControl();
       }
     }, (error) => {

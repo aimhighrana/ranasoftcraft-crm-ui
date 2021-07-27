@@ -75,7 +75,7 @@
                         <lib-date-picker class="start-date" [ngClass]="{'disabled': form.controls.startOn.disabled }" 
                         *ngIf="selectedStartDate" [selectedDate]="selectedStartDate"
                         [minDate]="selectedStartDate"
-                        [disabled]="!form.controls.isEnable.value"
+                        [disabled]="form.disabled"
                         (valueChange)="setDateValue('startOn',$event)">
                         </lib-date-picker>
                         <!--pros-date-picker-field [showRangeFld]="false" [preSelectedFld]="form.controls.startOn.value"
@@ -112,6 +112,7 @@
                     <div class="f-col mdo-field">
                         <lib-text-line type="xsmall" weight="strong" class="field-label">Date</lib-text-line>
                         <lib-date-picker *ngIf="selectedStartDate" [minDate]="selectedStartDate"
+                            [disabled]="form.disabled"
                             [selectedDate]="selectedEndDate" (valueChange)="setDateValue('endOn',$event)">
                         </lib-date-picker>
                         <mat-error
@@ -122,8 +123,8 @@
                 </div>
                 <mat-divider></mat-divider>
             </form>
-            
-            <lib-text-line *ngIf="form.controls.isEnable.value" type="small" weight="strong">{{getReferenceString}}</lib-text-line>
+
+            <lib-text-line *ngIf="form?.enabled" type="small" weight="strong">{{getReferenceString}}</lib-text-line>
             <!-- sidesheet content End here -->
             <!-- <button mat-flat-button (click)='submit()' color="primary" [disabled]="form.invalid">submit</button> -->
         </div>
