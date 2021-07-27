@@ -367,7 +367,7 @@ export class EndpointsRuleService {
    * endpoint for copy duplicate rule
    */
   public copyDuplicate(): string {
-    return `${this.origin}/duplicate/copyDuplicate`;
+    return `${this.origin}/schema/actions/copyDuplicate`;
   }
 
   /**
