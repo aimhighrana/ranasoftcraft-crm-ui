@@ -96,6 +96,7 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
                             cell.errorMsg = hdvs[hdfld].message ? hdvs[hdfld].message.toString() : '';
                         } */
 
+
                         // check for old values
                         if (hdvs[hdfld].oc && hdvs[hdfld].oc.length > 0) {
                             const oldVal = hdvs[hdfld].oc ? hdvs[hdfld].oc : '';
