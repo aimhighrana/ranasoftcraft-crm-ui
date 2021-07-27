@@ -202,7 +202,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     });
 
     this.mappingForm.get('localNounCode').valueChanges.subscribe(nounCode => {
-      const loadForThisNn = typeof nounCode === 'string' ? nounCode : nounCode.NOUN_CODE;
+      const loadForThisNn = typeof nounCode === 'string' ? nounCode : nounCode?.NOUN_CODE;
       this.getLocalModifiers(loadForThisNn);
       this.mappingForm.get('localModCode').setValue('');
     });
