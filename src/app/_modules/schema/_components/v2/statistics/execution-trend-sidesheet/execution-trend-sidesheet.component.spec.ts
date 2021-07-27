@@ -8,7 +8,6 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-
 import { ExecutionTrendSidesheetComponent } from './execution-trend-sidesheet.component';
 
 describe('ExecutionTrendSidesheetComponent', () => {
@@ -33,7 +32,6 @@ describe('ExecutionTrendSidesheetComponent', () => {
     fixture = TestBed.createComponent(ExecutionTrendSidesheetComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
-
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     router = TestBed.inject(Router);
   });
@@ -68,5 +66,4 @@ describe('ExecutionTrendSidesheetComponent', () => {
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
 
   }));
-
 });

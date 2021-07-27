@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -17,7 +17,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { UserService } from '@services/user/userservice.service';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
@@ -41,8 +41,8 @@ const definedColumnsMetadata = {
   //   fieldDesc: 'Manufacturer',
   //   fieldValue: ''
   // },
-   MGROUP: {
-    fieldId: 'MGROUP',
+  MGROUP_DESC: {
+    fieldId: 'MGROUP_DESC',
     fieldDesc: 'Material group',
     fieldValue: ''
   }, NOUN_CODE: {
@@ -115,6 +115,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
   @Input()
   activeTab = '';
+
+  @Output() runCompleted = new EventEmitter();
 
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
@@ -292,31 +294,43 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    let refresh = false;
     if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
       this.isInRunning = changes.isInRunning.currentValue;
+      refresh = true;
     }
 
     if (changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
       this.moduleId = changes.moduleId.currentValue;
-      this.getFldMetadata();
-    }
-
-    if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
-      this.schemaId = changes.schemaId.currentValue;
-      this.getSchemaDetails();
-      if(!this.isInRunning) {
-        this.getDataScope();
-        this.getSchemaStatics();
-        this.getSchemaTableActions();
-        // this.getFieldsByUserView();
-      }
+      refresh = true;
     }
 
     if (changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue;
+      refresh = true;
     }
 
+    if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
+      this.schemaId = changes.schemaId.currentValue;
+      refresh = true;
+    }
 
+    if (refresh) {
+      this.getFldMetadata();
+    }
+
+    const datascopeObervable = this.getDataScope();
+    forkJoin({getDatascope: datascopeObervable}).pipe(debounceTime(300)).subscribe((res) => {
+      if (res) {
+        this.getSchemaDetails();
+      }
+    });
+
+    if(!this.isInRunning && refresh) {
+      this.getSchemaStatics();
+      this.getSchemaTableActions();
+      // this.getFieldsByUserView();
+    }
   }
 
   ngOnInit(): void {
@@ -431,6 +445,9 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   getSchemaDetails() {
     const sub = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
+      if (this.schemaInfo.variantId) {
+        this.variantChange(this.schemaInfo.variantId);
+      }
       this.getClassificationNounMod(this.searchNounNavCtrl.value);
     }, error => console.error(`Error : ${error.message}`));
     this.subsribers.push(sub);
@@ -473,13 +490,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * Get data scopes .. or variats
    */
   getDataScope(activeVariantId?: string) {
-    const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
+    const obsv = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR');
+    const sub = obsv.subscribe(res => {
       this.dataScope = res;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
     }, err => console.error(`Exception : ${err.message}`));
     this.subsribers.push(sub);
+
+    return obsv;
   }
 
   applyFilter(nounCode: string, modifierCode: string, brType: string, isSearchActive?: boolean, objectNumberAfter?: string,fromShowMore?: boolean) {
@@ -506,8 +526,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           if(this.dataFrm === 'MRO_MANU_PRT_NUM_LOOKUP' || this.dataFrm === 'unmatched') {
             const columns = Object.keys(actualData[0]);
             const disPlayedCols = this.viewOf.getValue() === 'correction'?
-                                  ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
-                                  ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
+                                  ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP_DESC', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
+                                  ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP_DESC', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
             columns.forEach(key => {
               if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
                 disPlayedCols.push(key);
@@ -574,9 +594,15 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             //   break;
 
             case 'MGROUP':
-              const mggroup = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+              const mggroup = { fieldId: col, fieldDesc: 'Material group id',fieldValue: ''};
               mggroup.fieldValue = columns[col] ? columns[col] : '';
               rowData.MGROUP = mggroup;
+              break;
+
+            case 'MGROUP_DESC':
+              const mggroupDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+              mggroupDesc.fieldValue = columns[col] ? columns[col] : '';
+              rowData.MGROUP_DESC = mggroupDesc;
               break;
 
             case 'MODE_CODE':
@@ -794,6 +820,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       inpCtrl.style.display = 'none';
       viewCtrl.style.display = 'block';
 
+      if(fldid === 'NOUN_CODE' && !value) {
+        console.log(`Noun code can't be null`);
+        return false;
+      }
+
       if(objctNumber && oldVal !== value) {
         const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: ((this.dataFrm === 'MRO_CLS_MASTER_CHECK' || this.dataFrm === 'unmatched') ? true : false)} as SchemaMROCorrectionReq;
         if(fldid === 'NOUN_CODE') {
@@ -899,6 +930,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     componentRef.instance.modCode = modCode;
     componentRef.instance.brType = this.dataFrm;
     componentRef.instance.attrControl = hasFld;
+    componentRef.instance.matlgrp = row.MGROUP ? row.MGROUP.fieldValue : '';
     componentRef.instance.value = val;
     componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 || isDropdown ? 'dropdown' : 'inputText';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));
@@ -1325,7 +1357,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   /**
-   * Validate the row before sending for generate desc ...
+   * Validate the row before sending for generate desc
    * @param row current row
    */
   _valid(row: any): any {
@@ -1350,6 +1382,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
   onRunCompleted($event) {
     this.isInRunning = false;
+    this.runCompleted.emit($event);
   }
 
   isEditEnabled(fldid: string, row: any, rIndex: number) {

@@ -362,7 +362,7 @@ export class TableColumnSettingsComponent implements OnInit, OnDestroy{
    */
   removeCustomAction(rowIndex: number) {
 
-    this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
+    this.glocalDialogService.confirm({label:'Are you sure you want to delete this ?'}, (resp) => {
       this.removeActionAfterConfirm(resp, rowIndex);
     })
 

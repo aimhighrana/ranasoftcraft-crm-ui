@@ -68,6 +68,19 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    */
   mgroup: string;
   isMapped = false;
+
+  /**
+   * Hold selected noun ctrl
+   */
+  seletedNounCtrl: NounModifier;
+
+  /**
+   * Hold selected modifier ctrl
+   */
+  seletedModifierCtrl: NounModifier;
+
+
+
   statas: Status[] = [
     {code:'matched', count: 0, text:'Matched', isSeleted: false},
     {code:'suggested', count: 0, text:'Suggested', isSeleted: false},
@@ -132,6 +145,10 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     } else {
       this.nounModifierService.getClassificationMappingData(request).subscribe((resp: any) => {
         this.classificationCategory = resp;
+
+        // set selected noun ctrl
+        this.seletedNounCtrl = {NOUN_CODE: this.classificationCategory.noun.targetCtrl, NSNO: this.classificationCategory.noun.targetNounSno} as NounModifier;
+
         if(this.mappingForm) {
          const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
          frmAray.clear();
@@ -208,14 +225,30 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   patchMappingForm(attributesMapping: AttributesMapping) {
+
+   // set the selected noun ctrl
+   if(attributesMapping.localNounCode) {
+    this.seletedNounCtrl = {NOUN_CODE: attributesMapping.localNounCode, NSNO: attributesMapping.localNounSno} as NounModifier;
+   }
    if(this.classificationCategory) {
      const {noun, modifier} = this.classificationCategory;
-     if(modifier.status?.toLowerCase() === 'suggested') {
+     if(modifier.status?.toLowerCase() === 'suggested' || modifier.status?.toLowerCase() === 'matched') {
        attributesMapping.localModCode = modifier.targetCtrl;
      }
-     if(noun.status?.toLowerCase() === 'suggested') {
+     if(noun.status?.toLowerCase() === 'suggested' || noun.status?.toLowerCase() === 'matched') {
        attributesMapping.localNounCode = noun.targetCtrl;
      }
+     const attribute = this.classificationCategory.attrLists ? this.classificationCategory.attrLists : [];
+     if (attribute.length>0) {
+      attribute.forEach(mapData => {
+        const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.targetCtrl?.ATTR_CODE);
+
+        if (index !== -1) {
+          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.targetCtrl?.ATTR_CODE && (row.status?.toLowerCase() === 'suggested' || row.status?.toLowerCase() === 'matched'));
+          this.attributeMapData.at(index).patchValue({localAttributeCode: suggestedObj ? suggestedObj.targetCtrl : mapData.targetCtrl?.ATTR_CODE});
+        }
+      })
+    }
    }
 
    const {localNounCode, localModCode} = attributesMapping;
@@ -225,7 +258,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
         const index = this.attributeMapData.value.findIndex(v => v.libraryAttributeCode === mapData.libraryAttributeCode);
 
         if (index !== -1) {
-          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && row.status?.toLowerCase() === 'suggested');
+          const suggestedObj = this.classificationCategory && this.classificationCategory.attrLists.find(row => row.source === mapData.libraryAttributeCode && (row.status?.toLowerCase() === 'suggested' || row.status?.toLowerCase() === 'matched'));
           this.attributeMapData.at(index).patchValue({localAttributeCode: suggestedObj ? suggestedObj.targetCtrl : mapData.localAttributeCode});
         }
       })
@@ -234,7 +267,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   getLocalNouns() {
     const plantCode = '0';
-    this.nounModifierService.getLocalNouns(plantCode)
+    this.nounModifierService.getLocalNouns(plantCode, '')
       .subscribe(nouns => {
         this.localNounsList = nouns;
         this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
@@ -242,7 +275,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   getLocalModifiers(nounCode) {
-    this.nounModifierService.getLocalModifier('0', nounCode)
+    this.nounModifierService.getLocalModifier('0', nounCode, '')
       .subscribe(modifiers => {
         this.LocalModifiersList = modifiers;
         console.log(this.LocalModifiersList);
@@ -303,6 +336,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     attrMapRequest.localModCode = mappings.localModCode ? mappings.localModCode : '';
     attrMapRequest.libraryNounCode = this.libraryNounCode ? this.libraryNounCode : '';
     attrMapRequest.libraryModCode = this.libraryModifierCode ? this.libraryModifierCode : '';
+    attrMapRequest.localNounSno = this.seletedNounCtrl && this.seletedNounCtrl.NSNO ? this.seletedNounCtrl.NSNO : '';
 
     attrMapRequest.attributeMapData = [];
 
@@ -375,14 +409,14 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   openModifierSidesheet() {
     this.router.navigate(['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` }}], {
+    outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.seletedNounCtrl && this.seletedNounCtrl.NSNO ? this.seletedNounCtrl.NSNO : this.selectedNounCode }` }}], {
       queryParamsHandling: 'preserve'
     });
   }
 
   openAttributeSidesheet() {
     const routerCommand = ['', { outlets: {sb:`sb/schema/attribute-mapping/${this.moduleId}/${this.schemaId}/${this.libraryNounCode}/${this.libraryModifierCode}`,
-    outer: `outer/schema/attribute/${this.selectedNounCode}/${this.selectedModifierCode}` }}];
+    outer: `outer/schema/attribute/${this.seletedNounCtrl && this.seletedNounCtrl.NSNO ? this.seletedNounCtrl.NSNO : this.selectedNounCode }/${this.selectedModifierCode}` }}];
     this.nounModifierService.attributeSheetRoute = routerCommand;
     this.router.navigate(routerCommand, {
       queryParamsHandling: 'preserve'
@@ -449,4 +483,5 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       this.attributeMapData.at(ind).patchValue({localAttributeCode: row.attrCode, localAttributeText: row.attrDesc});
     });
   }
+
 }

@@ -35,20 +35,20 @@ describe('NounModifierService', () => {
 
     const expectedResponse = [{NOUN_CODE: 'Bearing', MODE_CODE: 'Ball'}] as NounModifier[];
 
-    service.getLocalNouns('0').subscribe(actualReponse => {
+    service.getLocalNouns('0','').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    let mockRequest = httpTestingController.expectOne(`${url}?fieldId=&fieldValue=&searchString=&plantCode=0`);
+    let mockRequest = httpTestingController.expectOne(`${url}?fieldId=&fieldValue=&searchString=&plantCode=0&matlgrp=`);
     expect(mockRequest.request.method).toEqual('GET');
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();
 
-    service.getLocalNouns('0', 'status', 'active', 'active').subscribe(actualReponse => {
+    service.getLocalNouns('0', '1005', 'status', 'active', 'active').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    mockRequest = httpTestingController.expectOne(`${url}?fieldId=status&fieldValue=active&searchString=active&plantCode=0`);
+    mockRequest = httpTestingController.expectOne(`${url}?fieldId=status&fieldValue=active&searchString=active&plantCode=0&matlgrp=1005`);
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();
   });
@@ -60,13 +60,13 @@ describe('NounModifierService', () => {
 
     spyOn(endpointClassic, 'getAvailableModifierUri').and.returnValue('getAvailableModifierUri');
 
-    expect(() => service.getLocalModifier('0', '')).toThrowError('Nouncode must be required ');
+    expect(() => service.getLocalModifier('0', '','')).toThrowError('Nouncode must be required ');
 
-    service.getLocalModifier('0', 'Bearing').subscribe(actualReponse => {
+    service.getLocalModifier('0', 'Bearing','').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}?nounCode=Bearing&searchString=&plantCode=0`);
+    const mockRequest = httpTestingController.expectOne(`${url}?nounCode=Bearing&searchString=&plantCode=0&matlgrp=`);
     expect(mockRequest.request.method).toEqual('GET');
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();
@@ -166,11 +166,11 @@ describe('NounModifierService', () => {
 
     const expectedResponse = [{NOUN_CODE: 'Bearing', MODE_CODE: 'Ball'}] as NounModifier[];
 
-    service.getSuggestedNouns('schema1','run1','1701','').subscribe(actualReponse => {
+    service.getSuggestedNouns('schema1','run1','1701','','').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}?searchString=&brType=&objNr=1701`);
+    const mockRequest = httpTestingController.expectOne(`${url}?searchString=&brType=&objNr=1701&matlgrp=`);
     expect(mockRequest.request.method).toEqual('GET');
     mockRequest.flush(expectedResponse);
     httpTestingController.verify();

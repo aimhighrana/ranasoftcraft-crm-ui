@@ -25,6 +25,7 @@ import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
 import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { GlobalCountComponent } from '../_builder/global-count/global-count.component';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -43,7 +44,7 @@ describe('SchemaDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaDetailsComponent, FilterValuesComponent, SearchInputComponent, AddFilterMenuComponent ],
+      declarations: [ SchemaDetailsComponent, FilterValuesComponent, SearchInputComponent, AddFilterMenuComponent, GlobalCountComponent ],
       imports:[
         AppMaterialModuleForSpec,
         HttpClientTestingModule,

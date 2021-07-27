@@ -963,9 +963,27 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to save check data
    */
   saveCheckData() {
+    this.schemaRunFailureMsg = '';
     this.submitted = true;
     if(!this.schemaName.valid) {
       return false;
+    }
+
+    if (this.businessRuleData.length) {
+      let totalWeightage = 0;
+      this.businessRuleData.forEach((x) => {
+        totalWeightage += (parseInt(x.brWeightage, 10) || 0);
+        if (x.dep_rules && x.dep_rules.length) {
+          x.dep_rules.forEach((y) => {
+            totalWeightage += (parseInt(y.brWeightage, 10) || 0);
+          });
+        }
+      });
+
+      if (totalWeightage > 100) {
+        this.schemaRunFailureMsg = 'Schema weightage cannnot be more than 100%';
+        return false;
+      }
     }
 
     // save the schema infor
