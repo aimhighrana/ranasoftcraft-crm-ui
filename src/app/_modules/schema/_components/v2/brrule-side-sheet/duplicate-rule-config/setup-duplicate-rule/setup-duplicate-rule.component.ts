@@ -245,7 +245,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
    */
   removeFormArrayRow(formArrayName, index) {
 
-    this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
+    this.glocalDialogService.confirm({label:'Are you sure you want to delete this ?'}, (resp) => {
       this.removeFomArrRowAfterConfirm(resp, formArrayName, index);
     })
 

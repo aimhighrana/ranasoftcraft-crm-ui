@@ -361,7 +361,7 @@
                     </mat-select>
                   </div>
 
-                  <div class="col"
+                  <div class="col comparison-input"
                     *ngIf="child.operator !== 'RANGE' && child.operator !== 'EMPTY' && child.operator !== 'NOT_EMPTY'">
                     <lib-input i18n-placeholder="@@comparison_value"
                       [placeholder]="child.operator === 'REGEX' ? 'Enter the Regex' : 'Comparison value'"
