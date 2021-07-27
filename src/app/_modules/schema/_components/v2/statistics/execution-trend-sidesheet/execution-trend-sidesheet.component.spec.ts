@@ -16,7 +16,6 @@ describe('ExecutionTrendSidesheetComponent', () => {
   let fixture: ComponentFixture<ExecutionTrendSidesheetComponent>;
   let router: Router;
   let schemaListService: SchemalistService;
-  let schemaService: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,6 @@ describe('ExecutionTrendSidesheetComponent', () => {
     fixture = TestBed.createComponent(ExecutionTrendSidesheetComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
-    schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     router = TestBed.inject(Router);
   });
@@ -68,11 +66,5 @@ describe('ExecutionTrendSidesheetComponent', () => {
     component.getSchemaDetails();
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
 
-  }));
-  it('getModuleInfo()', async(() => {
-    spyOn(schemaService, 'getModuleInfoByModuleId').and.returnValues(of([{}] as any));
-    component.moduleId = 'new';
-    component.getModuleInfo();
-    expect(schemaService.getModuleInfoByModuleId).toHaveBeenCalled();
   }));
 });
