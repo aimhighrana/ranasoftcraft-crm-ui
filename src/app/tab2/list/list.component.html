@@ -1,23 +1,23 @@
-<ion-content fullscreen>
-  <ion-list>
+<ion-content fullscreen class="root">
+  <ion-list class="ion-list" style="height: calc(100% - 56px); overflow: auto;">
     <ion-list-header>
-      Recent Conversations
+      Recent updated 
     </ion-list-header>
 
-    <ion-item>
+    <ion-item *ngFor="let user of users">
       <ion-avatar slot="start">
-        <img src="./avatar-finn.png">
+        <svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="user-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="svg-inline--fa fa-user-circle fa-w-16 fa-3x"><path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm128 421.6c-35.9 26.5-80.1 42.4-128 42.4s-92.1-15.9-128-42.4V416c0-35.3 28.7-64 64-64 11.1 0 27.5 11.4 64 11.4 36.6 0 52.8-11.4 64-11.4 35.3 0 64 28.7 64 64v13.6zm30.6-27.5c-6.8-46.4-46.3-82.1-94.6-82.1-20.5 0-30.4 11.4-64 11.4S204.6 320 184 320c-48.3 0-87.8 35.7-94.6 82.1C53.9 363.6 32 312.4 32 256c0-119.1 96.9-216 216-216s216 96.9 216 216c0 56.4-21.9 107.6-57.4 146.1zM248 120c-48.6 0-88 39.4-88 88s39.4 88 88 88 88-39.4 88-88-39.4-88-88-88zm0 144c-30.9 0-56-25.1-56-56s25.1-56 56-56 56 25.1 56 56-25.1 56-56 56z" class=""></path></svg>
       </ion-avatar>
       <ion-label>
-        <h2>Finn</h2>
-        <h3>I'm a big deal</h3>
-        <p>Listen, I've had a pretty messed up day...</p>
+        <h2> {{ user.firstName }} {{ user.lastName }}</h2>
+        <h3>{{ user.lastActivateDate | date: 'dd-MMM-yyyy hh:mm:ss'}}</h3>
+        <p>+91-{{ user.phone }}</p>
       </ion-label>
     </ion-item>
 
-    <ion-item>
+    <!-- <ion-item>
       <ion-avatar slot="start">
-        <img src="./avatar-han.png">
+        <svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="user-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="svg-inline--fa fa-user-circle fa-w-16 fa-3x"><path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm128 421.6c-35.9 26.5-80.1 42.4-128 42.4s-92.1-15.9-128-42.4V416c0-35.3 28.7-64 64-64 11.1 0 27.5 11.4 64 11.4 36.6 0 52.8-11.4 64-11.4 35.3 0 64 28.7 64 64v13.6zm30.6-27.5c-6.8-46.4-46.3-82.1-94.6-82.1-20.5 0-30.4 11.4-64 11.4S204.6 320 184 320c-48.3 0-87.8 35.7-94.6 82.1C53.9 363.6 32 312.4 32 256c0-119.1 96.9-216 216-216s216 96.9 216 216c0 56.4-21.9 107.6-57.4 146.1zM248 120c-48.6 0-88 39.4-88 88s39.4 88 88 88 88-39.4 88-88-39.4-88-88-88zm0 144c-30.9 0-56-25.1-56-56s25.1-56 56-56 56 25.1 56 56-25.1 56-56 56z" class=""></path></svg>
       </ion-avatar>
       <ion-label>
         <h2>Han</h2>
@@ -47,55 +47,205 @@
         <p>I feel the good in you, the conflict...</p>
       </ion-label>
     </ion-item>
-  </ion-list>
-
-  <ion-list>
-    <ion-list-header>
-      Online
-    </ion-list-header>
 
     <ion-item>
       <ion-avatar slot="start">
-        <img src="./avatar-poe.png">
+        <img src="./avatar-finn.png">
       </ion-avatar>
       <ion-label>
-        <h2>Poe</h2>
-        <h3>New Ride</h3>
-        <p>I just upgraded my X-Wing. Next time...</p>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-avatar slot="start">
-        <img src="./avatar-ben.png">
+        <img src="./avatar-finn.png">
       </ion-avatar>
       <ion-label>
-        <h2>Ben</h2>
-        <h3>Move Along</h3>
-        <p>These aren't the droids you're looking for...</p>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-avatar slot="start">
-        <img src="./avatar-leia.png">
+        <img src="./avatar-finn.png">
       </ion-avatar>
       <ion-label>
-        <h2>Leia</h2>
-        <h3>You're My Only Hope</h3>
-        <p>I've placed information vital to the survival...</p>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
       </ion-label>
     </ion-item>
 
     <ion-item>
       <ion-avatar slot="start">
-        <img src="./avatar-yoda.png">
+        <img src="./avatar-finn.png">
       </ion-avatar>
       <ion-label>
-        <h2>Yoda</h2>
-        <h3>Size matters not</h3>
-        <p>Do or do not. There is no try...</p>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
       </ion-label>
     </ion-item>
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-avatar slot="start">
+        <img src="./avatar-finn.png">
+      </ion-avatar>
+      <ion-label>
+        <h2>Finn</h2>
+        <h3>I'm a big deal</h3>
+        <p>Listen, I've had a pretty messed up day...</p>
+      </ion-label>
+    </ion-item> -->
+
   </ion-list>
 </ion-content>
