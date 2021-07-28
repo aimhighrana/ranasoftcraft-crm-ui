@@ -122,8 +122,9 @@ describe('ScheduleComponent', () => {
 
   it('get getReferenceString', () => {
     component.createForm();
-    expect(component.getReferenceString).toEqual('');
+    expect(component.getReferenceString).toEqual('Occurs every 2 Hours starting from 07/27/2021  and ending NEVER');
 
+    component.form.controls.isEnable.setValue(true);
     component.setValue('end', SchemaSchedulerEnd.AFTER);
     expect(component.getReferenceString).toContain('occurrences');
 

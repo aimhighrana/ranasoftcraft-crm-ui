@@ -4,7 +4,8 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <lib-text-line type="leading">Schedule</lib-text-line>
+                <lib-slide-toggle label="Enable schedule" [checked]="form.controls.isEnable.value" theme="primary" (toggleChange)="toggleSchedule($event)"></lib-slide-toggle>
+                <!-- <lib-text-line type="leading">Schedule</lib-text-line> -->
                 <span class="f-spacer"></span>
                 <lib-button class="schedule-save-btn" type="major" (afterClick)="submit()" i18n="@@save">Save
                 </lib-button>
@@ -26,8 +27,8 @@
                         </mat-error>
                     </div>
                 </div>
-                <mat-divider class="divider-dashed"></mat-divider>
-                <div class="f-row every-field mdo-form-field">
+                <mat-divider *ngIf="form.controls.schemaSchedulerRepeat.value !== 'NONE'" class="divider-dashed"></mat-divider>
+                <div *ngIf="form.controls.schemaSchedulerRepeat.value !== 'NONE'" class="f-row every-field mdo-form-field">
                     <lib-input class="mdo-scheduler-input" formControlName="repeatValue" type="number" [maxLength]='2'
                         [value]='form.value.repeatValue' i18n-placeholder="@@enter" placeholder="Enter"
                         i18n-label="@@every" label="Every" [minimum]='1' isRequired="true">
@@ -71,8 +72,10 @@
                 <div class="f-row mdo-field every-field">
                     <div class="f-col">
                         <lib-text-line type="xsmall" weight="strong" class="field-label">Starts on</lib-text-line>
-                        <lib-date-picker *ngIf="selectedStartDate" [selectedDate]="selectedStartDate"
+                        <lib-date-picker class="start-date" [ngClass]="{'disabled': form.controls.startOn.disabled }" 
+                        *ngIf="selectedStartDate" [selectedDate]="selectedStartDate"
                         [minDate]="selectedStartDate"
+                        [disabled]="form.disabled"
                         (valueChange)="setDateValue('startOn',$event)">
                         </lib-date-picker>
                         <!--pros-date-picker-field [showRangeFld]="false" [preSelectedFld]="form.controls.startOn.value"
@@ -109,6 +112,7 @@
                     <div class="f-col mdo-field">
                         <lib-text-line type="xsmall" weight="strong" class="field-label">Date</lib-text-line>
                         <lib-date-picker *ngIf="selectedStartDate" [minDate]="selectedStartDate"
+                            [disabled]="form.disabled"
                             [selectedDate]="selectedEndDate" (valueChange)="setDateValue('endOn',$event)">
                         </lib-date-picker>
                         <mat-error
@@ -119,7 +123,9 @@
                 </div>
                 <mat-divider></mat-divider>
             </form>
-            <lib-text-line type="small" weight="strong">{{getReferenceString}}</lib-text-line>
+
+            <lib-text-line *ngIf="form?.enabled" type="small" weight="strong">{{getReferenceString}}</lib-text-line>
+            
             <!-- sidesheet content End here -->
             <!-- <button mat-flat-button (click)='submit()' color="primary" [disabled]="form.invalid">submit</button> -->
         </div>

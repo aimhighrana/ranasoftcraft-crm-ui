@@ -12,11 +12,12 @@ export interface SchemaScheduler {
     endOn: string;
 }
 export enum SchemaSchedulerRepeat {
+    NONE = 'NONE',
     HOURLY = 'HOURLY',
     DAILY = 'DAILY',
     WEEKLY = 'WEEKLY',
     MONTHLY = 'MONTHLY',
-    YEARLY = 'YEARLY'
+    YEARLY = 'YEARLY',
 }
 export enum SchemaSchedulerRepeatMetric {
     HOURLY = 'Hours',

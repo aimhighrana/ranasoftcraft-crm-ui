@@ -122,6 +122,9 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.form.controls.weeklyOn.setValidators(null);
       this.form.controls.monthOn.setValidators(null);
       switch (repeatValue) {
+        case SchemaSchedulerRepeat.NONE:
+          this.setValue('repeatValue', 0);
+          break;
         case SchemaSchedulerRepeat.HOURLY:
           this.setValue('repeatValue', 12);
           break;
@@ -161,18 +164,28 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  /**
+   * method to enable/disable schedule
+   * @param toggleVal pass the toggle value
+   */
+  toggleSchedule(toggleVal: boolean) {
+    this.form.controls.isEnable.setValue(toggleVal);
+    toggleVal? this.form.enable(): this.form.disable();
+  }
+
   /**
    * Function to create or initliaze form group for scheduler..
    */
   createForm() {
     this.form = new FormGroup({
       isEnable: new FormControl(false, [Validators.required]),
-      schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY, [Validators.required]),
+      schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY),
       repeatValue: new FormControl(2, [Validators.required]),
       weeklyOn: new FormControl(null),
       monthOn: new FormControl(null),
       startOn: (this.schedulerId && this.schedulerId !== 'new') ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
-      end: new FormControl(null, [Validators.required]),
+      end: new FormControl(SchemaSchedulerEnd.NEVER, [Validators.required]),
       occurrenceVal: new FormControl(2),
       endOn: new FormControl(moment().utc().valueOf().toString())
     });
@@ -198,7 +211,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * @param field field
    * @param value value
    */
-  setValue(field, value) {
+  setValue(field: string, value: any) {
     this.form.controls[field].setValue(value);
   }
 
@@ -207,7 +220,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * @param field field
    * @param value value
    */
-  setDateValue(field, value: Date) {
+  setDateValue(field: string, value: Date) {
     this.form.controls[field].setValue(`${value.getTime()}`);
     if (field === 'startOn') {
       this.selectedStartDate = value;
@@ -253,12 +266,12 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * Function to get refrence string for scheduler..
    */
   get getReferenceString() {
-    const startValue = this.form.controls.startOn.value
+    const startValue = this.form.controls.startOn.value;
     const endValue = this.form.controls.end.value;
-    const repeatValue = this.form.controls.repeatValue.value;
+    const repeatValue = this.form.controls.repeatValue.value || 0;
     const endOn = this.form.controls.endOn.value;
-    if (!startValue || !endValue || !repeatValue) {
-      return ''
+    if (!startValue || !endValue) {
+      return '';
     }
     const startStr = `starting from ${moment(parseInt(startValue, 10)).format('MM/DD/YYYY')} `;
     let endStr;
@@ -285,8 +298,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   getScheduleInfo(schemaId: string) {
     const scheduleSubscription = this.schemaService.getSchedule(schemaId).subscribe((response) => {
-      this.scheduleInfo = response;
       if (response) {
+        this.scheduleInfo = response;
         this.setValueForFormControl();
       }
     }, (error) => {
