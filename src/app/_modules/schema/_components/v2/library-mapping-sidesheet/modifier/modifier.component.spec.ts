@@ -57,7 +57,7 @@ describe('ModifierComponent', () => {
   it('close sidesheet', () => {
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }], {queryParamsHandling: 'preserve'})
   });
 
   it(`To get FormControl from fromGroup `, async(() => {

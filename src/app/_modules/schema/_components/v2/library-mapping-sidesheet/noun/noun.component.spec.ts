@@ -51,7 +51,7 @@ describe('NounComponent', () => {
   it('close noun sidesheet', () => {
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }], {queryParamsHandling: 'preserve'})
   });
   it(`To get FormControl from fromGroup `, async(() => {
     component.buildForm()

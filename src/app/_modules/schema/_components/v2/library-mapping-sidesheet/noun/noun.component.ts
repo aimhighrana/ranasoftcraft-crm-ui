@@ -130,7 +130,9 @@ export class NounComponent implements OnInit {
   }
 
   close() {
-    this.router.navigate([{ outlets: { [`outer`]: null } }]);
+    this.router.navigate([{ outlets: { [`outer`]: null } }], {
+      queryParamsHandling: 'preserve'
+    });
   }
 
 

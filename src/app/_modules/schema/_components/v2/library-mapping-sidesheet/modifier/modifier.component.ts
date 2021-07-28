@@ -104,7 +104,7 @@ export class ModifierComponent implements OnInit {
   }
 
   close() {
-    this.router.navigate([{ outlets: { [`outer`]: null } }]);
+    this.router.navigate([{ outlets: { [`outer`]: null } }], {queryParamsHandling: 'preserve'});
   }
 
 }
