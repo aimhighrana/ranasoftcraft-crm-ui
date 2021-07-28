@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   doSignin() {
     console.log('Sign process started !!!');
-    this.router.navigate(['tabs','home']);
+    this.router.navigate(['afl','tabs','home']);
   }
 
 }
