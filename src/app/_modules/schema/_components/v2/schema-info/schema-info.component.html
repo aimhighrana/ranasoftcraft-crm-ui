@@ -7,7 +7,7 @@
         <lib-button-group>
             <lib-button type="minor" i18n="@@check_data" (click)="runSchema()">Check data</lib-button>
             <lib-button *ngIf="scheduleInfo" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="minor"
-                class="badge" icon="clock" matBadge libStatusBadge badgeText="1"
+                class="badge" icon="clock" matBadge libStatusBadge [badgeText]="scheduleInfo?.isEnable? '1': ''"
                 [statusBadgePosition]="{ top: -8, right: -4 }" backgroundColor="transparent" boxShadow="none" badgeIconFont="default" badgeType=""></lib-button>
             <lib-button *ngIf="!scheduleInfo" icon="clock" (click)="openScheduleSideSheet()" type="minor">
             </lib-button>
