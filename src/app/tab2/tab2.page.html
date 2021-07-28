@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Employees
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Employees</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class=" container-fluid emp-container">
+    <ion-toolbar>
+      <ion-segment value="list">
+        <ion-segment-button value="list">
+          Employee list
+        </ion-segment-button>
+        <ion-segment-button value="Attandance">
+          Attandance
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+
+    <app-list></app-list>
+  </div>
+</ion-content>

@@ -1,0 +1,50 @@
+<div class="container-fluid  h-100">
+  <div
+    class="row d-flex flex-column min-vh-100 justify-content-center align-items-center">
+    <!-- <div class="row" *ngIf="false">
+      <div class="col-4"></div>
+      <div class="col-4 alert alert-danger" role="alert">
+        <ranasoftcraft:out value="${errorMsg}" />
+      </div>
+    </div> -->
+
+    <!-- <div class="row" *ngIf="false">
+      <div class="col-4"></div>
+      <div class="col-4 alert alert-success" role="alert">
+        <ranasoftcraft:out value="${msg}" />
+      </div>
+    </div> -->
+
+    <div class="row">
+      <div class="col-4"></div>
+      <div class="col-4">
+        <form [formGroup]="login">
+          <div class="mb-3">
+            <label for="userNameInput" class="form-label">User name*</label> <input
+              type="text" name="user_name" class="form-control"
+              id="userNameInput" aria-describedby="userNameHelp" formControlName="login.controls.username">
+            <div id="userNameHelp" class="form-text">We'll never share
+              your email/username with anyone else.</div>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password*</label>
+            <input type="password" class="form-control" name="password" formControlName="login.controls.password"
+              id="exampleInputPassword1">
+          </div>
+          <div class="mb-3 form-check">
+
+            <div class="row">
+              <div class="col-6">
+                <input type="checkbox" class="form-check-input"
+                  id="exampleCheck1"> <label class="form-check-label"
+                  for="exampleCheck1">Remember me</label>
+              </div>
+            </div>
+
+          </div>
+          <button type="button" class="btn btn-primary" (click)="doSignin()">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
