@@ -122,7 +122,7 @@ describe('ScheduleComponent', () => {
 
   it('get getReferenceString', () => {
     component.createForm();
-    expect(component.getReferenceString).toEqual('Occurs every 2 Hours starting from 07/27/2021  and ending NEVER');
+    expect(component.getReferenceString).toEqual('Occurs every 12 Hours starting from 07/28/2021  and ending NEVER');
 
     component.form.controls.isEnable.setValue(true);
     component.setValue('end', SchemaSchedulerEnd.AFTER);
@@ -184,6 +184,41 @@ describe('ScheduleComponent', () => {
     component.submit();
     expect(component.scheduleInfo.weeklyOn).toBe('test');
     expect(component.scheduleInfo.monthOn).toBe('test');
+  });
+
+  it('updateEnableSchedule, should turn repeat to NONE and should disable the form', () => {
+    component.createForm();
+    component.updateEnableSchedule(false);
+
+    expect(component.form.enabled).toBeFalse();
+    expect(component.form.controls.schemaSchedulerRepeat.value).toEqual(SchemaSchedulerRepeat.NONE);
+
+    component.updateEnableSchedule(true);
+
+    expect(component.form.enabled).toBeTrue();
+    expect(component.form.controls.schemaSchedulerRepeat.value).toEqual(SchemaSchedulerRepeat.HOURLY);
+  });
+
+  it('updateEndValue, should change validation for on and after fields', () => {
+    component.createForm();
+    component.setValue('isEnable', true);
+    component.updateEndValue(SchemaSchedulerEnd.AFTER);
+    component.setValue('occurrenceVal', null);
+    expect(component.form.controls.occurrenceVal.valid).toEqual(false);
+
+    component.updateEndValue(SchemaSchedulerEnd.ON);
+    component.setValue('endOn', null);
+    expect(component.form.controls.endOn.valid).toEqual(false);
+  });
+
+  it('setDateValue, should update date for specified field', () => {
+    component.createForm();
+    component.setValue('isEnable', true);
+    const date = new Date();
+    component.setDateValue('startOn', date);
+    expect(component.form.controls.startOn.value).toEqual(`${date.getTime()}`);
+    component.setDateValue('endOn', date);
+    expect(component.form.controls.endOn.value).toEqual(`${date.getTime()}`);
   });
 
 });

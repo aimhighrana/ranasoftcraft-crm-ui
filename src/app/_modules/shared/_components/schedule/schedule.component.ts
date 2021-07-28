@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { TitleCasePipe } from '@angular/common';
 import { TransientService } from 'mdo-ui-library';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-schedule',
@@ -88,8 +89,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   /**
    * Variables to store selected start and end date objects
    */
-   selectedEndDate: Date;
-   selectedStartDate: Date;
+  selectedEndDate: Date;
+  selectedStartDate: Date;
 
   /**
    * To hold all the subscriptions
@@ -112,56 +113,11 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       this.schedulerId = params.scheduleId;
     })
     this.createForm();
-    if(this.schedulerId && this.schedulerId !== 'new') {
+    if (this.schedulerId && this.schedulerId !== 'new') {
       this.getScheduleInfo(this.schemaId);
     } else {
       this.selectedStartDate = new Date();
     }
-
-    this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
-      this.form.controls.weeklyOn.setValidators(null);
-      this.form.controls.monthOn.setValidators(null);
-      switch (repeatValue) {
-        case SchemaSchedulerRepeat.NONE:
-          this.setValue('repeatValue', 0);
-          break;
-        case SchemaSchedulerRepeat.HOURLY:
-          this.setValue('repeatValue', 12);
-          break;
-        case SchemaSchedulerRepeat.DAILY:
-          this.setValue('repeatValue', 2);
-          break;
-        case SchemaSchedulerRepeat.WEEKLY:
-          this.setValue('repeatValue', 2);
-          this.form.controls.weeklyOn.setValidators(Validators.required);
-          break;
-        case SchemaSchedulerRepeat.MONTHLY:
-          this.setValue('repeatValue', 2);
-          this.form.controls.monthOn.setValidators(Validators.required);
-          break;
-        case SchemaSchedulerRepeat.YEARLY:
-          this.setValue('repeatValue', 2);
-          break;
-      }
-      this.form.updateValueAndValidity();
-      this.form.controls.weeklyOn.updateValueAndValidity();
-      this.form.controls.monthOn.updateValueAndValidity();
-    });
-
-    this.form.controls.end.valueChanges.subscribe((ends) => {
-      this.form.controls.occurrenceVal.setValidators(null);
-      this.form.controls.endOn.setValidators(null);
-      switch (ends) {
-        case SchemaSchedulerEnd.AFTER:
-          this.form.controls.occurrenceVal.setValidators(Validators.required);
-          break;
-        case SchemaSchedulerEnd.ON:
-          this.form.controls.endOn.setValidators(Validators.required);
-          break;
-      }
-      this.form.controls.occurrenceVal.updateValueAndValidity();
-      this.form.controls.endOn.updateValueAndValidity();
-    });
   }
 
 
@@ -171,7 +127,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   toggleSchedule(toggleVal: boolean) {
     this.form.controls.isEnable.setValue(toggleVal);
-    toggleVal? this.form.enable(): this.form.disable();
   }
 
   /**
@@ -181,7 +136,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.form = new FormGroup({
       isEnable: new FormControl(false, [Validators.required]),
       schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY),
-      repeatValue: new FormControl(2, [Validators.required]),
+      repeatValue: new FormControl(12, [Validators.required]),
       weeklyOn: new FormControl(null),
       monthOn: new FormControl(null),
       startOn: (this.schedulerId && this.schedulerId !== 'new') ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
@@ -189,6 +144,99 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       occurrenceVal: new FormControl(2),
       endOn: new FormControl(moment().utc().valueOf().toString())
     });
+
+    // schemaSchedulerRepeat value changes
+    this.form.controls.schemaSchedulerRepeat.valueChanges
+    .pipe(distinctUntilChanged())
+    .subscribe((schemaSchedulerRepeat) => {
+      this.updateRepeatValue(schemaSchedulerRepeat);
+    })
+
+    // end value changes
+    this.form.controls.end.valueChanges
+    .pipe(distinctUntilChanged())
+    .subscribe((end) => {
+      this.updateEndValue(end);
+    })
+
+    // isEnable value changes
+    this.form.controls.isEnable.valueChanges
+    .pipe(distinctUntilChanged())
+    .subscribe((isEnable) => {
+      this.updateEnableSchedule(isEnable);
+    })
+  }
+
+  /**
+   * update validation and values of fields on
+   * isEnable value changes
+   * @param isEnable pass the value to update
+   */
+  updateEnableSchedule(isEnable: boolean) {
+    if(isEnable) {
+      this.form.enable();
+      if (this.form.controls.schemaSchedulerRepeat.value === 'NONE' || !this.form.controls.schemaSchedulerRepeat.value) {
+        this.form.controls.schemaSchedulerRepeat.setValue(SchemaSchedulerRepeat.HOURLY);
+      }
+    } else {
+      this.form.controls.schemaSchedulerRepeat.setValue(SchemaSchedulerRepeat.NONE);
+      this.form.disable();
+    }
+    this.form.updateValueAndValidity();
+  }
+
+  /**
+   * update validation and values of fields on
+   * endValue value changes
+   * @param endValue pass the value to update
+   */
+  updateEndValue(endValue: any) {
+    this.form.controls.occurrenceVal.setValidators(null);
+    this.form.controls.endOn.setValidators(null);
+    switch (endValue) {
+      case SchemaSchedulerEnd.AFTER:
+        this.form.controls.occurrenceVal.setValidators(Validators.required);
+        break;
+      case SchemaSchedulerEnd.ON:
+        this.form.controls.endOn.setValidators(Validators.required);
+        break;
+    }
+    this.form.updateValueAndValidity();
+  }
+
+  /**
+   * update validation and values of fields on
+   * schemaSchedulerRepeat value changes
+   * @param schemaSchedulerRepeat pass the value to update
+   */
+  updateRepeatValue(schemaSchedulerRepeat: SchemaSchedulerRepeat) {
+    this.form.controls.weeklyOn.setValidators(null);
+    this.form.controls.monthOn.setValidators(null);
+
+    switch (schemaSchedulerRepeat) {
+      case SchemaSchedulerRepeat.NONE:
+        this.setValue('repeatValue', 0);
+        this.setValue('isEnable', false);
+        break;
+      case SchemaSchedulerRepeat.HOURLY:
+        this.setValue('repeatValue', 12);
+        break;
+      case SchemaSchedulerRepeat.DAILY:
+        this.setValue('repeatValue', 2);
+        break;
+      case SchemaSchedulerRepeat.WEEKLY:
+        this.setValue('repeatValue', 2);
+        this.form.controls.weeklyOn.setValidators(Validators.required);
+        break;
+      case SchemaSchedulerRepeat.MONTHLY:
+        this.setValue('repeatValue', 2);
+        this.form.controls.monthOn.setValidators(Validators.required);
+        break;
+      case SchemaSchedulerRepeat.YEARLY:
+        this.setValue('repeatValue', 2);
+        break;
+    }
+    this.form.updateValueAndValidity();
   }
 
   /**
@@ -213,6 +261,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   setValue(field: string, value: any) {
     this.form.controls[field].setValue(value);
+    this.form.updateValueAndValidity();
   }
 
   /**
@@ -238,8 +287,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     console.log(this.form.value);
     if (this.form.invalid) {
       (Object).values(this.form.controls).forEach(control => {
-        if(control.invalid)
-        control.markAsTouched()
+        if (control.invalid)
+          control.markAsTouched()
       });
       return;
     }
@@ -289,7 +338,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * Function to close schedule side sheet
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null } }], {queryParamsHandling: 'preserve'});
+    this.router.navigate([{ outlets: { sb: null } }], { queryParamsHandling: 'preserve' });
   }
 
   /**
