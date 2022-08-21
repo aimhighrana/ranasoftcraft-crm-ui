@@ -1,29 +1,37 @@
 <div class="container-fluid  h-100">
-  <div
-    class="row d-flex flex-column min-vh-100 justify-content-center align-items-center">
+  <div class="row" style="height: 20px;"></div>
+  <div class="row flex-column min-vh-100 align-items-center">
     <div class="row">
       <div class="col-4"></div>
       <div class="col-12">
-        {{ _emp.controls | json}}
         <form [formGroup]="_emp">
           <div class="mb-3">
             <label for="userNameInput" class="form-label">Employee name*</label> <input
               type="text" name="user_name" class="form-control"
-              id="userNameInput" aria-describedby="userNameHelp" formControlName="_emp.controls.empName">
+              id="userNameInput" aria-describedby="userNameHelp" formControlName="empName">
           </div>
           <div class="mb-3">
             <label for="phoneNumber" class="form-label">Phone*</label>
-            <input type="text" class="form-control" name="phoneNumber" formControlName="_emp.controls.phoneNumber"
-              id="phoneNumber">
+            <input type="text" class="form-control" name="phoneNumber"
+              id="phoneNumber" formControlName="phoneNumber">
           </div>
 
           <div class="mb-3">
             <label for="address" class="form-label">Address*</label>
-            <input type="text" class="form-control" name="address" formControlName="_emp.controls.address"
-              id="address">
+            <input type="text" class="form-control" name="address"
+              id="address" formControlName="address">
           </div>
 
-          <button type="button" class="btn btn-primary" (click)="register()">Submit</button>
+          <div class="row">
+            <div class="col-6">
+              <button type="button" class="btn btn-danger" (click)="close()" style="width: 100%;">Close</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="btn btn-primary" (click)="register()" style="width: 100%;">Submit</button>
+            </div>
+
+          </div>
+          
         </form>
       </div>
     </div>

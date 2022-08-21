@@ -29,6 +29,7 @@
     "@ionic/angular": "^5.5.2",
     "@ionic/cli": "^6.20.1",
     "bootstrap": "^5.0.2",
+    "native-run": "^1.6.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
