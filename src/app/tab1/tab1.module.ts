@@ -9,6 +9,7 @@ import { Tab1PageRoutingModule } from './tab1-routing.module';
 import { StatsComponent } from './stats/stats.component';
 import { OnLeaveComponent } from './on-leave/on-leave.component';
 import { TreandReportComponent } from './treand-report/treand-report.component';
+import { EmpTodayAttendanceComponent } from './emp-today-attendance/emp-today-attendance.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { TreandReportComponent } from './treand-report/treand-report.component';
     ExploreContainerComponentModule,
     Tab1PageRoutingModule
   ],
-  declarations: [Tab1Page, StatsComponent, OnLeaveComponent, TreandReportComponent]
+  declarations: [Tab1Page, StatsComponent, OnLeaveComponent, TreandReportComponent, EmpTodayAttendanceComponent]
 })
 export class Tab1PageModule {}

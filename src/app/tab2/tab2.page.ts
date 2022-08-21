@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab2',
@@ -7,6 +8,21 @@ import { Component } from '@angular/core';
 })
 export class Tab2Page {
 
-  constructor() {}
+
+  segment: string = 'list';
+
+  constructor(
+    private router: Router
+  ) {}
+
+  segmentChange(event: any) {
+    this.segment = event.target.value;
+    console.log(`Event {}`, this.segment);
+
+  }
+
+  addNewEmployee() {
+    this.router.navigate(['afl','tabs','employee','new']);
+  }
 
 }

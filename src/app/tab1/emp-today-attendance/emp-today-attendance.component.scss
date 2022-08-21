@@ -1,0 +1,13 @@
+.root {
+    margin-top: 10px;
+    .ion-list {
+        height: calc(100% - 56px);
+        overflow: auto;
+    }
+}
+
+
+svg {
+    height: 40px;
+    width: 40px;
+}

@@ -1,4 +1,7 @@
-<ion-content fullscreen class="root">
+<div class="root">
+
+
+  <p>Today attandance</p>
   <ion-list class="ion-list" style="height: calc(100% - 56px); overflow: auto;">
     <ion-item *ngFor="let user of users">
       <ion-avatar slot="start">
@@ -11,4 +14,19 @@
       </ion-label>
     </ion-item>
   </ion-list>
-</ion-content>
+
+  <!-- <ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      On today leave
+      <span class="badge bg-primary rounded-pill">14</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      Upcoming leave
+      <span class="badge bg-primary rounded-pill">2</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      Late check in
+      <span class="badge bg-primary rounded-pill">1</span>
+    </li>
+  </ul> -->
+</div>
